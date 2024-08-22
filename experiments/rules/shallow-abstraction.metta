@@ -12,13 +12,11 @@
 
 ;; Function to retrive shallow abstraction over all variables of a pattern from a valuation space
 (= (shallow-abstraction $rel $x $y $db)
-
-   (superpose ((collapse(match $db (ValuationOf $x $z) (add-atom &shabspace (ShallowAbstractionOf $x $z))))
+(superpose ((collapse(match $db (ValuationOf $x $z) (add-atom &shabspace (ShallowAbstractionOf $x $z))))
     (collapse(match $db (ValuationOf $y $t) (add-atom &shabspace (ShallowAbstractionOf $y $t))))
     (let $t (match $db (, (ValuationOf $x $c) (ValuationOf $y $c)) True) (if (== $t True) (add-atom &shabspace (ShallowAbstractionOf $x $y)) Empty))
     )
-    
-    )
+)
 )
 
 ;; Testing shallow abstraction

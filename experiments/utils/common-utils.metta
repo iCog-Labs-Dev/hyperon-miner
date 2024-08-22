@@ -1,5 +1,4 @@
-
- ;; Declaration of List data type and constructors
+;; Declaration of List data type and constructors
 (: List (-> $a Type))
 (: Nil (List $a))
 (: Cons (-> $a (List $a) (List $a)))
@@ -9,8 +8,8 @@
 (= (count-atom-element $atom) (if (== $atom ()) 0 (+ 1 (count-atom-element (cdr-atom $atom)))))
 
  ;; Count the number of instances of a given pattern
-(: counter (-> hyperon::space::DynSpace Atom Number))
-(= (counter $db $pattern)
+(: count (-> hyperon::space::DynSpace Atom Number))
+(= (count $db $pattern)
     (let $result (collapse (match $db ($pattern) $pattern))
         (count-atom-element $result)
     )
@@ -19,7 +18,7 @@
  ;; Evaluate if the pattern has enough support
 (: sup-eval (-> hyperon::space::DynSpace Atom Number Boolean))
 (= (sup-eval $db $pattern $ms)
-    (let $sup (counter $db $pattern)
+    (let $sup (count $db $pattern)
         (if (>= $sup $ms) True False)
     )
 )
