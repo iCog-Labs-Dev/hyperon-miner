@@ -72,18 +72,18 @@
 (: classify_integer_position (-> Number String))
 (= (classify_integer_position $x)
     (if (> $x 0)
-        ("Greater than zero")
+        1 ; Return 1 if x is greater than zero
         (case (equals-to-zero $x)
             (
-                (False "Less than zero")
-                (True "Equal to zero")))))
+                (False -1) ; Return -1 if x is less than zero
+                (True 0)))))   ; Return 0 if x is equal to zero
  ;; pow is a function that calculates a to the power of b where a and b are numbers
 (: pow (-> Number Number Number))
 (= (pow $a $b)
     (case (classify_integer_position $b)
         (
-            ("Equal to zero" 1)
-            ("Less than zero" (/ 1 (pow $a (abs $b))))
+            (0 1)
+            (-1 (/ 1 (pow $a (abs $b))))
             ($_ (* $a (pow $a (- $b 1))))
         )
 )
@@ -111,3 +111,13 @@
         False
     )
 )
+
+; Define a function to create a map (dictionary) from key-value pairs
+(= (create-map $a $b ) (py-dict (($a $b))))
+
+;; Define a function to get a value from the map (dictionary) given a key
+(=(get-value $y $dict)
+ ((py-dot $dict get) $y)
+)
+!(create-map 7 8)
+!(get-value 7 (create-map 7 8))

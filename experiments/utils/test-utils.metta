@@ -39,5 +39,14 @@
  !(pow 5 3)
 ! (pow 100000 -7)
 ! (pow 5 3)
+!(classify_integer_position -10)
+!(classify_integer_position 10)
+!(classify_integer_position 0)
 !(pow 1 0)
 ! (+ (abs -5) 10) ; 15
+
+;; Example usage of create-map and get-value
+!(create-map 7 8)
+!(get-value 7 (create-map 7 8))
+
+
