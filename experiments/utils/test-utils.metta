@@ -6,7 +6,7 @@
 ! (count-atom-element (abebe, abebe, abebe)) ;; 3
 
  ;; check if the count function returns the number of instances of a given pattern
-! (counter &database abebe) ;; 2
+! (count &database abebe) ;; 2
 
  ;; check if the sup-eval function returns True when a pattern's support is greater than minimum support
 ! (sup-eval $database abebe 1) ;; True
