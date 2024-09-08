@@ -11,26 +11,18 @@
 ! (bind! &cndpspace (new-space))
 
 (= (candidatePattern $dbspace $spezspace $minsup $cndpspace)
-     ;     (match $spezspace (SpecializationOf $pattern $specialized)
-     ;         (let $result (sup-eval $dbspace $specialized $minsup)
-     ;             (if (== $result True)
-     ;                 (add-atom $cndpspace (candidatePattern $specialized $pattern))
-     ;                 (superpose ())
-     ;             )
-     ;         $result
-     ;     )
-     ; )
-    (superpose (
-            (collapse (
-                    match $spezspace (SpecializationOf $pattern $specialized)
-                    (let $result (sup-eval $dbspace $specialized $minsup)
-                        (if (== $result True)
-                            (add-atom $cndpspace $specialized)
-                            $result
-                        ))
-            ))
-))
+    (match $spezspace (SpecializationOf $pattern $specialized)
+        (let $result (sup-eval $dbspace $specialized $minsup)
+            (if (and (== $result True) (== (already-exists $specialized) False))
+                (add-atom $cndpspace $specialized)
+                $result
+            )))
+
 )
+(= (already-exists $pattern)
+    (let $result (collapse (match &cndpspace $pattern $pattern))
+        (> (count-atom-element $result) 0)
+    ))
 
  ;; First, let's run the valuation-set function to populate the &valspace with the valuation sets
 ! (valuation-set Inheritance $x $y &dbspace &valspace)
