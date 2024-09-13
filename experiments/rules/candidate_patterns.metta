@@ -1,6 +1,5 @@
 ! (register-module! ../../../hyperon-miner)
 ! (import! &dbspace hyperon-miner:experiments:data:sample-data)
-! (import! &dbspac hyperon-miner:experiments:data:samplet)
 ! (import! &self hyperon-miner:experiments:rules:valuation-set)
 ! (import! &self hyperon-miner:experiments:rules:shallow-abstraction)
 ! (import! &self hyperon-miner:experiments:rules:specialization)
