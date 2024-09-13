@@ -7,10 +7,10 @@
  ; ! (bind! &valspace (new-space))
  ; ! (bind! &spezspace (new-space))
 
-(= (specialize-pattern $link $x $y $shabspace $spezspace) (
+(= (specialize-pattern $link $x $y $shabspace $spezxspace $spezyspace) (
         superpose (
-            (collapse (match $shabspace (ShallowAbstractionOf X $t) (add-atom $spezspace (SpecializationOf ($link $x $y) ($link $t $y)))))
-            (collapse (match $shabspace (ShallowAbstractionOf Y $t) (add-atom $spezspace (SpecializationOf ($link $x $y) ($link $x $t)))))
+            (collapse (match $shabspace (ShallowAbstractionOf X $t) (add-atom $spezxspace (SpecializationOf ($link $x $y) ($link $t $y)))))
+            (collapse (match $shabspace (ShallowAbstractionOf Y $t) (add-atom $spezyspace (SpecializationOf ($link $x $y) ($link $x $t)))))
         )
 )
 )
