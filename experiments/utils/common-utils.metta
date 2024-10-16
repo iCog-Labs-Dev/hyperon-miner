@@ -27,26 +27,24 @@
     )
 )
 
-;(: counter (-> hyperon::space::DynSpace Atom Number))
-;(= (counter $db ($link $x $y))
-;    (let $result (collapse (match $db ($link $x) ($link $x)))
-;        (tuple-count $result)
-;    )
-;)
-; Count the number of instances of a given pattern
+ ;(: counter (-> hyperon::space::DynSpace Atom Number))
+ ;(= (counter $db ($link $x $y))
+ ;    (let $result (collapse (match $db ($link $x) ($link $x)))
+ ;        (tuple-count $result)
+ ;    )
+ ;)
+ ; Count the number of instances of a given pattern
 (= (count ($link $x $y) $db)
-    (let ($link1 $x1 $y1) (Debruijn2var ($link $x $y) (Cons $Xvar (Cons $Yvar (Cons $Zvar Nil))))
-                (let $result (collapse (match $db ($link1 $x1 $y1) ($link1 $x1 $y1)))(tuple-count $result)))
+    (let ($link1 $x1 $y1) (Debruijn2var ($link $x $y) (Cons $Xvar (Cons $Yvar (Cons $Zvar (Cons $Wvar Nil)))))
+        (let $result (collapse (match $db ($link1 $x1 $y1) ($link1 $x1 $y1))) (tuple-count $result)))
 )
-;; Evaluate if the pattern has enough support
+ ;; Evaluate if the pattern has enough support
 (: sup-eval (-> hyperon::space::DynSpace Atom Number Boolean))
 (= (sup-eval $db ($link $x $y) $ms)
     (let $sup (count ($link $x $y) $db)
         (if (>= $sup $ms) (candidate ($link $x $y)) (superpose ()))
     )
 )
-
-
 
  ;Check if expression is truth value or not
 (: cog-tv? (-> Atom Boolean))
