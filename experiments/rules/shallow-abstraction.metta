@@ -34,7 +34,23 @@
                 )
                 (superpose((remove-atom $shabspace ($link $y (s (s z))))(add-atom $shabspace ($link $y (s (s z))))))
               ))
-            Empty
+            (if (and (== (get-metatype $x) Expression) (== (get-metatype $y) Expression))
+                (superpose (
+                   (let ($link1 $s $t) $x (superpose (
+                          (superpose ((remove-atom $shabspace ($link ($link1 $s) z)) (add-atom $shabspace ($link ($link1 $s) z))))
+                          (superpose ( (remove-atom $shabspace ($link ($link1 $t) (s z))) (add-atom $shabspace ($link ($link1 $t) (s z)))))
+                        )
+                     )
+                    )
+                    (let ($link1 $s $t) $y (superpose (
+                           (superpose ( (remove-atom $shabspace ($link ($link1 $s) (s (s z)))) (add-atom $shabspace ($link ($link1 $s) (s (s z))))))
+                           (superpose ( (remove-atom $shabspace ($link ($link1 $t) (s (s (s z))))) (add-atom $shabspace ($link ($link1 $t) (s (s (s z)))))))
+                        )
+                      )
+                    )
+                ))
+              empty
+            )
           )
       )  
     )
