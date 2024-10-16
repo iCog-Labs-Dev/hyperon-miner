@@ -31,7 +31,23 @@
                         ))
                         (superpose((remove-atom $bindspace (BindingOf (s (s z)) $y))(add-atom $bindspace (BindingOf (s (s z)) $y))))
                     ))
-                    Empty
+                    (if (and (== (get-metatype $x) Expression) (== (get-metatype $y) Expression))
+                            (superpose (
+                                (let ($link1 $s $t) $x (
+                                    superpose (
+                                        (superpose ( (remove-atom $bindspace (BindingOf z $s)) (add-atom $bindspace (BindingOf z $s))))
+                                        (superpose ( (remove-atom $bindspace (BindingOf (s z) $t)) (add-atom $bindspace (BindingOf (s z) $t))))
+                                    )
+                                ))
+                                (let ($link1 $s $t) $y (
+                                    superpose (
+                                        (superpose ( (remove-atom $bindspace (BindingOf (s (s z)) $s)) (add-atom $bindspace (BindingOf (s (s z)) $s))))
+                                        (superpose ( (remove-atom $bindspace (BindingOf (s (s (s z))) $t)) (add-atom $bindspace (BindingOf (s (s (s z))) $t))))
+                                    )
+                                ))
+                            ))
+                        empty
+                    )                    
                 )
             )
                     
