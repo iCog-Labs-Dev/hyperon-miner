@@ -47,7 +47,9 @@ def generate_variables(metta,prefix,n):
     print(combined_pattern)
     atoms = metta.parse_all(combined_pattern)
     print(atoms)
-    return (atoms)
+    print(type(atoms))
+	
+    return (atoms[0])
 
     
 @register_atoms(pass_metta=True)
