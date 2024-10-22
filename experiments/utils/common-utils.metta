@@ -35,7 +35,7 @@
  ;)
  ; Count the number of instances of a given pattern
 (= (count ($link $x $y) $db)
-    (let ($link1 $x1 $y1) (Debruijn2var ($link $x $y) (Cons $Xvar (Cons $Yvar (Cons $Zvar (Cons $Wvar Nil)))))
+    (let ($link1 $x1 $y1) (Debruijn2var ($link $x $y) (Cons $Xvar (Cons $Yvar (Cons $Zvar (Cons $Wvar (Cons $Svar (Cons $Tvar (Cons $Pvar (Cons $Ovar Nil)))))))))
         (let $result (collapse (match $db ($link1 $x1 $y1) ($link1 $x1 $y1))) (tuple-count $result)))
 )
  ;; Evaluate if the pattern has enough support

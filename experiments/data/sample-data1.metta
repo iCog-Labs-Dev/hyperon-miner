@@ -1,9 +1,23 @@
 (Implication P Q)
 (Inheritance (And A B) C)
 (Inheritance (And (And C D) B) C)
+(Inheritance (And (And C D) B) (Or C D))
+(Inheritance (And (And C D) B) (Or C D))
 (Inheritance (And A B) F)
 (Inheritance (And A B) E)
 (Inheritance (And A C) E)
 (Inheritance A B)
 (Inheritance A C)
 (Inheritance D D)
+
+ ; (= (matcher)
+ ;     (let* (
+ ;             ($matchedx (match &self (Inheritance $x $y) $x))
+ ;             ($matchedy (match &self (Inheritance $x $y) $y))
+ ;         )
+ ;     (specialization $matchedx $matchedy)
+ ; )
+ ; )
+
+ ; ! (matcher)
+ ; ! (Debruijn2var (s z) (Cons $Xvar (Cons $yvar Nil)))
