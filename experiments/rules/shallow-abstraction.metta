@@ -63,14 +63,17 @@
              ; $binding
         )
     (if (== $depth 2)
-        (let* (
-                ($shabx (shallow-abstraction-helper $x ))
-                ($shaby (shallow-abstraction-helper $y ))
-            )
-        (superpose (
-                (superpose ( (remove-atom $shabspace $shabx) (add-atom $shabspace $shabx)))
-                (superpose ( (remove-atom $shabspace $shaby) (add-atom $shabspace $shaby)))
-            ))
+        (if (and (== (get-metatype $x) Expression) (== (get-metatype $y) Expression))
+            (let* (
+                    ($shabx (shallow-abstraction-helper $x ))
+                    ($shaby (shallow-abstraction-helper $y ))
+                )
+            (superpose (
+                    (superpose ( (remove-atom $shabspace $shabx) (add-atom $shabspace $shabx)))
+                    (superpose ( (remove-atom $shabspace $shaby) (add-atom $shabspace $shaby)))
+                ))
+        empty
+    )
 )
 empty
 )

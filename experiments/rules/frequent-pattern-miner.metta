@@ -29,11 +29,11 @@
 )
 
 (= (run-miner $minsup Z $dbspace $bindspace $shabspace $spezspace $cndpspace) (
-        (let ($link1 $x1 $y1) (match $cndpspace (candidate ($link $x $y)) ($link $x $y)) (init-miner $link1 $x1 $y1 $minsup $dbspace $bindspace $shabspace $spezspace $cndpspace (fromNat (depth)))))
+        (let ($link1 $x1 $y1) (match $dbspace (Inheritance $x $y) (Inheritance $x $y)) (init-miner $link1 $x1 $y1 $minsup $dbspace $bindspace $shabspace $spezspace $cndpspace (fromNat (depth)))))
 )
 
 (= (run-miner $minsup (S $k) $dbspace $bindspace $shabspace $spezspace $cndpspace) ( (superpose (
-                (let ($link1 $x1 $y1) (match $cndpspace (candidate ($link $x $y)) ($link $x $y)) (init-miner $link1 $x1 $y1 $minsup $dbspace $bindspace $shabspace $spezspace $cndpspace (- (fromNat (depth)) (fromNat (S $k)))))
+                (let ($link1 $x1 $y1) (match $dbspace (Inheritance $x $y) (Inheritance $x $y)) (init-miner $link1 $x1 $y1 $minsup $dbspace $bindspace $shabspace $spezspace $cndpspace (- (fromNat (depth)) (fromNat (S $k)))))
                 (run-miner $minsup $k $dbspace $bindspace $shabspace $spezspace $cndpspace)))
     )
 )
