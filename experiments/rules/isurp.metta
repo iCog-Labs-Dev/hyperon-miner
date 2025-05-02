@@ -155,7 +155,7 @@
 ;; ==============================================================
 ;; Function: ji_prob_est_interval
 ;; Purpose: Estimates the expected probability interval [emin, emax] for a pattern
-;;          using a jackknife-inspired (JI) estimation method
+;;          using a Joint Independent (JI) estimation method
 ;;
 ;; Parameters:
 ;;   $pattern    - The pattern whose probability we want to estimate
