@@ -1,20 +1,20 @@
+!(register-module! ../../chaining)
+!(import! &self chaining:dtl:backward:curried)
+!(import! &self chaining:dtl:forward:curried)
+!(import! &self chaining:dtl:utils)
+
 !(register-module! ../../hyperon-miner)
 !(import! &self hyperon-miner:utils:MinerUtils)
-!(import! &self hyperon-miner:dependent-types:chainer)
+!(import! &self hyperon-miner:dependent-types:bc-system-prf)
 
-;; sample data
-;; commenting, match wouldn't work because
-;; import adds stdlib into an imported space
-; !(import! &db hyperon-miner:data:sample2)
-!(bind! &db (new-space))
-!(add-atom &db (Inheritance B A))
-!(add-atom &db (Inheritance C A))
-!(add-atom &db (Inheritance D E))
-!(add-atom &db (Inheritance C E))
+;; Load db
+!(import! &db hyperon-miner:data:sample2)
+;; Remove, stdlib, corelib DynSpace imported
+!(match &db $x (if (== (get-type $x) hyperon::space::DynSpace) (remove-atom &db $x) (Empty) ))
 
 ;; Parameters
 (= (highsurp) 0.8)
-(= (ms) 1)
+(= (ms) 2)
 
 ;; Type definition for -> to prevent early reduction
 ;; of the conclusions before matching the correct premises.
@@ -24,7 +24,9 @@
 ;; KB and rule base ;;
 ;;;;;;;;;;;;;;;;;;;;;;
 
-!(import! &kb MinerCurriedDTL)
+!(import! &kb hyperon-miner:dependent-types:MinerCurriedDTL)
+;; Remove, stdlib, corelib DynSpace imported
+!(match &kb $x (if (== (get-type $x) hyperon::space::DynSpace) (remove-atom &kb $x) (Empty)))
 
 ;; Initialize miner with the given db, kb and parameters
 !(init-miner &db &kb (ms) (highsurp))
@@ -33,20 +35,47 @@
 ;; Test ;;
 ;;;;;;;;;;
 
-;; Get all frequent patterns of link type Inheritance
-;; given a fact that an abstract pattern has a support CNT:
-;; e.g (supportOf (Inheritance (VarIdx Z) (VarIdx (S Z))) CNT)
-;; do a,  
-; !(let* (($aptrn (abstract-patterns))
-;         ($cnt (count $aptrn))
-;         ($fact (: (supportwitness $aptrn) (supportOf $aptrn $cnt)))
-;         ($depth (fromNumber 8)))
-;     (ifc $fact $depth (S Z) &kb))
+; initial fact: Abstract pattern (interacts_with X Y) has enough support
+!(add-atom &kb (: FACT (supportOf (interacts_with (VarIdx Z) (VarIdx (S Z))) 5)))
 
-;; or b,
-; !(ifc (: ST (supportOf (Inheritance (VarIdx Z) (VarIdx (S Z))) 4)) (fromNumber 5) (fromNumber 2) &kb)
+;; Test 1
+; !(syn &kb (fromNumber 11) (: $prf $concln))
 
-;; after a or b generates all patterns with minimum support,
-;; This would get a conjunctions of patterns with minimum support
-; !(ibc (: $prf (supportOf (, $ptrn1 $ptrn2) $cnt)) (fromNumber 4) (S Z) &kb)
-; !(bc (: $prf (minsup $ptrn)) (fromNumber 4) &kb)
+;; Test 2
+; !(let $r (syn &kb (fromNumber 11) (: $prf $concln)) (add-atoms-nodup &kb (collapse $r)))
+; !(syn &kb (fromNumber 4) (: $prf (minsup $ptrn)))
+
+;; Test 3
+;; FIXME: iterative synthesize not working? 
+; !(isyn &kb (fromNumber 9) (S (S Z)) (: $prf (minsup $ptrn)))
+
+;; Test 4
+;; Recursive call
+; !(let $a (syn &kb (fromNumber 4) (: $prf (minsup $ptrn))) (add-atoms-nodup &kb (collapse $a)))
+; !(let $b (syn &kb (fromNumber 5) (: $prf (supportOf $ptrn $cnt))) (add-atoms-nodup &kb (collapse $b)))
+; !(let $c (syn &kb (fromNumber 5) (: $prf (minsup $ptrn))) (add-atoms-nodup &kb (collapse $c)))
+; !(let $d (syn &kb (fromNumber 5) (: $prf (supportOf $ptrn $cnt))) (add-atoms-nodup &kb (collapse $d)))
+; !(syn &kb (fromNumber 5) (: $prf (minsup $ptrn)))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;   Recursive minsup algorithm  ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; step 1
+; (minsup P1)
+; (minsup P2)
+; (minsup P3)
+; ...
+; step2
+; (, (minsup P1) (minsup P2))
+; (, (minsup P1) (minsup P3))
+; (, (minsup P2) (minsup P3))
+; ...
+; step3
+; (, (minsup P1) (, (minsup P1) (minsup P2)))
+; (, (minsup P1) (, (minsup P2) (minsup P3)))
+; (, (minsup P2) (, (minsup P1) (minsup P3)))
+; ...
+; step 4
+; (, (minsup P1) (, (minsup P1) (, (minsup P1) (minsup P2))))
+; ...

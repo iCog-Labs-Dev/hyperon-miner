@@ -1,3 +1,6 @@
+; !(register-module! ../rules)
+; !(import! &self rules:freq-pat)
+
 
 ;; define system proofs 
 ------------------------------------------------------------------
@@ -6,8 +9,13 @@
 ;; if $x and $Y are fully grounded and (< $X $Y)
 ------------------------------------------------------------------
 (= (syn $kb $_ (: $prf (⍃ $X $Y))) 
-    (if (and (and (is-number $X) (is-number $Y)) (< $X $Y))
+    (if (and (and (is-number $X) (is-number $Y)) (<= $X $Y))
           (: CPU (⍃ $X $Y))
+             (empty)))
+
+(= (syn $kb $_ (: $prf (equals $X $Y))) 
+    (if (and (and (is-number $X) (is-number $Y)) (== $X $Y))
+          (: CPUequals (equals $X $Y))
              (empty)))
 
              
@@ -16,13 +24,51 @@
     (let* (
         ($uniquelink (collapse (unique (match $db ($link $x $y) $link)) ) )
         ($sup (superpose $uniquelink))
-        (add-atom $kb (unqLink $sup))
         )
     (if (== (size-atom $uniquelink) 0)
           (empty)
              (: CPUUnique (Abstract ($uniquelink $x $y)))
              ))
     )
+
+(= (syn $kb $_ (: $prf (replace_variables $ptrn)))
+    (let* (
+        ($new_ptrn (call_replace $ptrn))
+        )
+    (if (== $new_ptrn ())
+          (empty)
+             (: CPUReplacevar (replace_variables $new_ptrn))
+        )    
+    )
+)
+
+(= (syn $kb $_ (: $prf (replace_index $ptrn $res)))
+    (let* (
+        ($new_ptrn (call_replacev $ptrn))
+        )
+    (if (== $new_ptrn ())
+          (empty)
+             (: CPUReplaceindex (replace_index $ptrn $new_ptrn))
+        )    
+    )
+)
+
+(= (syn $kb $_ (: $prf (clause_count $ptrn $cnt)))
+    (let* (
+        ($clauses (get-conjuncts $ptrn))
+        ($cnt (size-atom $clauses))
+        )
+    (if (== $cnt 0)
+          (empty)
+             (: CPUCount (clause_count $ptrn $cnt))
+        )    
+    )
+)
+;; Proof for prunning
+; (= (syn $kb $_ (: PRUNEPRF (valid-conj $p1 $p2))) 
+;     (if (prune? (, $p1 $p2))
+;         (empty)
+;         (: PRUNEPRF (valid-conj $p1 $p2))))
 
 
 ----------------------------------------------------------------------------

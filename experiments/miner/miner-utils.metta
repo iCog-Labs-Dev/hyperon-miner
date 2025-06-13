@@ -34,3 +34,8 @@
 (=(is-number $x) 
    (== (get-type $x) Number) 
 )
+
+(= (conj? $p)
+    (case $p
+    (((, $clause1 $clause2) True)
+     ($_ False))))

@@ -31,6 +31,11 @@
       (-> (db-ref $db)
         (specializationOf $aptrn (build-specialization-chain $aptrn $db)))))
 
+;; rule to get candidate patterns
+(: candidate  
+      (-> (minsup $ptrn)
+       (-> (replace_variables $ptrn)
+         (candidatePattern $ptrn))))
 
 (: candidatePattern  
       (-> (specializationOf $aptrn $sptrn)
@@ -45,25 +50,38 @@
 
 
 ;; rule to expand conjunctions
-(: conjunction
-      (-> (candidatePattern $ptrn1)
-            (-> (candidatePattern $ptrn2)
-               (-> (ms-threshold $ms)
-                  (-> (db-ref $db)
-                        (conjunction (expand_conjunction $ptrn1 $ptrn2 $db $ms 2 False)))))))
+; (: conjunction
+;       (-> (candidatePattern $ptrn1)
+;             (-> (candidatePattern $ptrn2)
+;              (-> (replace_index $ptrn1 $nptrn1)
+;               (-> (replace_index $ptrn2 $nptrn2)
+;                (-> (ms-threshold $ms)
+;                   (-> (db-ref $db)
+;                         (conjunction (expand_conjunction $nptrn1 $nptrn2 $db $ms 2 False)))))))))
 
 ;; rule for creating conjunctions with more clauses
-(: conjunction-next
-      (-> (conjunction-clean $ptrn1)
+(: conjunction-expand
+      (-> (candidatePattern $ptrn1)
+      (-> (replace_index $ptrn1 $nptrn1)
+         (-> (clause_count $nptrn1 $cnt)   
+          (-> (maxClauses $max)
+            (-> (equals $cnt $max)
             (-> (candidatePattern $ptrn2)
+             (-> (replace_index $ptrn2 $nptrn2)
                (-> (ms-threshold $ms)
                   (-> (db-ref $db)
-                        (conjunction (expand_conjunction $ptrn1 $ptrn2 $db $ms 2 False)))))))
+                        (conjunction (expand_conjunction $nptrn1 $nptrn2 $db $ms 2 False))))))))))))
 
+(: conjunction-i
+      (-> (conjunction $conj)
+         (-> (replace_variables $conj)
+            (candidatePattern $conj))))
 ;; rule to clean conjunctions from redundant clauses
 (: remove-conjuncts-with-redundant-clause
       (-> (conjunction $ptrn)
-            (conjunction-clean (remove_conjuncts_with_redundant_clauses $ptrn1))))
+        (-> (replace_variables $ptrn)
+            (conjunction-clean (remove_conjuncts_with_redundant_clauses $ptrn)))))
+
 
 
 

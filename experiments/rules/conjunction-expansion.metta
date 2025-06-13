@@ -20,9 +20,10 @@
  ;  *
  ;  */
 
-; ! (register-module! ../../experiments)
-; ! (import! &self experiments:utils:common-utils)
-! (import! &self conj-exp)
+! (register-module! ../../experiments)
+! (import! &self experiments:utils:common-utils)
+! (import! &self experiments:utils:variable-combinations)
+; ! (import! &self conj-exp)
 
  ; The starting point for the conjunction expansion. It passes
  ; the Alpha Converted pattern (if necessary) to the expand_conjunction functions.
@@ -232,6 +233,7 @@
 (= (expand_conjunction_rec $cnjtion $apat $db $ms)
     (let $npat (expand_conjunction_connect $cnjtion $apat (get_variable_for_pattern $cnjtion) (get_variable_for_pattern $apat))
          (checker $db $npat $ms)
+        ;  $npat
     )
 )
 
@@ -246,8 +248,9 @@
 )
 (= (replace_pattern $cnjtion $pattern $pv2cv)
     (let* (
-            ($sup (superpose $pv2cv))
-            ($exp (substitute $pattern $sup))
+            ; ($sup (superpose $pv2cv))
+            ; ($exp (substitute $pattern $sup))
+            ($exp (substitute $pattern $pv2cv))
             ($new_cnjtion (, $cnjtion (car-atom $exp)))
         )
         $new_cnjtion

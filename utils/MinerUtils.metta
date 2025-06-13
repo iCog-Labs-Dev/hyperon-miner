@@ -1,25 +1,4 @@
-; !(register-module! ../../hyperon-miner)
-;!(import! &self hyperon-miner:utils:DeBruijnIndex)
-
-;;;;;;;;;
-;; Nat ;;
-;;;;;;;;;
-
-;; Define Nat
-(: Nat Type)
-(: Z Nat)
-(: S (-> Nat Nat))
-
-;; Define <=
-(: <= (-> $a $a Bool))
-(= (<= $x $y) (or (< $x $y) (== $x $y)))
-
-;; Define cast functions between Nat and Number
-(: fromNumber (-> Number Nat))
-(= (fromNumber $n) (if (<= $n 0) Z (S (fromNumber (- $n 1)))))
-(: fromNat (-> Nat Number))
-(= (fromNat Z) 0)
-(= (fromNat (S $k)) (+ 1 (fromNat $k)))
+!(import! &self DeBruijnIndex)
 
 
 ;; Tuple count grounded python function
@@ -27,98 +6,83 @@
 ;; This is very slow, use the grounded python function instead
 ;;(= (tuple-count $tuple) (if (== $tuple ()) 0 (+ 1 (tuple-count (cdr-atom $tuple)))))
 
-!(bind! &specializations (new-space))
+;;;;;;;;;;;;;;;;;;;;;; 
+;; Helper for Match ;;
+;;;;;;;;;;;;;;;;;;;;;;
+
+!(bind! &candidatespace (new-space))
+!(bind! &countedspace (new-space))
+
+(= (get-links $db)
+    (match $db ($link $x $y) $link))
+
+(= (specialize $link $db)
+    (match $db ($link $x $y) (superpose (($link $x (VarIdx (S Z))) ($link (VarIdx Z) $y)))))
+
+(= (findsupport $sPattern $ms $db)
+    (case (match &countedspace $sPattern 1)
+        ((Empty (let $cnt (count $sPattern $db)
+                    (if (> $cnt $ms) (superpose ((add-atom &candidatespace (candidate $sPattern $cnt))
+                                                 (add-atom &countedspace $sPattern)
+                                                 (candidate $sPattern $cnt)))
+                                     (add-atom &countedspace $sPattern))))
+         ($_ Empty))))
+
+(= (support $sPattern $ms $db)
+    (let $a (findsupport $sPattern $ms $db) $a))
+
+(= (get-pattern (candidate $pattern $cnt)) $pattern)
+
+(= (all-candidates) (get-atoms &candidatespace))
+
+;;;;;;;;;;;;;;;;;;;;
+;; Helper for DTL ;;
+;;;;;;;;;;;;;;;;;;;;
+
 !(bind! &abstractions (new-space))
+!(bind! &specialization (new-space))
 
 ;; Initialization
-(= (init-miner $db $msup $highsurp)
-    (superpose ((extract-valuation $db)
-                (add-atom &self (= (refdb) $db))
-                (add-atom &self (= (msNat) (fromNumber $msup)))
-                (add-atom &self (= (highsurp) $highsurp))
-                (get-universe-size $db))))
-
 (= (init-miner $db $kb $msup $highsurp)
-    (superpose ((extract-valuation $db $kb)
-                (add-atom &self (= (refdb) $db))
+    (superpose ((variable-mapping $db $kb $msup)
+                (add-atom $kb (: db (refdb $db)))
                 (add-atom $kb (: msT (ms_threshold $msup)))
                 (add-atom $kb (: hsT (hs_threshold $highsurp)))
                 (get-universe-size $db))))
 
 ;; Search for Triplets in DB 
-;; collect valuation sets and generate specializations
-(= (extract-valuation $db)
+;; do variable mapping and generate specializations
+(= (variable-mapping $db $kb $msup)
    ;(match $db (: $p ($link $x $y)) ;; To ignore type definition in bio-as
    (match $db ($link $x $y) 
-    (superpose ((build-specialization ($link $x (VarIdx (S Z))))
-                (build-specialization ($link (VarIdx Z) $y))
+    (superpose ((build-specialization ($link $x (VarIdx (S Z))) $kb $db $msup)
+                (build-specialization ($link (VarIdx Z) $y) $kb $db $msup)
                 (add-abstractions ($link (VarIdx Z) (VarIdx (S Z))))))))
 
-(= (extract-valuation $db $kb)
-   ;(match $db (: $p ($link $x $y)) ;; To ignore type definition in bio-as
-   (match $db ($link $x $y) 
-    (superpose ((build-specialization ($link $x (VarIdx (S Z))) $kb)
-                (build-specialization ($link (VarIdx Z) $y) $kb)
-                (add-abstractions ($link (VarIdx Z) (VarIdx (S Z))))))))
-
-(= (build-specialization $sp)
-   (case (match &specializations (specializationOf $sp $aptrn) $sp)
-        ((%void% (let* ((($link $x $y) $sp)
-                        ($aptrn ($link (VarIdx Z) (VarIdx (S Z)))))
-                    (add-atom &specializations (specializationOf $sp $aptrn)))))))
-
-(= (build-specialization $sp $kb)
-   (case (match $kb (: $wt (specializationOf $sp $aptrn)) $sp)
-        ((%void% (let* ((($link $x $y) $sp)
-                        ($aptrn ($link (VarIdx Z) (VarIdx (S Z)))))
-                    (add-atom $kb (: (sp_witness $sp) (specializationOf $sp $aptrn))))))))
+(= (build-specialization $sp $kb $db $msup)
+   (case (match $kb (: $prf (specialization_with_minsup $sp $aptrn)) $sp)
+        ((Empty (let* ((($link $x $y) $sp)
+                       ($aptrn ($link (VarIdx Z) (VarIdx (S Z)))))
+                    (if (> (count $sp $db) $msup) ;; specialization with minsup
+                        (add-atom $kb (: (sp_prf $sp) (specialization_with_minsup $sp $aptrn)))
+                        ()))))))
 
 (= (add-abstractions $aptrn)
    (case (match &abstractions $aptrn $aptrn)
-        ((%void% (add-atom &abstractions $aptrn)))))
-
-;; Get unique links
-(= (get-links) (match &abstractions ($link $x $y) $link))
+        ((Empty (add-atom &abstractions $aptrn)))))
 
 ;; Get abstract patterns
 (= (abstract-patterns) (match &abstractions $aptrn $aptrn))
 (= (abstract-patterns $link) ($link (VarIdx Z) (VarIdx (S Z))))
+(= (abstract? $pattern)
+   ;; Todo: Use get-type and check arguments if DeBruijnIndex
+   (case $pattern ((($link (VarIdx Z) (VarIdx (S Z))) True) ($_ False))))
 
-;; Specialize a pattern
-(= (specialize $link) 
-    (let $aptrn ($link (VarIdx Z) (VarIdx (S Z))) 
-     (match &specializations (specializationOf $sp $aptrn) $sp)))
-
-;; all Specializations
-(= (all-specialization) (match &specializations $x $x))
-
-; Count the number of instances of a given pattern
-(= (count $pattern)
-    (let* (($dptrn (Deb2var $pattern (Cons $Xvar (Cons $Yvar Nil))))
-           ($result (collapse (match (refdb) $dptrn $dptrn))))
-        (tuple-count $result)))
-
-(= (countNat $pattern) (fromNumber (count $pattern)))
-
-;; Return candidate patterns in the format (candidate pattern count) 
-;; for patterns with a support value >= the minimum support.
-;; the count here will later be used for calculating surprisingness.
-(= (support $pattern $minsup)
-    (let $cnt (count $pattern)
-      (if (> (+ $cnt 1) $minsup) (candidate $pattern $cnt) (superpose ()))))
-
-;; Extract a pattern from a Candidate pattern of form
-;; (candidate pattern count)
-(= (get-pattern $cnpattern)
-  (let (candidate $pattern $cnt) $cnpattern $pattern))
-
-;; flatten combination
-;; TODO: apply reduction rule
-(= (flatten $pattern)
-    (case $pattern 
-        (((, (, $a $b) $c) (, $a $b $c))
-         ((, $a (, $b $c)) (, $a $b $c))
-         ($_ $pattern))))
+; Count the number of instances of a pattern in a given db
+(= (count $pattern $db)
+(let () (println! (count-input $pattern))
+    (let $dptrn (Deb2var $pattern (Cons $Xvar (Cons $Yvar Nil)))
+           (tuple-count (collapse (match $db $dptrn $dptrn))))))
 
 ;; Get universe size of a given db
 (= (get-universe-size $dbspace) 
@@ -153,3 +117,32 @@
       ($_ 0))))
 
 (= (isurp? ($ptrn $cnt)) (if (> (iSurprisingness (candidate $ptrn $cnt)) (highsurp)) true false))
+
+;; Conjunction rule Helper
+(= (conj? $p)
+    (case $p
+    (((, $clause1 $clause2) True)
+     ($_ False))))
+
+;; Pruning conjunctions of the following patterns:
+;; 1. Abstract and specialized conjuctions, such as:
+;;    (, (likes A $Y) (likes $X $Y))
+;; 2. Conjunctions of conjunctions, such as:
+;;    (, (, (likes A $y) (likes B $y))
+;;       (, (likes C $y) (likes D $y)))
+;; Instead, these should be constructed in the following form:
+;;    (, (likes A $y) (, (likes B $y) (, (likes C $y) (likes D $y))))
+
+(= (prune? (, $p1 $p2))
+   (let () (println! (, $p1 $p2))
+   (if (or (abstract? $p1) (abstract? $p2)) True 
+    (if (and (conj? $p1) (conj? $p2)) True False))))
+
+;; Todo: disconnected conjunctions
+;; create a connection or prune??
+;; (, (likes A $Y) (likes $X B)) ; disconnected
+;; create a connection through a common variable
+;; (, (likes A $Y) (likes $Y B))
+
+;; notion of specializations?
+;; Unify variable

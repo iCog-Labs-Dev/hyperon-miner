@@ -1,2 +1,1 @@
-cat ../utils/MinerUtils.metta MinerDTL.metta MinerDTLTest.metta > tmpDTL.metta
-time metta tmpDTL.metta > result_DTL.metta
+cat ../utils/DeBruijnIndex.metta ../utils/MinerUtils.metta chainer.metta MinerCurriedDTLTest.metta > pmDTL1.metta && time metta pmDTL.metta 
