@@ -7,6 +7,7 @@
 ; is_nat helper function checks if the variable is of type Debruijn
 (= (is_nat $v) (== (get-type $v) Nat))
 (= (is_variable $v) (== (get-metatype $v) Variable))
+(= (is_exp $v) (== (get-metatype $v) Expression))
 (= (inc_index $index) (S $index))
 
 ; replaces each debruin indice into a variable
@@ -45,16 +46,21 @@
 (= (_variable_to_debruijn $pattern $index)(
       if (== $pattern ())()
          (
-             let* (
+             let* (  
+                     (($z $zs) ((car-atom $pattern) (cdr-atom $pattern)))
                      ($x (
-                        if (is_variable (car-atom $pattern))
+                        if (is_variable $z)
                            $index
-                           (car-atom $pattern)
+                           (
+                              if (is_exp $z)
+                                 (variable_to_debruijn $z)
+                                 $z
+                           )
                      ))
                      ($y (
-                        if (is_variable (car-atom $pattern))
-                           (_variable_to_debruijn (cdr-atom $pattern) (inc_index $index))
-                           (_variable_to_debruijn (cdr-atom $pattern) $index)
+                        if (is_variable $z)
+                           (_variable_to_debruijn $zs (inc_index $index))
+                           (_variable_to_debruijn $zs $index)
                      ))
                   )
                   (cons-atom $x $y)
@@ -62,4 +68,5 @@
    )
 )
 
-; !(variable_to_debruijn (Inheritance $x $y $z)) ; [(Inheritance Z (S Z) (S (S Z)))]
+!(variable_to_debruijn (Inheritance $x $y $z)) ; [(Inheritance Z (S Z) (S (S Z)))]
+!(variable_to_debruijn (Inheritance (($x $y) $y ) $y)) ; [(Inheritance (Z (S Z)) Z)]
