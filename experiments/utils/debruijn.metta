@@ -45,28 +45,7 @@
 ; returns a pattern with the indices replaced with a variables
 (= (debruijn_to_variable $pattern) (debruijn_to_variable $pattern ($x $y $z $w $a $b $c $d $e $f $g $h)))
 (= (debruijn_to_variable $pattern $varlist)(
-   if (== $pattern ()) ()
-   (let* (
-           (
-            $x
-            (
-               if (is_nat (car-atom $pattern))
-                  (car-atom $varlist)
-                  (car-atom $pattern)
-            )
-           )
-           (
-            $y
-            (
-               if (is_nat (car-atom $pattern))
-                  (debruijn_to_variable (cdr-atom $pattern) (cdr-atom $varlist))
-                  (debruijn_to_variable (cdr-atom $pattern) $varlist)
-            )
-           )
-         )
-         (cons-atom $x $y)
-   )
-))
+   if (== $pattern ()) ()))
 
 ; !(debruijn_to_variable (Inheritance Z (S Z) Z)) ; [(Inheritance $x $y $z)]
 
@@ -114,7 +93,7 @@
 ))
 
 ; TEST CASES
-; !(var_to_deb (Inheritance $x $y $x)) ; [(Inheritance Z (S Z) Z)]
-; !(var_to_deb (Inheritance $x $y $x $y)) ; [(Inheritance Z (S Z) Z (S Z))]
-; !(var_to_deb (Inheritance $x $y $x $z)) ; [(Inheritance Z (S Z) Z (S (S Z)))]
-; !(var_to_deb (Inheritance (($y $x) $y ) $y $x)) ; [(Inheritance ((Z (S Z)) Z) Z (S Z))]
+!(var_to_deb (Inheritance $x $y $x)) ; [(Inheritance Z (S Z) Z)]
+!(var_to_deb (Inheritance $x $y $x $y)) ; [(Inheritance Z (S Z) Z (S Z))]
+!(var_to_deb (Inheritance $x $y $x $z)) ; [(Inheritance Z (S Z) Z (S (S Z)))]
+!(var_to_deb (Inheritance (($y $x) $y ) $y $x)) ; [(Inheritance ((Z (S Z)) Z) Z (S Z))]
