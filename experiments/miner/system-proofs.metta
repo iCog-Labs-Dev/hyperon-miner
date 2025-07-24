@@ -83,6 +83,17 @@
     )
 )
 
+
+
+(= (syn $kb $_ (: $prf (sup_count $ptrn $count)))
+    (let* (
+        ($db (match $kb (db-ref $db) $db))
+        ($new_ptrn (collapse (match $db $ptrn $ptrn)))
+        ($count (size-atom $new_ptrn))
+    )
+     (: CPUCounter (sup_count $ptrn $count))
+    )
+)
 (= (syn $kb $_ (: $prf (replace_index $ptrn $res)))
     (let* (
         ($new_ptrn (call_replacev $ptrn))

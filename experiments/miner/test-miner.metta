@@ -1,34 +1,16 @@
 !(register-module! ../../experiments)
 ; !(register-module!  ../../../../chaining)
 
-!(import! &self experiments:miner:miner)
-!(import! &self experiments:miner:miner-utils)
+!(import! &self experiments:miner:freq-miner)
 !(import! &self experiments:rules:conj-exp)
 !(import! &self experiments:rules:freq-pat)
 !(import! &self experiments:rules:use-python)
 !(import! &self experiments:utils:variable-combinations)
 
-
-;; import utils and rules files 
-! (import! &self experiments:rules:isurp)
-! (import! &self experiments:rules:isurp-old)
 ! (import! &self experiments:utils:common-utils)
-! (import! &self experiments:utils:beta-dist)
-! (import! &self experiments:utils:constants)
-! (import! &self experiments:utils:TruthValue)
-! (import! &self experiments:utils:surp-utils)
-! (import! &self experiments:utils:miner-utils)
 ! (import! &self experiments:rules:build-specialization)
 ! (import! &self experiments:rules:conjunction-expansion)
 
-! (import! &self experiments:utils:gen_partition)
-! (import! &self experiments:rules:est-tv)
-! (import! &self experiments:rules:emp-tv)
-! (import! &self experiments:rules:emp-prob)
-! (import! &self experiments:rules:jsd)
-! (import! &self experiments:utils:emp-tv-bs)
-! (import! &self experiments:utils:bs-utils)
-! (import! &self experiments:utils:util-jsd)
 ; ! (import! &dbspace experiments:data:ugly_man_sodaDrinker)
 ! (import! &dbspace experiments:data:small-ugly)
 
@@ -36,7 +18,7 @@
 
 ;; config kb : load the chainer , rules , system-proofs ....
 ; !(import! &self  chaining:dtl:backward:curried)
-!(import! &temp   experiments:miner:miner-rules)
+!(import! &temp   experiments:miner:freq-miner-rules)
 !(import! &self  experiments:miner:system-proofs)
 
 ;;create new space for kb
@@ -49,6 +31,11 @@
 
 ;;copy atoms from temp space to kb to remove unnecessary atoms from the space
 !(let $atoms  (get-atoms &temp) (add-reduct &kb $atoms) )
+
+; !(add-atom &kb (: candidate (candidatePattern (Inheritance Z ugly))))
+; ; !(add-atom &kb (: candidate (candidatePattern ())))
+; !(add-atom &kb (: candidate (candidatePattern (Inheritance Z sodaDrinker))))
+(: -> (-> Atom Atom Type))
 
 
 ;; define parameters 
@@ -63,8 +50,8 @@
 ;; test the cog-miner
 ;; without sorting 
 ; ! (cog-mine &db &kb (min-sup) (surp-mode) (db-ratio) )
-; ! (cog-mine &db &kb (min-sup) (surp-mode) (db-ratio) 1 2)
-!(union-atom () (1 2 3 4 5 6 7 8 9 10))
+! (cog-mine &db &kb (min-sup) (surp-mode) (db-ratio) 1 1)
+; !(union-atom () (1 2 3 4 5 6 7 8 9 10))
 
 
 ; !(syn &kb (fromNumber 0) (: $prf (uniqueLink $pattern $cnt))) 
@@ -93,3 +80,4 @@
 
 
 
+!(let ($link $x $y) (Inheritance $x1 $y1) ($link $x $y))
