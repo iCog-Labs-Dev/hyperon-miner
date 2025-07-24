@@ -231,8 +231,8 @@
 
 (= (expand_conjunction_rec $cnjtion $apat $db $ms)
     (let $npat (expand_conjunction_connect $cnjtion $apat (get_variable_for_pattern $cnjtion) (get_variable_for_pattern $apat))
-        ;  (checker $db $npat $ms)
-         $npat
+         (checker $db $npat $ms)
+        ;  $npat
     )
 )
 

@@ -21,7 +21,7 @@
 ;; Tests ;;
 ;;;;;;;;;;;
 ;; Test old normalized I-Surprisingess for the ugly male soda drinker
-!(isurp-old (,(Inheritance $x man) (Inheritance $x sodaDrinker) (Inheritance $x ugly)) &db  True)
+!(isurp-old (, (Inheritance $x human) (Inheritance $x sodaDrinker) (Inheritance $x man)) &db  True)
 ;!(isurp-old (,(Inheritance $x man) (Inheritance $x ugly)) &db  True)
 
 

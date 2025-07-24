@@ -8,9 +8,9 @@
 ! (import! &self experiments:utils:gen_partition)
 ! (import! &self experiments:rules:est-tv)
 ! (import! &self experiments:rules:emp-tv)
-! (import! &db experiments:data:ugly_man_sodaDrinker)
+! (import! &kb experiments:data:ugly_man_sodaDrinker)
 
-
+! (bind! square (py-atom numpy.square (-> Number Number)))
 
 
 
@@ -20,6 +20,6 @@
 
 
 
-
+    
 
 

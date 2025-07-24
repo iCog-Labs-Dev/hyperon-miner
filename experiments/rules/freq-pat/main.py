@@ -108,6 +108,9 @@ def call_python_process(metta: MeTTa):
     # return [ValueAtom(atoms, 'Expression')]
 
     return unique_patterns
+def generate_var(metta: MeTTa, suffix):
+    var =  f"$var{int(str(suffix))}"
+    return [metta.parse_single(var)]
 
 
 def replace_with_de_bruijn(metta: MeTTa, pattern):
@@ -127,7 +130,7 @@ def replace_with_de_bruijn(metta: MeTTa, pattern):
             index += 1
         str_pattern = str_pattern.replace(var, var_map[var], 1)
 
-    return [metta.parse_single(str_pattern)]
+    return [metta.parse_single(str_pattern)]-*
 
 
 def replace_with_variable(metta: MeTTa, pattern):
@@ -163,6 +166,8 @@ def sort_conjunction(metta: MeTTa, conjunction):
     sorted_elements =  sorted(atoms)
     flattend_str = f"({' '.join(sorted_elements)})"
     return [metta.parse_single(flattend_str)]
+
+
 
 
 @register_atoms(pass_metta=True)

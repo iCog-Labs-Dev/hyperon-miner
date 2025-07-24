@@ -103,7 +103,16 @@
    let* (
      ($alpha (find_alpha $mean $variance))
      ($beta (find_beta $mean $variance))
-     ($count (+ $alpha (- $beta (- (prior-alpha) (prior-beta)))))
+     ($count-ch (let* (
+          ;; sum of α and β
+          ($sum_ab (+ $alpha $beta))
+          ;; sum of priors
+          ($sum_priors (+ (prior-alpha) (prior-beta)))
+          ;; compute count = α+β − (prior-α + prior-β)
+          ($count2 (- $sum_ab $sum_priors))
+         )
+     $count2))
+     ($count (max $count-ch 0.1))
      ($confidence (// $count (+ $count (default_k))))
      ($mode  (
     if (and (> $alpha 1) (> $beta 1)) (

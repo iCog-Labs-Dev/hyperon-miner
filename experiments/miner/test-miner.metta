@@ -39,8 +39,8 @@
 
 
 ;; define parameters 
-(=(min-sup) 2)
-(=(surp-mode) jsdsurp)
+(=(min-sup) 6)
+(=(surp-mode ) nisurp-old)
 (=(db-ratio) 0.5)
 ; !(add-atom &kb (: msT (ms-threshold 2)))
 ; !(add-atom &kb (: SUP (supportOf $ptrn 5)))

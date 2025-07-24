@@ -1,0 +1,214 @@
+;; get-variables function is a function that we use to extract variables from a given patterns (expressions with variables)
+;; get-variables helps as an interface for variable-extractor , which is the main function that extracts the variables
+;; example:- (get-variables (this is the pattern i am talking about its name is $name and author is $authorName))
+;; the above function will call (variable-extractor this (is the pattern i am talking about its name is $name and author is $authorName) ())
+;; and finally this will return ($name $authorName) 
+
+( = (variable-extractor $head () $answer)  
+    (if (== (get-metatype $head) Variable)
+        ( union-atom $answer ($head))
+        (if (== (get-metatype $head) Expression)
+            (variable-extractor (car-atom $head) (cdr-atom $head) $answer )    
+            $answer
+        ) 
+    )
+)
+( = (variable-extractor $head $tail $answer) 
+    (
+        if (== (get-metatype $head) Variable)
+            (variable-extractor (car-atom $tail) (cdr-atom $tail) ( union-atom $answer ($head) ) )
+            (
+                if (== (get-metatype $head) Expression)
+                    ( 
+                        let* 
+                            ( 
+                                ;;;;; get all variables from this expression as well as post expression variables
+                                ($var1 (variable-extractor (car-atom $head) (cdr-atom $head) () ) )
+                                ($var2 (variable-extractor (car-atom $tail) (cdr-atom $tail) () ) )
+                                )
+
+                            (   ;;;; merge all variables u have got so far
+                                let 
+                                    $first_unity (union-atom $answer $var1)
+                                    (union-atom $first_unity $var2)
+                            )
+                            
+                        
+                    )
+                    ( variable-extractor (car-atom $tail) (cdr-atom $tail) $answer )          
+            )
+    )
+)
+
+( = (get-variables $var) (variable-extractor (car-atom $var) (cdr-atom $var) () ) )
+;test !( get-variables (Inheritance $new ( $x $y ($again ( $3rd_expression ) ) ) (((text )))$other $r hi there $hi))
+
+
+
+;;;;;; depth generator ;;;;;; 
+;; input: 3
+;; output: (S (S (S ())))
+  
+( = (generateDepth $size) 
+    (
+        if (== $size 0)
+            ()
+            (S (generateDepth (- $size 1)))
+    )
+) 
+
+;;;;; checks membership of something in a given set of things
+;; input: 2-params
+  ;; 1st:- $name
+  ;; 2nd:- ($var1 $name $var2 $authorName)
+;; output: True ;since $name is found in 2nd Parameter
+
+( = (does-exist $unknown $storage)
+    (
+        if (== $storage ())
+            False
+            (
+                let*
+                    (
+                        ($top (car-atom $storage))
+                        ($leftExpression (cdr-atom $storage))
+                    )
+                    
+                    (
+                        if (== $top $unknown)
+                            True
+                            (does-exist $unknown $leftExpression)
+                    )
+            )
+    )
+) 
+
+;;;;;; checker checks whether the combo given has at-least one element from set of variables of pattern 1, return (empty) if not
+;; input: 3-params
+  ;; 1st:- ($name $var1)
+  ;; 2nd:- ($name $var1)
+  ;; 3rd:- ($var1 $var2 $authorName)
+;; output: 1st parameter ;since $var1 is found in 3rd Parameter
+;; we have superposed over the list of combinations so for invalid combos (empty) will close the branch which is made by superpose
+
+( = (checker $the_real_combo $combo $var1)
+    (
+        if (== $combo ())
+            (empty)
+            (
+                let*
+                    (
+                        ($headOfCombo (car-atom $combo))
+                        ($tailOfCombo (cdr-atom $combo))
+                    )
+                    (
+                        if (does-exist $headOfCombo $var1)  
+                            $the_real_combo
+                            (checker $the_real_combo $tailOfCombo $var1 )
+                    )
+            )
+         
+    )
+)  
+
+;;;;; interface with the checker function 
+;; input: 2-params
+  ;; 1st:- ($name $var1)
+  ;; 2nd:- ($var1 $var2 $authorName)
+;; output: ($name $var1) ;by calling checker function above
+
+( = (purifier $current $var1) (checker $current $current $var1) ) 
+
+
+;;;; combination maker;;;;;
+;; input: 6-params
+  ;; 1st:- ()
+  ;; 2nd:- (($a 1 pat1) ($1 1 pat2) ($2 2 pat2) ($3 3 pat2)) ;; ($a 1 pat1) means $a whose index is 1 is from pattern1 ....
+  ;; 3rd:- (S (S ()))
+  ;; 4th:- 0 ;pointer 1, this shows the recent value ,from patter1 , that we use for this particular combination
+  ;; 5th:- 0 ;pointer 2, this shows the recent value ,from patter2 , that we use for this particular combination
+  ;; 6th:- 1 ; this shows how much i have in specific combination, till now.
+;; in the process any combinations with un-ordered or repeated variables will be pre killed since we got (empty) for such cases
+;; output: (($2 $a $3) ($2 $3 $a) ($1 $a $3) ($1 $a $2) ($1 $2 $a) ($1 $3 $a) ($a $1 $3) ($a $1 $2) ($a $2 $3)) 
+
+( = (combiner $accumulated $vars () $p1 $p2 $comboCount) $accumulated )
+;;;;; makes combinations by pre-killing what is going to make repetition or what is un-ordered
+( = (combiner $accumulated $vars (S $depth) $pointer1 $pointer2 $comboCount) 
+    (
+        let*
+            (
+                (($randomVar $index $patName) (superpose $vars))
+                ($shouldBePreKilled  
+                    (
+                        if (== $patName pat1)
+                            ( >= $pointer1 $index)
+                            (or (>= $pointer2 $index) (not (== $index $comboCount)) )  
+                    ) 
+                )
+                ($joiner (union-atom $accumulated ($randomVar) ) ) 
+            )
+            (
+                if $shouldBePreKilled
+                    (empty)
+                    (
+                        if (== $patName pat1) 
+                            (combiner $joiner $vars $depth $index $pointer2 (+ 1 $comboCount))
+                            (combiner $joiner $vars $depth $pointer1 $index (+ 1 $comboCount))
+                    )
+            ) 
+    )
+)
+
+
+;;;;; variable formatter ;;;;;;;
+;; input: 3-params
+  ;; 1st:- () ;; storage for answer
+  ;; 2nd:- ($a $b) ;; vars to be formatted
+  ;; 3rd:- pat1 ;; where we get this vars from
+;; output: (($a 1 pat1) ($b 2 pat2)) 
+
+( = (formatter $accumulated $vars $index $patName)
+    (
+        if (== $vars ())
+            $accumulated
+            (
+                let*
+                    (
+                        ($top (((car-atom $vars) $index $patName )))
+                        ($tail (cdr-atom $vars))
+                    )
+                    (formatter (union-atom $accumulated $top) $tail (+ $index 1) $patName) 
+            )
+    )
+)
+
+;;;;; all-variable-combination --the main function ;;;;;;;;;;
+;; input: 2-params
+  ;; 1st:- ($a $b)
+  ;; 2nd:- ($1 $2) 
+;; the output will follow the following rules
+  ;; atleast 1 variable from pattern1 must appear in the combination
+  ;; the combination sizes should be equal to the size of pattern2's variable size
+  ;; the order of variables should be maintained with respect to their pattern Name Type ;; i.e we can't say ($b $a) but we can say ($b $1)
+;; output: (($2 $a) ($2 $b) ($1 $a) ($1 $b) ($b $1) ($b $2) ($a $b) ($a $1) ($a $2)) 
+
+( = (all-variable-combination $pattern1 $pattern2)
+    (
+        let*
+            (
+                ($varsInPat1 (get-variables $pattern1))
+                ($varsInPat2 (get-variables $pattern2)) 
+
+                ($first (formatter () $varsInPat1 1 pat1))
+                ($second (formatter () $varsInPat2 1 pat2))
+                ($joiner (union-atom $first $second))
+                
+                ($width (size-atom $varsInPat2)) 
+                ($unpurifiedAllCombinations (collapse (combiner () $joiner (generateDepth $width) 0 0 1)) )   
+            )
+            
+            ( let $var1Exist (collapse (purifier (superpose $unpurifiedAllCombinations) $varsInPat1)) $var1Exist )   
+    )
+)
+
+;test by running this !(all-variable-combination (hi this is $a) (i am $1 years $2 $3 living in city) ) 

@@ -39,8 +39,8 @@
 
 ;; Recursive step
 (= (syn $kb (S $k) (: ($prfabs $prfarg) $ccln))
-   (let* (((: $prfabs (-> $prms $ccln)) (syn $kb $k (: $prfabs (-> $prms $ccln))))   ;; (: minsupport (-> (⍃ $ms $cnt) (minsup $ptrn)))
-          ((: $prfarg $prms) (syn $kb $k (: $prfarg $prms))))                         ;;  ((-> $prms (-> (⍃ $ms $cnt) (minsup $ptrn))))
+   (let* (((: $prfabs (-> $prms $ccln)) (syn $kb $k (: $prfabs (-> $prms $ccln))))  
+          ((: $prfarg $prms) (syn $kb $k (: $prfarg $prms))))                       
      (: ($prfabs $prfarg) $ccln)))
 
 
@@ -182,3 +182,140 @@ ugly_man_pattern (LambdaLink
 (First: (: ($prfabs#27797 $prfarg#27798) (⍃ 6 5)))
 (First: (: ($prfabs#28556 $prfarg#28557) (-> $prms#27800 (⍃ 6 5))))
 (First: (: ($prfabs#29004 $prfarg#29005) (-> $prms#28559 (-> $prms#27800 (⍃ 6 5)))))
+
+
+
+
+;!(eval (filter-atom (a (b) $c) $x (eval (if-error $x False True))))
+;!(eval (filter-atom (a (b) $c) $x (eval (== (get-metatype $x) Variable))))
+(= (iss-variable $x) (not (== (get-metatype $x) Variable)))
+;!(iss-variable 4)
+;!(eval (filter-atom (a (Error (b) \"Test error\") $c) $x (eval (if-error $x False True))))
+;! (filter-atom (a (b) $c 2 3) $x  (is-number $x))
+
+(: filterr-atom (-> Expression Expression Expression))
+(= (filterr-atom $list  $filterr)
+  (function (eval (if-decons-expr $list $head $tail
+    (chain (eval (filterr-atom $tail  $filterr)) $tail-filterred
+      (chain (eval ($filterr $head)) $filterr-expr
+        (chain $filterr-expr $is-filterred
+          (eval (if $is-filterred
+            (chain (cons-atom $head $tail-filterred) $res (return $res))
+            (return $tail-filterred) )))))
+    (return ()) ))))
+    
+;!(filterr-atom (a (b) $c 2 3) $x (eval (is-number $x)))
+
+;!(eval (filterr-atom (a (b) $c) $x (eval (if-equal Variable Variable True False))))
+
+;!(eval (filterr-atom (a (b) $c) $x (eval (if-error $x False True))))
+;!(atom-subst 5 $x (is-number $x))
+
+(= (atom-subs-customm $atom $var $templ)
+   (function (chain  $atom $var (chain (eval $templ) $res (return $res))))) 
+
+
+
+(= (filter-custommm $list $var $filter)
+  (if-decons-expr $list $head $tail
+    (chain  (filter-custom $tail $var $filter) $tail-filtered
+       (chain  (atom-subst $head $var $filter) $filter-exp 
+                   (cons-atom $filter-exp $tail-filtered)))
+      (return ()) ))
+
+
+(= (ch1 ($x $y))  () )
+
+
+(= (filter-custom1 $list $filter ) (
+  if (== $list ()) () (
+    let  ($head $tail) (decons-atom $list)
+          (let $tail-filtered (filter-custom1 $tail  $filter ) 
+             (let $filter-exp   ($filter $head) 
+                (if $filter-exp  (cons-atom $head $tail-filtered) $tail-filtered)) ) )
+  )
+)
+
+(= (filter-custom $list $filter )  (
+  if (== $list ()) () (
+    let  ($head $tail) (decons-atom $list)
+          (let $tail-filtered (filter-custom $tail $filter  )
+             (let $x  $head 
+             (let $filter-exp  $filter  
+                (if $filter-exp  (cons-atom $head $tail-filtered) $tail-filtered))) ) )
+  ))
+
+
+(= (filter-var $list $var ) (
+  if (== $list ()) () (
+    let  ($head $tail) (decons-atom $list)
+          (let $tail-filtered (filter-var $tail  $var ) 
+             (let $filter-exp   (== (car-atom $head) $var) 
+                (if $filter-exp  (cons-atom $head $tail-filtered) $tail-filtered)) ) )
+  )
+)
+
+
+
+;!(eval (== (eval (car-atom ($x 1))) $x))
+;!(ch1 (x 2))
+
+;!(eval (filter-var  (($x 1) ($y 2) (2 $x) ($x 4)) $x))
+
+;!(eval (filter-atom (1 2 3) $x (eval (< $x 3))))
+
+;!(eval (filter-custom1 (a (b) $c 2 3)  is-number ))
+
+;!(atom-subs-custom 1 $x  (< $x 3))
+
+
+(chain (collapse (syn $kb $k (: $prfargg $prmss))) $res2  
+                 (chain ((remove-parenthesis (cdr-atom $res2))) $res2-in 
+                    (map-atom $res2-in $var2 (unify (: $prfargg2 $prms2)  $var2 (: ($prfabss $prfargg2) $cclnn) (j)))))
+
+
+(= (synn $kb (S $k) (: ($prfabs $prfarg) $ccln))
+   (let* (((: $prfabs (-> $prms $ccln)) (syn $kb $k (: $prfabs (-> $prms $ccln))))  
+          ((: $prfarg $prms) (syn $kb $k (: $prfarg $prms))))                       
+     (: ($prfabs $prfarg) $ccln)))
+
+
+;; Base case
+(= (syn $kb $_ (: $prf $ccln)) (match $kb (: $prf $ccln) (: $prf $ccln)))
+
+;; Recursive step
+(= (syn $kb (S $k) (: ($prfabs $prfarg) $ccln))
+   (chain  (collapse (syn $kb $k (: $prfabs (-> $prms $ccln)))) $res  
+          (chain (remove-parenthesis (cdr-atom $res)) $res-in 
+            (map-atom $res-in $var (unify (: $prfabss (-> $prmss $cclnn)) $var 
+               (chain (collapse (syn $kb $k (: $prfargg $prmss))) $res2  
+                 (chain ((remove-parenthesis (cdr-atom $res2))) $res2-in 
+                    (map-atom $res2-in $var2 (unify (: $prfargg2 $prms2)  $var2 (: ($prfabss $prfargg2) $cclnn) (j))))) $res-in)))))
+
+
+
+(function (eval (chain   ((: ruleone (-> (minsup $ptrn) (surp $ptrn $value)))
+                       (: ruleTwo (-> (minsup $ptrn) (surp  $ptrn $value))) ) )
+                        $res 
+                            (eval (map-atom $res $var (eval (unify  $var (: $prfabs (-> $prms $ccln)) (return Yes) (return ($prfabs and $var))))))
+))
+
+
+
+!(chain (
+       (: ruleTwo (-> (minsup $ptrn) (surp $ptrn $value)))
+       (: rule (-> (minsup $ptrn) (surp  $ptrn $value))) 
+       ) 
+       $res
+      (map-atom $res $var (unify  (: $prfabs (-> $prms $ccln))  $var  Yes  ($prfabs and $var)))) 
+
+
+
+
+
+
+
+
+[((: (partitions ((emp-prob-rule (((minsupport FACT4) msT) CPU)) CPUPROB))
+ (partitions (, (Inheritance $x#17740 human) (Inheritance $x#17740 sodaDrinker) (Inheritance $x#17740 man)) 
+ ((((Inheritance $x17740 human) (Inheritance $x17740 man)) ((Inheritance $x17740 sodaDrinker))) (((Inheritance $x17740 human)) ((Inheritance $x17740 man) (Inheritance $x17740 sodaDrinker))) (((Inheritance $x17740 human)) ((Inheritance $x17740 man)) ((Inheritance $x17740 sodaDrinker))) (((Inheritance $x17740 human) (Inheritance $x17740 sodaDrinker)) ((Inheritance $x17740 man)))))))]

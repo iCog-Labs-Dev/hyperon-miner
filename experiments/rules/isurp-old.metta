@@ -141,7 +141,7 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
 ;   - $normalize: A boolean flag indicating whether to normalize the surprisingness by the pattern's probability.
 ; Returns:
 ;   - A numeric value representing the surprisingness score, optionally normalized and capped at 1.0.
-;(: isurp_old (-> Pattern db boolean Number)) 
+(: isurpo-old (-> Pattern Space Boolean Number)) 
 (=(isurp-old $pattern $db $normalize) (
     let* (
         ($pattern_prob (prob $pattern $db ))

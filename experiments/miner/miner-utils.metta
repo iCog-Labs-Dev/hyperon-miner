@@ -30,12 +30,28 @@
 
 
 
+;; =============================================================================
+;; copyed from chaining-utils.metta
+;; =============================================================================
+;; Define ad-atom-nodup, that adds an atom only if it is not already
+;; in the atomspace
+(: add-atom-nodup (-> $st Atom ()))
+(= (add-atom-nodup $space $atom)
+   (case (match $space $atom $atom)
+     (($atom ())
+      (Empty (add-atom $space $atom)))))
 
-(=(is-number $x) 
-   (== (get-type $x) Number) 
-)
 
-(= (conj? $p)
-    (case $p
-    (((, $clause1 $clause2) True)
-     ($_ False))))
+;; Add all atoms from an expression to a given atomspace
+(: add-atoms-nodup (-> $st Expression ()))
+(= (add-atoms-nodup $space $atoms)
+   (if (== $atoms ())
+       ()
+       (let* (($head (car-atom $atoms))
+              ($tail (cdr-atom $atoms))
+              ($dummy (collapse (add-atom-nodup $space $head)))
+              )
+         (add-atoms-nodup $space $tail))))
+
+
+

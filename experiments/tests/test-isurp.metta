@@ -27,7 +27,7 @@
 ;;   a single partition with overlapping clauses.
 ;;
 ;; Inputs:
-;;   - Partition: (((Inheritance $x man) (Inheritance $x sodaDrinker)) 
+;;   - Partition: (((Inheritance $x man) (Inheritance $x sodaDrinker)))
 ;;                ((Inheritance $x ugly))
 ;;   - Pattern: (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker))
 ;;   - DB Reference: &kb
