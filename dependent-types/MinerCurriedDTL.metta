@@ -12,15 +12,17 @@
 ;; apriori-rule
 (: apriori-rule
     (-> (minsup $aptrn)
-        (-> (specializationOf $sptrn $aptrn)
-            (supportOf $sptrn (count $sptrn)))))
+        (-> (specialization_with_minsup $sptrn $aptrn)
+            (minsup $sptrn))))
 
 ;; Conjunction rule
-(: support-cnj
+(: support-conj
     (-> (minsup $ptrn1)
         (-> (minsup $ptrn2)
             (-> (isDiff $ptrn1 $ptrn2)
-                (supportOf (, $ptrn1 $ptrn2) (count (, $ptrn1 $ptrn2)))))))
+                (-> (valid-conj $ptrn1 $ptrn2)
+                    (-> (refdb $db)
+                        (supportOf (, $ptrn1 $ptrn2) (count (, $ptrn1 $ptrn2) $db))))))))
 
 ;; iSurprisingness rule
 (: surprisingness 

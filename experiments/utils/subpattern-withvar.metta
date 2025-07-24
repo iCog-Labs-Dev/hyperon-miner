@@ -12,10 +12,10 @@
 (=(is-present $atom ()) False)
 (=(is-present $atom $list) (
     if (is-expression $list) (
-    let ($head $tail) (decons-atom $list) (
+    let* ((($head $tail) (decons-atom $list))) (
         if (== $atom $head) True  (or (is-present $atom $head) (is-present $atom $tail))
-    )) (if (== $atom $head) True False)))
-
+    )) (if (== $atom $list) True False)))
+    
 (=(is-symbol $var) 
    (== (get-metatype $var) Symbol)
 )
@@ -31,27 +31,41 @@
 (=(checkIntersection $var $set) 
     (not (== ((intersection-atom ($var) $set)) (())))) 
 
-(=(process-pattern $acc $pattern $var)
- (if (== (get-metatype $pattern) Symbol) 
-        $acc 
-        (let* (
-                ($is_pattern (let $pat_temp (is-pattern $pattern) (car-atom $pat_temp))) 
-                ($is_expression (== (get-metatype $pattern) Expression)) 
-                ($vars (cdr-atom $pattern)) 
-                ($is_connected (checkIntersection $var $vars))) 
-            (if (and (and $is_pattern $is_expression) $is_connected)
-                (cons-atom $pattern $acc) 
-                $acc))))
+
+(=(process-pattern $pattern $var)
+    (let* (
+        (($is_pat ) (is-pattern $pattern)))
+    
+        (if $is_pat
+            ; If it's a pattern, do the normal check
+            (let* (
+                ($is_expression (== (get-metatype $pattern) Expression))
+                ($vars (cdr-atom $pattern))
+                ($is_connected (checkIntersection $var $vars))
+            )
+                (if (and $is_expression $is_connected)
+                    $pattern
+                    (empty)
+                )
+            )
+           
+               (process-pattern (superpose $pattern) $var)
+     
+        )
+    ))
+
+
+
 
 (=(connected-subpatterns-with-var $partition $var)
-    (foldl-atom $partition () $acc $pattern (process-pattern $acc $pattern $var)))
 
-
-
-!(connected-subpatterns-with-var (, (Inheritance $x $y) (Inheritance $y $z) (Inheritance $j $f) (Constant 42) (Inheritance $z $k)) $y)
+ (collapse (process-pattern (superpose $partition ) $var)))
 
 
 
 
 
+    
+    
+!(connected-subpatterns-with-var (((Inheritance $x $y) (Inheritance $y $z)) (Inheritance $j $f)  (Inheritance $y $k)) $y)   
 

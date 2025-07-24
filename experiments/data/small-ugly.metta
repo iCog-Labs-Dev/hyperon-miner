@@ -1,12 +1,13 @@
 (Inheritance Allen sodaDrinker)
-(Inheritance Abe sodaDrinker)
-(Inheritance Cason sodaDrinker)
+(Inheritance Lily sodaDrinker)
+; (Inheritance Cason sodaDrinker)
 
+(Inheritance Lily ugly)
 (Inheritance Allen ugly)
 (Inheritance Abe ugly)
 (Inheritance Cason ugly)
 
-(Inheritance Lily woman)
+(Inheritance  woman)
 (Inheritance Emily woman)
 (Inheritance Lucy woman)
 

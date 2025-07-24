@@ -35,6 +35,13 @@
 ))
 
 
+
+(= (add-atom-nodup $space $atom)
+   (case (match $space $atom $atom)
+     (($atom ())
+      (Empty (add-atom $space $atom)))))
+
+      
 ;; =============================================================================
 ;; Function: conjunct-pattern
 ;; -----------------------------------------------------------------------------
@@ -225,7 +232,7 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
                 (if (and (== (get-metatype $head) Variable)
                          (== (checkInter $head $acc) (()))) 
                     (get-variables $tail
-                        (cons-atom $head $acc)) 
+                        (union-atom $acc ($head))) 
                     (get-variables $tail $acc)))))) 
 
 ;=========================================================================
@@ -402,10 +409,9 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
 (=(is-present $atom ()) False)
 (=(is-present $atom $list) (
     if (is-expression $list) (
-    let ($head $tail) (decons-atom $list) (
+    let* ((($head $tail) (decons-atom $list))) (
         if (== $atom $head) True  (or (is-present $atom $head) (is-present $atom $tail))
-    )) (if (== $atom $head) True False)))
-
+    )) (if (== $atom $list) True False)))
 
 ;; =============================================================================
 ;; Function: is-pattern
@@ -524,7 +530,7 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
 ;;     * All sub-expressions at any nesting level
 ;;     * Atomic values are excluded from the results
 ;;   - Empty list if input contains no expressions
-;;   - (,  A B C D )`)
+;;   - (,  A B C D )`
 ;;
 ;; How it works:
 ;;   1. Base Case: Returns empty list when pattern is empty
@@ -854,7 +860,7 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
 ;;   - Collapses the list of atoms to a simpler form.
 ;;   - Uses tuple-count to determine the number of atoms.
  ;;db size
-(: db_size (-> hyperon::space::DynSpace  Number))
+;(: db_size (-> SpaceType  Number))
 (= (db_size $db)
      (tuple-count (collapse (get-atoms $db)))
     

@@ -22,6 +22,7 @@
 
 ; ! (register-module! ../../experiments)
 ; ! (import! &self experiments:utils:common-utils)
+; ! (import! &self experiments:utils:variable-combinations)
 ! (import! &self conj-exp)
 
  ; The starting point for the conjunction expansion. It passes
@@ -51,26 +52,7 @@
 
 (= (count-atom-element $atom) (if (== $atom ()) 0 (+ 1 (count-atom-element (cdr-atom $atom)))))
 
-(= (get_variables_for_tree $pattern)
-    (if (== $pattern ())
-        ()
-        (let* (
-                ($head (car-atom $pattern))
-                ($tail (cdr-atom $pattern)))
 
-            (if (== (get-metatype $head) Expression)
-                (concatTuple (get_variables_for_tree $head)
-                    (get_variables_for_tree $tail))
-                (if (== (get-metatype $head) Variable)
-                    (concatTuple
-                        ($head)
-                        (get_variables_for_tree $tail))
-
-                    (get_variables_for_tree $tail))))
-    )
-)
-
-;  ! (get_variables_for_tree  (LIST_LINK (INHERITANCE_LINK (INHERITANCE_LINK (INHERITANCE_LINK $S $K) (INHERITANCE_LINK $n $m)) (INHERITANCE_LINK (INHERITANCE_LINK $S $K) (INHERITANCE_LINK $n $m))) (INHERITANCE_LINK (INHERITANCE_LINK $g $t) (INHERITANCE_LINK $p $r))))
 
 
 (= (get_variable_for_pattern $pattern)
@@ -88,7 +70,7 @@
 
                 ( $suby (if (== (get-metatype $y) Expression) (get_variable_for_pattern $y) (get_variable_for_pattern ($y))))
             )
-        (concatTuple $subx $suby)
+        (union-atom $subx $suby)
          ; ( ($subx $remaining))
     )
 )
@@ -103,6 +85,24 @@
 )
 )
 
+
+(= (get_variables_for_tree $pattern)
+   ( let* (
+            ($head (car-atom $pattern))
+            ($tail (cdr-atom $pattern))
+            ($x (if (== (get-metatype $head) Variable)
+                     ($head)
+                     (if (== (get-metatype $head) Expression)
+                        (if (== $head ())
+                           ()
+                           (get_variables_for_tree $head))
+                        () )))
+            ($y (if (== $tail ()) () (get_variables_for_tree $tail)))
+        )(union-atom $x $y)
+    )
+)
+; ! (get_variables_for_tree  (LIST_LINK (INHERITANCE_LINK (INHERITANCE_LINK (INHERITANCE_LINK $S $K) (INHERITANCE_LINK $n $m)) (INHERITANCE_LINK (INHERITANCE_LINK $S $K) (INHERITANCE_LINK $n $m))) (INHERITANCE_LINK (INHERITANCE_LINK $g $t) (INHERITANCE_LINK $p $r))))
+; ! (get_variable_for_pattern  (LIST_LINK (INHERITANCE_LINK (INHERITANCE_LINK (INHERITANCE_LINK $S $K) (INHERITANCE_LINK $n $m)) (INHERITANCE_LINK (INHERITANCE_LINK $S $K) (INHERITANCE_LINK $n $m))) (INHERITANCE_LINK (INHERITANCE_LINK $g $t) (INHERITANCE_LINK $p $r))))
 
 (= (substitute $pattern $variables)
     (case ($pattern $variables) (
@@ -232,6 +232,7 @@
 (= (expand_conjunction_rec $cnjtion $apat $db $ms)
     (let $npat (expand_conjunction_connect $cnjtion $apat (get_variable_for_pattern $cnjtion) (get_variable_for_pattern $apat))
          (checker $db $npat $ms)
+        ;  $npat
     )
 )
 
@@ -248,6 +249,7 @@
     (let* (
             ($sup (superpose $pv2cv))
             ($exp (substitute $pattern $sup))
+            ; ($exp (substitute $pattern $pv2cv))
             ($new_cnjtion (, $cnjtion (car-atom $exp)))
         )
         $new_cnjtion
@@ -255,10 +257,15 @@
 )
 
 (= (checker $db $pattern $ms) 
-    (if (sup-eval $db $pattern $ms)
-        $pattern
-        empty
+    (let*
+    (
+        ($conjuncts (get-conjuncts $pattern))
+        ($flat (cons-atom , $conjuncts))
     )
+    (if (sup-eval $db $flat $ms)
+        $pattern
+        ()
+    ))
 )
 
 (= (remove_alpha_similar $list)
@@ -331,5 +338,8 @@
 ; (LIST_LINK Y C)
 ; (INHERITANCE_LINK X D)
 
- ;(expand_conjunction_inputs cnjtion pattern db ms mv es)
+;  (expand_conjunction_inputs cnjtion pattern db ms mv es)
 ; !(expand_conjunction (,(INHERITANCE_LINK $X $Y) (LIST_LINK A $D)) (LIST_LINK $G $F) &self 5 2 False)
+; !(expand_conjunction (INHERITANCE_LINK $X $Y) (INHERITANCE_LINK $G $F) &self 5 2 False)
+
+; !(match &self (, (, (INHERITANCE_LINK $X $Y) (LIST_LINK A $D)) (LIST_LINK $X $G)) (, (, (INHERITANCE_LINK $X $Y) (LIST_LINK A $D)) (LIST_LINK $X $G)))

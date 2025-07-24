@@ -1,5 +1,5 @@
 ;; Rules 
-
+-----------------------------------------------------------------
 ;; Rule to check if a pattern meets the minimum support threshold.
 (: minsupport 
     (-> (supportOf $ptrn $cnt)
@@ -7,64 +7,14 @@
                  (-> (⍃ $ms $cnt)
                         (minsup $ptrn)))))
 
-;; Rule to extract abstract patterns from the database.
-(: abstract-pattern
- (-> (db-ref $db)
-   (-> (uniqueLink $db $ptrn $cnt)
-    (-> (ms-threshold $ms)
-      (-> (⍃ $ms $cnt)
-       (AbstractPattern $ptrn))))))
-
-;; Rule to specialize abstract patterns.
-(: specialization
-    (-> (AbstractPattern $aptrn) 
-      (-> (db-ref $db)
-        (specializationOf $aptrn (build-specialization-chain $aptrn $db)))))
-
-
-(: candidatePattern  
-      (-> (specializationOf $aptrn $sptrn)
-                (candidatePattern $sptrn)))
-
-
-(: supportOfff 
-      (-> (minsup $ptrn)
-            (-> (db-ref $db)
-                  (-> (db-ratio $ratio)
-                        (supportOfff $ptrn (do-sup $ptrn $db $ratio))))))
-
-
-;; rule to expand conjunctions
-(: conjunction
-      (-> (candidatePattern $ptrn1)
-            (-> (candidatePattern $ptrn2)
-               (-> (ms-threshold $ms)
-                  (-> (db-ref $db)
-                        (conjunction (expand_conjunction $ptrn1 $ptrn2 $db $ms 2 False)))))))
-
-;; rule for creating conjunctions with more clauses
-(: conjunction-next
-      (-> (conjunction-clean $ptrn1)
-            (-> (candidatePattern $ptrn2)
-               (-> (ms-threshold $ms)
-                  (-> (db-ref $db)
-                        (conjunction (expand_conjunction $ptrn1 $ptrn2 $db $ms 2 False)))))))
-
-;; rule to clean conjunctions from redundant clauses
-(: remove-conjuncts-with-redundant-clause
-      (-> (conjunction $ptrn)
-            (conjunction-clean (remove_conjuncts_with_redundant_clauses $ptrn1))))
-
+ ------------------------------------------------                       
 ;; Rule to calculate surprisingness of a pattern.
 (: surprisingness 
       (-> (minsup $ptrn)
             (surp $ptrn (do-surp $ptrn))))
 
 
-
-
-
-
+------------------------------------------------------------
 ;; Rule to calculate the empirical truth value of a pattern.
 ;;(: emp-rule 
 ;;         (-> (minsup $ptrn) 
@@ -118,6 +68,7 @@
                   (-> (prob-cpu $pattern $prob)
                              (empProb $pattern $prob))))
 
+
 ------------------------------------------------------------------------
 ;;  generate partitions for a pattern.          
 (: partitions 
@@ -125,6 +76,7 @@
          (-> (partition-cpu $pattern $partitions)
                   (partitions $pattern $partitions))))
 
+                  
 ------------------------------------------------------------------------
 ;; Rule to estimate the probability interval for a pattern.
 (: est-prob-rule 
@@ -156,14 +108,18 @@
    (-> (normalized True) 
       (-> (empProb $pattern $emp)
            (-> (dst $pattern $dst)
-                  (surp-old $pattern (min ( (// $dst $emp) 1.0)) )))))
+                  (-> (divide $dst $emp $normalized) 
+                        (-> (minimum $normalized 1.0 $minimum)
+                                 (surp-old $pattern $minimum )))))))
+
+
 
 
 ---------------------------------------------------------------------
 ;; Rule to calculate the old surprisingness value (normalized False).
 (: old-surp 
    (-> (normalized False) 
-        (-> (empProb $pattern $emp)
                (-> (dst $pattern $dst)
-                     (surp-old $pattern (min ($dst 1.0)) )))))
+                     (-> (minimum $dst 1.0 $minimum )
+                              (surp-old $pattern $minimum )))))
                                                   

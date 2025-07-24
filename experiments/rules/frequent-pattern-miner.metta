@@ -1,10 +1,12 @@
 ! (register-module! ../../../hyperon-miner)
 ; ! (import! &dbspace hyperon-miner:experiments:data:sample-data)
 ! (import! &db hyperon-miner:experiments:data:ugly_man_sodaDrinker)
-! (import! &self hyperon-miner:experiments:rules:build-specialization)
-! (import! &self hyperon-miner:experiments:rules:candidate-patterns)
-! (import! &self hyperon-miner:experiments:rules:conjunction-expansion)
+; ! (import! &db hyperon-miner:experiments:data:small-ugly)
+! (import! &self hyperon-miner:experiments:build-specialization)
+! (import! &self hyperon-miner:experiments:candidate-patterns)
+! (import! &self hyperon-miner:experiments:conjunction-expansion)
 ! (import! &self hyperon-miner:experiments:utils:common-utils)
+; ! (import! &self hyperon-miner:experiments:utils:variable-combinations)
 ! (bind! &kb (new-space))
 ! (bind! &dbspace (new-space))
 ! (bind! &specspace (new-space))
@@ -70,8 +72,10 @@
 
 (= (do-conjunct $db $cndb $conjunct $ms Z)
     (let* (
+        (() (println! (here $conjunct)))
         ($matches (match $cndb (CandidatePattern $pattern) (replacev $pattern)))
         ($listconj (expand_conjunction $conjunct $matches $db $ms 2 False))
+        (() (println! ("Conjuncts: " $listconj)))
         ($debconj (replace $listconj))
         ($fitlered (remove_conjuncts_with_redundant_clauses $debconj))
     )
@@ -81,11 +85,14 @@
 
 (= (do-conjunct $db $cndb $conjunct $ms (S $K))
     (let* (
+        (() (println! (here1 $conjunct)))
         ($matches (match $cndb (CandidatePattern $pattern) (replacev $pattern)))
         ($listconj (expand_conjunction $conjunct $matches $db $ms 2 False))
+        (() (println! ("Conjuncts2: " $listconj)))
         ($debconj (replace $listconj))
         ($fitlered (remove_conjuncts_with_redundant_clauses $debconj))
         ($varconj (replacev $fitlered))
+        (() (println! ("Conjuncts: " $varconj)))
         ($conj (do-conjunct $db $cndb $varconj $ms $K))
     )
     $conj
@@ -156,5 +163,9 @@
 ;  ! (match &aptrnspace (AbstractPattern $pattern) $pattern)
 
 
-! (frequency-pattern-miner &kb &dbspace &specspace &cndpspace &aptrnspace &conjspace 5 0)
+! (frequency-pattern-miner &kb &dbspace &specspace &cndpspace &aptrnspace &conjspace 5 1)
 ! (match &kb $pattern $pattern)
+; ! (match &db (, (, (Inheritance $x man) (Inheritance $x ugly)) (Inheritance $x sodaDrinker)) (, (, (Inheritance $x man) (Inheritance $x ugly)) (Inheritance $x sodaDrinker)))
+; !(checker &db (, (, (Inheritance $x man) (Inheritance $x ugly)) (Inheritance $x sodaDrinker)) 2)
+; !(match &cndpspace (CandidatePattern $pattern) (do-conjunct &dbspace &cndpspace (replacev $pattern) 2 (fromNumber 0)))
+; !(replace (Inheritance $x $y))

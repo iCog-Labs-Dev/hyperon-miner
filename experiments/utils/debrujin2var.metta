@@ -60,10 +60,34 @@
    )
 )
 
+(=(superposed-debruijn-conjuncts2vars-acc $subpats $fixed-vars)
+(let*(
+  ($varform (collapse (debruijn-subpattern2vars (superpose $subpats) $fixed-vars)))
+)
+$varform
+
+)
+
+
+)
+
+; (= (debruijn-conjunct-pattern2vars $conjunct $fixed-vars)
+;    (let* (
+;        ($subpats (cdr-atom $conjunct))
+;        ($vars-subpats (debruijn-conjuncts2vars-acc $subpats $fixed-vars ()))
+;        ($vars-conjunct (cons-atom , $vars-subpats))
+;      )
+;      $vars-conjunct
+;    )
+; )
+
+
+;calls the superposed version instead
 (= (debruijn-conjunct-pattern2vars $conjunct $fixed-vars)
    (let* (
        ($subpats (cdr-atom $conjunct))
-       ($vars-subpats (debruijn-conjuncts2vars-acc $subpats $fixed-vars ()))
+      
+       ($vars-subpats (superposed-debruijn-conjuncts2vars-acc $subpats $fixed-vars ))
        ($vars-conjunct (cons-atom , $vars-subpats))
      )
      $vars-conjunct

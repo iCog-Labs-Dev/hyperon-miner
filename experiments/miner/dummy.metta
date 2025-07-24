@@ -310,12 +310,58 @@ ugly_man_pattern (LambdaLink
       (map-atom $res $var (unify  (: $prfabs (-> $prms $ccln))  $var  Yes  ($prfabs and $var)))) 
 
 
+;;(: cog-mine (-> db         ;; Data base space 
+                ms         ;; Minimum support
+                           ;; Minimum support. All patterns with count below
+                           ;; ms are discarded.
+
+                cnjexp     ;; Conjunction expansion
+                           ;; Flag whether to use the conjunctions expansion
+                           ;; heuristic rules. It will only expand conjunctions with enough support
+                           ;; with patterns with enough support.
+
+                maxcnj     ;; Maximum number of conjunctions
+                           ;; Maximum number of conjuncts of a pattern
+                           ;; to apply shallow specialization to, which can be very expensive
+                           ;; when applied to patterns with more than 1 conjunct.
+                           ;; Any value between 0 and the number of conjuncts of the initial
+                           ;; pattern (excluded) will disable shallow specialization.
+
+                max-cnjexp-variables   ;; Maximum number of variables in conjunction expansion
+                                       ;; Maximum number of variables in patterns produced
+                                       ;; by the conjunction expansion rule.
+
+                surp        ;; Surprisingness measure 
+                            ;; After running the pattern miner,
+                            ;; patterns can be ranked according to a surprisingness measure.
+                            ;; The following supported modes are:
+                            ;;    'isurp-old:  Verbatim port of Shujing I-Surprisingness.
+                            ;;    'nisurp-old: Verbatim port of Shujing normalized I-Surprisingness.
+                            ;;    'isurp:      New implementation of I-Surprisingness that takes
+                            ;;            l    linkage into account.
+                            ;;    'nisurp:     New implementation of normalized I-Surprisingness
+                            ;;                 that takes linkage into account.
+                            ;;    'jsdsurp:    Jensen-Shannon Distance based surprisingness.
+                            ;;                 The type of surprisingness is determined by the way
+                            ;;                 the truth value estimate is calculated.
+                            ;;    'none:       No surprisingness measure is applied.
+                            ;;    If a surprisingness measure is selected then the pattern miner returns
+                            ;;     list of patterns each wrapped in an surp expression with
+                            ;;    their surprisingness. Otherwise, if 'none' is selected then it returns a list of patterns.
+
+                db-ratio    ;; db-ratio
+                            ;; Controls downsampling for estimating empirical probability in surprisingness measures.  
+                            ;; Downsampling reduces computational cost while maintaining accuracy.  
+                            ;; Indicates the proportion of the dataset used for pattern count estimation.  
+                            ;; dbr < 1 → more efficient, less accurate  
+                            ;; dbr > 1 → less efficient, more accurate  
+                            ;; Range: (0, +∞), default = 1.0  
+                            ;; Affects only surprisingness, not frequent mining.  
+
+;;))
+
+;; $cnjexp $maxcnj $maxcevar
 
 
 
 
-
-
-[((: (partitions ((emp-prob-rule (((minsupport FACT4) msT) CPU)) CPUPROB))
- (partitions (, (Inheritance $x#17740 human) (Inheritance $x#17740 sodaDrinker) (Inheritance $x#17740 man)) 
- ((((Inheritance $x17740 human) (Inheritance $x17740 man)) ((Inheritance $x17740 sodaDrinker))) (((Inheritance $x17740 human)) ((Inheritance $x17740 man) (Inheritance $x17740 sodaDrinker))) (((Inheritance $x17740 human)) ((Inheritance $x17740 man)) ((Inheritance $x17740 sodaDrinker))) (((Inheritance $x17740 human) (Inheritance $x17740 sodaDrinker)) ((Inheritance $x17740 man)))))))]

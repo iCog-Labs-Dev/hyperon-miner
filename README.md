@@ -41,5 +41,5 @@ After having frequent patterns, they will be processed by the surprisingness sco
 
 
 ## Running the code
-- Make sure to install MeTTa v0.2.2 following the instruction on the  [hyperon-experimental](https://github.com/trueagi-io/ hyperon-experimental)  repository.
-- For windows users, an alternative way of running MeTTa can be using the [metta-run](https://github.com/iCog-Labs-Dev/metta-prebuilt-binary) binary.
+-  [Pattern-miner](https://github.com/iCog-Labs-Dev/hyperon-miner/tree/syn/experiments/pattern-miner)
+

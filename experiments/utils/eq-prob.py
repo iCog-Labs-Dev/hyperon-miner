@@ -21,7 +21,7 @@ from functools import cmp_to_key
 
 
 metta = MeTTa()
-with open('../data/ugly_man_sodaDrinker.metta', 'r') as file:
+with open('../../data/ugly_man_sodaDrinker.metta', 'r') as file:
    metta.run(file.read())
 
 

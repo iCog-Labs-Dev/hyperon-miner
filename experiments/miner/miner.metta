@@ -1,5 +1,4 @@
 
-
 ;;;;;;;;;;;;;;;;;
 ;; Basic steps ;;
 ;;;;;;;;;;;;;;;;;
@@ -20,9 +19,9 @@
 
 
 
-
-
-====================================================
+---------------------------------------------------------
+;; init-miner
+---------------------------------------------------------
 ;;initialize the hyper-parameters in the KB,
 (= (init-miner $db $kb $ms $surp $db-ratio)
     (         let* (  
@@ -32,14 +31,19 @@
                  (() (add-reduct $kb (if (or (== $surp nisurp) (== $surp nisurp-old)) 
                                               (: normalize (normalized True))  
                                               (: normalize (normalized False)))))
+
+                ;(() (add-atom $kb (: normalize (normalized True))))
                  (() (add-atom $kb (surp-mod $surp)))
                  (() (add-atom $kb (db-ratio $db-ratio)))
-                 (() (add-reduct $kb (db-size (db_size $db))))
+                 (() (add-atom $kb (db-size (db_size $db))))
                  (() (add-atom &self (kb-ref $kb)))
                  (() (add-atom $kb (db-ref $db)))
                 )()))
 
-=========================================================================
+
+-----------------------------------------------------------
+;; get-patterns
+-----------------------------------------------------------
 ;;Returns frequent patters with their support from the kb
 (= (get-patterns $kb) (
   chain (match $kb (: msT (ms-threshold $ms)) $ms) $msT
@@ -47,7 +51,13 @@
                 (let True (>= $value $msT) (($pattern) (sup $value))))           
 ))
 
-==========================================================================
+
+
+
+
+-----------------------------------------------------------------
+;; mine-surp
+-----------------------------------------------------------------
 ;; extract the mode of the Surprisingness
 ;; if the surprisingness mode is none return lis of mined patterns
 ;; otherwise launches the backward chainer for surprising patterns mining
@@ -56,13 +66,16 @@
         (none  (chain (get-patterns $kb) $result (add-atom $res $result)) ) 
         (jsdsurp (chain  (syn $kb (fromNumber 13) (: $prf (jsdsurp $what_is_surprise $value))) $result   (add-atom $res $result)))
         (isurp-old (chain (syn $kb (fromNumber 15) (: $prf (surp-old $what_is_surprise $value))) $result   (add-atom $res $result)))
+        (nisurp-old (chain (syn $kb (fromNumber 15) (: $prf (surp-old $pattern $partitions))) $result   (add-atom $res $result)))
         (isurp     (chain (syn $kb (fromNumber 4) (: $prf (surp $what_is_surprise $value))) $result   (add-atom $res $result)))
         ($_        (chain (syn $kb (fromNumber 15) (: $prf (surp-old $what_is_surprise $value))) $result   (add-atom $res $result)))
     )                                                         
 ))
 
 
-==========================================================================
+-------------------------------------------------------
+;; frequent-miner 
+-------------------------------------------------------
 ;; mocking the frequent pattern miner results 
 (= (frequent-miner $db $kb) ( 
      let*  ( 
@@ -85,88 +98,11 @@
 
 
 
-====================================================================
-;; Action Functions
-(=(do-surp $pattern) (
-     let* (
-          ($kb (match &self (kb-ref $ref) $ref))
-          ($ms (match $kb (: msT (ms-threshold $ms)) $ms))
-          ($surp (match $kb (surp-mod $surp) $surp))
-          ($db    (match $kb (db-ref $ref) $ref))
-          ($db-ratio (match $kb (db-ratio $db-ratio) $db-ratio))
-          ($db-size (match $kb (db-size $db-size) $db-size))   
-          ($ptrn (flatten $pattern))
-    )
-     (case $surp (
-        (isurp-old (isurp-old $ptrn $db False))
-        (nisurp-old (isurp-old $ptrn $db True))
-        (isurp (isurp $ptrn $db False $db-ratio))
-        (nisurp (isurp $ptrn $db True $db-ratio))
-        ($_ (isurp $ptrn $db False $db-ratio)))
-     )
-     )
-) 
-
-
-
-
-
-;;(: cog-mine (-> db         ;; Data base space 
-                ms         ;; Minimum support
-                           ;; Minimum support. All patterns with count below
-                           ;; ms are discarded.
-
-                cnjexp     ;; Conjunction expansion
-                           ;; Flag whether to use the conjunctions expansion
-                           ;; heuristic rules. It will only expand conjunctions with enough support
-                           ;; with patterns with enough support.
-
-                maxcnj     ;; Maximum number of conjunctions
-                           ;; Maximum number of conjuncts of a pattern
-                           ;; to apply shallow specialization to, which can be very expensive
-                           ;; when applied to patterns with more than 1 conjunct.
-                           ;; Any value between 0 and the number of conjuncts of the initial
-                           ;; pattern (excluded) will disable shallow specialization.
-
-                max-cnjexp-variables   ;; Maximum number of variables in conjunction expansion
-                                       ;; Maximum number of variables in patterns produced
-                                       ;; by the conjunction expansion rule.
-
-                surp        ;; Surprisingness measure 
-                            ;; After running the pattern miner,
-                            ;; patterns can be ranked according to a surprisingness measure.
-                            ;; The following supported modes are:
-                            ;;    'isurp-old:  Verbatim port of Shujing I-Surprisingness.
-                            ;;    'nisurp-old: Verbatim port of Shujing normalized I-Surprisingness.
-                            ;;    'isurp:      New implementation of I-Surprisingness that takes
-                            ;;            l    linkage into account.
-                            ;;    'nisurp:     New implementation of normalized I-Surprisingness
-                            ;;                 that takes linkage into account.
-                            ;;    'jsdsurp:    Jensen-Shannon Distance based surprisingness.
-                            ;;                 The type of surprisingness is determined by the way
-                            ;;                 the truth value estimate is calculated.
-                            ;;    'none:       No surprisingness measure is applied.
-                            ;;    If a surprisingness measure is selected then the pattern miner returns
-                            ;;     list of patterns each wrapped in an surp expression with
-                            ;;    their surprisingness. Otherwise, if 'none' is selected then it returns a list of patterns.
-
-                db-ratio    ;; db-ratio
-                            ;; Controls downsampling for estimating empirical probability in surprisingness measures.  
-                            ;; Downsampling reduces computational cost while maintaining accuracy.  
-                            ;; Indicates the proportion of the dataset used for pattern count estimation.  
-                            ;; dbr < 1 → more efficient, less accurate  
-                            ;; dbr > 1 → less efficient, more accurate  
-                            ;; Range: (0, +∞), default = 1.0  
-                            ;; Affects only surprisingness, not frequent mining.  
-
-;;))
-
-;; $cnjexp $maxcnj $maxcevar
 
 ;; new space to store the init-surp results
 !(bind! &res (new-space))
-
-
+---------------------------------------------------------------------------
+;;cog-mine
 ---------------------------------------------------------------------------
 ;; initializes the necessary input parameters in the KB
 ;;configures and runs the frequent pattern miner with conjunction expansion
@@ -174,15 +110,15 @@
 ;;Store the chainer result in to the &res (new space)
 ----------------------------------------------------------------------------
 (= (cog-mine $db $kb $ms $surp $db-ratio) (
-    let* (
+    let* (   
              (() (init-miner $db $kb $ms $surp $db-ratio)) 
-             (() (frequent-miner $db $kb))
-             ;($var (collapse (init-surp $db $kb)))           
-              ($var (collapse (mine-surp $kb &res $surp)))           
+             (() (frequent-miner $db $kb))         
+             ($var (mine-surp $kb &res $surp))        
+        
     )
     ;; return all atoms in &res
        ;(match $kb (: $prf (empProb $pattern $prob)) (empProb $pattern $prob))
-      (collapse (match &res $x $x))
+      (match &res $x $x)
       ; $var 
 ))
 
@@ -196,6 +132,59 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+; (=(min-sup) 2)
+; (=(surp-mode) jsdsurp)
+; (=(db-ratio) 0.5)
+
+; ! (cog-mine &db &kb (min-sup) (surp-mode) (db-ratio) 1 2)
+
+; !(syn &kb Z (: $prf (substitute_variables (link $nx $ny) ($valx $valy) ($subptrn $remaining))))
+
+; !(init-miner &db &kb (min-sup) (surp-mode) (db-ratio))
+
+; !(conjunction (fromNumber 13) &kb 1 2)
+
+
+
+; (syn &kb Z (: $prf (clause_count $ptrn $cnt)))
 
 
 
