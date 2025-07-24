@@ -49,7 +49,8 @@
                 )
             )
            
-               (process-pattern (superpose $pattern) $var)
+              ; (process-pattern (superpose $pattern) $var)
+              (let $ch (collapse (process-pattern (superpose $pattern) $var)) (if (not (== $ch ())) $pattern (empty) ))
      
         )
     ))
