@@ -162,7 +162,7 @@
     )
     ;; return all atoms in &res
     ; (match &res $x $x)
-    (match $kb $x $x)
+    ()
 ))
 
 

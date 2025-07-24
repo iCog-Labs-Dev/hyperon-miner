@@ -23,12 +23,13 @@
 ;; init-miner
 ---------------------------------------------------------
 ;;initialize the hyper-parameters in the KB,
-(= (init-miner $db $kb $ms $surp $db-ratio)
+(= (init-miner $db $kb $ms $surp $normalization $db-ratio)
     (         let* (  
                  (() (add-atom $kb (: msT (ms-threshold $ms))))
                  (() (add-atom $kb (: dbref (db-ref $db))))
                  (() (add-atom $kb (: dbr (db-ratio $db-ratio))))
-                 (() (add-reduct $kb (if (or (== $surp nisurp) (== $surp nisurp-old)) 
+                 (() (add-atom $kb (: surpMode (surp-mode $surp))))
+                 (() (add-reduct $kb (if $normalization
                                               (: normalize (normalized True))  
                                               (: normalize (normalized False)))))
 
@@ -65,10 +66,9 @@
   ( case $surp-mode (
         (none  (chain (get-patterns $kb) $result (add-atom $res $result)) ) 
         (jsdsurp (chain  (syn $kb (fromNumber 13) (: $prf (jsdsurp $what_is_surprise $value))) $result   (add-atom $res $result)))
-        (isurp-old (chain (syn $kb (fromNumber 15) (: $prf (surp-old $what_is_surprise $value))) $result   (add-atom $res $result)))
-        (nisurp-old (chain (syn $kb (fromNumber 15) (: $prf (surp-old $pattern $partitions))) $result   (add-atom $res $result)))
+        (isurp-old (chain (syn $kb (fromNumber 17) (: $prf (surp-old $what_is_surprise $value))) $result   (add-atom $res $result)))
         (isurp     (chain (syn $kb (fromNumber 4) (: $prf (surp $what_is_surprise $value))) $result   (add-atom $res $result)))
-        ($_        (chain (syn $kb (fromNumber 15) (: $prf (surp-old $what_is_surprise $value))) $result   (add-atom $res $result)))
+        ($_        (chain (syn $kb (fromNumber 17) (: $prf (surp-old $what_is_surprise $value))) $result   (add-atom $res $result)))
     )                                                         
 ))
 
@@ -109,9 +109,9 @@
 ;;proceeds to surprisingness pattern mining using the backward chainer 
 ;;Store the chainer result in to the &res (new space)
 ----------------------------------------------------------------------------
-(= (cog-mine $db $kb $ms $surp $db-ratio) (
+(= (cog-mine $db $kb $ms $surp $norm $db-ratio) (
     let* (   
-             (() (init-miner $db $kb $ms $surp $db-ratio)) 
+             (() (init-miner $db $kb $ms $surp $norm $db-ratio)) 
              (() (frequent-miner $db $kb))         
              ($var (mine-surp $kb &res $surp))        
         

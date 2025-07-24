@@ -103,6 +103,13 @@
          (let $min (min $x $y)
                (: MINIMUMCPU  (minimum $x $y $min))))
 
+
+-------------------------------------------------------------------------
+;; create the maximum relation 
+(= (syn $kb $_ (: $prf (maximum $x $y $z)))
+         (let $max (max $x $y)
+               (: MAXIMUMCPU  (maximum $x $y $max))))
+
 -------------------------------------------------------------------------
 ;; division relation 
 (= (syn $kb $_ (: $prf (divide $x $y $z)))
