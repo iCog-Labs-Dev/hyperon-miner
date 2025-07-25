@@ -91,9 +91,9 @@
 (= (candidate $depth $kb)
    
    (let*(
-    ($atom (: candidate (-> (minsup $ptrn) (-> (replace_variables $ptrn) (candidatePattern $ptrn)))))
+    ($atom (: candidate (-> (minsup $ptrn $cnt) (-> (replace_variables $ptrn) (candidatePattern $ptrn $cnt)))))
     ($add (add-atom $kb $atom))
-    ($res (syn $kb $depth (: $prf (candidatePattern $x)))) 
+    ($res (syn $kb $depth (: $prf (candidatePattern $x $cnt)))) 
     ($rem (remove-atom $kb $atom))
     ($rem2 (remove-atom $kb $res))
     ($add2 (add-reduct $kb $res))
@@ -109,7 +109,7 @@
         ($prevrec (- $rec 1))
         ($re (collapse (remove-atom $kb (: maxClauses (maxClauses $prevrec)))))
         ($add (collapse (add-atom $kb (: maxClauses (maxClauses $rec)))))
-        ($res (collapse (syn $kb $depth (: $prf (candidatePattern $y)))))
+        ($res (collapse (syn $kb $depth (: $prf (candidatePattern $ptrn $cnt)))))
         ($red (collapse (add-reduct $kb (superpose $res))))
         )
     (if (> (+ $rec 1) $maxrec) $red (conjunction $depth $kb (+ $rec 1) $maxrec))
@@ -137,7 +137,7 @@
          ($res (collapse (specialization (fromNumber 5) $kb)))
          ($resu (collapse (support (fromNumber 3) $kb)))
          ($result (collapse (candidate (fromNumber 5) $kb)))
-         ($results (collapse (conjunction (fromNumber 16) $kb $maxclauses $limit)))
+         ($results (collapse (conjunction (fromNumber 18) $kb $maxclauses $limit)))
          ($resultf (collapse (format (fromNumber 3) $kb)))
       ) ()
 )
@@ -180,7 +180,6 @@
 
 
 
-; (syn &kb Z (: $prf (clause_count $ptrn $cnt)))
 
 
 
