@@ -19,27 +19,28 @@
 (= (depth-handler $p)
     (if (not (== (get-metatype $p) Expression))
         $p
-        (let* (
-                ( ($link $x $y) $p)
-                ( $nx (collapse (depth-handler $x)))
-                ( $ny (collapse (depth-handler $y)))
-            )
-        (superpose (
-                ($link (superpose $nx) $w)
-                ($link $z (superpose $ny))
-                ($link $x $u)
-                ($link $k $y)
-                $d
-                ($link $g $o)
-                ($link (superpose $nx) (superpose $ny))
-            )
-    )
-)
+        (case $p
+            (
+                (($type $x) ($type $x))
+                (($link $x $y) 
+                                (let* (
+                                    ( ($link $x $y) $p)
+                                    ( $nx (collapse (depth-handler $x)))
+                                    ( $ny (collapse (depth-handler $y)))
+                                )
+                                (superpose (
+                                        ($link (superpose $nx) $w)
+                                        ($link $z (superpose $ny))
+                                        ($link $x $u)
+                                        ($link $k $y)
+                                        $d
+                                        ($link $g $o)
+                                        ($link (superpose $nx) (superpose $ny))
+                                    ))) 
+                )))
+                ))
 
-)
-)
-
-; !(depth-handler (And (And C D) E))
+; !(depth-handler (Or E))
 
 ; function name: build-specialization
                 ; function to build the specialization of a pattern and add it to the specialization space
@@ -146,11 +147,3 @@
 ;  ! (match &specspace (SpecializationOf $x $y) (SpecializationOf $x $y))
  ; ! (match &specredspace (SpecializationOf $x $y) (SpecializationOf $x $y))
  ; ! (match &specredspace $h $h)
-
- ; ! (let $res (redunpat)  $res)
-
-(-> (AbstractPattern ($link $x $y)) 
-    (-> (replace_index ($link $x $y) ($link $nx $ny)) 
-        (-> (depthhandler $nx $shabx)
-            (-> (depthhandler $ny $shaby)
-                    (specializationOf ($link $x $y) ($link $shabx $shaby))))))
