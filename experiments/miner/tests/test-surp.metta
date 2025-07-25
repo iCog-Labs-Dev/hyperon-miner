@@ -41,7 +41,7 @@
 
 ;; define hyper parameters 
 (=(min-sup) 6)
-(=(surp-mode ) isurp-old)
+(=(surp-mode ) isurp)
 (=(db-ratio) 0.5)
 (= (normalization) True)
 

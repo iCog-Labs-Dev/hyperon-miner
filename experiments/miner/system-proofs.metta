@@ -90,6 +90,14 @@
     (: CPUESTPROB (est-prob-cpu   $pattern $partitions (min-max (isurp-old_  $partitions $dbb)))) ) 
 )
 
+----------------------------------------------------------------------------
+;; min max estimation of the pattern for isurp 
+(= (syn $kb $_ (: $prf (ji-prob-est-cpu  $pattern $partitions  $db_ratio $emin-emax))) 
+    (let $dbb (match $kb (db-ref $db) $db)
+    (: CPUESTPROB (ji-prob-est-cpu  $pattern $partitions (min-max (ji_prob_est_interval $pattern $dbb $db_ratio)))) ) 
+)
+
+
 -------------------------------------------------------------------------
 ;; calculates the distance between the estimate value and emperical value
 (= (syn $kb $_ (: $prf (dst-cpu $x $y $dst))) 
