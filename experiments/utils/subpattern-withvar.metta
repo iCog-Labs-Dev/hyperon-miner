@@ -70,3 +70,17 @@
     
 !(connected-subpatterns-with-var (((Inheritance $x $y) (Inheritance $y $z)) (Inheritance $j $f)  (Inheritance $y $k)) $y)   
 
+================================================================================================================================
+
+;alternate for the get-variables using superposition
+
+(=(ret-vars $x) (if (== ( get-metatype $x ) Variable) $x (empty)))
+
+(=(get-variables-helper $pattern) (let $a (cdr-atom $pattern) (ret-vars (superpose $a))))
+
+
+
+(=(get-variables-step $lst $acc) (if  (== $lst ()) $acc (let* ((($head $tail) (decons-atom $lst))) (if (== ((intersection-atom ($head) $acc)) (())) (get-variables-step $tail (cons-atom $head $acc)) (get-variables-step $tail $acc))) ))
+
+(=(get-variables $conjunct) (let $lst (collapse (let $a (car-atom $conjunct) (if (not (== $a ,)) (get-variables-helper $conjunct )(let $b (cdr-atom $conjunct) (get-variables-helper (superpose $b)))))) (get-variables-step $lst ())) )
+
