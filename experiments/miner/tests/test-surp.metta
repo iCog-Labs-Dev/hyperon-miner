@@ -11,6 +11,7 @@
 ! (import! &self experiments:utils:emp-tv-bs)
 ! (import! &self experiments:utils:bs-utils)
 ! (import! &self experiments:utils:util-jsd)
+! (import! &self experiments:utils:eq_prob_adaptor)
 
 ;; import truth value computing components
 ! (import! &self experiments:truth-values:est-tv)

@@ -66,7 +66,7 @@
   ( case $surp-mode (
         (none  (chain (get-patterns $kb) $result (add-atom $res $result)) ) 
         (jsdsurp (chain  (syn $kb (fromNumber 13) (: $prf (jsdsurp $what_is_surprise $value))) $result   (add-atom $res $result)))
-        ($_        (chain (syn $kb (fromNumber 19) (: $prf (isurp $what_is_surprise $value))) $result   (add-atom $res $result)))
+        ($_        (chain (syn $kb (fromNumber 17) (: $prf (isurp $what_is_surprise $value))) $result   (add-atom $res $result)))
     )                                                         
 ))
 

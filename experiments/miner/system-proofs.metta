@@ -99,7 +99,7 @@
 ;; min max estimation of the pattern for isurp 
 (= (syn $kb $_ (: $prf (ji-prob-est-cpu  $pattern $partitions  $db_ratio $emin-emax))) 
     (let $dbb (match $kb (db-ref $db) $db)
-    (: CPUESTPROB (ji-prob-est-cpu  $pattern $partitions (min-max (ji_prob_est_interval $pattern $dbb $db_ratio)))) ) 
+    (: CPUESTPROB (ji-prob-est-cpu  $pattern $partitions $db_ratio (min-max (do-ji-prob $partitions $pattern $dbb $db_ratio)))) ) 
 )
 
 
