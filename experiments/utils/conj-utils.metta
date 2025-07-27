@@ -218,3 +218,188 @@
 
 
 
+
+;;;;;;;;;;;;;;; words sorting in MeTTa ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+;;;; create new space and store letters with their index on it ;;;;;
+!(bind! &newSpace (new-space))
+!(add-reducts &newSpace (
+   ('!' 1) ('@' 2) ('#' 3) ('$' 4) ('^' 6) ('&' 7) ('-' 9) ('_' 10) ('|' 17) (':' 19) ('"' 20) (',' 23) ('.' 24) ('?' 26) ('~' 27) 
+   ('A' 28) ('B' 29) ('C' 30) ('D' 31) ('E' 32) ('F' 33) ('G' 34) ('H' 35) ('I' 36) ('J' 37) ('K' 38) ('L' 39) ('M' 40) ('N' 41) 
+   ('O' 42) ('P' 43) ('Q' 44) ('R' 45) ('S' 46) ('T' 47) ('U' 48) ('V' 49) ('W' 50) ('X' 51) ('Y' 52) ('Z' 53)
+   ('a' 54) ('b' 55) ('c' 56) ('d' 57) ('e' 58) ('f' 59) ('g' 60) ('h' 61) ('i' 62) ('j' 63) ('k' 64) ('l' 65) ('m' 66) ('n' 67) 
+   ('o' 68) ('p' 69) ('q' 70) ('r' 71) ('s' 72) ('t' 73) ('u' 74) ('v' 75) ('w' 76) ('x' 77) ('y' 78) ('z' 79)
+))
+
+;;;; get value for a character ;;;;;
+( = (get-value $char) 0)
+( = (get-value $char) (match &newSpace ($char $num) $num))
+
+( = (get-value-of $char) 
+    ( let $ans (collapse (get-value $char))
+        ( if (== 2 (size-atom $ans)) (max-atom $ans) (car-atom $ans) )
+    )
+)
+
+
+;;;;; separate function ;;;;;
+;; input: 4-parameter
+    ;; 1st-param: ($a $b $c $d) ;; 2nd-param: 2  ; mid-number 
+    ;; 3rd-param: () ; accumulator ;; 4th-param: 0  ; how many elements is there in 3rd param
+;; output: ( ($a $b) ($c $d) )
+( = (separate $given $mid $acc $curr)
+    (
+        if (== $curr $mid)
+            ($acc $given)
+            ( let ($top $tail) (decons-atom $given) ( separate $tail $mid (union-atom $acc ($top)) (+ $curr 1) ) )
+    )
+) 
+
+;;;; slice to half function
+;; interface to separate function accepts list of variables and returns what we got from separate function
+;; input: ($a $b $x $y) 
+;; output: (separate ($a $b $x $y) 2 () 0)
+( = (sliceToHalf $given)
+    (
+        let*
+            (
+                ($size (size-atom $given))
+                ($mid (+ (/ $size 2) (% $size 2)))
+            )
+            (separate $given $mid () 0)
+    )
+)
+
+;;;; who is first function ;;;;;;
+;; compares whether 2 words and compare which one comes first in alphabetical order 
+;; input: 2 params
+    ;; 1st-param: ('z' 'e' 'b' 'r' 'a') ;; 2nd-param: ('a' 'p' 'p' 'l' 'e')
+;; output: second ;; since apple comes before zebra alphabetically 
+( = (whoIsFirst $word1 $word2) ;handle first incase they are equal
+    (
+        if (or (== $word1 ()) (== $word2 ()))
+            (if (== $word1 ()) first second)
+            (
+                let*
+                    (   
+                        (($firstLetter1 $restLetter1) (decons-atom $word1))
+                        (($firstLetter2 $restLetter2) (decons-atom $word2))  
+                        ($currentLetterNumber1 (get-value-of $firstLetter1))
+                        ($currentLetterNumber2 (get-value-of $firstLetter2)) 
+                    )
+                    (
+                        if (< $currentLetterNumber1 $currentLetterNumber2)
+                            first
+                            (
+                                if (> $currentLetterNumber1 $currentLetterNumber2)
+                                    second
+                                    (whoIsFirst $restLetter1 $restLetter2)
+                            )
+                    )
+            )
+        
+    )
+)
+ 
+;;;; merge function ;;;;
+;; get 2 sorted expressions and return 1 sorted expression (by merging the two)
+;; input: 3 parameters
+    ;; 1st-param: ( ('a' 'b' 'a' 'y') ('r' 'i' 'v' 'e' 'r')) ;; 2nd-param: ( ('b' 'r' 'i' 'd' 'g' 'e') ('d' 'a' 'm')) ;; 3rd-param: () ;answer storage
+;; output: ( ('a' 'b' 'a' 'y') ('b' 'r' 'i' 'd' 'g' 'e') ('d' 'a' 'm') ('r' 'i' 'v' 'e' 'r') )
+( = (merge $left $right $store)
+    (  
+        if (or (== (size-atom $left) 0) (== (size-atom $right) 0))
+            (
+                if (== (size-atom $left) 0)
+                    (union-atom $store $right) 
+                    (union-atom $store $left)  
+            )
+            (let*
+                ( 
+                    (($leftCurr $leftLeft)  (decons-atom $left))
+                    (($rightCurr $rightRight) (decons-atom $right)) 
+                    ($sameWord (noreduce-eq $leftCurr $rightCurr))  
+                )
+                ( 
+                    if $sameWord
+                        ( let $joint (union-atom ($leftCurr) ($rightCurr)) (merge $leftLeft $rightRight (union-atom $store $joint)) )
+                        (
+                            if (== (whoIsFirst $leftCurr $rightCurr) first) 
+                                (merge $leftLeft $right (union-atom $store ($leftCurr))) 
+                                (merge $left $rightRight (union-atom $store ($rightCurr))) 
+                        )
+                )
+            )
+    )
+)
+
+
+;;;; merge-sort function ;;;;
+;; accepts one expression and sorts it
+;; input: ( ('b' 'r' 'i' 'd' 'g' 'e') ('a' 'b' 'a' 'y')  ('r' 'i' 'v' 'e' 'r') ('d' 'a' 'm') )
+;; output: ( ('a' 'b' 'a' 'y') ('b' 'r' 'i' 'd' 'g' 'e') ('d' 'a' 'm') ('r' 'i' 'v' 'e' 'r') ) ;; by splitting , sorting and merging recursively
+( = (merge_sort $toBeSorted)
+    (
+        if (> 2 (size-atom $toBeSorted))
+            $toBeSorted
+            (let*
+                (
+                    ($sliced (sliceToHalf $toBeSorted))
+                    ($leftPart (car-atom $sliced))
+                    ($right (cdr-atom $sliced))
+                    ($rightPart (car-atom $right))   
+
+                    ; ($sortedLeft (merge_sort $leftPart))
+                    ; ($sortedRight (merge_sort $rightPart)) 
+                    (($sortedLeft $sortedRight) (collapse (superpose ( (merge_sort $leftPart) (merge_sort $rightPart) ))))
+
+                    ($answer (merge $sortedLeft $sortedRight ()))
+
+                )
+                $answer 
+            )
+    )
+)
+ 
+
+;;;; chars To Atom Converter ;;;;
+;; input: 2 parameters
+    ;; 1st-param: ( ('a' 'b' 'a' 'y') ('b' 'r' 'i' 'd' 'g' 'e') ('d' 'a' 'm') ('r' 'i' 'v' 'e' 'r') ) ;; 2nd-param: ()
+;; output: (abay bridge dam river)
+( = (to-Atom $word $finalAnswer) 
+    (
+        if (== $word ())
+            $finalAnswer
+            (
+                let*
+                    ( 
+                        (($head $tail) (decons-atom $word))
+                        ($parsedHead ((parse (charsToString $head))))
+                        ($ansJoin (union-atom $finalAnswer $parsedHead))
+                    )
+                    (to-Atom $tail $ansJoin)
+            )
+    )
+)
+
+;;;; explode function ;;;;
+;; input: abay
+;; output: ('a' 'b' 'a 'y)
+( = (explode $word) (stringToChars (repr $word) ) )
+
+;;;; sort function ;;;;
+;; input: (abay is the longest river)
+;; output: (abay is longest river the)
+( = (sort $toBeSorted)
+    (
+        let*
+            (
+                ($explodedWords (collapse (explode (superpose $toBeSorted))))
+                ($sortedWords (merge_sort $explodedWords)) 
+            )
+            (to-Atom $sortedWords ())
+    )
+)
+
+;test be running this !(sort (hey i am Yonas Student))   
