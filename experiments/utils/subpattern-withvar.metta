@@ -19,6 +19,17 @@
        (and (is-symbol $link) 
         (or (is-variable $x) 
             (is-expression $x))) False ) )))
+
+(=(is-exp $expr) (
+    collapse(
+ or (unify $expr ($link $x $y) (
+       and (is-symbol $link) (
+        or (or (is-variable $x) (is-expression $x))
+             (or (is-variable $y) (is-expression $y)))) False)
+    (unify $expr (($link $x) )
+       (and (is-symbol $link) 
+        (or (is-variable $x) 
+            (is-expression $x))) False ) )))
             
 (=(is-present $atom ()) False)
 (=(is-present $atom $list) (
@@ -45,14 +56,17 @@
 
 (=(process-pattern $pattern $var)
     (let* (
-        (($is_pat ) (is-pattern $pattern)))
+        (($is_pat ) (is-pattern $pattern))
+        (($is_exp) (is-exp $pattern))
+        
+        )
     
         (if $is_pat
             ; If it's a pattern, do the normal check
             (let* (
                 ($is_expression (== (get-metatype $pattern) Expression))
                 ; ($vars (cdr-atom $pattern))
-                ($exp (car-atom $pattern))
+                ($exp (if $is_exp $pattern (car-atom $pattern)))
                 ($vars (cdr-atom $exp))
                 ($is_connected (checkIntersection $var $vars))
             )
@@ -64,9 +78,9 @@
            
             ;    (process-pattern (superpose $pattern) $var)
 
-            (collapse (process-pattern (superpose $pattern) $var)) ;activate this for checking inside the block, comment out if not
+            ;(collapse (process-pattern (superpose $pattern) $var)) ;activate this for checking inside the block, comment out if not
                              
-            ;(let $ch (collapse (process-pattern (superpose $pattern) $var)) (if (not (== $ch ())) $pattern (empty) )) ;activate this for returning the whole block, comment out if not
+            (let $ch (collapse (process-pattern (superpose $pattern) $var)) (if (not (== $ch ())) $pattern (empty) )) ;activate this for returning the whole block, comment out if not
               
      
         )
@@ -89,13 +103,15 @@
 
     
     
-!(connected-subpatterns-with-var ((((Inheritance $k $f)) ((Inheritance $k $z))) ((Inheritance $j $f))  ((Inheritance $y $k))) $y)   
-!(connected-subpatterns-with-var ((((Inheritance $y $f)) ((Inheritance $y $z))) ((Inheritance $j $f))  ((Inheritance $y $k))) $y)   
-!(connected-subpatterns-with-var ((((Inheritance $y $f)) ((Inheritance $u $z))) ((Inheritance $j $f))  ((Inheritance $y $k))) $y)   
+!(connected-subpatterns-with-var (((Inheritance $y $f) (Inheritance $u $z)) ((Inheritance $j $f))  ((Inheritance $y $k))) $y)   
+
 
 ;;================================================================================================================================
 
 ;alternate for the get-variables using superposition
+
+
+
 
 (=(ret-vars $x) (if (== ( get-metatype $x ) Variable) $x (empty)))
 
