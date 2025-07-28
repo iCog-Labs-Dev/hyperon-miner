@@ -54,7 +54,11 @@ Generates all subsets (the powerset) of a given list
 (= (partitions-helper $subsets $original $current $used)
    (if (all-in $original $used)
        ($current)
-       (partitions-collect $subsets $original $current $used)))            
+       ;(partitions-collect (cdr-atom $subsets) $original $current $used) we could do this but it would fail if the first user input for $subsets was empty list ()
+       (partitions-collect $subsets $original $current $used))
+
+       
+       )
 
 
 ; Main: Generate all partitions
@@ -106,9 +110,6 @@ Generates all subsets (the powerset) of a given list
 ;;   tasks where exhaustive enumeration of all disjoint covers is required.
 ;; ==============================================================================
 (:partitions (-> list_of_patterns partitions))
-
-
-
 
 
 (=(partitions $original) (partitions (powerset $original) $original))
