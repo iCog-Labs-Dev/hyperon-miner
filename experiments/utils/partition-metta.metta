@@ -1,10 +1,8 @@
 ;;Checks if **all elements** of $lst are in $used
-(= (all-in $lst $used)
-   (if (== $lst ())
-       True
-       (let* (($head (car-atom $lst))) (if (not (== ((intersection-atom ($head) $used)) (())))
-           (all-in (cdr-atom $lst) $used)
-           False))))
+(=(all-in $lst $used)
+(let $inter (intersection-atom $lst $used) (if (== (size-atom $inter) (size-atom $lst)) True False))
+
+)
 
 
 Generates all subsets (the powerset) of a given list
@@ -24,12 +22,7 @@ Generates all subsets (the powerset) of a given list
 )
 
 ;;Checks if **any element** of $lst is in $used
-(= (any-in $lst $used)
-   (if (== $lst ())
-       False
-       (let* (($head (car-atom $lst)))(if (not (== ((intersection-atom ($head) $used)) (())))
-           True
-           (any-in (cdr-atom $lst) $used)))))
+(=(any-in $lst $used)(let $inter (intersection-atom $lst $used) (if (== (size-atom $inter) 0) False True)))
 
 
 ;the subset can't be an empty set or the orginal set itself
@@ -113,6 +106,13 @@ Generates all subsets (the powerset) of a given list
 ;;   tasks where exhaustive enumeration of all disjoint covers is required.
 ;; ==============================================================================
 (:partitions (-> list_of_patterns partitions))
-(=(partitions $original) (partitions (powerset $original) $original))
+; (=(partitions $original) (partitions (powerset $original) $original))
+
+(=(turn-to-blk $x) ($x))
+
+;in the partition this generates, each function needs to a sequence of sequence, so each subpattern needs to be wrapped in a parenthesis 
+;one possible valid-partition: ((((Inheritance $k $f)) ((Inheritance $k $z))) ((Inheritance $j $f))  ((Inheritance $y $k)))
+;invalid partition: (((Inheritance $k $f) (Inheritance $k $z)) (Inheritance $j $f)  (Inheritance $y $k))
+(=(partitions $original) (partitions (powerset (collapse (turn-to-blk (superpose $original)))) (collapse (turn-to-blk (superpose $original)))))
 
 !(partitions ((Inheritance $x man) (Inheritance $x sodaDrinker) (Inheritance $x ugly)))
