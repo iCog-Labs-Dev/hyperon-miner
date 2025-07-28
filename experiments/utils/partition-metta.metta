@@ -106,6 +106,13 @@ Generates all subsets (the powerset) of a given list
 ;;   tasks where exhaustive enumeration of all disjoint covers is required.
 ;; ==============================================================================
 (:partitions (-> list_of_patterns partitions))
-(=(partitions $original) (partitions (powerset $original) $original))
+; (=(partitions $original) (partitions (powerset $original) $original))
+
+(=(turn-to-blk $x) ($x))
+
+;in the partition this generates, each function needs to a sequence of sequence, so each subpattern needs to be wrapped in a parenthesis 
+;one possible valid-partition: ((((Inheritance $k $f)) ((Inheritance $k $z))) ((Inheritance $j $f))  ((Inheritance $y $k)))
+;invalid partition: (((Inheritance $k $f) (Inheritance $k $z)) (Inheritance $j $f)  (Inheritance $y $k))
+(=(partitions $original) (partitions (powerset (collapse (turn-to-blk (superpose $original)))) (collapse (turn-to-blk (superpose $original)))))
 
 !(partitions ((Inheritance $x man) (Inheritance $x sodaDrinker) (Inheritance $x ugly)))
