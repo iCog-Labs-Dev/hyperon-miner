@@ -58,7 +58,7 @@
 
 ;;================================================================================================================================
 
-;alternate for the get-variables using superposition
+;alternate for the get-variables using superposition, and works with links that connect any number of nodes
 
 
 
