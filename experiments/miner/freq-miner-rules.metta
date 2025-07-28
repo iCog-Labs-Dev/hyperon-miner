@@ -63,10 +63,10 @@
                    (-> (get_variables $nptrn2 $vars2)
                     (-> (combine_variables $vars1 $vars2 $comb)
                      (-> (substitute_variables $nptrn2 $comb ($subptrn2 $remaining))
+                      (-> (sup_count (, $nptrn1 $subptrn2) $count)
+                       (-> (⍃ $ms $count)
                       (-> (replace_variables (, $nptrn1 $subptrn2))
                       (-> (conjunction_clean (, $nptrn1 $subptrn2))
-                      (-> (sup_count $nptrn $count)
-                       (-> (⍃ $ms $count)
                        (candidatePattern (, $nptrn1 $subptrn2) $count))))))))))))))))))))
 
 
