@@ -91,10 +91,7 @@
 (= (candidate $depth $kb)
    
    (let*(
-    ($atom (: candidate (-> (minsup $ptrn $cnt) (-> (replace_variables $ptrn) (candidatePattern $ptrn $cnt)))))
-    ($add (add-atom $kb $atom))
     ($res (syn $kb $depth (: $prf (candidatePattern $x $cnt)))) 
-    ($rem (remove-atom $kb $atom))
     ($rem2 (remove-atom $kb $res))
     ($add2 (add-reduct $kb $res))
     )
@@ -136,7 +133,10 @@
          ($re (collapse (abstract (fromNumber 5) $kb)))
          ($res (collapse (specialization (fromNumber 5) $kb)))
          ($resu (collapse (support (fromNumber 3) $kb)))
+         ($atom (: candidate (-> (minsup $ptrn $cnt) (-> (replace_variables $ptrn) (candidatePattern $ptrn $cnt)))))
+         ($add (add-atom $kb $atom))
          ($result (collapse (candidate (fromNumber 5) $kb)))
+         ($rem (remove-atom $kb $atom))
          ($results (collapse (conjunction (fromNumber 18) $kb $maxclauses $limit)))
          ($resultf (collapse (format (fromNumber 3) $kb)))
       ) ()
