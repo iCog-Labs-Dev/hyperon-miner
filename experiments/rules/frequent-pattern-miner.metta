@@ -1,7 +1,7 @@
 ! (register-module! ../../../hyperon-miner)
 ; ! (import! &db hyperon-miner:experiments:data:sample-data)
-! (import! &db hyperon-miner:experiments:data:ugly_man_sodaDrinker)
-; ! (import! &db hyperon-miner:experiments:data:small-ugly)
+; ! (import! &db hyperon-miner:experiments:data:ugly_man_sodaDrinker)
+! (import! &db hyperon-miner:experiments:data:small-ugly)
 ! (import! &self hyperon-miner:experiments:build-specialization)
 ! (import! &self hyperon-miner:experiments:candidate-patterns)
 ! (import! &self hyperon-miner:experiments:conjunction-expansion)
@@ -153,7 +153,7 @@
             (candidatePattern $dbspace $specspace $minsup $cndpspace); get candidate patterns
             (match $cndpspace (CandidatePattern $pattern) (let $conj (do-conjunct $dbspace $cndpspace $pattern $minsup (fromNumber $depth)) (if (== $conj ()) () (add-atom $conjspace $conj)))) ; store candidate patterns
             ; (match &conjspace $pattern (superpose ((add-atom &conjspace (supportOf $pattern (sup-num $dbspace (replacev $pattern)))) (remove-atom &conjspace $pattern))))
-            ; (formatter $kb $conjspace $dbspace)
+            (formatter $kb $conjspace $dbspace)
         ))
 )
 
@@ -164,7 +164,7 @@
 
 
 ! (frequency-pattern-miner &kb &dbspace &specspace &cndpspace &aptrnspace &conjspace 3 0)
-! (match &conjspace $pattern $pattern)
+! (match &kb $pattern $pattern)
 ; ! (match &db (, (, (Inheritance $x man) (Inheritance $x ugly)) (Inheritance $x sodaDrinker)) (, (, (Inheritance $x man) (Inheritance $x ugly)) (Inheritance $x sodaDrinker)))
 ; !(checker &db (, (, (Inheritance $x man) (Inheritance $x ugly)) (Inheritance $x sodaDrinker)) 2)
 ; !(match &cndpspace (CandidatePattern $pattern) (do-conjunct &dbspace &cndpspace (replacev $pattern) 2 (fromNumber 0)))
