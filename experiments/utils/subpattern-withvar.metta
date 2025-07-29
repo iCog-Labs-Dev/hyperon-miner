@@ -93,3 +93,51 @@
 ;!(joint-vars-helper (, (Inheritance $z) (Inheritance $z $g) (Inheritance $l $m)) (((Inheritance $z) (Inheritance $z $g)) ((Inheritance $l $m))))
 ;!(joint-vars (((Inheritance $i) (Inheritance $u $z $i)) ((Inheritance $i $f $g $h))  ((Inheritance $g $k))) ($i $u $z $g $h $f $y $k))
 
+
+;===================================================================================================================
+
+;functions that count the number of varibles and number of non-varibles in a given block of partition, so that to compare the absractness between blocks using these two counts
+
+(=(retVars $x)(if (== (get-metatype $x) Variable ) $x (empty)))
+(=(retNonVars $x) (if (== (get-metatype $x) Variable ) (empty ) $x ))
+
+
+;(=(checkPat $x)(if (== (size-atom $x) 1) True (if (==( let $hell (car-atom $x) (get-metatype $hell)) Symbol) True False)))
+
+
+(=(process-pattern-vars $pattern )
+    (let* (
+        ($is_pat (checkPat $pattern)))
+        (if $is_pat
+            ; If it's a pattern, do the normal check
+            (let* (
+                ($exp (if (==(size-atom $pattern) 1) (car-atom $pattern) $pattern))
+                ($vars (cdr-atom $exp))
+                ($varlist (retVars (superpose $vars)))
+                ;($conclist (collapse (retNonVars (superpose $vars))))
+            )$varlist
+            )
+           (process-pattern-vars (superpose $pattern)))))
+
+(=(process-pattern-sym $pattern )
+    (let* (
+        ($is_pat (checkPat $pattern)))
+    
+        (if $is_pat
+            ; If it's a pattern, do the normal check
+            (let* (
+                ($exp (if (==(size-atom $pattern) 1) (car-atom $pattern) $pattern))
+                ($vars (cdr-atom $exp))
+                ($conclist (retNonVars (superpose $vars))))
+                $conclist)
+               (process-pattern-sym (superpose $pattern)))))
+
+
+(=(countVars $pat) (let $shi (collapse (process-pattern-vars $pat)) (size-atom $shi)))
+(=(countConcs $pat) (let $shi (collapse (process-pattern-sym $pat))  (size-atom $shi)))
+
+
+!(countVars ((Inheritance s ) (Inheritance $k $g $h)))
+
+!(countVars ((Inheritance s $f)))
+!(countConcs ((Inheritance s $f) (Inheritance $k $g)))
