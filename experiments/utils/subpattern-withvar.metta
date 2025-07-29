@@ -73,3 +73,23 @@
 
 (=(get-variables $conjunct) (let $lst (collapse (let $a (car-atom $conjunct) (if (not (== $a ,)) (get-variables-helper $conjunct )(let $b (cdr-atom $conjunct) (get-variables-helper (superpose $b)))))) (get-variables-step $lst ())) )
 
+
+
+;========================================================================================================
+;a function that returns variables that appeear in more than one subpattern in a partiton, and also works with Inheritance links with any number of nodes
+
+(=(joint-vars $partition $uniqueVars) (collapse (retJointvar $partition (superpose $uniqueVars))))
+
+(=(retJointvar $partition $var) (let $retPats (collapse (retJointPat (superpose $partition) $var)) (if (> (size-atom $retPats) 1)  $var (empty))))
+
+(=(retJointPat $block $var)  (retjointSubPat (superpose $block) $var))
+
+(=(retjointSubPat $subpat $var) (let* (($vars (cdr-atom $subpat)) ($inter (intersection-atom ($var) $vars))) (if (== (size-atom $inter) 0) (empty) $subpat)))
+
+;we could pass the origninal conjunct pattern and the partiton if we want,then get-variables retrunds a list of unique variables in the list
+(=(joint-vars-helper $pattern $partition) (joint-vars $partition (get-variables $pattern)))
+
+
+;!(joint-vars-helper (, (Inheritance $z) (Inheritance $z $g) (Inheritance $l $m)) (((Inheritance $z) (Inheritance $z $g)) ((Inheritance $l $m))))
+;!(joint-vars (((Inheritance $i) (Inheritance $u $z $i)) ((Inheritance $i $f $g $h))  ((Inheritance $g $k))) ($i $u $z $g $h $f $y $k))
+
