@@ -63,25 +63,15 @@
   ;; 2nd:- ($var1 $name $var2 $authorName)
 ;; output: True ;since $name is found in 2nd Parameter
 
-( = (does-exist $unknown $storage)
-    (
-        if (== $storage ())
-            False
-            (
-                let*
-                    (
-                        ($top (car-atom $storage))
-                        ($leftExpression (cdr-atom $storage))
-                    )
-                    
-                    (
-                        if (== $top $unknown)
-                            True
-                            (does-exist $unknown $leftExpression)
-                    )
-            )
-    )
-) 
+( = (does-exist $item ()) False)
+
+( = (does-exist $item $storage) 
+   (
+      if (== (car-atom $storage) $item)
+         True
+         (does-exist $item (cdr-atom $storage))
+   )  
+)
 
 ;;;;;; checker checks whether the combo given has at-least one element from set of variables of pattern 1, return (empty) if not
 ;; input: 3-params
@@ -403,3 +393,82 @@
 )
 
 ;test be running this !(sort (hey i am Yonas Student))   
+
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;; subTreeDetector-In-Conjunctions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+( = (my-unique () $storage) $storage)
+( = (my-unique $current $storage) 
+    (
+        let* 
+            (
+                (($head $tail) (decons-atom $current))
+                ($headPattern (car-atom $head)) 
+            ) 
+            ( 
+                if (does-exist $headPattern $storage)
+                    (my-unique $tail $storage)
+                    (my-unique $tail (union-atom $storage ($headPattern))) 
+            )
+    )  
+)
+
+( = (counter $filtered () $sum) (trace! (support of $filtered is $sum) $sum))
+( = (counter $filtered $unFiltered $sum)
+    (
+        let ($head $tail) (decons-atom $unFiltered) 
+            (
+                if (== (car-atom $head) $filtered)
+                    (counter $filtered $tail (+ $sum 1))
+                    (counter $filtered $tail $sum)
+            )
+    ) 
+)
+
+( = (exposer $filtered $unFiltered) 
+    (if (> (counter $filtered $unFiltered 0) 1) $filtered (empty))   
+)
+
+( = (get-duplicates-real $adjunct $address) 
+    ( 
+        let*
+            (
+                (($_ $head $tail) $adjunct )
+                ($nextAddress1 (union-atom $address (1)))
+                ($nextAddress2 (union-atom $address (2))) 
+            )
+            (
+                if (== , (index-atom $head 0))
+                    (
+                        if (== , (index-atom $tail 0))
+                           (let ($first $second) (collapse (superpose ((get-duplicates-real $head $nextAddress1) (get-duplicates-real $tail (union-atom $address (2)))))) (union-atom $first $second))
+                           (let $first (get-duplicates-real $head $nextAddress1)  (union-atom $first (($tail $nextAddress2)) ))
+                    )
+                    (
+                        if (== , (index-atom $tail 0)) 
+                           (let $second (get-duplicates-real $tail $nextAddress2) (union-atom (($head $nextAddress1)) $second)) 
+                           (union-atom (($head $nextAddress1)) (($tail $nextAddress2)))
+                    )
+            )     
+    )
+)
+
+( = (get-duplicates $adjunct)
+    (
+       let*
+            (   
+                ($unFiltered (get-duplicates-real $adjunct ()))
+                (() (println! (we have got duplicates = $unFiltered)))
+                (() (println! (------------------------------------------------------------)))
+                ($uniqueTempoAns (my-unique $unFiltered ()))
+                (() (println! (we have got uniqueTempoAns = $uniqueTempoAns))) 
+                (() (println! (------------------------------------------------------------)))
+            ) 
+            (collapse (exposer (superpose $uniqueTempoAns) $unFiltered)) 
+    )
+)
+
+!(get-duplicates (, (, (Inheritance $x Human2) (, (Inheritance $x Human) (Inheritance $x Human2))) (NewLink $y $yy)) )  
