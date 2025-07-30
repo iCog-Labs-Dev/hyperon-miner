@@ -416,20 +416,10 @@
     )  
 )
 
-( = (counter $filtered () $sum) (trace! (support of $filtered is $sum) $sum))
-( = (counter $filtered $unFiltered $sum)
-    (
-        let ($head $tail) (decons-atom $unFiltered) 
-            (
-                if (== (car-atom $head) $filtered)
-                    (counter $filtered $tail (+ $sum 1))
-                    (counter $filtered $tail $sum)
-            )
-    ) 
-)
+( = (helper_ $main $compareWith) (if (== $main $compareWith) $main (empty)))
 
 ( = (exposer $filtered $unFiltered) 
-    (if (> (counter $filtered $unFiltered 0) 1) $filtered (empty))   
+    (if (> (size-atom (collapse (helper_ $filtered (superpose $unFiltered))) ) 1) $filtered (empty))   
 )
 
 ( = (get-duplicates-real $adjunct $address) 
