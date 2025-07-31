@@ -154,16 +154,53 @@
         (gen-partition $subsets $clause)))
 
 
-(= (powerset-without-empity $list) 
-    (collapse 
-        (subtraction 
-            (superpose (powerset $list)) 
+;; ===========================================================================
+;; FUNCTION: powerset-without-empity
+;;
+;; DESCRIPTION:
+;;   Generates all non-empty subsets of the given list.
+;;
+;; PARAMETERS:
+;;   • $list — A list of elements to compute the subsets from.
+;;
+;; RETURNS:
+;;   A flat list of lists, each representing a non-empty subset of $list.
+;;
+;; EXAMPLE:
+;;   (powerset-without-empity '(a b c))
+;;   ⇒ ((a) (b) (c) (a b) (a c) (b c) (a b c))
+;; ===========================================================================
+
+(= (powerset-without-empity $list)
+    (collapse
+        (subtraction
+            (superpose (powerset $list))
             (superpose (()))
         )
     )
 )
 
 
+;; Documentation for (partition $conj-pattern)
+;;
+;; Generates all partitions that include the specified conjunctive
+;; pattern as an atomic element in each result.
+;;
+;; Parameters:
+;;   $conj-pattern
+;;     The pattern to be treated as a single unit in every
+;;     partition.
+;;
+;; Returns:
+;;   A list of partitions. Each partition is formed by:
+;;     1. Computing all partitions of the input space without
+;;        the given pattern (via generet-partition-without-pattern).
+;;     2. Unioning the original $conj-pattern (as an atom) with
+;;        each of those partitions.
+;;
+;; Example:
+;;   (partition '(a b))
+;;   ;; => returns all partitions where '(a b) appears as one block
 (= (partition $conj-pattern)  
     (
         let $part_wout-patt (generet-partition-without-pattern $conj-pattern)
