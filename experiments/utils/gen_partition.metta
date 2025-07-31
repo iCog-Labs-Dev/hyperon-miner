@@ -37,7 +37,7 @@
 (: get-clauses (-> Expression Expression))
 (= (get-clauses $element)
     (let $link (car-atom $element)
-        (if (== $link And)
+        (if (== $link ,)
             (cdr-atom $element)
             $element)))
 
@@ -152,3 +152,22 @@
             ($clause (get-cnj-clouses $pattern))
             ($subsets (gen-subsets $clause)))
         (gen-partition $subsets $clause)))
+
+
+(= (powerset-without-empity $list) 
+    (collapse 
+        (subtraction 
+            (superpose (powerset $list)) 
+            (superpose (()))
+        )
+    )
+)
+
+
+(= (partition $conj-pattern)  
+    (
+        let $part_wout-patt (generet-partition-without-pattern $conj-pattern)
+            (union-atom (($conj-pattern)) $part_wout-patt )
+    )
+
+)

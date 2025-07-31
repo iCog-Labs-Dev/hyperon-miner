@@ -178,10 +178,9 @@
 
 (= (is-blk-more-abstract $l_blk $r_blk $var) 
    (let* (
-            ($rps (powerset-without-empity $r_blk))  ;; (((Man $x Job)))
-            ($l_partitions (partition $l_blk))  ;; (((Man $x $y)))
-            ; ($_ (println! (powerset------ $rps)))
-            ; ($_ (println! (partition------ $l_partitions)))
+            ($rps (powerset-without-empity $r_blk))  
+            ($l_partitions (partition $l_blk))  
+         
         )
          (check-partitions $l_partitions $rps $var)
 ))
@@ -256,5 +255,3 @@
 
 
 
-
-!(is-blk-syntax-more-abstract ((Human $x $y)) ((Human $x Abebe)) $x)
