@@ -22,6 +22,7 @@
 ! (add-atom (get-space) (Inheritance D E))
 ! (add-atom (get-space) (Inheritance E F))
 
+
 ;;;;;;;;;;;
 ;; Tests ;;
 ;;;;;;;;;;;
