@@ -177,7 +177,9 @@
 (= (syn $kb $_ (: $prf (sup_count $ptrn $count)))
     (let* (
         ($db (match $kb (db-ref $db) $db))
-        ($new_ptrn (collapse (match $db $ptrn $ptrn)))
+        ($conjuncts (get-conjuncts $ptrn))
+        ($flat (cons-atom , $conjuncts))
+        ($new_ptrn (collapse (match $db $flat $flat)))
         ($count (size-atom $new_ptrn))
     )
      (: CPUCounter (sup_count $ptrn $count))
