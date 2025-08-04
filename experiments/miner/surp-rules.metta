@@ -2,16 +2,12 @@
 -----------------------------------------------------------------
 ;; Rule to check if a pattern meets the minimum support threshold.
 (: minsupport 
-    (-> (supportOf $ptrn $cnt)
+    (-> (hasSupport $ptrn $cnt)
           (-> (ms-threshold $ms)
                  (-> (⍃ $ms $cnt)
                         (minsup $ptrn)))))
 
- ------------------------------------------------                       
-;; Rule to calculate surprisingness of a pattern.
-(: surprisingness 
-      (-> (minsup $ptrn)
-            (surp $ptrn (do-surp $ptrn))))
+
 
 
 ------------------------------------------------------------
@@ -78,11 +74,24 @@
 
                   
 ------------------------------------------------------------------------
-;; Rule to estimate the probability interval for a pattern.
+;; Rule to estimate the probability interval for a pattern.(isurp-old)
 (: est-prob-rule 
-          (-> (partitions $pattern $partitions)
+          (-> (surp-mode isurp-old)
+            (-> (partitions $pattern $partitions)
                   (-> (est-prob-cpu  $pattern $partitions $emin-emax)
-                           (est-prob $pattern  $emin-emax)))) 
+                           (est-prob $pattern  $emin-emax))))) 
+
+
+
+
+------------------------------------------------------------------------
+;; Rule to estimate the probability interval for a pattern.(isurp)
+(: est-prob-rule 
+          (-> (surp-mode isurp)
+              (-> (partitions $pattern $partitions)
+                  (-> (db-ratio $db-ratio) 
+                        (-> (ji-prob-est-cpu $pattern $partitions $db-ratio $emin-emax)
+                              (est-prob $pattern  $emin-emax))))))
                            
 ------------------------------------------------------------------------
 ;; Rule to calculate the distance from the empirical probability to the estimated interval (upper bound).
@@ -102,24 +111,27 @@
                            (-> (dst-cpu $emin $emp $dst)
                                    (dst $pattern $dst))))))
 
+
 ------------------------------------------------------------------------
 ;; Rule to calculate the old surprisingness value (normalized True).
-(: old-surp 
+(: isurp 
    (-> (normalized True) 
       (-> (empProb $pattern $emp)
-           (-> (dst $pattern $dst)
-                  (-> (divide $dst $emp $normalized) 
-                        (-> (minimum $normalized 1.0 $minimum)
-                                 (surp-old $pattern $minimum )))))))
+              (-> (est-prob $pattern  ($emin $emax)) 
+                  (-> (dst $pattern $dst)
+                     (-> (maximum $emp $emax $max)
+                             (-> (divide $dst $max $normalized) 
+                                 (-> (minimum $normalized 1.0 $minimum)
+                                      (isurp $pattern $minimum )))))))))
 
 
 
 
 ---------------------------------------------------------------------
 ;; Rule to calculate the old surprisingness value (normalized False).
-(: old-surp 
+(: isurp 
    (-> (normalized False) 
                (-> (dst $pattern $dst)
                      (-> (minimum $dst 1.0 $minimum )
-                              (surp-old $pattern $minimum )))))
+                              (isurp $pattern $minimum )))))
                                                   
