@@ -365,3 +365,9 @@ ugly_man_pattern (LambdaLink
 
 
 
+---------------------------------------------------------------------------
+;; initializes the necessary input parameters in the KB
+;;configures and runs the frequent pattern miner with conjunction expansion
+;;proceeds to surprisingness pattern mining using the backward chainer 
+;;Store the chainer result in to the &res (new space)
+----------------------------------------------------------------------------
