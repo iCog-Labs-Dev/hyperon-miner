@@ -46,6 +46,22 @@
 (=(db-ratio) 0.5)
 (= (normalization) True)
 
+-------------------------------------------------------
+;; frequent-miner 
+-------------------------------------------------------
+;; mocking the frequent pattern miner results 
+(= (frequent-miner  $kb) ( 
+     let*  ( 
+         ;; for new surp 
+         (() (add-atom $kb (: FACT1  (supportOf (, (Inheritance $x human) (Inheritance $x ugly) (Inheritance $x woman)) 1))))
+         (() (add-atom $kb (: FACT2 (supportOf (, (Inheritance $x sodaDrinker) (Inheritance $x human) (Inheritance $x woman)) 1))))
+         (() (add-atom $kb (: FACT3 (supportOf (,  (Inheritance $x human) (Inheritance $x sodaDrinker) (Inheritance $x ugly)) 1))))
+         (() (add-atom $kb (: FACT4 (supportOf (,  (Inheritance $x human) (Inheritance $x sodaDrinker) (Inheritance $x man)) 8))))
+    
+        ) ()
+))
+
+
 !(cog-mine &db &kb (min-sup) (surp-mode ) (normalization)  (db-ratio))
 ;; Expected result 
  ;(: (((((old-surp normalize) ((emp-prob-rule (((minsupport FACT4) msT) CPU)) CPUPROB)) ((((dst-from-interval ((emp-prob-rule (((minsupport FACT4) msT) CPU)) CPUPROB)) 
