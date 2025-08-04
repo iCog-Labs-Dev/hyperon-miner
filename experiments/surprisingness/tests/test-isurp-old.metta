@@ -15,13 +15,16 @@
 
 
 
+! (add-reduct &self (= (get-space) (new-space)))
 
+! (add-atom (get-space) (Inheritance A B))
+! (add-atom (get-space) (Inheritance B C))
+! (add-atom (get-space) (Inheritance D E))
+! (add-atom (get-space) (Inheritance E F))
 
 ;;;;;;;;;;;
 ;; Tests ;;
 ;;;;;;;;;;;
-;; Test old normalized I-Surprisingess for the ugly male soda drinker
-!(isurp-old (, (Inheritance $x human) (Inheritance $x sodaDrinker) (Inheritance $x man)) &db  True)
-;!(isurp-old (,(Inheritance $x man) (Inheritance $x ugly)) &db  True)
+!(assertEqual (isurp-old (, $x $y) (get-space)  False) 1)
 
 
