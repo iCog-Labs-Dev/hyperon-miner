@@ -27,5 +27,14 @@
 ;; Tests ;;
 ;;;;;;;;;;;
 !(assertEqual (isurp-old (, $x $y) (get-space)  False) 1)
+!(assertEqual (isurp-old (, (Inheritance $x man)
+   (Inheritance $x ugly)
+   (Inheritance $x sodaDrinker)) &db False) 0.00014607068574401343)
+
+!(assertEqual (isurp-old (, (Inheritance $x man)
+   (Inheritance $x ugly)
+   (Inheritance $x sodaDrinker)) &db True) 0.999707773232028)
+
+
 
 
