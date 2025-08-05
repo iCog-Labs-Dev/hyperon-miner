@@ -70,7 +70,7 @@
 ;   - $db: The database in which the pattern is evaluated.
 ; Returns:
 ;   - The probability value as a ratio of the pattern's support to its total possible count.
-(=(prob $pattern $db $total_count) (// (ptrn-support  $pattern $db) $total_count))
+(=(prob $pattern $db $total_count) (// (sup-num $db $pattern) $total_count))
 
 
 ;;Converts a list of blocks into a conjunctive pattern
