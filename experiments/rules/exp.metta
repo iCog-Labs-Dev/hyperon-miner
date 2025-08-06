@@ -74,12 +74,12 @@
 (= (clause_others_check $clause $pattern)
     (let*(
         ($others (eval (subtraction-atom $pattern ($clause))))
-        ($res (start $clause $others))
+        ($res (is_more_abstract_for_each_var $clause $others))
         )
         $res
     )
 )
-(= (start $clause $others)
+(= (is_more_abstract_for_each_var $clause $others)
     (let*
         (
             ($vars (get_variable_for_pattern $clause))
@@ -135,7 +135,7 @@
           True
           (let* (
               ($head (car-atom $vars))
-              (($isMore $filtered $var) (is_more_abstract_for_each_var $head $others))
+              (($isMore $filtered $var) (is_more_abstract_for_var $head $others))
               ($next (if (== $isMore False)
                         False
                         (is_more_abstractn (cdr-atom $vars) $others)))
@@ -147,7 +147,7 @@
       ()
       (let* (
           ($head (car-atom $vars))
-          (($isMore $filtered $var) (is_more_abstract_for_each_var $head $others))
+          (($isMore $filtered $var) (is_more_abstract_for_var $head $others))
           ($rest (collect_filtered_per_var (cdr-atom $vars) $others))
       )
       (($var $isMore $filtered) $rest))))
@@ -163,7 +163,7 @@
             ($head (car-atom $vars))
             (() (println! ($head)))
             ($tail (cdr-atom $vars))
-            (($isMore $filtered $var) (is_more_abstract_for_each_var $head $others))
+            (($isMore $filtered $var) (is_more_abstract_for_var $head $others))
             (() (println! ($isMore $filtered $var)))
             ($isMoreAbstract1 (if (== $isMore False) (is_more_abstract $tail $others False) (is_more_abstract $tail $others True)))
         )
@@ -172,7 +172,7 @@
         )
     )
 )
-(= (is_more_abstract_for_each_var $var $others)
+(= (is_more_abstract_for_var $var $others)
     (let* (
         ($filtered (collapse (filter_foreach_var $var $others)))
         ($isMoreAbstract (if (== (eval (unique-atom $filtered)) (())) False True))
@@ -202,12 +202,45 @@
 
 ; !(unique-atom (() ()))
 ; !(== (eval (unique-atom (() ()))) (()))
-(((() ((() (Inheritance Abe $Z1)) $Z1)) (((Inheritance Lily $Allen) ()) $Allen)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;; subTreeDetector-In-Conjunctions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-!(remove_Abstract_clauses ((Inheritance $x $y) (Inheritance $Lily $y) (Inheritance $x $Allen)))
+; !(remove_Abstract_clauses ((Inheritance $x $y) (Inheritance $Lily $y) (Inheritance $x $Allen)))
 ; !(start  (Inheritance $x $y) ((Inheritance $x Allen) (Inheritance Lily $y)))
+
+(= (remove_redundant_subclauses $pattern)
+    (let*(
+        ($unfolded (map-atom $pattern $clause (if (== (clause_others_check_for_subtree $clause $pattern) False) $clause ())))
+        ; ($unfolded (map-atom $pattern $clause (clause_others_check $clause $pattern)))
+        ($final (fold $unfolded ()))
+        )
+        ; $final
+        $unfolded
+    )
+)
+(= (clause_others_check_for_subtree $clause $pattern)
+    (let*(
+        ($others (eval (subtraction-atom $pattern ($clause))))
+        ($res (is-pat-in-otherpat $clause $others))
+        )
+        $res
+    )
+)
+( = (is-pat-in-otherpat $clause $others) 
+`   (if (== $others ())
+        False
+        (let*(
+            ($head (car-atom $others)) 
+            ($isinpat (real-is-pat-in-conj $clause $head))
+            ($result (if (== $isinpat True)
+                True
+                (is-pat-in-otherpat $clause (cdr-atom $others))
+            ))
+        )$result
+        )
+    )
+)
+
 ( = (real-is-pat-in-conj $pattern $conjunction) 
     (
         let* 
@@ -239,6 +272,7 @@
     )
 )
 
-( = (is-pat-in-conj $pattern $conjunction) (real-is-pat-in-conj $pattern $conjunction))
 
-!(is-pat-in-conj (Inheritance (link $x $y) $z) (, (Inheritance (link $x $y) $z) (link $x $y)))
+; !(is-pat-in-conj (Inheritance (link $x $y) $z) (, (Inheritance (link $x $y) $z) (link $x $y)))
+!(remove_redundant_subclauses ((Inheritance (link $x $y) $z) (link $x $y) (Inheritance $x $y)))
+; !(real-is-pat-in-conj (link $x $y) (Inheritance (link $x $y) $z))
