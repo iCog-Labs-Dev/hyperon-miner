@@ -95,6 +95,14 @@
     (: CPUESTPROB (est-prob-cpu   $pattern $partitions (min-max (isurp-old_  $partitions $dbb)))) ) 
 )
 
+----------------------------------------------------------------------------
+;; min max estimation of the pattern for isurp 
+(= (syn $kb $_ (: $prf (ji-prob-est-cpu  $pattern $partitions  $db_ratio $emin-emax))) 
+    (let $dbb (match $kb (db-ref $db) $db)
+    (: CPUESTPROB (ji-prob-est-cpu  $pattern $partitions $db_ratio (min-max (do-ji-prob $partitions $pattern $dbb $db_ratio)))) ) 
+)
+
+
 -------------------------------------------------------------------------
 ;; calculates the distance between the estimate value and emperical value
 (= (syn $kb $_ (: $prf (dst-cpu $x $y $dst))) 
@@ -107,6 +115,13 @@
 (= (syn $kb $_ (: $prf (minimum $x $y $z)))
          (let $min (min $x $y)
                (: MINIMUMCPU  (minimum $x $y $min))))
+
+
+-------------------------------------------------------------------------
+;; create the maximum relation 
+(= (syn $kb $_ (: $prf (maximum $x $y $z)))
+         (let $max (max $x $y)
+               (: MAXIMUMCPU  (maximum $x $y $max))))
 
 -------------------------------------------------------------------------
 ;; division relation 
@@ -162,7 +177,9 @@
 (= (syn $kb $_ (: $prf (sup_count $ptrn $count)))
     (let* (
         ($db (match $kb (db-ref $db) $db))
-        ($new_ptrn (collapse (match $db $ptrn $ptrn)))
+        ($conjuncts (get-conjuncts $ptrn))
+        ($flat (cons-atom , $conjuncts))
+        ($new_ptrn (collapse (match $db $flat $flat)))
         ($count (size-atom $new_ptrn))
     )
      (: CPUCounter (sup_count $ptrn $count))
@@ -290,6 +307,7 @@
     (if (conj? $p)
         (: CPUConjprf (is-conj $p))
         (empty)))
+        
 ==============================================================================
 ;; chainner 
 ==============================================================================

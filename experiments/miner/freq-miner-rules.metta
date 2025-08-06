@@ -28,6 +28,7 @@
             (-> (replace_variables ($shabx $ny))
               (specializationOf ($link $x $y) ($link $shabx $ny))))))))
 
+
 ;;specialization of abstract patterns on the $y rule
 (: specializationy
        (-> (AbstractPattern ($link $x $y)) 
@@ -36,6 +37,7 @@
             (-> (depth-handler $valy $shaby)
             (-> (replace_variables ($nx $shaby))
               (specializationOf ($link $x $y) ($link $nx $shaby))))))))
+
 
 ;;support of specialized patterns rule
 (: support 
