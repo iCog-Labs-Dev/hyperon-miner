@@ -83,6 +83,23 @@
             ( let $sc (find_score $pat) (if (== $sc Nil) 0 $sc)))
 ))
 
+;;; Compares a pattern / vriable with another pattern / variable
+;;; Parameters: $p1 - the first pattern we want to compare
+;;;             $p2 - the second pattern the first pattern will be compared to
+;;; Returns: a boolean
+;;; E.g, (gt (a b) (a b c)) -> False
+;;;      (gt (a b c) (a b)) -> True
+(= (gt $p1 $p2)(
+    if (== $p1 ()) False
+       (if (== $p2 ()) True   
+           (let* (
+                    (($h1 $t1) (if (== (get-metatype $p1) Expression) (decons-atom $p1) ($p1 ())))
+                    (($h2 $t2) (if (== (get-metatype $p2) Expression) (decons-atom $p2) ($p2 ())))
+                    (($s1 $s2) ((calc_score $h1)(calc_score $h2)))
+                ) (  if (== $s1 $s2) (gt $t1 $t2) (> $s1 $s2) )
+            ))
+))
+
 ;;; A single loop of passing the largest value to the right of the list
 ;;; A helper funciton for the main loop
 (= (sort_pass $pattern)(
@@ -90,10 +107,9 @@
        (let* (
                 (($h $t) (decons-atom $pattern))
                 (($h2 $t2) (if (== $t ()) (Nil ()) (decons-atom $t)))
-                (($scr_h $scr_t) ((calc_score $h)(calc_score $h2)))
             ) (
                 if (== $h2 Nil) ($h)
-                   ( if (> $scr_h $scr_t)
+                   ( if (gt $h $h2)
                         (let $tmp (sort_pass (cons-atom $h $t2)) (cons-atom $h2 $tmp))
                         (let $tmp (sort_pass $t) (cons-atom $h $tmp))
                     )
@@ -119,6 +135,13 @@
         (union-atom $rem $last))
 ))
 
-
-; !(sort (Inheritance c b a)) ; [(Inheritance c b a)]
-; !(sort (a b c Inheritance)) ; [(Inheritance c b a)]
+!(sort (
+    (Inheritance c c b a)
+    (Inheritance a b c)
+    (Inheritance d b a)
+)) ; ((Inheritance c c b a) (Inheritance d b a) (Inheritance a b c))
+!(sort (
+    (Inheritance d b a)
+    (Inheritance a b c)
+    (Inheritance c c b a)
+)) ; ((Inheritance c c b a) (Inheritance d b a) (Inheritance a b c))
