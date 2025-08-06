@@ -1,5 +1,11 @@
-!(import! &self conjunction-expansion)
-!(import! &self use-python)
+! (register-module! ../../experiments)
+! (import! &self conjunction-expansion)
+! (import! &self use-python)
+! (import! &self experiments:utils:common-utils)
+! (import! &self experiments:rules:freq-pat)
+! (import! &self experiments:utils:index_to_var)
+! (import! &self experiments:utils:blk-abstractness)
+! (import! &self experiments:utils:gen_partition)
 
 (= (filter_in_others $var $others)
     ((map-atom $others $x (if (== (get-metatype $x) Variable) (if (== $x $var) Pass $x) (if (== (get-metatype $x) Expression) (filter_in_others $var $x) $x)) ) $others)
@@ -57,10 +63,12 @@
 ; )
 (= (remove_Abstract_clauses $pattern)
     (let*(
-        ($unfolded (map-atom $pattern $clause (if (== (clause_others_check $clause $pattern) False) () $clause)))
+        ($unfolded (map-atom $pattern $clause (if (== (clause_others_check $clause $pattern) False) $clause ())))
+        ; ($unfolded (map-atom $pattern $clause (clause_others_check $clause $pattern)))
         ($final (fold $unfolded ()))
         )
         $final
+        ; $unfolded
     )
 )
 (= (clause_others_check $clause $pattern)
@@ -76,24 +84,30 @@
         (
             ($vars (get_variable_for_pattern $clause))
             ($result (is_more_abstractn $vars $others))
-            ($trace (if (== $result False) () (collect_filtered_per_var $vars $others)))
+            ($trace (if (== $result False) Pass (collect_filtered_per_var $vars $others)))
             ($isAbstractForeachVar (checker $trace $clause))
         )
         ; $result
         $isAbstractForeachVar
+        ; $trace
     )
 )
 
 (= (checker $trace $clause)
     (if (== $trace ())
         True
-        (let*(
-            (($headvar $bool $headov) (car-atom $trace))
-            ($tail (cdr-atom $trace))
-            ($fold (fold $headov ()))
-            ($isAbstract (all_of $headvar $fold $clause))
-            ($rem (if (== $isAbstract False) False (checker $tail $clause)))
-        )$rem)
+        (if (== $trace Pass)
+            False
+            (let*(
+                (() (println! (here $trace)))
+                (($headvar $bool $headov) (car-atom $trace))
+                (() (println! ($headvar $bool $headov)))
+                (($tail) (cdr-atom $trace))
+                ($fold (fold $headov ()))
+                ($isAbstract (all_of $headvar $fold $clause))
+                ($rem (if (== $isAbstract False) False (checker $tail $clause)))
+            )$rem)
+        )
     )
 )
 
@@ -102,7 +116,7 @@
         True
         (let*(
             ($head (car-atom $ov))
-            ($isAbstract (is_blk_syntax_more_abstract $clause $head $var))
+            ($isAbstract (is-blk-syntax-more-abstract ($clause) ($head) $var))
             ($result (if (== $isAbstract False)
                         False
                         (all_of $var (cdr-atom $ov) $clause)
@@ -111,6 +125,10 @@
         )
     )
 )
+
+; !(checker (($x True ((Inheritance $x Allen) ())) (($y True (() (Inheritance Lily $y))) ())) (Inheritance $x $y))
+; !(all_of $x  ((Inheritance $x Allen)) (Inheritance $x $y))
+; !(is-blk-syntax-more-abstract ((Inheritance $x $y)) ((Inheritance $x Allen)) $x)
 
 (= (is_more_abstractn $vars $others)
       (if (== $vars ())
@@ -188,3 +206,5 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;; subTreeDetector-In-Conjunctions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+!(remove_Abstract_clauses ((Inheritance $x $y) (Inheritance $Lily $y) (Inheritance $x $Allen)))
+; !(start  (Inheritance $x $y) ((Inheritance $x Allen) (Inheritance Lily $y)))
