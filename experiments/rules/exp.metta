@@ -188,3 +188,37 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;; subTreeDetector-In-Conjunctions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+( = (real-is-pat-in-conj $pattern $conjunction) 
+    (
+        let* 
+            (
+                (($_ $head $tail) $conjunction )
+                ($headCanContinue (== (get-metatype $head) Expression))
+                ($tailCanContinue (== (get-metatype $head) Expression))
+                ($weHaveGot (or (== $pattern $head) (== $pattern $tail)))
+            )
+
+            (
+                if $weHaveGot
+                    True
+                    (
+                        if $headCanContinue
+                            (
+                                if $tailCanContinue
+                                    (let ($a $b) (collapse (superpose ((is-pat-in-conj $pattern $head) (is-pat-in-conj $pattern $tail)))) (or $a $b))
+                                    (is-pat-in-conj $pattern $head)
+                            )
+                            ( 
+                                if $tailCanContinue
+                                    (is-pat-in-conj $pattern $tail)
+                                    False
+                            ) 
+                    )
+            )
+            
+    )
+)
+
+( = (is-pat-in-conj $pattern $conjunction) (real-is-pat-in-conj $pattern $conjunction))
+
+!(is-pat-in-conj (Inheritance (link $x $y) $z) (, (Inheritance (link $x $y) $z) (link $x $y)))
