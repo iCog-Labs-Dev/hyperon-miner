@@ -8,7 +8,6 @@
 (Inheritance Bob human)
 (Inheritance Mike human)
 (Inheritance Zac human)
-(Inheritance Zac human)
 (Inheritance Lily human)
 (Inheritance Emily human)
 (Inheritance Lucy human)
@@ -63,8 +62,3 @@
 (Inheritance Jassy sodaDrinker)
 (Inheritance Jenica sodaDrinker)
 (Inheritance Kecia sodaDrinker)
-
- (, (Inheritance $x human) (Inheritance $x sodaDrinker) (Inheritance $x man))/
- 
-
-; !(match &self (, (, (Inheritance $z42 sodaDrinker) (Inheritance $z42 human)) (Inheritance $z42 ugly)) yes)

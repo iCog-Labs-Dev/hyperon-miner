@@ -70,7 +70,7 @@
 ;   - $db: The database in which the pattern is evaluated.
 ; Returns:
 ;   - The probability value as a ratio of the pattern's support to its total possible count.
-(=(prob $pattern $db) (// (ptrn-support  $pattern $db) (total_counts $pattern $db)))
+(=(prob $pattern $db $total_count) (// (sup-num $db $pattern) $total_count))
 
 
 ;;Converts a list of blocks into a conjunctive pattern
@@ -81,8 +81,8 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
 
 ;;Calculates the probability of a block within a partition by first converting 
 ;;it into a pattern and then computing its probability.
-(= (blk-prob $blk $db) (
-    let $pattern (cons-atom , $blk) (prob $pattern $db)
+(= (blk-prob $blk $db $total_count) (
+    let $pattern (cons-atom , $blk) (prob $pattern $db $total_count)
   ))
                       
 
@@ -99,12 +99,12 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
 )
 
 ;;Recursive steps for iprob
-(=(iprob_ $partition $db)(
+(=(iprob_ $partition $db $total_count)(
     if (== $partition ()) () (
         let* (
            ( ($head $tail) (decons-atom $partition))
-           ($prob (blk-prob $head $db))
-           ($dummy (iprob_ $tail $db))
+           ($prob (blk-prob $head $db $total_count))
+           ($dummy (iprob_ $tail $db $total_count))
         ) 
              (cons-atom $prob $dummy)
     )
@@ -113,18 +113,18 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
 
 ;;This is the recursive version of iprob-old. While the non-deterministic (or above) 
 ;;implementation works within this file, it causes issues when used from other files.
-(=(iprob $partition $db) (
-    let $products (iprob_ $partition $db) (accumulator-x $products)
+(=(iprob $partition $db $total_count) (
+    let $products (iprob_ $partition $db $total_count) (accumulator-x $products)
 ))
 
 
 ;;Recursive steps for isurp
-(= (isurp-old_ $partitions $db) (
+(= (isurp-old_ $partitions $db $total_count) (
     if (== $partitions ()) () (
         let* (
             (($head $tail) (decons-atom $partitions))
-             ($res (iprob $head $db))
-             ($dummy (isurp-old_ $tail $db)))
+             ($res (iprob $head $db $total_count))
+             ($dummy (isurp-old_ $tail $db $total_count)))
         (cons-atom $res $dummy)
     )
 ))
@@ -145,9 +145,10 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
 (= (isurp-old $pattern $db $normalize) (
     let* (
         (() (println! (called-for $pattern)))
-        ($pattern_prob (prob $pattern $db ))
+        ($total_count (total_counts $pattern $db))
+        ($pattern_prob (prob $pattern $db $total_count))
         ($partitions (generet-partition-without-pattern $pattern))
-        ($results  (isurp-old_  $partitions $db))
+        ($results  (isurp-old_  $partitions $db $total_count))
         (($emin $emax) (min-max $results))
         ($dst (dst_from_interval $emin $emax $pattern_prob))
     ) 

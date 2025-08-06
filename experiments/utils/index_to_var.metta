@@ -11,7 +11,7 @@
 
 
 (= (replacev $pattern)
-    (map-atom $pattern $x (if (== (get-type $x) Nat) (gen_var (eval (debruijn2num $x))) (if (and (not (== (get-type $x) Nat)) (== (get-metatype $x) Expression)) (deb2var $x) $x))) ;
+    (map-atom $pattern $x (if (== (get-type $x) Nat) (gen_var (eval (debruijn2num $x))) (if (and (not (== (get-type $x) Nat)) (== (get-metatype $x) Expression)) (replacev $x) $x))) ;
 )
 (= (num2deb $pattern)
     (map-atom $pattern $x (if (== (get-type $x) Number) (fromNumber $x) (if (and (not (== (get-type $x) Number)) (== (get-metatype $x) Expression)) (num2deb $x) $x)))
@@ -72,5 +72,5 @@
     
 )
 
-!(var2deb (,(, (link $x $y) (an $o $y)) (this $x $t)))
-!(var2deb (Inheritance $x $y))
+!(replace (,(, (link $x $y) (an $o $y)) (this $x $t)))
+!(replacev (Inheritance Z (S Z)))
