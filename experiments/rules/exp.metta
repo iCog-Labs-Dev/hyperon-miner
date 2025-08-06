@@ -36,39 +36,13 @@
             )
     )
 )
-        ; ( (filter-atom $unfiltered $atom (eval (> (size-atom $atom) 0))))
-; !(fold ((Inheritance Lily $Z1) (Inheritance Abe $Allen) ()) ())
-; !(get-metatype ())
-; (= (is_more_abstract_for_each_var $clause $others)
-;     (let* (
-;         ($vars (get_variable_for_pattern $clause))
-;         ($var (superpose $vars))
-;         ($filtered (collapse (filter_foreach_var $var $others)))
-;         ($isMoreAbstract (if (== (eval (unique-atom $filtered)) (())) False True))
-;         ($isMoreAbstract1 (if (== (eval (intersection-atom $isMoreAbstract (False))) ()) True False))
-;     )
-;     $isMoreAbstract
-;     ; $filtered
-;     )
-; )
-
-; (= (start $clause $others)
-;     (let*
-;         (
-;             ($vars (get_variable_for_pattern $clause))
-;             ($result (collapse (is_more_abstract $vars $others True)))
-;         )
-;         $result
-;     )
-; )
+        
 (= (remove_Abstract_clauses $pattern)
     (let*(
         ($unfolded (map-atom $pattern $clause (if (== (clause_others_check $clause $pattern) False) $clause ())))
-        ; ($unfolded (map-atom $pattern $clause (clause_others_check $clause $pattern)))
         ($final (fold $unfolded ()))
         )
         $final
-        ; $unfolded
     )
 )
 (= (clause_others_check $clause $pattern)
@@ -87,9 +61,7 @@
             ($trace (if (== $result False) Pass (collect_filtered_per_var $vars $others)))
             ($isAbstractForeachVar (checker $trace $clause))
         )
-        ; $result
         $isAbstractForeachVar
-        ; $trace
     )
 )
 
@@ -126,9 +98,6 @@
     )
 )
 
-; !(checker (($x True ((Inheritance $x Allen) ())) (($y True (() (Inheritance Lily $y))) ())) (Inheritance $x $y))
-; !(all_of $x  ((Inheritance $x Allen)) (Inheritance $x $y))
-; !(is-blk-syntax-more-abstract ((Inheritance $x $y)) ((Inheritance $x Allen)) $x)
 
 (= (is_more_abstractn $vars $others)
       (if (== $vars ())
@@ -152,103 +121,39 @@
       )
       (($var $isMore $filtered) $rest))))
 
-(= (is_more_abstract () $others $precheck)
-        ()
-)
 
-(= (is_more_abstract $vars $others $precheck)
-    (if (== $precheck False)
-        False
-        (let* (
-            ($head (car-atom $vars))
-            (() (println! ($head)))
-            ($tail (cdr-atom $vars))
-            (($isMore $filtered $var) (is_more_abstract_for_var $head $others))
-            (() (println! ($isMore $filtered $var)))
-            ($isMoreAbstract1 (if (== $isMore False) (is_more_abstract $tail $others False) (is_more_abstract $tail $others True)))
-        )
-        (cons $isMoreAbstract1 ($filtered $var))
-        ; $filtered
-        )
-    )
-)
 (= (is_more_abstract_for_var $var $others)
     (let* (
         ($filtered (collapse (filter_foreach_var $var $others)))
         ($isMoreAbstract (if (== (eval (unique-atom $filtered)) (())) False True))
     )
     ($isMoreAbstract $filtered $var)
-    ; $filtered
     )
 )
-; !(start (Inheritance $Z1 $Allen) ((Inheritance Lily $Z1) (Inheritance Abe $Allen)))
-; !(is_more_abstract_for_each_var $Allen ((Inheritance Lily $Allen) (Inheritance Abe $Z1)))
 
-; (= (filter_in_others $vars1 $others)
-;     (map-atom $vars1 $var (if (== (intersection-atom ($var) $others) ()) empty $var))
-; )
-
-; !(filter_in_others ($x $y $z) ($x $b $c))
-; !(filter_in_others $x (Inheritance $x $b))
-
+; =========================================================================================
 
 (= (constant_clause_check $clause)
     (let $vars (get_variable_for_pattern $clause) (if (== $vars ()) () $clause))
 )
 (= (remove_constant_clauses $pattern)
-    (map-atom $pattern $clause (constant_clause_check $clause))
-)
-; !(remove_constant_clauses ((Inheritance Allen Z1) (Inheritance Lily $Z1) (Inheritance Abe $Z1)))
-
-; !(unique-atom (() ()))
-; !(== (eval (unique-atom (() ()))) (()))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;; subTreeDetector-In-Conjunctions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-; !(remove_Abstract_clauses ((Inheritance $x $y) (Inheritance $Lily $y) (Inheritance $x $Allen)))
-; !(start  (Inheritance $x $y) ((Inheritance $x Allen) (Inheritance Lily $y)))
-
-(= (remove_redundant_subclauses $pattern)
-    (let*(
-        ($unfolded (map-atom $pattern $clause (if (== (clause_others_check_for_subtree $clause $pattern) False) $clause ())))
-        ; ($unfolded (map-atom $pattern $clause (clause_others_check $clause $pattern)))
+    (let* (
+        ($unfolded (map-atom $pattern $clause (constant_clause_check $clause)))
         ($final (fold $unfolded ()))
-        )
-        ; $final
-        $unfolded
     )
-)
-(= (clause_others_check_for_subtree $clause $pattern)
-    (let*(
-        ($others (eval (subtraction-atom $pattern ($clause))))
-        ($res (is-pat-in-otherpat $clause $others))
-        )
-        $res
-    )
-)
-( = (is-pat-in-otherpat $clause $others) 
-`   (if (== $others ())
-        False
-        (let*(
-            ($head (car-atom $others)) 
-            ($isinpat (real-is-pat-in-conj $clause $head))
-            ($result (if (== $isinpat True)
-                True
-                (is-pat-in-otherpat $clause (cdr-atom $others))
-            ))
-        )$result
-        )
-    )
+    $final)
 )
 
-( = (real-is-pat-in-conj $pattern $conjunction) 
+; ==========================================================================================
+
+(= (is_clause_in_pat $clause $pattern) 
     (
         let* 
             (
-                (($_ $head $tail) $conjunction )
+                (($_ $head $tail) $pattern )
                 ($headCanContinue (== (get-metatype $head) Expression))
                 ($tailCanContinue (== (get-metatype $head) Expression))
-                ($weHaveGot (or (== $pattern $head) (== $pattern $tail)))
+                ($weHaveGot (or (== $clause $head) (== $clause $tail)))
             )
 
             (
@@ -258,12 +163,12 @@
                         if $headCanContinue
                             (
                                 if $tailCanContinue
-                                    (let ($a $b) (collapse (superpose ((is-pat-in-conj $pattern $head) (is-pat-in-conj $pattern $tail)))) (or $a $b))
-                                    (is-pat-in-conj $pattern $head)
+                                    (let ($a $b) (collapse (superpose ((is_clause_in_pat $clause $head) (is_clause_in_pat $clause $tail)))) (or $a $b))
+                                    (is_clause_in_pat $clause $head)
                             )
                             ( 
                                 if $tailCanContinue
-                                    (is-pat-in-conj $pattern $tail)
+                                    (is_clause_in_pat $clause $tail)
                                     False
                             ) 
                     )
@@ -272,7 +177,53 @@
     )
 )
 
+(= (is_pat_in_otherpat $clause $others) 
+  (if (== $others ())
+        False
+        (let*(
+            (() (println! (here3 $others)))
+            ($head (car-atom $others)) 
+            ($isinpat (is_clause_in_pat $clause $head))
+            ($result (if (== $isinpat True)
+                True
+                (is_pat_in_otherpat $clause (cdr-atom $others))
+            ))
+        )$result
+        )
+    )
+)
 
-; !(is-pat-in-conj (Inheritance (link $x $y) $z) (, (Inheritance (link $x $y) $z) (link $x $y)))
-!(remove_redundant_subclauses ((Inheritance (link $x $y) $z) (link $x $y) (Inheritance $x $y)))
-; !(real-is-pat-in-conj (link $x $y) (Inheritance (link $x $y) $z))
+(= (clause_others_check_for_subtree $clause $pattern)
+    (let*(
+        (() (println! (here $clause)))
+        ($others (eval (subtraction-atom $pattern ($clause))))
+        (() (println! (here1 $others)))
+        ($res (is_pat_in_otherpat $clause $others))
+        (() (println! (here2 $res)))
+        )
+        $res
+    )
+)
+
+(= (remove_redundant_subclause $pattern)
+    (let*(
+        ($unfolded (map-atom $pattern $clause (if (== (clause_others_check_for_subtree $clause $pattern) False) $clause ())))
+        ($final (fold $unfolded ()))
+        )
+        $final
+    )
+)
+
+; ==========================================================================================
+
+(= (remove_useless_clauses $pattern)
+    (let*(
+        ($constant_removed (remove_constant_clauses $pattern))
+        ($subtree_removed (remove_redundant_subclause $constant_removed))
+        ($abstract_removed (remove_Abstract_clauses $subtree_removed))
+    )
+    $abstract_removed
+    )
+)
+
+!(remove_useless_clauses ((Inheritance $x lily) (Inheritance allen y) (Inheritance $x $y)))
