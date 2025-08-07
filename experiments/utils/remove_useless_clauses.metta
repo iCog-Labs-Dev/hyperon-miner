@@ -226,4 +226,4 @@
     )
 )
 
-!(remove_useless_clauses ((Inheritance $x lily) (Inheritance allen y) (Inheritance $x $y)))
+!(remove_useless_clauses ((Inheritance $x lily) (Inheritance $x y) (Inheritance $x by)))
