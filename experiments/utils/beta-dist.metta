@@ -122,6 +122,37 @@
    
 ))
 
+; (=(mk_stv $mean $variance) (
+;    let* (
+;      ($alpha (find_alpha $mean $variance))
+;      ($beta (find_beta $mean $variance))
+;      ($count-ch (let* (
+;           ;; sum of α and β
+;           ($sum_ab (+ $alpha $beta))
+;           ;; sum of priors
+;           ($sum_priors (+ (prior-alpha) (prior-beta)))
+;           ;; compute count = α+β − (prior-α + prior-β)
+;           ($count2 (- $sum_ab $sum_priors))
+;          )
+;      $count2))
+;      ($count (max $count-ch 0.1))
+;      ($confidence (// $count (+ $count (default_k))))
+;      ($mode  (
+;     if (and (> $alpha 1) (> $beta 1)) (
+;                 // (- $alpha 1) (+ $alpha (- $beta 2))   ;; a-1 / a + b -2
+;     ) (
+;         if (and (<= $alpha 1) (> $beta 1)) 0 (
+
+;             if (and (< $alpha 1) (== $beta 1)) 1 
+;             (
+;                 if (and (< $alpha 1) (< $beta 1)) $mean 1
+;             )
+;         )
+;     ))))
+
+;     ($mode $confidence)
+   
+; ))
 
 
 
