@@ -14,7 +14,7 @@
 
 
 
-!(do-ji-tv-est  &db (,(Inheritance $x sodaDrinker) (Inheritance $x human) (Inheritance $x woman)) $emp)
+!(do-ji-tv-est  &kb (,(Inheritance $x ugly) (Inheritance $x man) (Inheritance $x sodaDrinker)) $emp)
 
 
 
