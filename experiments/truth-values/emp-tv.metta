@@ -65,7 +65,7 @@
 ;; Returns:
 ;;   - A confidence value between 0 and 1
 ;; =============================================================================
-(= (count_to_confidence $x) (// $x (+ $x (Default_k))))
+(= (count_to_confidence $x) (// $x (+ $x (DEFAULT_K))))
 
 ;; =============================================================================
 ;; Function: emp-tv
@@ -88,7 +88,7 @@
         (  
             ( ($ucount ) ( (universe-count $pattern $db)))
             ( ($ms) ($ucount)) ;;  we didn't use ms for support calculation
-            ( ($sup) ( (sup-num $pattern $db)))
+            ( ($sup) ( (sup-num $db $pattern)))
             ( ($conf) ( (count_to_confidence $ucount)) )
             ($mean (// $sup $ucount))
             ($confidence   (* 1e-1 $conf))
