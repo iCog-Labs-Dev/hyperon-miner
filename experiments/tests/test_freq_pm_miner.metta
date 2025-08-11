@@ -48,6 +48,21 @@
     )$cnd)
 )
 
-!(assertEqual (subtraction (test_AB_AC_BC) (superpose ((Inheritance Z C) (Inheritance A Z)))) (superpose ()))
+; !(assertEqual (subtraction (test_AB_AC_BC) (superpose ((Inheritance Z C) (Inheritance A Z)))) (superpose ()))
 ; !(subtraction (test_AB_AC_BC) (superpose ((Inheritance Z C) (Inheritance A Z))))
+; !(test_AB_AC_BC)
 
+(= (test_AB_ABC)
+    (let*(
+        ($dbadd1 (add-atom &testspace (Inheritance A B)))
+        ($dbadd2 (add-atom &testspace (Inheritance A (And B C))))
+        ($res (collapse (frequency-pattern-miner &testspace &specspace &cndpspace &aptrnspace &conjspace 2 0)))
+        ($dbrem1 (remove-atom &testspace (Inheritance A B)))
+        ($dbrem2 (remove-atom &testspace (Inheritance A (And B C))))
+        ($cnd (match &cndpspace (CandidatePattern $pattern) $pattern))
+    )$cnd)
+)
+
+!(assertEqual (subtraction (test_AB_ABC) (superpose ((Inheritance A Z) (Inheritance Z (S Z))))) (superpose ()))
+
+;  !(test_AB_ABC)
