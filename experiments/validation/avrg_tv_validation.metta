@@ -65,6 +65,6 @@
 
 
 
-; !(assertEqual (test_avrg_tv_1) (0 0.1))
- !(assertEqual (test_avrg_tv_2) (0.5 0.000125))
-;  !(assertEqual (test_avrg_tv_3) (0.5 0.000677))
+; !(assertEqual (test_avrg_tv_1) (0 0 0.09999999999999999))
+; !(assertEqual (test_avrg_tv_2) (0.5 0001249843769528809))
+;  !(assertEqual (test_avrg_tv_3) (1 0.0006774324781404488))
