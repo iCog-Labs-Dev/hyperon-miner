@@ -1,0 +1,37 @@
+! (register-module! ../../../hyperon-miner)
+; ! (import! &db hyperon-miner:experiments:data:sample-data)
+! (import! &db hyperon-miner:experiments:data:ugly_man_sodaDrinker)
+; ! (import! &db hyperon-miner:experiments:data:small-ugly)
+; ! (import! &self hyperon-miner:experiments:rules:conjunction-expansion)
+! (import! &self hyperon-miner:experiments:frequent-pattern-miner:frequent-pattern-miner)
+! (import! &self hyperon-miner:experiments:utils:common-utils)
+; ! (import! &self hyperon-miner:experiments:utils:variable-combinations)
+! (bind! &kb (new-space))
+! (bind! &dbspace (new-space))
+! (bind! &testspace (new-space))
+! (bind! &specspace (new-space))
+! (bind! &cndpspace (new-space))
+! (bind! &aptrnspace (new-space))
+! (bind! &conjspace (new-space))
+
+!(let ($link $x $y) (get-atoms &db) (add-atom &dbspace ($link $x $y)))
+
+(= (test_empty)
+    (frequency-pattern-miner &testspace &specspace &cndpspace &aptrnspace &conjspace 5 0)
+)
+
+; !(test_empty)
+; !(match &cndpspace (CandidatePattern $pattern) $pattern)
+
+(= (test_AB_AC)
+    (let*(
+        ($dbadd1 (add-atom &testspace (Inheritance A B)))
+        ($dbadd2 (add-atom &testspace (Inheritance A C)))
+        ($res (collapse (frequency-pattern-miner &testspace &specspace &cndpspace &aptrnspace &conjspace 2 0)))
+        ($dbrem1 (remove-atom &testspace (Inheritance A B)))
+        ($dbrem2 (remove-atom &testspace (Inheritance A C)))
+        ($cnd (match &cndpspace (CandidatePattern $pattern) $pattern))
+    )$cnd)
+)
+!(assertEqual (test_AB_AC) (Inheritance A Z))
+
