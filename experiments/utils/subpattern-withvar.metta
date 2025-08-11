@@ -82,7 +82,9 @@
 
 (=(retJointvar $partition $var) (let $retPats (collapse (retJointPat (superpose $partition) $var)) (if (> (size-atom $retPats) 1)  $var (empty))))
 
-(=(retJointPat $block $var)  (retjointSubPat (superpose $block) $var))
+; (=(retJointPat $block $var)  (retjointSubPat (superpose $block) $var))
+
+(=(retJointPat $block $var)  (let $blo (collapse (retjointSubPat (superpose $block) $var)) (if (> (size-atom $blo) 0) $block (empty) )) )
 
 (=(retjointSubPat $subpat $var) (let* (($vars (cdr-atom $subpat)) ($inter (intersection-atom ($var) $vars))) (if (== (size-atom $inter) 0) (empty) $subpat)))
 
