@@ -26,10 +26,6 @@
         )
 
 )
- ; (let $result (counter $dbspace $specialized)
- ;     $result
- ; )
- ;     $specialized
 )
 
 )

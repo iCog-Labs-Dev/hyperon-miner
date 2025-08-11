@@ -22,6 +22,8 @@
 
 ; ! (register-module! ../../experiments)
 ; ! (import! &self experiments:utils:common-utils)
+; ! (import! &self experiments:utils:variable-combinations)
+! (import! &self freq-pat)
 ! (import! &self conj-exp)
 
  ; The starting point for the conjunction expansion. It passes
@@ -42,36 +44,18 @@
      ;                 ($temp (get_variables_for_tree $pattern))
      ;                 ($temp2 (get_variables_for_tree $cnjtion)))
      ;             (+ (count-atom-element  $temp) (count-atom-element  $temp2))) $mv)
+     ; )
     (if $es
         (expand_conjunctin_es_rec $cnjtion $pattern $db $ms)
-        (expand_conjunction_rec $cnjtion $pattern $db $ms))
-     ; )
-     ; )
+        (expand_conjunction_rec $cnjtion $pattern $db $ms)
+    )
 )
 
 (= (count-atom-element $atom) (if (== $atom ()) 0 (+ 1 (count-atom-element (cdr-atom $atom)))))
 
-(= (get_variables_for_tree $pattern)
-    (if (== $pattern ())
-        ()
-        (let* (
-                ($head (car-atom $pattern))
-                ($tail (cdr-atom $pattern)))
 
-            (if (== (get-metatype $head) Expression)
-                (concatTuple (get_variables_for_tree $head)
-                    (get_variables_for_tree $tail))
-                (if (== (get-metatype $head) Variable)
-                    (concatTuple
-                        ($head)
-                        (get_variables_for_tree $tail))
 
-                    (get_variables_for_tree $tail))))
-    )
-)
 
-;  ! (get_variables_for_tree  (LIST_LINK (INHERITANCE_LINK (INHERITANCE_LINK (INHERITANCE_LINK $S $K) (INHERITANCE_LINK $n $m)) (INHERITANCE_LINK (INHERITANCE_LINK $S $K) (INHERITANCE_LINK $n $m))) (INHERITANCE_LINK (INHERITANCE_LINK $g $t) (INHERITANCE_LINK $p $r))))
-;; inprogress
 (= (get_variable_for_pattern $pattern)
     (case ($pattern) (
             ( (()) ())
@@ -87,7 +71,7 @@
 
                 ( $suby (if (== (get-metatype $y) Expression) (get_variable_for_pattern $y) (get_variable_for_pattern ($y))))
             )
-        (concatTuple $subx $suby)
+        (union-atom $subx $suby)
          ; ( ($subx $remaining))
     )
 )
@@ -102,6 +86,25 @@
 )
 )
 
+(= (get_variables_for_tree ())
+    ()
+)
+
+(= (get_variables_for_tree $pattern)
+   ( let* (
+            ($head (car-atom $pattern))
+            ($tail (cdr-atom $pattern))
+            ($x (if (== (get-metatype $head) Variable)
+                     ($head)
+                     (if (== (get-metatype $head) Expression)
+                           (get_variables_for_tree $head)
+                        () )))
+            ($y (get_variables_for_tree $tail))
+        )(union-atom $x $y)
+    )
+)
+; ! (get_variables_for_tree  (LIST_LINK (INHERITANCE_LINK (INHERITANCE_LINK (INHERITANCE_LINK $S $K) (INHERITANCE_LINK $n $m)) (INHERITANCE_LINK (INHERITANCE_LINK $S $K) (INHERITANCE_LINK $n $m))) (INHERITANCE_LINK (INHERITANCE_LINK $g $t) (INHERITANCE_LINK $p $r))))
+; ! (get_variable_for_pattern  (LIST_LINK (INHERITANCE_LINK (INHERITANCE_LINK (INHERITANCE_LINK $S $K) (INHERITANCE_LINK $n $m)) (INHERITANCE_LINK (INHERITANCE_LINK $S $K) (INHERITANCE_LINK $n $m))) (INHERITANCE_LINK (INHERITANCE_LINK $g $t) (INHERITANCE_LINK $p $r))))
 
 (= (substitute $pattern $variables)
     (case ($pattern $variables) (
@@ -117,36 +120,33 @@
             ))
     ( (  ($link $x $y) $variables)
         (let* (
-                ( ($subx $remaining) (if ( == ( get-metatype $x ) Expression) (substitute $x $variables) (substitute ($x) $variables)))
+                ( ($sublink $remains) (if ( == ( get-metatype $link ) Expression) (substitute $link $variables) (substitute ($link) $variables)))
+                ( ($subx $remaining) (if ( == ( get-metatype $x ) Expression) (substitute $x $remains) (substitute ($x) $remains)))
 
                 ( ($suby $final) (if (== (get-metatype $y) Expression) (substitute $y $remaining) (substitute ($y) $remaining)))
             )
-        ( ($link $subx $suby) $final)
+        ( ($sublink $subx $suby) $final)
     )
 )
 ( ( ($link $x) $variables)
     (let* (
-            ( ($subx $remaining) (if ( == ( get-metatype $x ) Expression) (substitute $x $variables) (substitute ($x) $variables)))
+            ( ($sublink $remains) (if ( == ( get-metatype $link ) Expression) (substitute $link $variables) (substitute ($link) $variables)))
+            ( ($subx $remaining) (if ( == ( get-metatype $x ) Expression) (substitute $x $remains) (substitute ($x) $remains)))
         )
-    ( ($link $subx) $remaining)
+    ( ($sublink $subx) $remaining)
 )
 )
 )
 )
 )
 
-;  ! (substitute (LIST_LINK (INHERITANCE_LINK (INHERITANCE_LINK $S $K) (INHERITANCE_LINK $n $m)) (INHERITANCE_LINK (INHERITANCE_LINK $g $t) (INHERITANCE_LINK $p $r))) ($R-D1737102179 $A $b $c $d $e $f $h))
+;  ! (substitute ($LIST_LINK (INHERITANCE_LINK (INHERITANCE_LINK $S $K) (INHERITANCE_LINK $n $m)) (INHERITANCE_LINK (INHERITANCE_LINK $g $t) (INHERITANCE_LINK $p $r))) ($R-D1737102179 $A $b $c $d $e $f $h))
 
  
  ;############################################################
  ;###############   alpha convert  ###########################
  ;############################################################
- ; (= (var $x)
 
- ;     $x
-!(filter-atom (1 2 3 4) $v (eval (== $v 3)))
- ; )
- ; ! (var ($link $x))
 (= (alpha_convert  $pattern_vars $cnjtion_vars)
     (extract_values (consolidate_keys (address_conflict $pattern_vars $cnjtion_vars)))
 )
@@ -234,6 +234,7 @@
 (= (expand_conjunction_rec $cnjtion $apat $db $ms)
     (let $npat (expand_conjunction_connect $cnjtion $apat (get_variable_for_pattern $cnjtion) (get_variable_for_pattern $apat))
          (checker $db $npat $ms)
+        ;  $npat
     )
 )
 
@@ -250,6 +251,7 @@
     (let* (
             ($sup (superpose $pv2cv))
             ($exp (substitute $pattern $sup))
+            ; ($exp (substitute $pattern $pv2cv))
             ($new_cnjtion (, $cnjtion (car-atom $exp)))
         )
         $new_cnjtion
@@ -257,10 +259,15 @@
 )
 
 (= (checker $db $pattern $ms) 
-    (if (sup-eval $db $pattern $ms)
-        $pattern
-        empty
+    (let*
+    (
+        ($conjuncts (get-conjuncts $pattern))
+        ($flat (cons-atom , $conjuncts))
     )
+    (if (sup-eval $db $flat $ms)
+        $pattern
+        ()
+    ))
 )
 
 (= (remove_alpha_similar $list)
@@ -283,7 +290,7 @@
     (pass)
 )
 
-
+    
 
 
 
@@ -315,6 +322,8 @@
 (= ( append_pat $pat $conj) ( , $pat $conj))
 
  ; ! (expand_conjunction_disconnect (INHERITANCE_LINK A $X) (LIST_LINK $X B))
+;  !(expand_conjunction (Inheritance $x human) (Inheritance $y sodaDrinker) &db 2 2 False)
+
 
  ;##############
  ;# Test cases #
@@ -331,5 +340,53 @@
 ; (LIST_LINK Y C)
 ; (INHERITANCE_LINK X D)
 
- ;(expand_conjunction_inputs cnjtion pattern db ms mv es)
+;  (expand_conjunction_inputs cnjtion pattern db ms mv es)
 ; !(expand_conjunction (,(INHERITANCE_LINK $X $Y) (LIST_LINK A $D)) (LIST_LINK $G $F) &self 5 2 False)
+; !(expand_conjunction (INHERITANCE_LINK $X $Y) (INHERITANCE_LINK $G $F) &self 5 2 False)
+
+; !(match &self (, (, (INHERITANCE_LINK $X $Y) (LIST_LINK A $D)) (LIST_LINK $X $G)) (, (, (INHERITANCE_LINK $X $Y) (LIST_LINK A $D)) (LIST_LINK $X $G)))
+
+(= (do-conjunct $db $cndb $coming_conj $ms Z)
+    (let* (
+        (() (println! (here $coming_conj)))
+        ($conjunct (replacev $coming_conj))
+        ($matches (match $cndb (CandidatePattern $pattern) (replacev $pattern)))
+        ($listconj (expand_conjunction $conjunct $matches $db $ms 2 False))
+        (() (println! ("Conjuncts: " $listconj)))
+        ($debconj (replace $listconj))
+        ($fitlered (remove_conjuncts_with_redundant_clauses $debconj))
+        (() (println! ("filtered:" $fitlered)))
+    )
+    $fitlered
+    )
+)
+
+(= (do-conjunct $db $cndb $coming_conj $ms (S $K))
+    (let* (
+        (() (println! (here1 $coming_conj)))
+        ($conjunct (replacev $coming_conj))
+        ($matches (match $cndb (CandidatePattern $pattern) (replacev $pattern)))
+        ($listconj (expand_conjunction $conjunct $matches $db $ms 2 False))
+        (() (println! ("Conjuncts2: " $listconj)))
+        ($debconj (replace $listconj))
+        (() (println! ("Conjuncts2deb: " $debconj)))
+        ($fitlered (remove_conjuncts_with_redundant_clauses $debconj))
+        ($varconj (replacev $fitlered))
+        (() (println! ("Conjuncts: " $varconj)))
+        ($conj (do-conjunct $db $cndb $varconj $ms $K))
+    )
+    $conj
+    )
+)
+
+(= (formatter $kb $conjspace $dbspace) 
+    (let* (
+        ($sorted (unique (match $conjspace $pattern (sort_conj $pattern))))
+        ($res (cons-atom , $sorted))
+        
+    )
+    (add-atom $kb (supportOf $res (sup-num $dbspace (replacev $res))))
+)
+)
+
+

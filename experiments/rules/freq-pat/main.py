@@ -108,6 +108,9 @@ def call_python_process(metta: MeTTa):
     # return [ValueAtom(atoms, 'Expression')]
 
     return unique_patterns
+def generate_var(metta: MeTTa, suffix):
+    var =  f"$var{int(str(suffix))}"
+    return [metta.parse_single(var)]
 
 
 def replace_with_de_bruijn(metta: MeTTa, pattern):
@@ -165,6 +168,8 @@ def sort_conjunction(metta: MeTTa, conjunction):
     return [metta.parse_single(flattend_str)]
 
 
+
+
 @register_atoms(pass_metta=True)
 def redundancy(metta):
     # redundancyFreeAtom = OperationAtom('redunpat', lambda patterns: call_python_process(metta, patterns), unwrap=False)
@@ -181,5 +186,3 @@ def redundancy(metta):
         "sort_conj", lambda conjunction: sort_conjunction(metta, conjunction), unwrap=False
     )
     return {r"redunpat": redundancyFreeAtom, r"replace": replace, r"replacev": replacev, r"sort_conj": sort_conj}
-
-

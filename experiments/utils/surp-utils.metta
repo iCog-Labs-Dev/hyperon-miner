@@ -118,5 +118,5 @@
 ))
 
 
-
+;$emp < $emin ---- $emax < $emp 
 

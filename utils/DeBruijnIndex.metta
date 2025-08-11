@@ -13,16 +13,11 @@
 (= (idx2var (VarIdx Z) (Cons $head $tail)) $head)
 (= (idx2var (VarIdx (S $k)) (Cons $head $tail)) (idx2var (VarIdx $k) $tail))
 
-;; Map a DeBruijn Index in a given pattern to a variable
-(: Debruijn2var (-> Atom (List Variable) Atom))
-(= (Debruijn2var (VarIdx $k) $varlist) 
-    (idx2var (VarIdx $k) $varlist))
-
-(= (Debruijn2var $symbol $varlist)
-    (if (== (get-type $symbol) %Undefined%) $symbol (empty)))
-
-(= (Debruijn2var ($link $first $second) $varlist)
-    ($link (Debruijn2var $first $varlist) (Debruijn2var $second $varlist)))
+(= (Debruijn2var $expr $varlist)
+    (case $expr (
+        (($link $first $second) ($link (Debruijn2var $first $varlist) (Debruijn2var $second $varlist)))
+        ((VarIdx $k) (idx2var (VarIdx $k) $varlist))
+        ($_ $expr))))
 
 ; For conjunctions
 (= (Deb2var $ptrn $varlist)
