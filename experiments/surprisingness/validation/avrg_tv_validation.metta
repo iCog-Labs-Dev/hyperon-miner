@@ -6,7 +6,7 @@
 ! (import! &self experiments:utils:surp-utils)
 ! (import! &self experiments:utils:miner-utils)
 ! (import! &self experiments:utils:gen_partition)
-;! (import! &self experiments:rules:est-tv)
+
 
 ;! (bind! square (py-atom numpy.square (-> Number Number)))
 
