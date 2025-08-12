@@ -8,18 +8,19 @@
 ! (import! &self experiments:utils:gen_partition)
 
 
-;! (bind! square (py-atom numpy.square (-> Number Number)))
+; The slight diffrences in the expected variance from the classic miner vs what we are getting in the ported version most likely arises from the approximations we used for contants.
+;=============================================================================
+; avrg_tv test case 1 from classic miner repo
+	; TruthValuePtr
+	; 	tv1 = createSimpleTruthValue(0, 0.1),
+	; 	tv2 = createSimpleTruthValue(0, 0.1),
+	; 	result = Surprisingness::avrg_tv({tv1, tv2}),
 
-;;Test compose 
-;; !(assertEqual (compose (Inheritance $y B) (($y A))) (Inheritance A B))
-;; !(assertEqual (compose (Evaluation $x $y) (($x "scm-eager: absolutely-true"))) (Evaluation "scm-eager: absolutely-true" $y))
-;; !(assertEqual (compose (Implication $x $y) (($x $y))) (Implication $y $y) )
-;; !(assertEqual (compose x (($x sa))) (compose x (($x sa))))
+     ;expected mean of 0 and variance(confidence) of 0.1
+	; 	expect = createSimpleTruthValue(0, 0.1);
 
 
 
-
-;; Test avrg_tv
 
 (=(test_avrg_tv_1)(
     let* (
@@ -31,6 +32,20 @@
     $result 
 ))
 
+; !(assertEqual (test_avrg_tv_1) (0 0 0.09999999999999999))
+
+;========================================================
+;avrg_tv test case 2 from classic miner repo
+
+    ;     	TruthValuePtr
+	; 	tv1 = createSimpleTruthValue(0, 0.1),
+	; 	tv2 = createSimpleTruthValue(1, 0.1),
+	; 	result = Surprisingness::avrg_tv({tv1, tv2}),
+
+    ;expected mean of 0.5 and variance(confidence) of 0.000125 
+	; 	expect = createSimpleTruthValue(0.5, 0.000125);
+
+
 
 (=(test_avrg_tv_2)(
     let* (
@@ -41,6 +56,30 @@
     )
     $result 
 ))
+
+; !(assertEqual (test_avrg_tv_2) (0.5 0001249843769528809))
+
+;=================================================================
+;avrg_tv test case 3 from classic miner repo
+
+        ; TruthValuePtr
+		; tv0 = createSimpleTruthValue(1, 0.001248),
+		; tv1 = createSimpleTruthValue(1, 0.001248),
+		; tv2 = createSimpleTruthValue(0, 0.001248),
+		; tv3 = createSimpleTruthValue(1, 0.001248),
+		; tv4 = createSimpleTruthValue(1, 0.001248),
+		; tv5 = createSimpleTruthValue(1, 0.001248),
+		; tv6 = createSimpleTruthValue(1, 0.001248),
+		; tv7 = createSimpleTruthValue(1, 0.001248),
+		; tv8 = createSimpleTruthValue(1, 0.001248),
+		; tv9 = createSimpleTruthValue(1, 0.001248),
+		; result = Surprisingness::avrg_tv({tv0, tv1, tv2, tv3, tv4,
+		;                                   tv5, tv6, tv7, tv8, tv9}),
+		; // Weirdly enough the result is 1 for the mode, which might
+		; // actually be correct, would need to carefully check the math.
+
+         ;expected truth of 1 and variance(confidence) of 0.000677 
+		; expect = createSimpleTruthValue(1, 0.000677);
 
 
 (=(test_avrg_tv_3)(
@@ -62,9 +101,10 @@
     $result 
 ))
 
-
-
-
-; !(assertEqual (test_avrg_tv_1) (0 0 0.09999999999999999))
-; !(assertEqual (test_avrg_tv_2) (0.5 0001249843769528809))
 ;  !(assertEqual (test_avrg_tv_3) (1 0.0006774324781404488))
+
+;==================================
+
+
+
+
