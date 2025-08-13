@@ -9,8 +9,8 @@
 ! (import! &self experiments:utils:miner-utils)
 ! (import! &self experiments:utils:gen_partition)
 ! (import! &self experiments:truth-values:est-tv)
-;! (import! &self experiments:surprisingness:isurp-old)
-! (import! &self experiments:surprisingness:isurp-old-with-sup)
+! (import! &self experiments:surprisingness:isurp-old)
+
 ! (import! &db experiments:data:ugly_man_sodaDrinker)
 
 
