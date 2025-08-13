@@ -27,7 +27,7 @@
                                 (let* (
                                     ( ($link $x $y) $p)
                                     ( $nx (collapse (depth-handler $x)))
-                                    ( $ny (collapse (depth-handler $y)))
+                                    ( $ny (if (== $x $y) $nx (collapse (depth-handler $y))))
                                 )
                                 (superpose (
                                         ($link (superpose $nx) $w)
@@ -35,13 +35,13 @@
                                         ($link $x $u)
                                         ($link $k $y)
                                         $d
-                                        ($link $g $o)
+                                        (if (== $x $y) ($link $g $g) ($link $g $o))
                                         ($link (superpose $nx) (superpose $ny))
                                     ))) 
                 )))
                 ))
 
-; !(depth-handler (Or E))
+; !(depth-handler (Or (And E E) E))
 
 ; function name: build-specialization
                 ; function to build the specialization of a pattern and add it to the specialization space

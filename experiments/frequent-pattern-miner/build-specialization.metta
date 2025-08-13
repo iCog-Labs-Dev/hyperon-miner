@@ -12,21 +12,28 @@
 ;(: depth-handler (-> pattern Atom))
 (= (depth-handler $p)
     (if (not (== (get-metatype $p) Expression))
-        $p
-        (let* (
-                ( ($link $x $y) $p)
-                ( $nx (depth-handler $x))
-                ( $ny (depth-handler $y)))
-        (superpose (
-                ($link $nx $w)
-                ($link $z $ny)
-                ($link $x $u)
-                ($link $k $y)
-                $d
-                ($link $g $o)
-                ($link $nx $ny))
-    )
-)))
+       $p
+        (case $p
+            (
+                (($type $x) ($type $x))
+                (($link $x $y) 
+                                (let* (
+                                    ( ($link $x $y) $p)
+                                    ( $nx (collapse (depth-handler $x)))
+                                    ( $ny (if (== $x $y) $nx (collapse (depth-handler $y))))
+                                )
+                                (superpose (
+                                        ($link (superpose $nx) $w)
+                                        ($link $z (superpose $ny))
+                                        ($link $x $u)
+                                        ($link $k $y)
+                                        $d
+                                        (if (== $x $y) ($link $g $g) ($link $g $o))
+                                        ($link (superpose $nx) (superpose $ny))
+                                    ))) 
+                )))
+                ))
+
 
 -------------------------------------------------------------------------------
 ; build-specialization

@@ -111,3 +111,22 @@ $cnd
 ; !(test_ABAB)
 ; !(intersection (test_ABAB) (superpose ((Implication (Inheritance Z (S Z)) (Inheritance Z (S Z))))))
 
+(= (test_AAAA)
+    (let*(
+        ($dbadd1 (add-atom &testspace (Inheritance A A)))
+        ($dbadd2 (add-atom &testspace (Inheritance B B)))
+        ($dbadd5 (add-atom &testspace (Implication (Inheritance A A) (Inheritance A A))))
+        ($dbadd6 (add-atom &testspace (Implication (Inheritance B B) (Inheritance B B))))
+        ($res (collapse (frequency-pattern-miner &testspace &specspace &cndpspace &aptrnspace &conjspace 2 0 False)))
+        ($dbrem1 (remove-atom &testspace (Inheritance A A)))
+        ($dbrem2 (remove-atom &testspace (Inheritance B B)))
+        ($dbrem5 (remove-atom &testspace (Implication (Inheritance A A) (Inheritance A A))))
+        ($dbrem6 (remove-atom &testspace (Implication (Inheritance B B) (Inheritance B B))))
+        ; ($cnd (match &kb $pattern $pattern))
+        ($cnd (match &cndpspace (CandidatePattern $pattern $cnt) $pattern))
+    )
+$cnd
+    )
+)
+
+!(test_AAAA)
