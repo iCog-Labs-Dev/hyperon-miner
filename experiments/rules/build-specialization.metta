@@ -1,9 +1,10 @@
 ;  ! (register-module! ../../../hyperon-miner)
 ;  ! (import! &dbspace hyperon-miner:experiments:data:sample-data)
 ;  ! (import! &self hyperon-miner:experiments:utils:common-utils)
+; ;  !(import! &self use-python)
 ;  ! (bind! &specspace (new-space))
-;  ! (bind! &specredspace (new-space))
 ! (import! &self freq-pat)
+
 
 
 ; function name: depth-handler
@@ -18,7 +19,7 @@
                     ; 3. if it is an expression, destructure the pattern and handle the depth of the pattern by recursively getting all combinations of the variables and symbols of the pattern
 (= (depth-handler $p)
     (if (not (== (get-metatype $p) Expression))
-        $p
+       $p
         (case $p
             (
                 (($type $x) ($type $x))
@@ -64,12 +65,14 @@
                     ( ($link $x1 $y1) (replacev ($link $x $y)))                            ; replacev is a function that replaces index with variables
                     ( ($subx $suby) (match $dbspace ($link $x1 $y1) ($x1 $y1)))            ; getting the substitution /valuation of the pattern
                     ($shabx (depth-handler $subx))                                    ;handle depth in the x node
-                    ($shaby (depth-handler $suby))                                    ; handle depth in the y node
-                    ;  (() (println! (shab-⍃ ($shabx $shaby))))                                   
+                     (() (println! (shabx-⍃ $shabx)))                                  
+                    ($shaby (if (== $subx $suby) $shabx (depth-handler $suby)))   
+                    ; ($shaby (depth-handler $suby))                                 ; handle depth in the y node
+                     (() (println! (shaby-⍃ $shaby)))                                 
                     ($spec1 (replace (SpecializationOf ($link $shabx $y1) ($link $x $y)))) ;build the specialization and change the variables to indexs 
                     ($spec2 (replace (SpecializationOf ($link $x1 $shaby) ($link $x $y)))) ;build the specialization and change the variables to indexs
                     ; (() (println! (shab-⍃ ($spec1 $spec2))))
-                     ; ($spec3 (replace (SpecializationOf ($link $shabx $shaby) ($link $x $y)))) ;optional
+                     ($spec3 (replace (SpecializationOf ($link $shabx $shaby) ($link $x $y)))) ;optional
                 )
             (
                 superpose (
@@ -77,8 +80,8 @@
                     (add-atom $specspace $spec1) ; add the new specialization
                     (remove-atom $specspace $spec2)
                     (add-atom $specspace $spec2)
-                    ; (remove-atom $specspace $spec3)
-                    ; (add-atom $specspace $spec3)
+                    (remove-atom $specspace $spec3)
+                    (add-atom $specspace $spec3)
 
                 )
 
