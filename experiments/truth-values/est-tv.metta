@@ -248,7 +248,7 @@
 ;;     all partitioned estimations of the pattern.
 ;; =============================================================================
 
-(=(do-ji-tv-est $db $pattern $emp) (
+(=(do-ji-tv-est $db $pattern) (
     let $prtns (generet-partition-without-pattern $pattern)  
           ( let* (
             (() (println! (Inest $pattern)))
