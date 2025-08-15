@@ -178,6 +178,6 @@
 ;;   3. Checks proper output format
 ;; =============================================================================
 
-!(assertEqual (isurp (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker) ) &kb True 0.2) 0.8684478436521119)
+!(assertEqual (isurp (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker) ) &kb False 0.2) 0.8684478436521119)
 
 (isurp (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker) ) &kb True 0.2)

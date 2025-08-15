@@ -77,7 +77,7 @@
 -----------------------------------------------------------------------------
 (= (syn $kb $_ (: $prf (prob-cpu  $pattern $prob))) 
     (let $dbb (match $kb (db-ref $db) $db)
-    (: CPUPROB (prob-cpu  $pattern (prob $pattern  $dbb) ))
+    (: CPUPROB (prob-cpu  $pattern (prob $pattern $dbb) ))
     ) 
 )
 

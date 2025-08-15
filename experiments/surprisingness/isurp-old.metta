@@ -70,7 +70,7 @@
 ;   - $db: The database in which the pattern is evaluated.
 ; Returns:
 ;   - The probability value as a ratio of the pattern's support to its total possible count.
-(=(prob $pattern $db $total_count) (// (sup-num $db $pattern) $total_count))
+(= (prob $pattern $db $total_count) (// (sup-num $db $pattern) $total_count))
 
 
 ;;Converts a list of blocks into a conjunctive pattern
@@ -144,7 +144,7 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
 (: isurpo-old (-> Pattern Space Boolean Number)) 
 (= (isurp-old $pattern $db $normalize) (
     let* (
-        (() (println! (called-for $pattern)))
+        (() (println! "==== isurp-old surprisingness ====="))
         ($total_count (total_counts $pattern $db))
         ($pattern_prob (prob $pattern $db $total_count))
         ($partitions (generet-partition-without-pattern $pattern))
@@ -152,7 +152,7 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
         (($emin $emax) (min-max $results))
         ($dst (dst_from_interval $emin $emax $pattern_prob))
     ) 
-         (min ((if $normalize (// $dst $pattern_prob) $dst) 1.0))       
+         (min ((if $normalize (// $dst (max $emax $pattern_prob)) $dst) 1.0))       
 ) )
 
 

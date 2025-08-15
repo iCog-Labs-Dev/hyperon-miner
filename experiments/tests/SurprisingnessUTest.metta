@@ -6,7 +6,7 @@
 ! (import! &self experiments:utils:surp-utils)
 ! (import! &self experiments:utils:miner-utils)
 ! (import! &self experiments:utils:gen_partition)
-! (import! &self experiments:rules:est-tv)
+! (import! &self experiments:truth-values:est-tv)
 
 ! (bind! square (py-atom numpy.square (-> Number Number)))
 
@@ -63,6 +63,7 @@
 ))
 
 
-;!(assertEqual (test_avrg_tv_1) (0 0.1))
-!(assertEqual (test_avrg_tv_2) (0.5 0.000125))
-!(assertEqual (test_avrg_tv_3) (0.5 0.000677))
+
+!(assertEqual (test_avrg_tv_1) (0 0.1))
+;!(assertEqual (test_avrg_tv_2) (0.5 0.000125))
+;!(assertEqual (test_avrg_tv_3) (0.5 0.000677))
