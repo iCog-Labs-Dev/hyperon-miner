@@ -6,6 +6,11 @@
 ! (import! &self experiments:utils:surp-utils)
 ! (import! &self experiments:utils:miner-utils)
 ! (import! &self experiments:utils:gen_partition)
+! (import! &self experiments:truth-values:est-tv)
+! (import! &self experiments:truth-values:emp-tv)
+! (import! &kb experiments:data:ugly_man_sodaDrinker)
+
+! (bind! square (py-atom numpy.square (-> Number Number)))
 
 
 ; The slight diffrences in the expected variance from the classic miner vs what we are getting in the ported version most likely arises from the approximations we used for contants.
@@ -104,7 +109,4 @@
 ;  !(assertEqual (test_avrg_tv_3) (1 0.0006774324781404488))
 
 ;==================================
-
-
-
 
