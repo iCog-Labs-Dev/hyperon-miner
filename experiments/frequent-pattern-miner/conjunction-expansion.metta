@@ -199,6 +199,14 @@
  ================= alpha convert end ================================
 
 
+; (= (expand_conjunction_rec $cnjtion $apat $db $ms)
+;     (let* (
+;         ($npat (expand_conjunction_connect $cnjtion $apat (get_variable_for_pattern $cnjtion) (get_variable_for_pattern $apat)))
+;         ($result (checker $db $npat $ms)))
+;         ; $npat
+;         $result
+;     )
+; )
 (= (expand_conjunction_rec $cnjtion $apat $db $ms)
     (let $npat (expand_conjunction_connect $cnjtion $apat (get_variable_for_pattern $cnjtion) (get_variable_for_pattern $apat))
          (checker $db $npat $ms)
@@ -229,12 +237,21 @@
    (let* (
    ( () (println! (pattern $pattern)))
    ($flat (flatten $pattern))
+   ($result (sup-eval $db $flat $ms))
+   ($final (if $result $pattern ()))
    ) 
-   (if (sup-eval $db $flat $ms)
-        $pattern
-        ()
-    ))
+  $final)
 )
+; (= (checker $db $pattern $ms) 
+;    (let* (
+;    ( () (println! (pattern $pattern)))
+;    ($flat (flatten $pattern))
+;    ) 
+;    (if (sup-eval $db $flat $ms)
+;         $pattern
+;         ()
+;     ))
+; )
 
 
 (= (remove_alpha_similar $list)
@@ -268,6 +285,20 @@
     )
     )
 )
+
+; (= (remove_conjuncts_with_redundant_clauses $conjunction) 
+;     (let* (
+;         ($conjuncts (get-conjuncts $conjunction))
+;         ($uselessrem (remove_useless_clauses $conjuncts))
+;         ($debconj (replace $uselessrem))
+;         ($unique_conjuncts (unique-atom $debconj))
+;         )
+;     (if (== (size-atom $conjuncts) (size-atom $unique_conjuncts))
+;         $conjunction
+;         ()
+;     )
+;     )
+; )
 
 
 (= ( expand_conjunction_disconnect $cnjtion $pattern ) (
@@ -306,14 +337,47 @@
 ; returns:
 ; a superpose of conjunctions that satisfy the minimum support and are not redundant.
 ;(: do-conjunct space space conj_pattern Number debruijin-index Atom)
+; (= (do-conjunct $db $cndb $coming_conj  $ms Z)
+;     (let* (
+;         (() (println! ("==== Build conjunction with depth 0 ====" $coming_conj)))
+;         ($conjunct (replacev $coming_conj))
+;         ($matches (match $cndb (CandidatePattern $pattern) (replacev $pattern)))
+;         ($listconj (expand_conjunction $conjunct $matches $db $ms 2 False))
+;         ($debconj (replace $listconj))
+;         ($fitlered (remove_conjuncts_with_redundant_clauses $debconj))
+;     )
+;     $fitlered
+;     )
+; )
+
+; (= (do-conjunct $db $cndb $coming_conj $ms (S $K))
+;     (let* (
+;         (() (println! ("==== Build conjunction with depth greater than 0 =====" $coming_conj)))
+;         ($conjunct (replacev $coming_conj))
+;         ($matches (match $cndb (CandidatePattern $pattern) (replacev $pattern)))
+;         ($listconj (expand_conjunction $conjunct $matches $db $ms 2 False))
+;         ($debconj (replace $listconj))
+;         ($fitlered (remove_conjuncts_with_redundant_clauses $debconj))
+;         ($varconj (replacev $fitlered))
+;         ($conj (do-conjunct $db $cndb $varconj $ms $K))
+;     )
+;     $conj
+;     )
+; )
+(= (do-conjunct $db $cndb () $ms $_)
+()
+)
+
 (= (do-conjunct $db $cndb $coming_conj  $ms Z)
     (let* (
-        (() (println! "==== Build conjunction with depth 0 ===="))
+        (() (println! ("==== Build conjunction with depth 0 ====" $coming_conj)))
         ($conjunct (replacev $coming_conj))
-        ($matches (match $cndb (CandidatePattern $pattern) (replacev $pattern)))
+        ($matches (match $cndb (CandidatePattern $pattern $cnt) (replacev $pattern)))
         ($listconj (expand_conjunction $conjunct $matches $db $ms 2 False))
+        (() (println! ("====list_conj" $listconj)))
         ($debconj (replace $listconj))
         ($fitlered (remove_conjuncts_with_redundant_clauses $debconj))
+        (() (println! ("==== Filtered conjunctions ====" $fitlered)))
     )
     $fitlered
     )
@@ -321,9 +385,9 @@
 
 (= (do-conjunct $db $cndb $coming_conj $ms (S $K))
     (let* (
-        (() (println! "==== Build conjunction with depth greater than 0 ====="))
+        (() (println! ("==== Build conjunction with depth greater than 0 =====" $coming_conj)))
         ($conjunct (replacev $coming_conj))
-        ($matches (match $cndb (CandidatePattern $pattern) (replacev $pattern)))
+        ($matches (match $cndb (CandidatePattern $pattern $cnt) (replacev $pattern)))
         ($listconj (expand_conjunction $conjunct $matches $db $ms 2 False))
         ($debconj (replace $listconj))
         ($fitlered (remove_conjuncts_with_redundant_clauses $debconj))
@@ -333,6 +397,35 @@
     $conj
     )
 )
+
+; (= (do-conjunct $db $cndb $coming_conj  $ms Z)
+;     (let* (
+;         (() (println! ("==== Build conjunction with depth 0 ====" $coming_conj)))
+;         ($conjunct (replacev $coming_conj))
+;         ($matches (match $cndb (CandidatePattern $pattern $cnt) (replacev $pattern)))
+;         ($listconj (expand_conjunction $conjunct $matches $db $ms 2 False))
+;         (() (println! ("====list_conj" $listconj)))
+;         ($fitlered (remove_conjuncts_with_redundant_clauses $listconj))
+;         (() (println! ("==== Filtered conjunctions ====" $fitlered)))
+;         ($final (replace $fitlered))
+
+;     )
+;     $final
+;     )
+; )
+
+; (= (do-conjunct $db $cndb $coming_conj $ms (S $K))
+;     (let* (
+;         (() (println! ("==== Build conjunction with depth greater than 0 =====" $coming_conj)))
+;         ($conjunct (replacev $coming_conj))
+;         ($matches (match $cndb (CandidatePattern $pattern $cnt) (replacev $pattern)))
+;         ($listconj (expand_conjunction $conjunct $matches $db $ms 2 False))
+;         ($fitlered (remove_conjuncts_with_redundant_clauses $listconj))
+;         ($conj (do-conjunct $db $cndb $fitlered $ms $K))
+;     )
+;     $conj
+;     )
+; )
 
 (= (add-atom-local $space $atom)
    (case (match $space $atom $atom)
@@ -355,25 +448,57 @@
 ;; 3: create a flattened conjunction  using cons-atom with the sorted conjunctions and ,.
 ;; 4: add the results to the knowledge base with their support
 ;(: formatter (-> space space Number Atom ))
-(= (formatter  $conjspace $dbspace $depth) 
-   (let* (
+; (= (formatter  $conjspace $dbspace $depth) 
+;    (let* (
+;         (() (println! "==== Formating  started ====="))
+;         ($sorted  (match $conjspace $pattern (sort_conj $pattern)))
+;         ($res  (cons-atom ,  $sorted))
+;         ($formatted (format-helper $res $dbspace (fromNumber $depth)))
+;     ) (case $formatted (
+;                 ((supportOf $x 1) (empty) )
+;                ($_  $formatted)))
+; ))
+
+(= (formatter $conjspace $dbspace) 
+    (let* (
         (() (println! "==== Formating  started ====="))
-        ($sorted  (match $conjspace $pattern (sort_conj $pattern)))
-        ($res  (cons-atom ,  $sorted))
-        ($formatted (format-helper $res $dbspace (fromNumber $depth)))
-    ) (case $formatted (
-                ((supportOf $x 1) (empty) )
-               ($_  $formatted)))
-))
+        ($sorted (unique (match $conjspace $pattern (sort_conj $pattern))))
+        ; ($sorted (match $conjspace $pattern $pattern))
+        ($res (cons-atom , $sorted))
+        ($var (replacev $res))
+        ($sup (sup-num $dbspace $var))
+        ($final (supportOf $var $sup))
+    )
+    $final
+    ; $res
+    ; $sorted
+    ; (add-atom $kb (supportOf $res (sup-num $dbspace (replacev $res))))
+)
+)
+
 
 -----------------------------------------------
 ;; conjunct 
 -----------------------------------------------
 ;; function to extract candidate patterns and call do-conjunct 
 ;(: conjunct (-> space space space Number Number Atom))
-(= (conjunct $dbspace $cndpspace $conjspace $minsup $depth )   
-      (let $pattern (match $cndpspace (CandidatePattern $Cpattern) $Cpattern)
-                   (let $conj  (do-conjunct $dbspace $cndpspace  $pattern $minsup (fromNumber $depth)) 
-                             (if (== $conj ()) () (add-atom $conjspace  $conj)))))   
+; (= (conjunct $dbspace $cndpspace $conjspace $minsup $depth )   
+;       (let $pattern (match $cndpspace (CandidatePattern $Cpattern) $Cpattern)
+;                    (let $conj  (do-conjunct $dbspace $cndpspace  $pattern $minsup (fromNumber $depth)) 
+;                              (if (== $conj ()) () (add-atom $conjspace  $conj)))))   
 
+(= (conjunct $dbspace $cndpspace $conjspace $minsup $depth )   
+     (match $cndpspace (CandidatePattern $pattern $cnt)
+                   (let* (
+                        (() (println! ("==== Conjuntion expansion started")))
+                        ($conj  (do-conjunct $dbspace $cndpspace  $pattern $minsup (fromNumber $depth)))
+                        ($reduct (if (== $conj ()) () (add-atom $conjspace $conj)))
+                        )$reduct
+                    )
+        ))
+   
+; (= (conjunct $dbspace $cndpspace $conjspace $minsup $depth )   
+;       (let $pattern (match $cndpspace (CandidatePattern $Cpattern $cnt) $Cpattern)
+;                    (let $conj  (do-conjunct $dbspace $cndpspace  $pattern $minsup (fromNumber $depth)) 
+;                              (if (== $conj ()) () (add-reduct $conjspace $conj))))) 
    
