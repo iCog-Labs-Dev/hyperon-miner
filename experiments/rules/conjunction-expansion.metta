@@ -381,9 +381,9 @@
 
 (= (formatter $kb $conjspace $dbspace) 
     (let* (
+        (() (println! "==== Formating  started ====="))
         ($sorted (unique (match $conjspace $pattern (sort_conj $pattern))))
         ($res (cons-atom , $sorted))
-        
     )
     (add-atom $kb (supportOf $res (sup-num $dbspace (replacev $res))))
 )

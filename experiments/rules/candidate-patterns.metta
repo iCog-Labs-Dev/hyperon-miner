@@ -17,6 +17,7 @@
 (= (candidatePattern $dbspace $spezspace $minsup $cndpspace)
     (match $spezspace (SpecializationOf $specialized $pattern)
         (let* (
+                (() (println! (here in candidatePattern)))
                 ( $specializedvar (replacev $specialized))
                 ($result (sup-eval $dbspace $specializedvar $minsup))
             )

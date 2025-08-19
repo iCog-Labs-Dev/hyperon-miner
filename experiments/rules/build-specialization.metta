@@ -71,8 +71,8 @@
                      (() (println! (shaby-⍃ $shaby)))                                 
                     ($spec1 (replace (SpecializationOf ($link $shabx $y1) ($link $x $y)))) ;build the specialization and change the variables to indexs 
                     ($spec2 (replace (SpecializationOf ($link $x1 $shaby) ($link $x $y)))) ;build the specialization and change the variables to indexs
-                    ; (() (println! (shab-⍃ ($spec1 $spec2))))
                      ($spec3 (replace (SpecializationOf ($link $shabx $shaby) ($link $x $y)))) ;optional
+                    (() (println! (shab-⍃ ($spec0 $spec1 $spec2 $spec3))))
                 )
             (
                 superpose (
