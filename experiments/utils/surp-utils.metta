@@ -54,8 +54,8 @@
               (($head $tail) (decons-atom $pattern_list))
               ($new_head (remove-parenthesis $head)) ;; to remove unnecessary parenthesis if there is any
               ($emp_value (
-                 unify (Inheritance $x $y) $new_head  (emp-tv $new_head $db) 
-                       (chain (conjunct-pattern $new_head $db) $ptrn (emp-tv $ptrn $db))));;conjunct if it is not single pattern 
+                 unify ($link $x $y) $new_head  (emp-tv $new_head $db) 
+                       (chain (cons-atom , $new_head) $ptrn (emp-tv $ptrn $db))));;conjunct if it is not single pattern
               ($dummy (emp_tv_mem $tail $db))
         )  
             (cons-atom  $emp_value $dummy)
