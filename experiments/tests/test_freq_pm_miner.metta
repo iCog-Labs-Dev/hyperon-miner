@@ -1,10 +1,15 @@
 ! (register-module! ../../../hyperon-miner)
 ; ! (import! &db hyperon-miner:experiments:data:sample-data)
-! (import! &db hyperon-miner:experiments:data:ugly_man_sodaDrinker)
-; ! (import! &db hyperon-miner:experiments:data:small-ugly)
+; ! (import! &db hyperon-miner:experiments:data:ugly_man_sodaDrinker)
+! (import! &db hyperon-miner:experiments:data:small-ugly)
 ; ! (import! &self hyperon-miner:experiments:rules:conjunction-expansion)
 ! (import! &self hyperon-miner:experiments:frequent-pattern-miner:frequent-pattern-miner)
+! (import! &self hyperon-miner:experiments:rules:use-python)
 ! (import! &self hyperon-miner:experiments:utils:common-utils)
+! (import! &self hyperon-miner:experiments:utils:remove_useless_clauses)
+! (import! &self hyperon-miner:experiments:utils:index_to_var)
+! (import! &self hyperon-miner:experiments:utils:blk-abstractness)
+! (import! &self hyperon-miner:experiments:utils:gen_partition)
 ; ! (import! &self hyperon-miner:experiments:utils:variable-combinations)
 ! (bind! &kb (new-space))
 ! (bind! &dbspace (new-space))
@@ -13,6 +18,7 @@
 ! (bind! &cndpspace (new-space))
 ! (bind! &aptrnspace (new-space))
 ! (bind! &conjspace (new-space))
+! (bind! &linkspace (new-space))
 
 !(let ($link $x $y) (get-atoms &db) (add-atom &dbspace ($link $x $y)))
 
@@ -113,20 +119,61 @@ $cnd
 
 (= (test_AAAA)
     (let*(
-        ($dbadd1 (add-atom &testspace (Inheritance A A)))
-        ($dbadd2 (add-atom &testspace (Inheritance B B)))
+        ; ($dbadd1 (add-atom &testspace (Inheritance A A)))
+        ; ($dbadd2 (add-atom &testspace (Inheritance B B)))
         ($dbadd5 (add-atom &testspace (Implication (Inheritance A A) (Inheritance A A))))
         ($dbadd6 (add-atom &testspace (Implication (Inheritance B B) (Inheritance B B))))
         ($res (collapse (frequency-pattern-miner &testspace &specspace &cndpspace &aptrnspace &conjspace 2 0 False)))
-        ($dbrem1 (remove-atom &testspace (Inheritance A A)))
-        ($dbrem2 (remove-atom &testspace (Inheritance B B)))
+        ; ($dbrem1 (remove-atom &testspace (Inheritance A A)))
+        ; ($dbrem2 (remove-atom &testspace (Inheritance B B)))
         ($dbrem5 (remove-atom &testspace (Implication (Inheritance A A) (Inheritance A A))))
         ($dbrem6 (remove-atom &testspace (Implication (Inheritance B B) (Inheritance B B))))
         ; ($cnd (match &kb $pattern $pattern))
+        ; ($cnd (match &conjspace $pattern $pattern))
         ($cnd (match &cndpspace (CandidatePattern $pattern $cnt) $pattern))
+        ; ($abs (match &aptrnspace (AbstractPattern $pattern) $pattern))
+        ; ($cnd (match &linkspace $link $link))
     )
 $cnd
+; $res
     )
 )
 
-!(test_AAAA)
+; !(test_AAAA)
+; !(assertEqual (intersection (test_AAAA) (superpose ((Implication (Inheritance Z Z) (Inheritance Z Z))))) (superpose ((Implication (Inheritance Z Z) (Inheritance Z Z)))))
+
+
+(= (test_transitivity)
+    (let*(
+        ($dbadd1 (add-atom &testspace (Inheritance A B)))
+        ($dbadd2 (add-atom &testspace (Inheritance B C)))
+        ($res (collapse (frequency-pattern-miner &testspace &specspace &cndpspace &aptrnspace &conjspace 1 0 True)))
+        ($dbrem1 (remove-atom &testspace (Inheritance A B)))
+        ($dbrem2 (remove-atom &testspace (Inheritance B C)))
+        ; ($cnd (match &conjspace $pattern $pattern))
+    )$res)
+)
+
+!(test_transitivity)
+; !(assertEqual (intersection (test_transitivity) (superpose ((, (Inheritance Z (S Z)) (Inheritance (S Z) (S (S Z))))))) (superpose ((, (Inheritance Z (S Z)) (Inheritance (S Z) (S (S Z)))))))
+
+; !(frequency-pattern-miner &dbspace &specspace &cndpspace &aptrnspace &conjspace 2 0 True)
+
+(= (test_long_transitivity)
+    (let*(
+        ($dbadd1 (add-atom &testspace (Inheritance A B)))
+        ($dbadd2 (add-atom &testspace (Inheritance B C)))
+        ($dbadd2 (add-atom &testspace (Inheritance C D)))
+        ($res (collapse (frequency-pattern-miner &testspace &specspace &cndpspace &aptrnspace &conjspace 1 1 True)))
+        ($dbrem1 (remove-atom &testspace (Inheritance A B)))
+        ($dbrem2 (remove-atom &testspace (Inheritance B C)))
+        ($dbrem2 (remove-atom &testspace (Inheritance C D)))
+        ($cnd (match &conjspace $pattern $pattern))
+    )$cnd)
+)
+
+; !(test_long_transitivity)
+
+
+; !(remove_useless_clauses ((Inheritance $o89 $g09) (Inheritance A $g09)))
+; !(remove_conjuncts_with_redundant_clauses (,(Inheritance $o89 $g09) (Inheritance A $g09)))
