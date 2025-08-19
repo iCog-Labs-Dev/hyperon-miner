@@ -74,13 +74,10 @@
             (let* (
                 ($pivot (car-atom $patterns))
                 ($rest (cdr-atom $patterns))
-                ($_ (println! (Rest $rest)))
 
                 ($more-abstract (filter-more-abstract $rest $pivot $var))
                 ($less-abstract (filter-less-abstract $rest $pivot $var))
-                ($_ (println! (More-abstract $more-abstract)))
-                ($_ (println! (less-abstract $less-abstract)))
-                ($_ (println! (PIVOT $pivot)))
+        
 
                 ($sorted-less (sort-by-abstraction $less-abstract $var))
                 ($sorted-more (sort-by-abstraction $more-abstract $var))
@@ -106,8 +103,9 @@
     (if (== $patterns ())
         ()
         (let* (
-
             ($head (car-atom $patterns))
+            ($is-head-abstract (is-blk-more-abstract $head $pivot $var))
+            ($copyHead (car-atom $patterns))
             ($copyHead (car-atom $patterns))
             ($tail (cdr-atom $patterns))
             ($rest-filtered (filter-more-abstract $tail $pivot $var))
@@ -201,7 +199,7 @@
 ;;   4. For each block after the first, find most specialized abstract block
 ;;   5. Calculate probability based on value counts
 ;; =============================================================================
-(: eq-prob (-> Expression Expression Expression Number))
+; (: eq-prob (-> Expression Expression Expression Number))
 (= (eq-prob $partition $pattern $db)
     (let $joint-vars (joint-variables $pattern $partition)
         (calculate-prob-for-vars $joint-vars $partition $db 1.0)))
@@ -221,18 +219,18 @@
 ;; Returns:
 ;;   Final probability after processing all variables
 ;; =============================================================================
-(: calculate-prob-for-vars (-> Expression Expression Expression Number Number))
+; (: calculate-prob-for-vars (-> Expression Expression Expression Number Number))
 (= (calculate-prob-for-vars $vars $partition $db $p)
     (if (== $vars ())
         $p
         (let* (
-            ($var (car-atom $vars))
-            ($remaining-vars (cdr-atom $vars))
-            ($var-partition (connected-subpatterns-with-var $partition $var))
-            ($sorted-partition (sort-by-abstraction $var-partition $var))
-            ($new-p (process-blocks $sorted-partition $var $db $p 1))
+            
+            ($var-partition (connected-subpatterns-with-var $partition (car-atom $vars)))
+            ($sorted-partition (sort-by-abstraction $var-partition (car-atom $vars)))
+            ($new-p (process-blocks $sorted-partition (car-atom $vars) $db $p 1))
         )
-        (calculate-prob-for-vars $remaining-vars $partition $db $new-p))))
+        (calculate-prob-for-vars (cdr-atom $vars) $partition $db $new-p))))
+
 
 ;; =============================================================================
 ;; Function: process-blocks
@@ -262,7 +260,8 @@
                 ($c (if (>= $i 0)
                         (let $i-blk (index-atom $sorted-partition $i)
                             (value-count $i-blk $var $db))
-                        (size-atom (get-atoms $db))))  ; Use |U| = db.size() as fallback
+                        (let $U (collapse (get-atoms $db)) (size-atom $U))))  ; Use |U| = db.size() as fallback
+                ($j-blk-count (value-count $j-blk $var $db))
                 ($new-p (/ $p $c))
             )
             (process-blocks $sorted-partition $var $db $new-p (+ $j 1))))))
@@ -330,14 +329,29 @@
 (= (extract-vars-from-pattern $pattern $acc)
     (if (== $pattern ())
         $acc
-        (let* (
+        (if (== (car-atom $pattern) ,) 
+           (let* (
+            ($pattern-wout-and (cdr-atom $pattern))
+            ($current-expr (car-atom $pattern-wout-and))
+            ($remaining (cdr-atom $pattern-wout-and))
+            ($expr-vars (extract-vars-from-expr $current-expr))
+            ($new-acc (merge-list $acc $expr-vars))
+        )
+        (extract-vars-from-pattern $remaining $new-acc))
+
+           (let* (
             ($current-expr (car-atom $pattern))
             ($remaining (cdr-atom $pattern))
             ($expr-vars (extract-vars-from-expr $current-expr))
             ($new-acc (merge-list $acc $expr-vars))
         )
-        (extract-vars-from-pattern $remaining $new-acc))))
+        (extract-vars-from-pattern $remaining $new-acc))
+        )
 
+     
+    )
+)
+1
 ;; Extract variables from a single expression
 (: extract-vars-from-expr (-> Expression Expression))
 (= (extract-vars-from-expr $expr)
@@ -443,43 +457,3 @@
 
 
 
-
-
-! (add-reduct &self (= (get-space) (new-space)))
-! (add-atom (get-space) (Inheritance Abe human))
-! (add-atom (get-space) (Inheritance Rio human))
-! (add-atom (get-space) (Inheritance Bob human))
-! (add-atom (get-space) (Inheritance Mike human))
-!(add-atom (get-space) (Eyob $x Meti))
-
-
-
-; (= (eq-prob $partition $pattern $db)
-; !(can-unify ((Inheritance $x human) (Inheritance Rio $y)) ((Inheritance Abe $y)))
-; !(can-unify ((Inheritance $x human))  ((Inheritance $x human)))
-
-; !(sort-by-abstraction (((Human $x Chala)) ((Human $x $y)) ((Human Eyob Chala)) ) $x)
-
-; !(match (get-space) (Eyob $y $z) ($z $y))
-
-; !(can-unify ((Human $x $z)) ((Human $x Chala)))
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-
-; !(partition (A B C))
-
-; (
-;     ((A B C)) 
-;     ((A B) (C)) 
-;     ((A C) (B)) 
-;     ((A) (B) (C)) 
-;     ((A) (B C))
-; )
-
-
-; !(is-blk-syntax-more-abstract ((Inheritance $y $x)) ((Inheritance $z $y)) $y)
