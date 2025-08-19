@@ -108,7 +108,8 @@
   
   ($p (pro-prob-wout-joint $partition $db $db_ratio 1))
   ($db-size (db_size $db))
-  ($eq_prob (eq-prob-py $partition $pattern $db-size))
+  ; ($eq_prob (eq-prob-py $partition $pattern $db-size)) ; TODO: for fast excution use eq-prob-py
+  ($eq_prob (eq-prob $partition $pattern $db))
   )
   (* $p $eq_prob)
 
@@ -201,8 +202,8 @@
 ;;   Returns a pair (emin emax) representing the estimated probability range
 ;; ==============================================================
 (=(ji_prob_est_interval $pattern $db $db_ratio) (
-   let ($emin $emax) (min-max  (do-ji-prob (generet-partition-without-pattern $pattern) $pattern $db $db_ratio))
-        ($emin $emax)
+   let $_ (println! (ji_prob_est_interval is called with pattern $pattern)) (let ($emin $emax) (min-max  (do-ji-prob (generet-partition-without-pattern $pattern) $pattern $db $db_ratio))
+        ($emin $emax))
 ))
 
 
@@ -258,3 +259,4 @@
 
 
 
+ 
