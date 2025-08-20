@@ -1,6 +1,6 @@
-! (register-module! ../../../hyperon-miner)
-! (import! &self hyperon-miner:experiments:utils:common-utils)
-! (import! &self hyperon-miner:experiments:rules:freq-pat)
+; ! (register-module! ../../../hyperon-miner)
+; ! (import! &self hyperon-miner:experiments:utils:common-utils)
+; ! (import! &self hyperon-miner:experiments:rules:freq-pat)
 
 
 (= (debruijn2num Z) 0)

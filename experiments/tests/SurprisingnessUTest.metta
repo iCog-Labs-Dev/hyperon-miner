@@ -8,7 +8,7 @@
 ! (import! &self experiments:utils:gen_partition)
 ! (import! &self experiments:truth-values:est-tv)
 
-! (bind! square (py-atom numpy.square (-> Number Number)))
+;! (bind! square (py-atom numpy.square (-> Number Number)))
 
 ;;Test compose 
 ;; !(assertEqual (compose (Inheritance $y B) (($y A))) (Inheritance A B))
@@ -23,8 +23,8 @@
 
 (=(test_avrg_tv_1)(
     let* (
-       ($tv_1 ((Inheritance Abe $x) (STV 0 0.1)))
-       ($tv_2 ((Inheritance John $x) (STV 0 0.1)))
+       ($tv_1  (STV 0 0.1))
+       ($tv_2  (STV 0 0.1))
        ($result (avrg_tv ($tv_1 $tv_2)))
 
     )
@@ -32,11 +32,13 @@
 ))
 
 
+
+
 (=(test_avrg_tv_2)(
     let* (
-       ($tv_1 ((Inheritance Abe $x) (STV 0 0.1)))
-       ($tv_2 ((Inheritance John $x) (STV 1 0.1)))
-       ($result (avrg_tv ($tv_1 $tv_2)))
+       ($tv_1  (STV 0 0.1))
+       ($tv_2  (STV 1 0.1))
+       ($result  (avrg_tv ($tv_1 $tv_2)))
 
     )
     $result 
@@ -45,18 +47,18 @@
 
 (=(test_avrg_tv_3)(
     let* (
-       ($tv_1 ((Inheritance Abe $x) (STV 1 0.001248)))
-       ($tv_2 ((Inheritance John $x) (STV 1 0.001248)))
-       ($tv_3 ((Inheritance John $x) (STV 0 0.001248)))
-       ($tv_4 ((Inheritance John $x) (STV 1 0.001248)))
-       ($tv_5 ((Inheritance John $x) (STV 1 0.001248)))
-       ($tv_6 ((Inheritance John $x) (STV 1 0.001248)))
-       ($tv_7 ((Inheritance John $x) (STV 1 0.001248)))
-       ($tv_8 ((Inheritance John $x) (STV 1 0.001248)))
-       ($tv_9 ((Inheritance John $x) (STV 1 0.001248)))
-       ($tv_10 ((Inheritance John $x) (STV 1 0.001248)))
+       ($tv_1  (STV 1 0.001248))
+       ($tv_2  (STV 1 0.001248))
+       ($tv_3  (STV 0 0.001248))
+       ($tv_4  (STV 1 0.001248))
+       ($tv_5  (STV 1 0.001248))
+       ($tv_6  (STV 1 0.001248))
+       ($tv_7  (STV 1 0.001248))
+       ($tv_8  (STV 1 0.001248))
+       ($tv_9  (STV 1 0.001248))
+       ($tv_10  (STV 1 0.001248))
         
-       ($result (avrg_tv ($tv_1 $tv_2 $tv_3 $tv_4 $tv_5 )))
+       ($result (avrg_tv ($tv_1 $tv_2 $tv_3 $tv_4 $tv_5 $tv_6 $tv_7 $tv_8 $tv_9  $tv_10 )))
 
     )
     $result 
