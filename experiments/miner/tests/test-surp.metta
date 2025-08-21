@@ -44,7 +44,7 @@
 (=(min-sup) 6)
 (=(surp-mode ) isurp-old)
 (=(db-ratio) 0.5)
-(= (normalization) True)
+(= (normalization) False)
 
 
 

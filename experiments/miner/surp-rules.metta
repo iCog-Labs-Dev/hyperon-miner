@@ -116,7 +116,7 @@
 (: dst-from-interval 
        (-> (⍄ $emin $emp) 
           (-> (dst-cpu $emin $emp $dst)
-              (dst $pattern $emp ($emin $emax) $dst))))
+                (dst $pattern $emp ($emin $emax) $dst))))
 
 
 
@@ -141,7 +141,10 @@
 ;; Rule to calculate the old surprisingness value (normalized False).
 (: isurp 
    (-> (normalized False) 
-               (-> (dst $pattern $dst)
-                     (-> (minimum $dst 1.0 $minimum )
-                              (isurp $pattern $minimum )))))
+      (->  (universal-count-of $pattern $count)
+         (-> (empProb $pattern $count $emp)
+             (-> (est-prob $pattern $count ($emin $emax))
+                 (-> (dst $pattern $emp ($emin $emax) $dst)
+                    (-> (minimum $dst 1.0 $minimum )
+                         (isurp $pattern $minimum ))))))))
                                                   
