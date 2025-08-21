@@ -29,13 +29,6 @@
 
 
 
-(=(joint-variables () $partion) ())
-(=(joint-variables $vars  $partion )(
-    let ($head $tail)    (decons-atom $vars)
-       (if   (>= (tuple-count (var-appers $head $partion)) 2) 
-             (let $dummy (joint-variables $tail $partion) (cons-atom $head $dummy)) 
-             (joint-variables $tail $partion))         
-))
 
 
 (=(mk-unique ()) ())
