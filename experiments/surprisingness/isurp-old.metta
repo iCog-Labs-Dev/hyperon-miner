@@ -27,7 +27,7 @@
 ;;   - $db: The database context in which the pattern appears.
 ;; Returns:
 ;;   - The total number of possible combinations based on database size and number of conjunctive clauses.
-(=(total_counts $pattern $db) (cal_binomial (db_size $db) (n_conjuncts_new $pattern)))
+(= (total_counts $pattern $db) (cal_binomial (db_size $db) (n_conjuncts_new $pattern)))
 
 
 (: Pattern Type)

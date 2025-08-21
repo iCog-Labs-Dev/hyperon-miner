@@ -75,9 +75,10 @@
 
 
 -----------------------------------------------------------------------------
-(= (syn $kb $_ (: $prf (prob-cpu  $pattern $prob))) 
+;; emperical probability of a pattern 
+(= (syn $kb $_ (: $prf (prob-cpu  $pattern $ucount $prob))) 
     (let $dbb (match $kb (db-ref $db) $db)
-    (: CPUPROB (prob-cpu  $pattern (prob $pattern $dbb) ))
+    (: CPUPROB (prob-cpu  $pattern $ucount (// (sup-num $dbb $pattern) $ucount) ))
     ) 
 )
 
@@ -109,6 +110,15 @@
     (let $dst (- $x $y)
     (: CPUDST (dst-cpu  $x $y $dst)) ) 
 )
+
+
+------------------------------------------------------------------------
+;; calculates the all possible same number of conjuct pattern 
+(= (syn $kb $_ (: $prf (universal-cpu $pattern $db-size $ucount))) (
+    let $number-of-conjuct (n_conjuncts_new $pattern) 
+       (: CPUUNIVERSAL (universal-cpu $pattern $db-size (cal_binomial $db-size $number-of-conjuct)))
+))
+
 
 -------------------------------------------------------------------------
 ;; create the minimum relation 

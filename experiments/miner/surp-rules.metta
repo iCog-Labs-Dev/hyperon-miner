@@ -57,11 +57,23 @@
                        (-> (est-tv $ptrn $est)
                               (jsdsurp $ptrn (do-jsd $emp $est))))))
 
+
+
+
+--------------------------------------------------------------------
+;; computes the total number of possible combinations 
+(: universal-count 
+ (-> (minsup $pattern)
+     (-> (db-size $db-size) 
+        (-> (universal-cpu $pattern $db-size $ucount)
+               (universal-count-of $pattern $ucount)))))  
+
+
 ----------------------------------------------------------------------
 ;; Rule to calculate the empirical probability of a pattern.
 (: emp-prob-rule 
-   (->  (minsup $pattern) 
-                  (-> (prob-cpu $pattern $prob)
+   (-> (universal-count-of $pattern $ucount)
+                  (-> (prob-cpu $pattern $ucount $prob)
                              (empProb $pattern $prob))))
 
 
@@ -72,7 +84,7 @@
          (-> (partition-cpu $pattern $partitions)
                   (partitions $pattern $partitions))))
 
-                  
+
 ------------------------------------------------------------------------
 ;; Rule to estimate the probability interval for a pattern.(isurp-old)
 (: est-prob-rule 
@@ -80,7 +92,6 @@
             (-> (partitions $pattern $partitions)
                   (-> (est-prob-cpu  $pattern $partitions $emin-emax)
                            (est-prob $pattern  $emin-emax))))) 
-
 
 
 
@@ -92,6 +103,7 @@
                   (-> (db-ratio $db-ratio) 
                         (-> (ji-prob-est-cpu $pattern $partitions $db-ratio $emin-emax)
                               (est-prob $pattern  $emin-emax))))))
+        
                            
 ------------------------------------------------------------------------
 ;; Rule to calculate the distance from the empirical probability to the estimated interval (upper bound).
@@ -112,17 +124,20 @@
                                    (dst $pattern $dst))))))
 
 
+
+
 ------------------------------------------------------------------------
 ;; Rule to calculate the old surprisingness value (normalized True).
 (: isurp 
    (-> (normalized True) 
-      (-> (empProb $pattern $emp)
+      (-> (universal-count $pattern )
+         (-> (empProb $pattern $emp)
               (-> (est-prob $pattern  ($emin $emax)) 
                   (-> (dst $pattern $dst)
                      (-> (maximum $emp $emax $max)
                              (-> (divide $dst $max $normalized) 
                                  (-> (minimum $normalized 1.0 $minimum)
-                                      (isurp $pattern $minimum )))))))))
+                                      (isurp $pattern $minimum ))))))))))
 
 
 

@@ -30,7 +30,7 @@
 ;; load rules , system-proofs and miner-utils ...
 !(import! &temp   experiments:miner:surp-rules)
 !(import! &self  experiments:miner:system-proofs)
-!(import! &self experiments:miner:surp-miner)
+; !(import! &self experiments:miner:surp-miner)
 !(import! &self experiments:miner:miner-utils)
 
 ;;create new space for kb
@@ -46,23 +46,35 @@
 (=(db-ratio) 0.5)
 (= (normalization) True)
 
--------------------------------------------------------
-;; frequent-miner 
--------------------------------------------------------
-;; mocking the frequent pattern miner results 
-(= (frequent-miner  $kb) ( 
-     let*  ( 
-         ;; for new surp 
-         (() (add-atom $kb (: FACT1  (supportOf (, (Inheritance $x human) (Inheritance $x ugly) (Inheritance $x woman)) 1))))
-         (() (add-atom $kb (: FACT2 (supportOf (, (Inheritance $x sodaDrinker) (Inheritance $x human) (Inheritance $x woman)) 1))))
-         (() (add-atom $kb (: FACT3 (supportOf (,  (Inheritance $x human) (Inheritance $x sodaDrinker) (Inheritance $x ugly)) 1))))
-         (() (add-atom $kb (: FACT4 (supportOf (,  (Inheritance $x human) (Inheritance $x sodaDrinker) (Inheritance $x man)) 8))))
+
+
+;; Initialize hyperparameters            
+!(add-atom &kb (: msT (ms-threshold (min-sup))))
+!(add-atom &kb (: dbref (db-ref &db)))
+!(add-atom &kb (: dbr (db-ratio (db-ratio))))
+!(add-atom &kb (surp-mod (surp-mode)))
+!(add-atom &kb (db-ratio (db-ratio)))
+!(add-atom &kb (db-size (db_size &db)))
+!(add-atom &kb (db-ref &db))
+!(add-atom &kb (: surpMode (surp-mode (surp-mode))))
+!(add-reduct &kb (: dbsize (db-size (db_size &db))))
+!(add-reduct &kb (if (normalization)
+                                    (: normalize (normalized True))  
+                                    (: normalize (normalized False))))
+                                
     
-        ) ()
-))
 
 
-!(cog-mine &db &kb (min-sup) (surp-mode ) (normalization)  (db-ratio))
+;; mocking the frequent pattern miner results 
+ !(add-atom &kb (: FACT1  (hasSupport (, (Inheritance $x human) (Inheritance $x ugly) (Inheritance $x woman)) 1)))
+ !(add-atom &kb (: FACT2 (hasSupport (, (Inheritance $x sodaDrinker) (Inheritance $x human) (Inheritance $x woman)) 1)))
+ !(add-atom &kb (: FACT3 (hasSupport (,  (Inheritance $x human) (Inheritance $x sodaDrinker) (Inheritance $x ugly)) 1)))
+ !(add-atom &kb (: FACT4 (hasSupport (,  (Inheritance $x human) (Inheritance $x sodaDrinker) (Inheritance $x man)) 8)))
+
+
+! (syn &kb (fromNumber 17) (: $prf (empProb $pattern $prob)))
+; ! (syn &kb (fromNumber 1) (: $prf (surp-mode $mode)))
+
 ;; Expected result 
  ;(: (((((old-surp normalize) ((emp-prob-rule (((minsupport FACT4) msT) CPU)) CPUPROB)) ((((dst-from-interval ((emp-prob-rule (((minsupport FACT4) msT) CPU)) CPUPROB)) 
  ;((est-prob-rule ((partitions ((emp-prob-rule (((minsupport FACT4) msT) CPU)) CPUPROB)) CPUPARTN)) CPUESTPROB)) CPU) CPUDST)) DIVIDECPU) MINIMUMCPU) 
