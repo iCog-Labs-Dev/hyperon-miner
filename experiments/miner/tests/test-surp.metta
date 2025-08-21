@@ -42,7 +42,7 @@
 
 ;; define hyper parameters 
 (=(min-sup) 6)
-(=(surp-mode ) isurp)
+(=(surp-mode ) isurp-old)
 (=(db-ratio) 0.5)
 (= (normalization) True)
 
@@ -56,7 +56,7 @@
 !(add-atom &kb (db-ratio (db-ratio)))
 !(add-atom &kb (db-size (db_size &db)))
 !(add-atom &kb (db-ref &db))
-!(add-atom &kb (: surpMode (surp-mode (surp-mode))))
+!(add-reduct &kb (: surpMode (surp-mode (surp-mode))))
 !(add-reduct &kb (: dbsize (db-size (db_size &db))))
 !(add-reduct &kb (if (normalization)
                                     (: normalize (normalized True))  
@@ -69,10 +69,10 @@
  !(add-atom &kb (: FACT1  (hasSupport (, (Inheritance $x human) (Inheritance $x ugly) (Inheritance $x woman)) 1)))
  !(add-atom &kb (: FACT2 (hasSupport (, (Inheritance $x sodaDrinker) (Inheritance $x human) (Inheritance $x woman)) 1)))
  !(add-atom &kb (: FACT3 (hasSupport (,  (Inheritance $x human) (Inheritance $x sodaDrinker) (Inheritance $x ugly)) 1)))
- !(add-atom &kb (: FACT4 (hasSupport (,  (Inheritance $x human) (Inheritance $x sodaDrinker) (Inheritance $x man)) 8)))
+ !(add-atom &kb (: FACT4 (hasSupport (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker)) 8)))
 
 
-! (syn &kb (fromNumber 17) (: $prf (empProb $pattern $prob)))
+! (syn &kb (fromNumber 19) (: $prf (isurp $pattern $surp)))
 ; ! (syn &kb (fromNumber 1) (: $prf (surp-mode $mode)))
 
 ;; Expected result 

@@ -91,9 +91,9 @@
 
 ----------------------------------------------------------------------------
 ;; min max estimation of the pattern for isurp old
-(= (syn $kb $_ (: $prf (est-prob-cpu  $pattern $partitions $emin-emax))) 
+(= (syn $kb $_ (: $prf (est-prob-cpu  $pattern $partitions $ucount $emin-emax))) 
     (let $dbb (match $kb (db-ref $db) $db)
-    (: CPUESTPROB (est-prob-cpu   $pattern $partitions (min-max (isurp-old_  $partitions $dbb)))) ) 
+    (: CPUESTPROB (est-prob-cpu   $pattern $partitions $ucount (min-max (isurp-old_  $partitions $dbb $ucount)))) ) 
 )
 
 ----------------------------------------------------------------------------
