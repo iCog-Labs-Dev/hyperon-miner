@@ -53,6 +53,8 @@
     (if (and (and (is-number $X) (is-number $Y)) (<= $X $Y))
           (: CPU (⍃ $X $Y))
              (empty)))
+
+
 ----------------------------------------------------------------------------
 ;; system proof  to calculate the emp-tv for the given pattern. 
 ;; The database is queried here because, when it was placed in the premises, 
@@ -89,11 +91,25 @@
     (: CPUPARTN (partition-cpu  $pattern $partitions)) ) 
 )
 
+
+;; it turns the block into pattern and computes it's probability 
+(= (blk-prob-surp $blk $db $total_count) (
+    let $pattern (cons-atom , $blk) (// (sup-num  $db $pattern) $total_count)
+  ))
+
+;; gives the product of the probability of each block of the partition
+(= (iprob $partition $db $total-count) 
+    (let $list  (collapse  (blk-prob-surp  (superpose $partition) $db $total-count)) (foldl-atom $list 1 $acc $elem (* $acc $elem) ) )                             
+)
+
+
+
 ----------------------------------------------------------------------------
 ;; min max estimation of the pattern for isurp old
 (= (syn $kb $_ (: $prf (est-prob-cpu  $pattern $partitions $ucount $emin-emax))) 
-    (let $dbb (match $kb (db-ref $db) $db)
-    (: CPUESTPROB (est-prob-cpu   $pattern $partitions $ucount (min-max (isurp-old_  $partitions $dbb $ucount)))) ) 
+    (let* (($dbb (match $kb (db-ref $db) $db))
+            ($min-max (let $products (collapse (iprob (superpose $partitions) $dbb $ucount) ) (min-max $products))))
+    (: CPUESTPROB (est-prob-cpu   $pattern $partitions $ucount  $min-max)) ) 
 )
 
 ----------------------------------------------------------------------------

@@ -19,7 +19,6 @@
 
 ;; import surprisingness scoring functions 
 ! (import! &self experiments:surprisingness:isurp)
-! (import! &self experiments:surprisingness:isurp-old)
 ! (import! &self experiments:surprisingness:emp-prob)
 ! (import! &self experiments:surprisingness:jsd)
 
@@ -30,7 +29,6 @@
 ;; load rules , system-proofs and miner-utils ...
 !(import! &temp   experiments:miner:surp-rules)
 !(import! &self  experiments:miner:system-proofs)
-; !(import! &self experiments:miner:surp-miner)
 !(import! &self experiments:miner:miner-utils)
 
 ;;create new space for kb
@@ -60,9 +58,9 @@
 
 (=(remove-params $kb) 
    (superpose (
-    (remove-atom $kb (: msT (ms-threshold $min-sup)))
-   (remove-atom $kb (: dbref (db-ref $db)))
-   (remove-atom $kb (: dbr (db-ratio $db-ratio)))
+(remove-atom $kb (: msT (ms-threshold $min-sup)))
+(remove-atom $kb (: dbref (db-ref $db)))
+(remove-atom $kb (: dbr (db-ratio $db-ratio)))
 (remove-atom $kb (surp-mod $surp-mode))
 (remove-atom $kb (db-ratio $db-ratio))
 (remove-atom $kb (db-size (db_size $db)))
@@ -91,11 +89,13 @@
 
 ; !(println! ("========== isurp-old test without  normalization ==============="))
 ; !(syn &kb (fromNumber 19) (: $prf (isurp $pattern $surp))) 
-!(remove-params &kb) 
+; !(remove-params &kb) 
 ;; Expected result 
-;(: ((((((isurp normalize) (((universal-count (((minsupport FACT4) msT) CPU)) dbsize) CPUUNIVERSAL)) (emp-prob-rule CPUPROB)) 
- ;;(((est-prob-rule surpMode) (partitions CPUPARTN)) CPUESTPROB)) ((dst-from-interval CPU) CPUDST)) MINIMUMCPU) 
- ;;(isurp (, (Inheritance $x#67794 man) (Inheritance $x#67794 ugly) (Inheritance $x#67794 sodaDrinker)) 0.00014607068574401343))
+;;(: ((((((isurp normalize) (((universal-count (((minsupport FACT4) msT) CPU)) dbsize) CPUUNIVERSAL)) 
+;;((emp-prob-rule (((universal-count (((minsupport FACT4) msT) CPU)) dbsize) CPUUNIVERSAL)) CPUPROB)) 
+;;((((est-prob-rule surpMode) (((universal-count (((minsupport FACT4) msT) CPU)) dbsize) CPUUNIVERSAL)) 
+;;(partitions CPUPARTN)) CPUESTPROB)) ((dst-from-interval CPU) CPUDST)) MINIMUMCPU) (
+;;isurp (, (Inheritance $x#58368 man) (Inheritance $x#58368 ugly) (Inheritance $x#58368 sodaDrinker)) 0.00014607068574401343))
 
 ------------------------------------------------------------------------------------
 ;; old-isurprisingnes with normalization 
@@ -112,6 +112,10 @@
 
 ;;Expected result 
 ;;()]
-;(: ((((((((isurp normalize) (((universal-count (((minsupport FACT4) msT) CPU)) dbsize) CPUUNIVERSAL)) (emp-prob-rule CPUPROB)) (
-;;((est-prob-rule surpMode) (partitions CPUPARTN)) CPUESTPROB)) ((dst-from-interval CPU) CPUDST)) MAXIMUMCPU) DIVIDECPU) MINIMUMCPU) 
-;(isurp (, (Inheritance $x#52841 man) (Inheritance $x#52841 ugly) (Inheritance $x#52841 sodaDrinker)) 0.999707773232028))
+;;(: ((((((((isurp normalize) (((universal-count (((minsupport FACT4) msT) CPU)) dbsize) CPUUNIVERSAL)) 
+;;((emp-prob-rule (((universal-count (((minsupport FACT4) msT) CPU)) dbsize) CPUUNIVERSAL)) CPUPROB)) 
+;;((((est-prob-rule surpMode) (((universal-count (((minsupport FACT4) msT) CPU)) dbsize) CPUUNIVERSAL)) (partitions CPUPARTN)) CPUESTPROB)) 
+;;((dst-from-interval CPU) CPUDST)) MAXIMUMCPU) DIVIDECPU) MINIMUMCPU) 
+;;(isurp (, (Inheritance $x#45638 man) (Inheritance $x#45638 ugly) (Inheritance $x#45638 sodaDrinker)) 0.999707773232028))
+
+

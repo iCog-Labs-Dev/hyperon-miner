@@ -46,11 +46,6 @@
    if (== $num_list ()) $prev_value (let ($head $tail) (decons-atom $num_list) (accumulator-x $tail (* $head $prev_value)))
 ))
 
-;;Determines the number of conjunctive clauses in a pattern.
-(=(n_conjuncts_new $pattern) (
-   let ($head $tail) (decons-atom $pattern) (
-    if (== $head ,) (tuple-count $tail) 1)
-))
 
 
 ;;Recursively calculates the support for each component of a 
