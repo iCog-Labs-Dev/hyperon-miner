@@ -27,7 +27,7 @@
 ;;   - $db: The database context in which the pattern appears.
 ;; Returns:
 ;;   - The total number of possible combinations based on database size and number of conjunctive clauses.
-(=(total_counts $pattern $db) (cal_binomial (db_size $db) (n_conjuncts_new $pattern)))
+(= (total_counts $pattern $db) (cal_binomial (db_size $db) (n_conjuncts_new $pattern)))
 
 
 (: Pattern Type)
@@ -46,11 +46,6 @@
    if (== $num_list ()) $prev_value (let ($head $tail) (decons-atom $num_list) (accumulator-x $tail (* $head $prev_value)))
 ))
 
-;;Determines the number of conjunctive clauses in a pattern.
-(=(n_conjuncts_new $pattern) (
-   let ($head $tail) (decons-atom $pattern) (
-    if (== $head ,) (tuple-count $tail) 1)
-))
 
 
 ;;Recursively calculates the support for each component of a 
@@ -74,7 +69,7 @@
 ;   - $db: The database in which the pattern is evaluated.
 ; Returns:
 ;   - The probability value as a ratio of the pattern's support to its total possible count.
-(=(prob $pattern $db $total_count) (// (sup-num $db $pattern) $total_count))
+(= (prob $pattern $db $total_count) (// (sup-num $db $pattern) $total_count))
 
 
 ;;Converts a list of blocks into a conjunctive pattern
@@ -148,7 +143,7 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
 (: isurp-old (-> Pattern SpaceType Bool Number)) 
 (= (isurp-old $pattern $db $normalize) (
     let* (
-        (() (println! (called-for $pattern)))
+        (() (println! "==== isurp-old surprisingness ====="))
         ($total_count (total_counts $pattern $db))
         ($pattern_prob (prob $pattern $db $total_count))
         ($partitions (generet-partition-without-pattern $pattern))
@@ -156,7 +151,7 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
         (($emin $emax) (min-max $results))
         ($dst (dst_from_interval $emin $emax $pattern_prob))
     ) 
-         (min ((if $normalize (// $dst $pattern_prob) $dst) 1.0))       
+         (min ((if $normalize (// $dst (max $emax $pattern_prob)) $dst) 1.0))       
 ) )
 
 

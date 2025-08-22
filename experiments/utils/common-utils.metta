@@ -10,6 +10,14 @@
   unify (, $ncnj $ptrn) $cnj (let $result (get-conjuncts $ncnj) (cons-atom $ptrn $result) ) ($cnj)
 ))
 
+
+
+;;Determines the number of conjunctive clauses in a pattern.
+(=(n_conjuncts_new $pattern) (
+   let ($head $tail) (decons-atom $pattern) (
+    if (== $head ,) (tuple-count $tail) 1)
+))
+
 ;; =============================================================================
 ;; Function: flatten
 ;; -----------------------------------------------------------------------------
