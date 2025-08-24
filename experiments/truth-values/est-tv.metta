@@ -1,4 +1,14 @@
 
+;types
+; (: pro_prob_without_joint (-> SpaceType (BList Pattern) TruthValue))
+; (: estimate_v_xi (-> SpaceType (List Pattern) Number))
+; (: inner_temp (-> SpaceType (BList Pattern) (List Pattern) Number Any (List Number)))
+; (: eq-prob (-> SpaceType Number (BList Pattern) (BList Pattern) Number Number Any Number Number))
+; (: prob-with-joint (-> SpaceType Number (BList Pattern) Any Number Number))
+; (: ji-est-tv (-> SpaceType Number Pattern (PList Pattern) (List TruthValue)))
+
+(: do-ji-tv-est (-> SpaceType Pattern Any TruthValue))
+
 ;; =============================================================================
 ;; Function: pro_prob_without_joint
 ;; -----------------------------------------------------------------------------

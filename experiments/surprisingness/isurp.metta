@@ -1,3 +1,12 @@
+;;types
+; (: emp_prob_pbs_mem (-> Pattern SpaceType Number Number))
+; ; ; (: pro-prob-wout-joint (-> (List Pattern) SpaceType Number Number Number))
+; ; ; (: ji-prob-est (-> (List Pattern) Pattern SpaceType Number Number))
+; ; ; (: do-ji-prob (-> (MList Pattern)) Pattern SpaceType Number (List Number))
+; (: ji_prob_est_interval (-> Pattern SpaceType Number Any))
+; (: isurp (-> Pattern SpaceType Bool Number Number))
+
+
 ;;! (register-module! ../../experiments)
 ;;! (import! &self experiments:utils:common-utils)
 ;;! (import! &self experiments:utils:beta-dist)
@@ -201,10 +210,15 @@
 ;; Return Value:
 ;;   Returns a pair (emin emax) representing the estimated probability range
 ;; ==============================================================
-(=(ji_prob_est_interval $pattern $db $db_ratio) (
-   let $_ (println! (ji_prob_est_interval is called with pattern $pattern)) (let ($emin $emax) (min-max  (do-ji-prob (generet-partition-without-pattern $pattern) $pattern $db $db_ratio))
+; (=(ji_prob_est_interval $pattern $db $db_ratio) (
+;    let $_ (println! (ji_prob_est_interval is called with pattern $pattern)) (let ($emin $emax) (min-max  (do-ji-prob (generet-partition-without-pattern $pattern) $pattern $db $db_ratio))
+;         ($emin $emax))
+; ))
+(=(ji_prob_est_interval $pattern $db $db_ratio) 
+   (let ($emin $emax) (min-max  (do-ji-prob (generet-partition-without-pattern $pattern) $pattern $db $db_ratio))
         ($emin $emax))
-))
+)
+
 
 
 

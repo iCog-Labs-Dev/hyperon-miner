@@ -5,6 +5,34 @@
  ;; Type ;;
  ;;;;;;;;;;
 
+; (: TruthValue Type)
+; (: EMPTV (-> Number Number TruthValue))
+
+(: count_to_confidence (-> Number Number))
+(: emp-tv (-> Pattern SpaceType TruthValue))
+(: prob_to_support (-> Pattern SpaceType Number Number))
+(: support_estimate_calculator (-> Pattern SpaceType Number Number TruthValue))
+(: categorize_by_support_estimate (-> Number Number Number))
+(: emp_tv_pbs (-> Pattern SpaceType Number Number Number Number TruthValue))
+(: sup (-> Pattern SpaceType Number))
+(: ji_tv_est (-> Pattern SpaceType TruthValue))
+(: categorize_subsize (-> Number Number Number))
+(: copy-db (-> SpaceType Any SpaceType))
+(: add_n_atoms_to_db (-> SpaceType Number SpaceType))
+(: copy-and-add-atom (-> SpaceType Number SpaceType))
+(: duplicate-and-expand-space (-> SpaceType Number SpaceType))
+(: copy-db-by-size (-> SpaceType Any Number Number SpaceType))
+(: subsample (-> SpaceType Number SpaceType))
+(: do_emp_tv (-> Pattern SpaceType Number TruthValue))
+(: gen-random (-> Number Number))
+(: get-element (-> Number Any Any))
+(: gen-random-subsample (-> SpaceType Number SpaceType SpaceType))
+(: emp-tv-subsmp (-> Pattern SpaceType Number TruthValue))
+; (: emp-tv-bs-helper (-> Pattern SpaceType Number Number (List TruthValue)))
+(: subsmp-size (-> Pattern Number Number Number Number))
+(: emp-tv-bs (-> Pattern SpaceType Number Number Number TruthValue))
+(: emp-tv-bs (-> Pattern SpaceType Number Number TruthValue))
+(: mk-stv (-> Number Number TruthValue))
 
  ;; =============================================================================
 ;; Type: TruthValue
@@ -12,8 +40,8 @@
 ;; Purpose: Represents a truth value with confidence measurement
 ;; Constructor: (EMPTV <strength> <confidence>)
 ;; =============================================================================
-(: TruthValue Type)
-(: EMPTV (-> $a $b TruthValue))
+; (: TruthValue Type)
+; (: EMPTV (-> $a $b TruthValue))
 
 
 

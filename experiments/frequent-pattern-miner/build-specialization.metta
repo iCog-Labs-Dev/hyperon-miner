@@ -9,7 +9,7 @@
 ;; 2. if it is not an expression, return the pattern
 ;; 3. if it is an expression, destructure the pattern and handle the depth of the pattern by recursively getting all 
 ;; combinations of the variables and symbols of the pattern
-;(: depth-handler (-> pattern Atom))
+;(: depth-handler (-> Pattern Atom))
 (= (depth-handler $p)
     (if (not (== (get-metatype $p) Expression))
         $p
@@ -36,7 +36,8 @@
 ; - abstract the pattern and handle patterns with depth
 ; - build the specialization
 ; - add the specialization to the specialization space
-;(: build-specialization (-> pattern space space Atom))
+;(: build-specialization (-> Pattern SpaceType SpaceType Atom))
+(: build-specialization (-> Pattern SpaceType SpaceType Any))
 (= (build-specialization ($link $x $y) $dbspace $specspace) 
             (let*
                 (  

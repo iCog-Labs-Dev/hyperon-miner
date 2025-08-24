@@ -5,6 +5,7 @@
 ! (import! &self experiments:utils:TruthValue)
 ! (import! &self experiments:utils:surp-utils)
 ! (import! &self experiments:utils:miner-utils)
+! (import! &self experiments:utils:customType)
 ! (import! &self experiments:utils:gen_partition)
 ! (import! &self experiments:truth-values:est-tv)
 ! (import! &self experiments:truth-values:emp-tv)
