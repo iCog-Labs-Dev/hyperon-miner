@@ -1,14 +1,20 @@
 ! (register-module! ../../../hyperon-miner/experiments)
+
+! (import! &self experiments:utils:gen_partition)
 ! (import! &self experiments:utils:common-utils)
+! (import! &self experiments:utils:blk-abstractness)
+! (import! &self experiments:utils:eq-prob)
+! (import! &self experiments:utils:index_to_var)
+! (import! &self experiments:utils:surp-utils)
+! (import! &self experiments:surprisingness:isurp)
+! (import! &self experiments:surprisingness:emp-prob)
+! (import! &self experiments:truth-values:emp-tv)
+! (import! &db experiments:data:ugly_man_sodaDrinker)
 ! (import! &self experiments:utils:beta-dist)
 ! (import! &self experiments:utils:constants)
 ! (import! &self experiments:utils:TruthValue)
-! (import! &self experiments:utils:surp-utils)
 ! (import! &self experiments:utils:miner-utils)
-! (import! &self experiments:utils:gen_partition)
 ! (import! &self experiments:truth-values:est-tv)
-! (import! &self experiments:truth-values:emp-tv)
-! (import! &kb experiments:data:ugly_man_sodaDrinker)
 
 ; ========== ji-tv-est in our implementation versus the classic one =================
 ;;;; here i have listed out the examples i have tested with, their values on the classic and on our implementation ;;;;
