@@ -213,25 +213,34 @@
 ;;     adjusted by the estimated joint probability among shared variables.
 ;; =============================================================================
 
- (= (ji-est-tv $db $db_size $pattern $partitions)
- (   if (== $partitions ()) () (
-         let* (
-             (() (println! (pat $partitions)))
-             (($head $tail) (decons-atom $partitions))
-                ($prod_etv (pro_prob_without_joint $db $head))
-                (($rp $rc) (decons-atom $prod_etv))
-               ($rp_est (prob-with-joint $db $db_size (remove-parenthesis $head) (joint-variables-init $pattern (remove-parenthesis $head)) 1))
-              (($strength $confidence) ((* $rp $rp_est) (* 1e-1 (car-atom $rc))))
-               ($dummy (ji-est-tv $db $db_size $pattern $tail))
-               ) 
+(= (ji-est-tv $db $db_size $pattern $partitions)
+   (if (== $partitions ()) 
+       ()  ; Base case: return empty list when no more partitions
+       (let* (
+     
+           ; Deconstruct partitions list
+           (($head $tail) (decons-atom $partitions))  
+           ; Process current partition
+           ($prod_etv (pro_prob_without_joint $db $head))
+           (($rp $rc) (decons-atom $prod_etv))
+           ($partition_no_paren (remove-parenthesis $head))
+           ($joint_vars (joint-variables $pattern $partition_no_paren))
+           ($rp_est (prob-with-joint $db $db_size $partition_no_paren $joint_vars 1))
+           (($strength $confidence) ((* $rp $rp_est) (* 0.1 (car-atom $rc))))
+           
+           ; Create current result
+           ($current_result (STV $strength $confidence))
+           
+           ; Recursive call on remaining partitions
+           ($remaining_results (ji-est-tv $db $db_size $pattern $tail))
+       )
+       ; Combine current result with recursive results
+       (cons-atom $current_result $remaining_results)
+   )
+))
 
-              (cons-atom (STV $strength $confidence)  $dummy) 
-            
-          ))
- )
 
-
-;; =============================================================================
+;; ============================================================================= 
 ;; Function: do-ji-tv-est
 ;; -----------------------------------------------------------------------------
 ;; Purpose:
@@ -251,10 +260,11 @@
 (=(do-ji-tv-est $db $pattern) (
     let $prtns (generet-partition-without-pattern $pattern)  
           ( let* (
-            (() (println! (Inest $pattern)))
-            (($strength $confidence) (avrg_tv (ji-est-tv $db (db_size $db) $pattern $prtns) )))
+            ($tvs (ji-est-tv $db (db_size $db) $pattern $prtns))
+            (($strength $confidence) (avrg_tv $tvs)))
            (STV $strength $confidence))           
 ))
+
 
 
 
