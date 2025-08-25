@@ -176,7 +176,7 @@
 ;;   - Ratio: 0.2
 ;;
 ;; Expected Output:
-;;   0.8684478436521119 - Independent surprise value
+;;   1.9290123456790123e-5 - Independent surprise value
 
 ;; Verification:
 ;;   1. Tests correct calculation of independent surprise
