@@ -5,6 +5,8 @@
 
 ! (import! &self experiments:utils:gen_partition)
 ! (import! &self experiments:utils:common-utils)
+! (import! &self experiments:utils:beta-dist)
+
 ! (import! &self experiments:utils:blk-abstractness)
 ! (import! &self experiments:utils:eq-prob)
 ! (import! &self experiments:utils:index_to_var)
@@ -16,6 +18,7 @@
 ! (import! &self experiments:truth-values:emp-tv)
 
 ! (import! &db experiments:data:ugly_man_sodaDrinker)
+
 
 
 ; ===============================
