@@ -172,12 +172,12 @@
 ;; ===========================================================================
 
 (= (powerset-without-empity $list)
-    (collapse
+  (let $subset (powerset $list) (collapse
         (subtraction
-            (superpose (powerset $list))
+            (superpose $subset)
             (superpose (()))
         )
-    )
+    ))
 )
 
 

@@ -6,6 +6,8 @@
 ! (import! &self experiments:utils:gen_partition)
 ;! (import! &self experiments:utils:partition-metta)
 ! (import! &self experiments:utils:common-utils)
+! (import! &self experiments:utils:beta-dist)
+
 ! (import! &self experiments:utils:blk-abstractness)
 ! (import! &self experiments:utils:eq-prob)
 ! (import! &self experiments:utils:index_to_var)
@@ -18,8 +20,6 @@
 
 ! (import! &db experiments:data:ugly_man_sodaDrinker)
 
-
-!(partition ((Inheritance $x man) (Inheritance $x sodaDrinker) (Inheritance $x ugly)))
 
 
 ; ===============================
