@@ -36,8 +36,5 @@
 
 !(assertEqual (isurp-old (, (Inheritance $x man)
    (Inheritance $x ugly)
-   (Inheritance $x sodaDrinker)) &db True) 0.999707773232027)
-
-
-
+   (Inheritance $x sodaDrinker)) &db True) 0.999707773232028)
 
