@@ -1,14 +1,6 @@
 name: pattern-miner CI
 
-on:
-  push:
-    branches:
-      - master
-      - experiments 
-  pull_request:
-    branches:
-      - master
-      - experiments
+on: [push]
 
 jobs:
   setup-and-test:
