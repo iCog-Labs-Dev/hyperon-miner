@@ -33,5 +33,3 @@
 ; !(joint-variables (,(Inheritance $x ugly) (Inheritance $x man) (Inheritance $x sodaDrinker)) (((Inheritance $x man)) ((Inheritance $x sodaDrinker) (Inheritance $x ugly))))
 
 ; !(prob-with-joint &db 60 (((Inheritance $x man)) ((Inheritance $x sodaDrinker) (Inheritance $x ugly))) ($x) 1)
-
-
