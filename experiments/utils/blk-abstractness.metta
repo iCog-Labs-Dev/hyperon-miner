@@ -100,6 +100,8 @@
                    ($r_head (car-atom $r_body))
                    ($r_tail (cdr-atom $r_body))
                    ($head_unify (can-unify-expr $l_head $r_head))
+                    ($_ (println! (in can-unify 2)))
+          
                )
                (if $head_unify
                    (can-unify $l_tail $r_tail)
@@ -193,8 +195,7 @@
            
            ; Try to unify the modified patterns
            ($can_unify_result (can-unify $l_body $r_body))
-
-        ;    ($_ (println! (after unification in blk left is $l_body et right is $r_body)))
+           (() (println! (in is-blk-syntax $can_unify_result)))
        )
             (if $can_unify_result 
                 (validate-unification $l_body $r_body) 
@@ -217,6 +218,7 @@
 (= (is-blk-more-abstract $l_blk $r_blk $var) 
    (let* (
             ($rps (powerset-without-empity $r_blk))  
+            (() (println! (in is-blk-more pworeset result $rps)))
             ($l_partitions (partition $l_blk))  
          
         )
@@ -236,7 +238,7 @@
 (= (check-subsets $lp $subsets $var)
    (if (== $subsets ())
        False  ; No more subsets, return False
-       (let $rs (car-atom $subsets)
+       (let $rs (let () (println! (in check-subsets $subsets)) (car-atom $subsets))
          (if (check-all-blocks $lp $rs $var)
              True  ; All blocks match with this subset
              (check-subsets $lp (cdr-atom $subsets) $var)))))  ; Try next subset
@@ -262,7 +264,6 @@
         ) 
 
     )
-
 ))
 (: merge-list (-> Expression Expression Expression))
 (= (merge-list $list1 $list2)  (unique-list (union-atom  $list1 $list2)))

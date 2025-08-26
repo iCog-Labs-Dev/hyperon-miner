@@ -66,5 +66,3 @@
 ;    (Inheritance (Person $x) sodaDrinker)) &db True) 0.999707773232028)
 
 
-
-

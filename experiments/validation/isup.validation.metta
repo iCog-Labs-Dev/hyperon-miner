@@ -5,6 +5,8 @@
 
 ! (import! &self experiments:utils:gen_partition)
 ! (import! &self experiments:utils:common-utils)
+! (import! &self experiments:utils:beta-dist)
+
 ! (import! &self experiments:utils:blk-abstractness)
 ! (import! &self experiments:utils:eq-prob)
 ! (import! &self experiments:utils:customType)
@@ -17,6 +19,7 @@
 ! (import! &self experiments:truth-values:emp-tv)
 
 ! (import! &db experiments:data:ugly_man_sodaDrinker)
+
 
 
 ; ===============================
@@ -33,10 +36,19 @@
    1         ; database ratio
 )
 
+
 ; ===============================
 ; Parameters Info
 ; ===============================
-; Pattern:
+; Pattern:This PR introduces changes to the surprisingness rule base. Based on validation results from the isurp-old implementation, several adjustments were made to ensure consistency and alignment with the functional implementation.
+
+Key Changes
+
+Refactored multiple rules to align with the functional implementation of isurp-old.
+
+Removed dependency on the isurp-old functional implementation.
+
+Added and configured a dedicated test file for validation.
 ;   (, (Inheritance $x man)
 ;       (Inheritance $x ugly)
 ;       (Inheritance $x sodaDrinker))
@@ -59,16 +71,16 @@
 ; ===============================
 ; isurp Validation 2
 ; ===============================
-!(isurp 
-   (,
-      (Inheritance $x man)
-      (Inheritance $x ugly)
-      (Inheritance $x sodaDrinker)
-   )
-   &db       ; database: ugly-man-soda-drinker
-   True     ; normalization: True
-   1         ; database ratio
-)
+; !(isurp 
+;    (,
+;       (Inheritance $x man)
+;       (Inheritance $x ugly)
+;       (Inheritance $x sodaDrinker)
+;    )
+;    &db       ; database: ugly-man-soda-drinker
+;    True     ; normalization: True
+;    1         ; database ratio
+; )
 
 ; ===============================
 ; Parameters Info
@@ -96,15 +108,15 @@
 ; ===============================
 ; isurp Validation 3
 ; ===============================
-!(isurp 
-   (,
-      (Inheritance $x man)
-      (Inheritance $x ugly)
-   )
-   &db       ; database: ugly-man-soda-drinker
-   False     ; normalization: False
-   1         ; database ratio
-)
+; !(isurp 
+;    (,
+;       (Inheritance $x man)
+;       (Inheritance $x ugly)
+;    )
+;    &db       ; database: ugly-man-soda-drinker
+;    False     ; normalization: False
+;    1         ; database ratio
+; )
 
 ; ===============================
 ; Parameters Info

@@ -105,6 +105,7 @@
         (let* (
             ($head (car-atom $patterns))
             ($is-head-abstract (is-blk-more-abstract $head $pivot $var))
+            (() (println! (in filter-more $is-head-abstract)))
             ($copyHead (car-atom $patterns))
             ($copyHead (car-atom $patterns))
             ($tail (cdr-atom $patterns))
