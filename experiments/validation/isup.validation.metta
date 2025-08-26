@@ -4,7 +4,6 @@
 !(register-module! ../../../hyperon-miner/experiments)
 
 ! (import! &self experiments:utils:gen_partition)
-;! (import! &self experiments:utils:partition-metta)
 ! (import! &self experiments:utils:common-utils)
 ! (import! &self experiments:utils:beta-dist)
 
