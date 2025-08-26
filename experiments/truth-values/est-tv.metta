@@ -220,11 +220,11 @@
              (($head $tail) (decons-atom $partitions))
                 ($prod_etv (pro_prob_without_joint $db $head))
                 (($rp $rc) (decons-atom $prod_etv))
-               ($rp_est (prob-with-joint $db $db_size (remove-parenthesis $head) (joint-variables-init $pattern (remove-parenthesis $head)) 1))
+            ;    ($rp_est (prob-with-joint $db $db_size (remove-parenthesis $head) (joint-variables-init $pattern (remove-parenthesis $head)) 1))
+               ($rp_est (eq-prob (remove-parenthesis $head)  $pattern $db))
               (($strength $confidence) ((* $rp $rp_est) (* 1e-1 (car-atom $rc))))
                ($dummy (ji-est-tv $db $db_size $pattern $tail))
                ) 
-
               (cons-atom (STV $strength $confidence)  $dummy) 
             
           ))
@@ -251,12 +251,9 @@
 (=(do-ji-tv-est $db $pattern) (
     let $prtns (generet-partition-without-pattern $pattern)  
           ( let* (
-            (() (println! (Inest $pattern)))
             (($strength $confidence) (avrg_tv (ji-est-tv $db (db_size $db) $pattern $prtns) )))
            (STV $strength $confidence))           
 ))
-
-
 
 
 
