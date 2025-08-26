@@ -113,4 +113,4 @@ Generates all subsets (the powerset) of a given list
 
 
 (=(partitions $original) (partitions (powerset $original) $original))
-!(partitions ((Inheritance $x man) (Inheritance $x sodaDrinker) (Inheritance $x ugly)))
+;!(partitions ((Inheritance $x man) (Inheritance $x sodaDrinker) (Inheritance $x ugly)))
