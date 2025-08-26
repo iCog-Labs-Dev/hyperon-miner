@@ -1,7 +1,7 @@
 ! (register-module! ../../../hyperon-miner)
 ; ! (import! &db hyperon-miner:experiments:data:sample-data)
-; ! (import! &db hyperon-miner:experiments:data:ugly_man_sodaDrinker)
-! (import! &db hyperon-miner:experiments:data:small-ugly)
+! (import! &db hyperon-miner:experiments:data:ugly_man_sodaDrinker)
+; ! (import! &db hyperon-miner:experiments:data:small-ugly)
 ; ! (import! &self hyperon-miner:experiments:rules:conjunction-expansion)
 ! (import! &self hyperon-miner:experiments:frequent-pattern-miner:frequent-pattern-miner)
 ! (import! &self hyperon-miner:experiments:rules:use-python)
@@ -154,10 +154,10 @@ $cnd
     )$res)
 )
 
-!(test_transitivity)
+; !(test_transitivity)
 ; !(assertEqual (intersection (test_transitivity) (superpose ((, (Inheritance Z (S Z)) (Inheritance (S Z) (S (S Z))))))) (superpose ((, (Inheritance Z (S Z)) (Inheritance (S Z) (S (S Z)))))))
 
-; !(frequency-pattern-miner &dbspace &specspace &cndpspace &aptrnspace &conjspace 2 0 True)
+!(frequency-pattern-miner &dbspace &specspace &cndpspace &aptrnspace &conjspace 5 1 True)
 
 (= (test_long_transitivity)
     (let*(
