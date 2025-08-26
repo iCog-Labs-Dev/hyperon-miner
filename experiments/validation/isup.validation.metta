@@ -7,6 +7,7 @@
 ! (import! &self experiments:utils:common-utils)
 ! (import! &self experiments:utils:blk-abstractness)
 ! (import! &self experiments:utils:eq-prob)
+! (import! &self experiments:utils:customType)
 ! (import! &self experiments:utils:index_to_var)
 ! (import! &self experiments:utils:surp-utils)
 

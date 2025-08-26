@@ -37,7 +37,7 @@
 ; - build the specialization
 ; - add the specialization to the specialization space
 ;(: build-specialization (-> Pattern SpaceType SpaceType Atom))
-(: build-specialization (-> Pattern SpaceType SpaceType Any))
+; (: build-specialization (-> Pattern SpaceType SpaceType Any))
 (= (build-specialization ($link $x $y) $dbspace $specspace) 
             (let*
                 (  

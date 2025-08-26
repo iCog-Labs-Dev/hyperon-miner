@@ -1,10 +1,10 @@
-;;types
-; (: emp_prob_pbs_mem (-> Pattern SpaceType Number Number))
-; ; ; (: pro-prob-wout-joint (-> (List Pattern) SpaceType Number Number Number))
-; ; ; (: ji-prob-est (-> (List Pattern) Pattern SpaceType Number Number))
-; ; ; (: do-ji-prob (-> (MList Pattern)) Pattern SpaceType Number (List Number))
-; (: ji_prob_est_interval (-> Pattern SpaceType Number Any))
-; (: isurp (-> Pattern SpaceType Bool Number Number))
+;types
+(: emp_prob_pbs_mem (-> Pattern SpaceType Number Number))
+; ; (: pro-prob-wout-joint (-> (List Pattern) SpaceType Number Number Number))
+; ; (: ji-prob-est (-> (List Pattern) Pattern SpaceType Number Number))
+; ; (: do-ji-prob (-> (MList Pattern)) Pattern SpaceType Number (List Number))
+(: ji_prob_est_interval (-> Pattern SpaceType Number Any))
+(: isurp (-> Pattern SpaceType Bool Number Number))
 
 
 ;;! (register-module! ../../experiments)
@@ -265,9 +265,10 @@
       (($emin $emax) (ji_prob_est_interval $pattern $db $db_ratio))
            ($emp (emp-prob-pbs  $pattern $db $emax $db_ratio))
             ($dst (dst_from_interval $emin $emax $emp))
-             ;($maxprb (max ($emp $emax)))
+             ($maxprb (max ($emp $emax)))
+
              )
-               (min ((if $normalize (// $dst (max $emax $emp)) $dst) 1.0))
+               (min ((if $normalize (// $dst $maxprb) $dst) 1.0))
 ))
 
 

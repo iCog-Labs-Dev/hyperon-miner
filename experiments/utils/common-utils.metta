@@ -451,7 +451,7 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
 ;;      - `is-variable` or `is-expression` for arguments
 ;;   3. Returns True if either pattern matches
 ; ==============================================================================
-(=(is-pattern $expr) False)
+; (=(is-pattern $expr) False)
 (=(is-pattern $expr) (
     collapse(
  or (unify $expr ($link $x $y) (
@@ -676,6 +676,7 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
 ;;      c. Checks if head contains $var
 ;;      d. For valid patterns with $var: adds to results
 ;;      e. Recursively processes both head and tail
+
 (=(connected-subpatterns-with-var () $var) ())
 (=(connected-subpatterns-with-var $partion $var)(
     let* (
@@ -804,7 +805,10 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
     )
 )
 
+
 (= (has-type $x Nil) False)
+
+
 (= (has-type $x $y) (== $x (car-atom $y)))
 ; (= (has-type $x $y) (let $che (car-atom $y) (== $x $che)))
 
@@ -839,7 +843,7 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
 (= (n_conjuncts $pattern) (
         if (not (is-pattern-et $pattern))
         0
- (if (has-type , $pattern) (get-arity $pattern) 1))
+ (let $che (has-type , $pattern) (if $che (get-arity $pattern) 1)))
             
         )
 
@@ -875,7 +879,7 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
 ;;   - Collapses the list of atoms to a simpler form.
 ;;   - Uses tuple-count to determine the number of atoms.
  ;;db size
-(: db_size (-> SpaceType  Number))
+; (: db_size (-> SpaceType  Number))
 (= (db_size $db)
      (tuple-count (collapse (get-atoms $db)))
     
@@ -918,6 +922,7 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
 )
 
  ;; universe count
+
 (= (universe-count $pattern $db)
     (pow-math (db_size $db) (n_conjuncts $pattern))
 

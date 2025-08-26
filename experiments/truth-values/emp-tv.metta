@@ -144,7 +144,7 @@
 ;;   - The support value, representing the expected count or weight of the pattern in the database
 ;; =============================================================================
 (= (prob_to_support $pattern $db $prob)
-    (* $prob (universe-count $pattern $db))
+    (let $che (universe-count $pattern $db) (* $prob $che))
 )
 
 
