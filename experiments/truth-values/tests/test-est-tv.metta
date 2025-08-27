@@ -19,16 +19,16 @@
 
 
 
-!(do-ji-tv-est &db (,(Inheritance $x ugly) (Inheritance $x man) (Inheritance $x sodaDrinker)))
+; !(do-ji-tv-est &db (,(Inheritance $x ugly) (Inheritance $x man) (Inheritance $x sodaDrinker)))
 
 
-; !(ji-est-tv &db 60 (,(Inheritance $x ugly) (Inheritance $x man) (Inheritance $x sodaDrinker)) 
-;    (
-; (((Inheritance $x man)) ((Inheritance $x sodaDrinker) (Inheritance $x ugly))) 
-; (((Inheritance $x man) (Inheritance $x ugly)) ((Inheritance $x sodaDrinker))) 
-; (((Inheritance $x man) (Inheritance $x sodaDrinker)) ((Inheritance $x ugly))) 
-; (((Inheritance $x man)) ((Inheritance $x sodaDrinker)) ((Inheritance $x ugly)))
-; ) )
+!(ji-est-tv &db 60 (,(Inheritance $x ugly) (Inheritance $x man) (Inheritance $x sodaDrinker)) 
+   (
+(((Inheritance $x man)) ((Inheritance $x sodaDrinker) (Inheritance $x ugly))) 
+(((Inheritance $x man) (Inheritance $x ugly)) ((Inheritance $x sodaDrinker))) 
+(((Inheritance $x man) (Inheritance $x sodaDrinker)) ((Inheritance $x ugly))) 
+(((Inheritance $x man)) ((Inheritance $x sodaDrinker)) ((Inheritance $x ugly)))
+) )
 
 ; !(pro_prob_without_joint &db (((Inheritance $x man)) ((Inheritance $x sodaDrinker) (Inheritance $x ugly))))
 

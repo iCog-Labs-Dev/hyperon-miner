@@ -18,6 +18,8 @@
 (: Z Nat)
 (: S (-> Nat Nat))
 
+(: (get-space) SpaceType)
+
 
 (: TruthValue Type)
 (: STV (-> Number Number TruthValue))

@@ -17,15 +17,15 @@
 (: sup (-> Pattern SpaceType Number))
 (: ji_tv_est (-> Pattern SpaceType TruthValue))
 (: categorize_subsize (-> Number Number Number))
-(: copy-db (-> SpaceType Any SpaceType))
+(: copy-db (-> SpaceType Expression SpaceType))
 (: add_n_atoms_to_db (-> SpaceType Number SpaceType))
 (: copy-and-add-atom (-> SpaceType Number SpaceType))
 (: duplicate-and-expand-space (-> SpaceType Number SpaceType))
-(: copy-db-by-size (-> SpaceType Any Number Number SpaceType))
+(: copy-db-by-size (-> SpaceType Expression Number Number SpaceType))
 (: subsample (-> SpaceType Number SpaceType))
 (: do_emp_tv (-> Pattern SpaceType Number TruthValue))
 (: gen-random (-> Number Number))
-(: get-element (-> Number Any Any))
+(: get-element (-> Number Expression Expression))
 (: gen-random-subsample (-> SpaceType Number SpaceType SpaceType))
 (: emp-tv-subsmp (-> Pattern SpaceType Number TruthValue))
 ; (: emp-tv-bs-helper (-> Pattern SpaceType Number Number (List TruthValue)))
@@ -304,10 +304,13 @@
 (= (ji_tv_est $pattern $db) 
     (let* 
         (
+            ;do-ji-tv-est just return the truth values
             ($out_est (do-ji-tv-est $db $pattern)) 
-            (($pat $tv) $out_est)
+            ; (($pat $tv) $out_est)
+
         )
-        $tv
+        ; $tv
+        $out_est
     )
 )
 
@@ -440,7 +443,7 @@
 ;;   - A new space instance containing the original space's data and the additional atoms added.
 ;; =============================================================================
 (= (duplicate-and-expand-space $space $n)
-    (let $new-db (copy-db  (new-space) (collapse (get-atoms $space) ) )
+    (let* (($che (collapse (get-atoms $space) ) ) ($new-db (copy-db  (new-space) $che )))
         (add_n_atoms_to_db $new-db $n)
     )
 )
@@ -536,7 +539,11 @@
 ;; =============================================================================
 (= (do_emp_tv $pattern $db $db_ratio )
     (let* ( ($db_sequence (collapse (get-atoms $db) ))
-            ($jte  (ji_tv_est $pattern $db))         ;; after we get jte we must extract the mean
+            
+            ($jte  (ji_tv_est $pattern $db)) 
+            (() (println! "ji call completed"))
+            
+                    ;; after we get jte we must extract the mean
             (($link $mean $confidence) $jte)
             )
            (support_estimate_calculator  $pattern $db $mean $db_ratio))

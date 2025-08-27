@@ -231,7 +231,8 @@
                 ($prod_etv (pro_prob_without_joint $db $head))
                 (($rp $rc) (decons-atom $prod_etv))
             ;    ($rp_est (prob-with-joint $db $db_size (remove-parenthesis $head) (joint-variables-init $pattern (remove-parenthesis $head)) 1))
-               ($rp_est (eq-prob (remove-parenthesis $head)  $pattern $db))
+            ($midman (remove-parenthesis $head))
+               ($rp_est (eq-prob $midman  $pattern $db))
               (($strength $confidence) ((* $rp $rp_est) (* 1e-1 (car-atom $rc))))
                ($dummy (ji-est-tv $db $db_size $pattern $tail))
                ) 
@@ -261,7 +262,16 @@
 (=(do-ji-tv-est $db $pattern) (
     let $prtns (generet-partition-without-pattern $pattern)  
           ( let* (
-            (($strength $confidence) (avrg_tv (ji-est-tv $db (db_size $db) $pattern $prtns) )))
+            ($_ (println! ("the partitons are" $prtns)))
+            ($_ (println! "do-ji func got called"))
+            ($che1 (db_size $db) )
+            ($_ (println! ("do-ji func db size is" $che1)))
+            ($che2 (ji-est-tv $db $che1 $pattern $prtns))
+            ($_ (println! ("do-ji func got called #2" $che2)))
+            (($strength $confidence) (avrg_tv $che2 )) 
+            ($_ (println! "do-ji func got called #3"))
+            
+            )
            (STV $strength $confidence))           
 ))
 
