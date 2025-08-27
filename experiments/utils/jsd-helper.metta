@@ -20,7 +20,7 @@
 
 
 ;; Main function: Compute Beta Distribution CDF sampled over N bins
-;; Returns list of CDF values over equally spaced x ∈ (0, 1]
+;; Returns list of CDF values over equally spaced x ∈ (0, 1])
 (=(beta_cdf $beta_dist $bins)
     (beta_cdf_loop $beta_dist $bins 0 ())
 )

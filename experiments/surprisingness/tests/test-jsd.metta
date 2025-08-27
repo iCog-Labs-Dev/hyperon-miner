@@ -4,7 +4,7 @@
 ! (import! &self experiments:utils:jsd-helper)
 ! (import! &self experiments:utils:beta-dist)
 ! (import! &self experiments:utils:TruthValue)
-; ! (import! &self experiments:utils:customType)
+! (import! &self experiments:utils:customType)
 ! (import! &self experiments:utils:constants)
 
 
