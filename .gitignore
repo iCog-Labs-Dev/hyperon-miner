@@ -1,4 +1,2 @@
 .venv
 nvenv
-__pycache__/
-*.pyc

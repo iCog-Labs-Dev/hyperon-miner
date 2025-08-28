@@ -20,17 +20,17 @@
         ))))
 
 (= (connected-subpattern-with-var $block $var)
-    (let $che (is-var-exist $block $var) (if (not $che)
+    (if (not (is-var-exist $block $var))
         ()  ;; Variable not in block, return empty
         $block   ; TODO: we can extract one step down using extract function 
-        )))
+        ))
 
-(= (extract $exp $var)  (let $che (var-exist-exp $exp $var)  (
-    if $che 
+(= (extract $exp $var)  (
+    if (var-exist-exp $exp $var) 
     $exp
     (empty)
     
-)))
+))
 
 (= (find-component-with-var $components $var)
     (collapse (extract (superpose $components) $var))
@@ -321,12 +321,12 @@
 ;; Example:
 ;;   (get-var '((Pattern $x $y) (Pattern $z Jon))) → ($x $y $z)
 ;; =============================================================================
-; (: get-var (-> Expression Expression))
+(: get-var (-> Expression Expression))
 (= (get-var $pattern)
     (unique-list (extract-vars-from-pattern $pattern ())))
 
 ;; Helper function to recursively extract variables from pattern
-; (: extract-vars-from-pattern (-> Expression Expression Expression))
+(: extract-vars-from-pattern (-> Expression Expression Expression))
 (= (extract-vars-from-pattern $pattern $acc)
     (if (== $pattern ())
         $acc
@@ -354,7 +354,7 @@
 )
 1
 ;; Extract variables from a single expression
-; (: extract-vars-from-expr (-> Expression Expression))
+(: extract-vars-from-expr (-> Expression Expression))
 (= (extract-vars-from-expr $expr)
     (if (== $expr ())
         ()
@@ -405,18 +405,18 @@
             ($remaining-vars (cdr-atom $vars))
             ($rest-joint (filter-joint-vars $remaining-vars $partition))
         )
-        (let $che (is-joint-var $var $partition) (if $che
+        (if (is-joint-var $var $partition)
             (cons-atom $var $rest-joint)
-            $rest-joint)))))
+            $rest-joint))))
 
 ;; Check if a variable appears in multiple blocks of partition
-; (: is-joint-var (-> Expression Expression Bool))
+(: is-joint-var (-> Expression Expression Bool))
 (= (is-joint-var $var $partition)
     (let $block-count (count-blocks-with-var $var $partition 0)
         (> $block-count 1)))
 
 ;; Count how many blocks contain the variable
-; (: count-blocks-with-var (-> Expression Expression Number Number))
+(: count-blocks-with-var (-> Expression Expression Number Number))
 (= (count-blocks-with-var $var $partition $count)
     (if (== $partition ())
         $count
@@ -429,7 +429,7 @@
         (count-blocks-with-var $var $remaining-blocks $new-count))))
 
 ;; Get all variables from entire partition (updated implementation)
-; (: get-all-partition-variables (-> Expression Expression))
+(: get-all-partition-variables (-> Expression Expression))
 (= (get-all-partition-variables $partition)
     (if (== $partition ())
         ()
