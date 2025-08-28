@@ -86,10 +86,10 @@
 (= (emp-tv $pattern $db)
     (let*
         (  
-            ( ($ucount ) ( (universe-count $pattern $db)))
-            ( ($ms) ($ucount)) ;;  we didn't use ms for support calculation
-            ( ($sup) ( (sup-num $db $pattern)))
-            ( ($conf) ( (count_to_confidence $ucount)) )
+            ( $ucount  (universe-count $pattern $db))
+            ( $ms $ucount) ;;  we didn't use ms for support calculation
+            ( $sup (sup-num $db $pattern))
+            ( $conf (count_to_confidence $ucount))
             ($mean (// $sup $ucount))
             ($confidence   (* 1e-1 $conf))
         )
@@ -236,52 +236,6 @@
             (match $db $x (let $pattern $x $pattern)))))
 
 
- ;;ji_tv_est_mem this function is used to estimate the joint probability of a pattern.
- ;;ji_tv_est_mem is going to implemented in est-tv rule.
-
-;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; (=(do-ji-tv-est $db $pattern) (
-;;    let $prtns (generet-partition-without-pattern $pattern)  
-;;          ( let ($strength $confidence) (avrg_tv (ji-est-tv $db (db_size $db) $pattern $prtns) )
-;;          ($pattern  (ETV $strength $confidence)))  
-;;          ;;(ji-est-tv $db (db_size $db) $pattern $prtns)             
-;; ))
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;; MOCKING ;;;;;;
-;;;;;;;;;;;;;;;;;
-( = (do-ji-tv-est-dummy $db $pattern) (                     
-    $pattern  (STV 0.0016129032258064761 0.012488011224382688)                        
-))                                                    
-                                                      
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; =============================================================================
-;; Function: ji_tv_est
-;; -----------------------------------------------------------------------------
-;; Purpose:
-;;   Estimate the truth value (TV) of a pattern in a database using a joint independent method.
-;;
-;; Parameters:
-;;   - $pattern: The pattern for which the truth value is being estimated.
-;;   - $db: The database containing data for evaluation.
-;;
-;; Internal Calculation:
-;;   1. Call `do-ji-tv-est` with the database and pattern to perform joint independent estimation.
-;;   2. Extract the truth value ($tv) from the result, which is assumed to be a tuple ($pat $tv).
-;;   3. Return the extracted truth value.
-;;
-;; Returns:
-;;   - $tv: The estimated truth value of the pattern based on joint independent.
-;; =============================================================================
-(= (ji_tv_est $pattern $db) 
-    (let* 
-        (
-            ($out_est (do-ji-tv-est $db $pattern)) 
-            (($pat $tv) $out_est)
-        )
-        $tv
-    )
-)
 
 
 
@@ -484,93 +438,6 @@
     )
 )
 
-;; =============================================================================
-;; Function: do_emp_tv
-;; -----------------------------------------------------------------------------
-;; Purpose:
-;;   Calculates the empirical truth value for a given pattern in a database.
-;;   It processes the database to obtain a sequence of atoms, estimates the joint truth value (JTV),
-;;   and then uses the support estimate calculator to compute the final empirical truth value.
-;;
-;; Parameters:
-;;   - $pattern: The pattern for which the empirical truth value is to be calculated.
-;;   - $db: The database in which the pattern's empirical truth value is to be calculated.
-;;   - $db_ratio: The ratio used to scale the database size.
-;;
-;; Internal Calculation:
-;;   1. Extract the sequence of atoms from the database using `get-atoms` and `collapse`.
-;;   2. Estimate the joint truth value (JTV) for the given pattern and database using `ji_tv_est`.
-;;   3. Extract the mean and confidence values from the joint truth estimate.
-;;   4. Use the `support_estimate_calculator` to compute the empirical truth value based on the mean and database ratio.
-;;
-;; Returns:
-;;   - The computed empirical truth value for the given pattern in the database.
-;; =============================================================================
-(= (do_emp_tv $pattern $db $db_ratio )
-    (let* ( ($db_sequence (collapse (get-atoms $db) ))
-            ($jte  (ji_tv_est $pattern $db))         ;; after we get jte we must extract the mean
-            (($link $mean $confidence) $jte)
-            )
-           (support_estimate_calculator  $pattern $db $mean $db_ratio))
-)
-
- ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;TODO: suspeceted for change 
-
-(= (gen-random $max-value)  (
-        (py-dot np-rnd randint) $max-value)
-)
-
-;TODO: suspeceted for change 
-(= (get-element $index $list)
-    (if (== $index 0)
-        (car-atom $list) ; Return the first element if index is 0
-        (get-element (- $index 1) (cdr-atom $list))))
-
- ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
- ;;;;; Implmented Before ;;;;
- ;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; =============================================================================
-;; Function: gen-random-subsample
-;; -----------------------------------------------------------------------------
-;; Purpose:
-;;   Generates a random subsample of a given size from a database. The function ensures that the subsample 
-;;   contains random elements from the original database and returns a new space containing only the subsample.
-;;   If the requested subsample size is 0, it returns an empty space.
-;;
-;; Parameters:
-;;   - $db: The database from which the subsample will be taken.
-;;   - $subsize: The size of the subsample to generate.
-;;   - $space: The space where the subsample will be stored.
-;;
-;; Internal Calculation:
-;;   1. If the database size is equal to the subsample size, return the database as the subsample.
-;;   2. If the subsample size is 0, return an empty space.
-;;   3. Otherwise, collapse the database into a list of atoms.
-;;   4. Generate a random index for selecting an element from the list using `gen-random`.
-;;   5. Retrieve the selected element using `get-element`.
-;;   6. Add the selected element to the subsample space.
-;;   7. Recursively generate the remaining elements of the subsample by calling `gen-random-subsample`.
-;;
-;; Returns:
-;;   - A new space containing the random subsample of the original database.
-;; =============================================================================
-(= (gen-random-subsample $db $subsize $space)
-    (if (== (db_size $db) $subsize)
-        $db
-        (if (== $subsize 0)
-            $space ; Return an empty list if the sample size is 0
-            (let* (
-                    ($db-element (collapse (get-atoms $db)))
-                    ($random-index (gen-random $subsize)) ; Get a random index
-                    ($element (get-element $random-index $db-element))
-                    ($_ (add-atom $space $element)) ; Get the element from the list
-                    ($tail (gen-random-subsample $db (- $subsize 1) $space)) ; Recursively generate the rest of the subsample
-                )
-            $space) ; Add the element to the subsample
-        )
-    )
-)
 
 ;; =============================================================================
 ;; Function: emp-tv-subsmp
@@ -669,141 +536,6 @@
     )
 )
 
-;; =============================================================================
-;; Function: emp-tv-bs
-;; -----------------------------------------------------------------------------
-;; Purpose:
-;;   Calculates the empirical truth value using bootstrapping (resampling) for a given pattern 
-;;   and database, incorporating the database size, ratio, and support estimate. The function 
-;;   performs resampling by creating multiple subsamples, computing their empirical truth values, 
-;;   and combining them to estimate the final empirical truth value.
-;;
-;; Parameters:
-;;   - $pattern: The pattern for which the empirical truth value is to be calculated.
-;;   - $db: The database in which the pattern's empirical truth value is to be calculated.
-;;   - $db_size: The effective size of the database.
-;;   - $db_ratio: The ratio used to scale the database size.
-;;   - $support_estimate: The estimated support of the pattern in the database.
-;;
-;; Internal Calculation:
-;;   1. Calculate the scaled database size by multiplying $db_size with $db_ratio.
-;;   2. Calculate the subsample size using `subsmp-size`, based on the scaled database size and support estimate.
-;;   3. Set the number of resamples to 10 (can be adjusted based on needs).
-;;   4. Call `emp-tv-bs` with the specified pattern, database, number of resamples, and subsample size.
-;;
-;; Returns:
-;;   - The empirical truth value (emp-tv) calculated using bootstrapping (resampling).
-;; =============================================================================
-(= (emp-tv-bs $pattern $db $db_size $db_ratio $support_estimate) (
-        let* (
-            ($db-size-ratio (* $db_size $db_ratio))
-            ($subsize (subsmp-size $pattern $db-size-ratio $support_estimate))
-            ($n-resample 10)
-        )
-    (emp-tv-bs $pattern $db $n-resample $subsize)
-) ) ; If subsize >= db size, directly return empirical truth value
 
 
 
-
-
-
-;; =============================================================================
-;; Function: emp-tv-bs
-;; -----------------------------------------------------------------------------
-;; Purpose:
-;;   Calculates the empirical truth value using bootstrapping (resampling) for a given pattern 
-;;   and database, incorporating multiple resamples and subsample sizes. The function 
-;;   first checks if the subsample size is smaller than the database size. If so, it performs 
-;;   bootstrapping by resampling the database multiple times, calculating the empirical truth 
-;;   value for each resample, and returning the average. If the subsample size is greater than 
-;;   or equal to the database size, it directly computes the empirical truth value.
-;;
-;; Parameters:
-;;   - $pattern: The pattern for which the empirical truth value is to be calculated.
-;;   - $db: The database in which the pattern's empirical truth value is to be calculated.
-;;   - $n-resample: The number of resamples to perform during bootstrapping.
-;;   - $subsize: The subsample size used in the resampling process.
-;;
-;; Internal Calculation:
-;;   1. If the subsample size is less than the database size, the function performs resampling:
-;;      - Calls `emp-tv-bs-helper` to generate multiple empirical truth values (one for each resample).
-;;      - Averages the resampled empirical truth values using `avrg-tv-py`.
-;;      - Calls `mk-stv` to create a simple truth value from the mean and variance of the empirical truth values.
-;;   2. If the subsample size is greater than or equal to the database size, it directly calculates the empirical truth value using `emp-tv`.
-;;
-;; Returns:
-;;   - If subsize is smaller than the database size: A simple truth value based on the average empirical truth values from the resamples.
-;;   - If subsize is greater than or equal to the database size: The direct empirical truth value of the pattern.
-;; =============================================================================
-(= (emp-tv-bs $pattern $db $n-resample $subsize)
-    (if (< $subsize (db_size $db))
-        (let* (
-                ($esstvs (emp-tv-bs-helper $pattern $db $n-resample $subsize))
-                ((EMPTV $mean $variance) (avrg-tv-py $esstvs))
-            )
-            (mk-stv $mean $variance)
-        ) ; Return average of the empirical truth values
-    (emp-tv $pattern $db))) ; If subsize >= db size, directly return empirical truth value
-
-
-
-
-
-
-;; =============================================================================
-;; Function: mk-stv
-;; -----------------------------------------------------------------------------
-;; Purpose:
-;;   Constructs a simple truth value (STV) based on the provided mean and variance.
-;;   This function computes a mode and confidence value from the given parameters,
-;;   and uses these values to create a final truth value. The mode is derived using 
-;;   various conditions depending on the values of alpha, beta, and their relationships.
-;;
-;; Parameters:
-;;   - $mean: The mean value representing the central tendency of the empirical truth values.
-;;   - $variance: The variance representing the spread or uncertainty of the empirical truth values.
-;;
-;; Internal Calculation:
-;;   1. Computes `alpha` and `beta` values based on the mean and variance:
-;;      - `alpha = mean * (mean - 1) / variance`
-;;      - `beta = (1 - mean) * (mean - 1) / variance`
-;;   2. Sets initial values for `p_alpha` and `p_beta` as 1.0.
-;;   3. Computes `count` based on the sum of `alpha` and `beta`, and the values of `p_alpha` and `p_beta`.
-;;   4. Calculates the confidence as the ratio of `count` to `count + DEFAULT_K`.
-;;   5. Based on the values of `alpha` and `beta`, computes the `mode`:
-;;      - If both `alpha` and `beta` are greater than 1, it adjusts the mode based on the difference between `alpha` and `beta`.
-;;      - If both `alpha` and `beta` are less than or equal to 1, the mode is set to 1.
-;;      - If `alpha` is less than 1 and `beta` is less than or equal to 1, the mode is set to 0.
-;;      - If `alpha` is less than or equal to 1 and `beta` is greater than 1, the mode is set to 1.
-;;      - Otherwise, the mode is set to the mean value.
-;;   6. Returns the final `EMPTV` (empirical truth value) consisting of the computed mode and confidence.
-;;
-;; Returns:
-;;   - The simple truth value consisting of the computed mode and confidence.
-;; =============================================================================
-(= (mk-stv $mean $variance)
-    (let* (
-            ($alpha (* $mean (// (* $mean (- 1 $mean)) $variance)))
-            ($beta (* (- 1 $mean) (// (* $mean (- 1 $mean)) $variance)))
-            ($p_alpha 1.0)
-            ($p_beta 1.0)
-            ($count (max 0.1 (- (- (+ $alpha $beta ) $p_alpha) $p_beta)))
-            ($confidence (// $count (+ $count (DEFAULT_K)))))
-            ($mode  (
-                    if (and (> $alpha 1) (> $beta 1))
-                    (// (- $alpha 1) (- (+ $alpha $beta) 2))
-                    (if (and (<= 1 $alpha) (<= 1 $beta))
-                        1
-                        (if (and (< $alpha 1) (<= 1 $beta))
-                            0
-                            (if (and (<= 1 $alpha) (< $beta 1))
-                                1
-                                $mean
-                            )
-                    )
-            )
-    )) 
-
-)
-(EMPTV $mode $confidence))
