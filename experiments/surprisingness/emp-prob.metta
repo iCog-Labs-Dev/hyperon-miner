@@ -1,4 +1,15 @@
 
+
+;;types
+(: emp-prob (-> Pattern SpaceType Number))
+(: emp_prob_subsmp (-> Pattern SpaceType Number Number))
+; (: emp_prob_helper (-> Pattern SpaceType Number Number (List Number)))'
+ (: emp_prob_helper (-> Pattern SpaceType Number Number Any))
+(: emp_prob_bs (-> Pattern SpaceType Number Number Number))
+(: emp-prob-pbs (-> Pattern SpaceType Number Number))
+(: emp-prob-pbs (-> Pattern SpaceType Number Number Number))
+
+
 ;;; File Dependency Documentation:
 ;;;
 ;;; Overview:

@@ -11,6 +11,7 @@
 ! (import! &self experiments:truth-values:emp-tv)
 ! (import! &db experiments:data:ugly_man_sodaDrinker)
 ! (import! &self experiments:utils:beta-dist)
+! (import! &self experiments:utils:customType)
 ! (import! &self experiments:utils:constants)
 ! (import! &self experiments:utils:TruthValue)
 ! (import! &self experiments:utils:miner-utils)

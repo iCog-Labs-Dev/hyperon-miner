@@ -37,7 +37,7 @@
     $result 
 ))
 
-; !(assertEqual (test_avrg_tv_1) (0 0 0.09999999999999999))
+!(assertEqual (test_avrg_tv_1) (0 0.09999999999999999))
 
 ;========================================================
 ;avrg_tv test case 2 from classic miner repo

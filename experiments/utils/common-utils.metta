@@ -451,7 +451,7 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
 ;;      - `is-variable` or `is-expression` for arguments
 ;;   3. Returns True if either pattern matches
 ; ==============================================================================
-(=(is-pattern $expr) False)
+; (=(is-pattern $expr) False)
 (=(is-pattern $expr) (
     collapse(
  or (unify $expr ($link $x $y) (
@@ -661,19 +661,19 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
 ;; Common Utils from prev file ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
  ;; Declaration of List data type and constructors
-(: List (-> $a Type))
-(: Nil (List $a))
-(: Cons (-> $a (List $a) (List $a)))
+; (: List (-> $a Type))
+; (: Nil (List $a))
+; (: Cons (-> $a (List $a) (List $a)))
 
- ;; Define Nat
-(: Nat Type)
-(: Z Nat)
-(: S (-> Nat Nat))
+;  ;; Define Nat
+; (: Nat Type)
+; (: Z Nat)
+; (: S (-> Nat Nat))
 
  ;; Define cast functions between Nat and Number
-(: fromNumber (-> Number Nat))
+; (: fromNumber (-> Number Nat))
 (= (fromNumber $n) (if (<= $n 0) Z (S (fromNumber (- $n 1)))))
-(: fromNat (-> Nat Number))
+; (: fromNat (-> Nat Number))
 (= (fromNat Z) 0)
 (= (fromNat (S $k)) (+ 1 (fromNat $k)))
 
@@ -693,7 +693,7 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
 
 ;; This is very slow, use the grounded python function instead
 
-   (: tuple-count (-> %Undefined% Number))
+;    (: tuple-count (-> Any Number))
    (= (tuple-count $atom) (size-atom $atom))
 
 ;; Tuple count grounded python function
@@ -762,7 +762,7 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
 )
 
  ;Check if expression is truth value or not
-(: cog-tv? (-> Atom Boolean))
+; (: cog-tv? (-> Atom Bool))
 (= (cog-tv? $EXP)
     (if (== (match &self (stv $value $mean $conf) True) True)
         True
@@ -770,8 +770,12 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
     )
 )
 
+
 (= (has-type $x Nil) False)
+
+
 (= (has-type $x $y) (== $x (car-atom $y)))
+; (= (has-type $x $y) (let $che (car-atom $y) (== $x $che)))
 
  ;;(: get-arity (-> $pattern) Number)
  ;; we substruct 1 since the get-arity count the all tuple and we don't want to count
@@ -791,16 +795,22 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
  ;             (get-arity (cdr-atom $pattern))
  ;             1)))
 
+; (= (n_conjuncts $pattern) (
+;         if (not (is-pattern-et $pattern))
+;         0
+; ( let* (($che ,) ($pro (has-type $che $pattern))) (if $pro
+;             (get-arity $pattern)
+;             1
+;         ))
+
+; )
+; )
 (= (n_conjuncts $pattern) (
         if (not (is-pattern-et $pattern))
         0
-        (if (has-type , $pattern)
-            (get-arity $pattern)
-            1
+ (let $che (has-type , $pattern) (if $che (get-arity $pattern) 1)))
+            
         )
-
-)
-)
 
 ;; Function: intilize
 ;; 
@@ -834,14 +844,14 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
 ;;   - Collapses the list of atoms to a simpler form.
 ;;   - Uses tuple-count to determine the number of atoms.
  ;;db size
-;(: db_size (-> SpaceType  Number))
+; (: db_size (-> SpaceType  Number))
 (= (db_size $db)
      (tuple-count (collapse (get-atoms $db)))
     
 )
 
  ;;abs accepts a number and returns an absolute value of a number
-(: abs (-> Number Number))
+; (: abs (-> Number Number))
 (= (abs $x)
     (if (>= $x 0)
         $x
@@ -852,11 +862,11 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
 
 
  ;; equals-to-zero  accepts a Number and compares it with zero if it is equals to zero it returns a boolean value True else False
-(: equals-to-zero (-> Number Boolean))
+; (: equals-to-zero (-> Number Bool))
 (= (equals-to-zero $x) (== $x 0))
 
  ;; classify_integer_position function accepts a Number and returns a strings that tells if a number is Greater than zero equal to zero or less than zero
-(: classify_integer_position (-> Number String))
+; (: classify_integer_position (-> Number String))
 (= (classify_integer_position $x)
     (if (> $x 0)
         ("Greater than zero")
@@ -865,7 +875,7 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
                 (False "Less than zero")
                 (True "Equal to zero")))))
  ;; pow is a function that calculates a to the power of b where a and b are numbers
-(: pow (-> Number Number Number))
+; (: pow (-> Number Number Number))
 (= (pow $a $b)
     (case (classify_integer_position $b)
         (
@@ -877,6 +887,7 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
 )
 
  ;; universe count
+
 (= (universe-count $pattern $db)
     (pow-math (db_size $db) (n_conjuncts $pattern))
 

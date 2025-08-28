@@ -1,3 +1,12 @@
+;types
+(: emp_prob_pbs_mem (-> Pattern SpaceType Number Number))
+; ; (: pro-prob-wout-joint (-> (List Pattern) SpaceType Number Number Number))
+; ; (: ji-prob-est (-> (List Pattern) Pattern SpaceType Number Number))
+; ; (: do-ji-prob (-> (MList Pattern)) Pattern SpaceType Number (List Number))
+(: ji_prob_est_interval (-> Pattern SpaceType Number Any))
+(: isurp (-> Pattern SpaceType Bool Number Number))
+
+
 ;;! (register-module! ../../experiments)
 ;;! (import! &self experiments:utils:common-utils)
 ;;! (import! &self experiments:utils:beta-dist)
@@ -51,8 +60,10 @@
 ;; ==============================================================
 (=(pro-prob-wout-joint $subpatterns $db $db_ratio $p) (
   if (== $subpatterns ()) $p (
-    let* ((($subpattern $tail) (decons-atom $subpatterns))
-    ($empr (emp-prob  (cons-atom , $subpattern) $db))
+    let* (
+      (($subpattern $tail) (decons-atom $subpatterns))
+      ($joined_comma (cons-atom , $subpattern) )
+    ($empr (emp-prob $joined_comma   $db))
     ($new_prob (* $p $empr))
     ; ($_ (println! ("new_prob" $new_prob)))
     )
@@ -201,10 +212,15 @@
 ;; Return Value:
 ;;   Returns a pair (emin emax) representing the estimated probability range
 ;; ==============================================================
-(=(ji_prob_est_interval $pattern $db $db_ratio) (
-   let $_ (println! (ji_prob_est_interval is called with pattern $pattern)) (let ($emin $emax) (min-max  (do-ji-prob (generet-partition-without-pattern $pattern) $pattern $db $db_ratio))
+; (=(ji_prob_est_interval $pattern $db $db_ratio) (
+;    let $_ (println! (ji_prob_est_interval is called with pattern $pattern)) (let ($emin $emax) (min-max  (do-ji-prob (generet-partition-without-pattern $pattern) $pattern $db $db_ratio))
+;         ($emin $emax))
+; ))
+(=(ji_prob_est_interval $pattern $db $db_ratio) 
+   (let ($emin $emax) (min-max  (do-ji-prob (generet-partition-without-pattern $pattern) $pattern $db $db_ratio))
         ($emin $emax))
-))
+)
+
 
 
 
@@ -251,9 +267,10 @@
       (($emin $emax) (ji_prob_est_interval $pattern $db $db_ratio))
            ($emp (emp-prob-pbs  $pattern $db $emax $db_ratio))
             ($dst (dst_from_interval $emin $emax $emp))
-             ;($maxprb (max ($emp $emax)))
+             ($maxprb (max ($emp $emax)))
+
              )
-               (min ((if $normalize (// $dst (max $emax $emp)) $dst) 1.0))
+               (min ((if $normalize (// $dst $maxprb) $dst) 1.0))
 ))
 
 
