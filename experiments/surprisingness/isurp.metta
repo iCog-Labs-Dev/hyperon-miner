@@ -60,8 +60,10 @@
 ;; ==============================================================
 (=(pro-prob-wout-joint $subpatterns $db $db_ratio $p) (
   if (== $subpatterns ()) $p (
-    let* ((($subpattern $tail) (decons-atom $subpatterns))
-    ($empr (emp-prob  (cons-atom , $subpattern) $db))
+    let* (
+      (($subpattern $tail) (decons-atom $subpatterns))
+      ($joined_comma (cons-atom , $subpattern) )
+    ($empr (emp-prob $joined_comma   $db))
     ($new_prob (* $p $empr))
     ; ($_ (println! ("new_prob" $new_prob)))
     )

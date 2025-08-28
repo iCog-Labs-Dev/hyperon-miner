@@ -74,8 +74,8 @@
 ; ;; =============================================================================
 
 ;doesn't align with the emp-tv
-; !(assertEqual (emp-tv (Inheritance Zac $x) (get-space)) 
-;               (EMPTV 0.125 0.08888888888888889))
+!(assertEqual (emp-tv (Inheritance Zac $x) (get-space)) 
+              (EMPTV 0.25 0.0009900990099009901))
 
 ; ;; =============================================================================
 ; ;; Test: Database Expansion
