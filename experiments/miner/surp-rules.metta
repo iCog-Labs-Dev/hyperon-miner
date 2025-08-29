@@ -134,7 +134,7 @@
                      (-> (maximum $emp $emax $max)
                              (-> (divide $dst $max $normalized) 
                                  (-> (minimum $normalized 1.0 $minimum)
-                                      (isurp $pattern $minimum ))))))))))
+                                      (Isurp $pattern $minimum ))))))))))
 
 
 
@@ -148,5 +148,5 @@
              (-> (est-prob $pattern $count ($emin $emax))
                  (-> (dst $pattern $emp ($emin $emax) $dst)
                     (-> (minimum $dst 1.0 $minimum )
-                         (isurp $pattern $minimum ))))))))
+                         (Isurp $pattern $minimum ))))))))
                                                   

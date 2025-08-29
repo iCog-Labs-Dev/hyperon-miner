@@ -12,6 +12,8 @@
 ! (import! &self experiments:utils:bs-utils)
 ! (import! &self experiments:utils:util-jsd)
 ! (import! &self experiments:utils:eq_prob_adaptor)
+! (import! &self experiments:utils:customType)
+
 
 ;; import truth value computing components
 ! (import! &self experiments:truth-values:est-tv)
@@ -108,7 +110,7 @@
 !(init-params &kb &db (min-sup2) (surp-mode2) (db-ratio2) (normalization2))
 
 !(println! ("========== isurp-old test with normalization =============="))
-! (syn &kb (fromNumber 19) (: $prf (isurp $pattern $surp)))
+! (syn &kb (fromNumber 19) (: $prf (Isurp $pattern $surp)))
 
 ;;Expected result 
 ;;()]
