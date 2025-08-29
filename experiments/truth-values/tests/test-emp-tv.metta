@@ -12,7 +12,6 @@
 ! (import! &self experiments:utils:gen_partition)
 ! (import! &self experiments:truth-values:est-tv)
 ! (import! &self experiments:truth-values:emp-tv)
-! (import! &self experiments:truth-values:emp-tv-new)
 ! (import! &kb experiments:data:ugly_man_sodaDrinker)
 
 
@@ -170,5 +169,3 @@
 
 
 
-
-!(do_emp_tv (, (Inheritance $x ugly) (Inheritance $x man) (Inheritance $x sodaDrinker)) &kb 1)

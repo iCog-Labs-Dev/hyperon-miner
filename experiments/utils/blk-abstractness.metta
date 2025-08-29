@@ -94,13 +94,11 @@
            (if (or $left_empty $right_empty)
                False
                (let* (
-                    ($_ (println! (can-unify called with $l_body $r_body)))
                    ($l_head (car-atom $l_body))
                    ($l_tail (cdr-atom $l_body))
                    ($r_head (car-atom $r_body))
                    ($r_tail (cdr-atom $r_body))
                    ($head_unify (can-unify-expr $l_head $r_head))
-                    ($_ (println! (in can-unify 2)))
           
                )
                (if $head_unify
@@ -159,7 +157,7 @@
            
            ; Try to unify the modified patterns
            ($can_unify_result (can-unify $l_body $r_body))
-           (() (println! (in is-blk-syntax $can_unify_result)))
+          
        )
             (if $can_unify_result 
                 (validate-unification $l_body $r_body) 
@@ -182,7 +180,6 @@
 (= (is-blk-more-abstract $l_blk $r_blk $var) 
    (let* (
             ($rps (powerset-without-empity $r_blk))  
-            (() (println! (in is-blk-more pworeset result $rps)))
             ($l_partitions (partition $l_blk))  
          
         )
@@ -202,7 +199,7 @@
 (= (check-subsets $lp $subsets $var)
    (if (== $subsets ())
        False  ; No more subsets, return False
-       (let $rs (let () (println! (in check-subsets $subsets)) (car-atom $subsets))
+       (let $rs  (car-atom $subsets)
          (if (check-all-blocks $lp $rs $var)
              True  ; All blocks match with this subset
              (check-subsets $lp (cdr-atom $subsets) $var)))))  ; Try next subset

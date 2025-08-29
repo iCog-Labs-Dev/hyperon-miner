@@ -652,40 +652,6 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
            (if $is_present  (let $dummy (var-appers $var $tail) (cons-atom $var $dummy)) (var-appers $var $tail))
            ))
 
-;; =============================================================================
-;; Function: connected-subpatterns-with-var
-;; -----------------------------------------------------------------------------
-;; Purpose:
-;;   Recursively finds all subpatterns in a partition that:
-;;   1. Are valid patterns (via is-pattern)
-;;   2. Contain the target variable $var
-;;
-;; Inputs:
-;;   - `$partion`: The pattern structure to search (list/tree)
-;;   - `$var`: The target variable to find (e.g., $x)
-;;
-;; Output:
-;;   - List of all valid subpatterns containing $var
-;;   - Empty list if none found or input is empty
-;;
-;; How it works:
-;;   1. Base Case: Empty input returns empty list
-;;   2. Recursive Processing:
-;;      a. Splits input into head and tail
-;;      b. Checks if head is a valid pattern
-;;      c. Checks if head contains $var
-;;      d. For valid patterns with $var: adds to results
-;;      e. Recursively processes both head and tail
-(=(connected-subpatterns-with-var () $var) ())
-(=(connected-subpatterns-with-var $partion $var)(
-    let* (
-        (($head $tail) (decons-atom $partion) )
-       ($is_pattern (let $pat_temp  (is-pattern $head) (car-atom $pat_temp)))
-        ($is_connected (let $temp (collapse (is-present $var $head)) (car-atom $temp))))
-
-        (  if  (and $is_pattern $is_connected)
-               (let $dummy (connected-subpatterns-with-var $tail $var ) (cons-atom $head $dummy)) 
-                (if $is_pattern (connected-subpatterns-with-var $tail $var) (concatTuple  (connected-subpatterns-with-var $head $var) (connected-subpatterns-with-var $tail $var)) ))))
 
 
 
