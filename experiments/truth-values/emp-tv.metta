@@ -12,8 +12,7 @@
 (: emp-tv (-> Pattern SpaceType TruthValue))
 (: prob_to_support (-> Pattern SpaceType Number Number))
 (: support_estimate_calculator (-> Pattern SpaceType Number Number TruthValue))
-(: categorize_by_support_estimate (-> Number Number Number))
-(: emp_tv_pbs (-> Pattern SpaceType Number Number Number Number TruthValue))
+(: emp_tv_pbs (-> Pattern SpaceType Number Number TruthValue))
 (: sup (-> Pattern SpaceType Number))
 (: ji_tv_est (-> Pattern SpaceType TruthValue))
 (: categorize_subsize (-> Number Number Number))
@@ -29,10 +28,9 @@
 (: gen-random-subsample (-> SpaceType Number SpaceType SpaceType))
 (: emp-tv-subsmp (-> Pattern SpaceType Number TruthValue))
 ; (: emp-tv-bs-helper (-> Pattern SpaceType Number Number (List TruthValue)))
-(: subsmp-size (-> Pattern Number Number Number Number))
+(: subsmp-size (-> Pattern Number Number Number))
 (: emp-tv-bs (-> Pattern SpaceType Number Number Number TruthValue))
 (: emp-tv-bs (-> Pattern SpaceType Number Number TruthValue))
-(: mk-stv (-> Number Number TruthValue))
 
  ;; =============================================================================
 ;; Type: TruthValue
@@ -175,67 +173,6 @@
             ($database_size (* (db_size $db) $db_ratio)))
         (emp_tv_pbs $pattern $db $prob_estimate $db_ratio $database_size $support_estimate)))
 
-
-;; =============================================================================
-;; Function: categorize_by_support_estimate
-;; -----------------------------------------------------------------------------
-;; Purpose:
-;;   Categorize the subsample size based on a comparison between the support estimate 
-;;   and the database size.
-;;
-;; Parameters:
-;;   - $db_size: The size of the database.
-;;   - $support_estimate: The estimated support of a pattern in the database.
-;;
-;; Internal Calculation:
-;;   1. Compare the support estimate to the database size.
-;;   2. If support estimate is greater than or equal to db size, assign category 1.
-;;   3. Otherwise, assign category 2.
-;;
-;; Returns:
-;;   - 1: If support estimate ≥ database size
-;;   - 2: If support estimate < database size
-;; =============================================================================
-(= (categorize_by_support_estimate $db_size $support_estimate)
-    (if (>= $support_estimate $db_size)
-        1
-        2)
-)
-
-
-;; =============================================================================
-;; Function: emp_tv_pbs
-;; -----------------------------------------------------------------------------
-;; Purpose:
-;;   Calculate the empirical truth value (ETV) of a pattern in a database,
-;;   selecting the computation method based on the estimated support relative
-;;   to the database size. Bootstrapping is used if necessary.
-;;
-;; Parameters:
-;;   - $pattern: The pattern for which the ETV is calculated.
-;;   - $db: The database where the pattern is evaluated.
-;;   - $prob_estimate: The estimated probability of the pattern.
-;;   - $db_ratio: A scaling factor for adjusting database size.
-;;   - $db_size: The effective (scaled) size of the database.
-;;   - $support_estimate: The estimated support count of the pattern.
-;;
-;; Internal Calculation:
-;;   1. Categorize the support estimate relative to the database size using categorize_by_support_estimate.
-;;   2. If category is 1 (support ≥ db_size), use bootstrapping with emp-tv-bs.
-;;   3. If category is 2 (support < db_size), use direct empirical calculation via emp_tv.
-;;   4. Default case also falls back to emp_tv.
-;;
-;; Returns:
-;;   - emp-tv-bs result: If bootstrapping is needed.
-;;   - emp_tv result: Otherwise.
-;; =============================================================================
-(= (emp_tv_pbs $pattern $db $prob_estimate $db_ratio $db_size $support_estimate)
-    (case (categorize_by_support_estimate $db_size $support_estimate)
-        (
-            (1 (emp-tv-bs $pattern $db $db_size $db_ratio $support_estimate))
-            (2 (emp-tv $pattern $db))
-            ($_ (emp-tv $pattern $db))
-        )))
 
 
 ;; =============================================================================
@@ -537,7 +474,7 @@
 ;;   - $pattern: The pattern to be matched.
 ;;   - $db-size: The size of the database.
 ;;   - $support-estimate: The estimated support value of the pattern.
-;;   - $min-subsize: The minimum sub-sample size to be considered.
+
 ;;
 ;; Internal Calculation:
 ;;   1. Compute the number of conjuncts in the pattern using `n_conjuncts`.
@@ -562,58 +499,6 @@
     )
         (max $res (min $min-size $db-size))
     )
-)
-
-
-
-
-
-
-
-;; =============================================================================
-;; Function: do_emp_tv
-;; -----------------------------------------------------------------------------
-;; Purpose:
-;;   Calculates the empirical truth value for a given pattern in a database.
-;;   It processes the database to obtain a sequence of atoms, estimates the joint truth value (JTV),
-;;   and then uses the support estimate calculator to compute the final empirical truth value.
-;;
-;; Parameters:
-;;   - $pattern: The pattern for which the empirical truth value is to be calculated.
-;;   - $db: The database in which the pattern's empirical truth value is to be calculated.
-;;   - $db_ratio: The ratio used to scale the database size.
-;;
-;; Internal Calculation:
-;;   1. Extract the sequence of atoms from the database using `get-atoms` and `collapse`.
-;;   2. Estimate the joint truth value (JTV) for the given pattern and database using `ji_tv_est`.
-;;   3. Extract the mean and confidence values from the joint truth estimate.
-;;   4. Use the `support_estimate_calculator` to compute the empirical truth value based on the mean and database ratio.
-;;
-;; Returns:
-;;   - The computed empirical truth value for the given pattern in the database.
-;; =============================================================================
-(= (do_emp_tv $pattern $db $db_ratio)
-    (let* ( 
-            ($jte  (do-ji-tv-est $db $pattern))         ;; after we get jte we must extract the mean
-            (($link $mean $confidence) $jte)
-            )
-           (emp_tv_pbs $pattern $db $mean $db_ratio))
-)
-
-
-
-(= (emp_tv_pbs $pattern $db $prob_estimate $db_ratio)  
-     (let* (
-        ($support_estimate (prob_to_support $pattern $db $prob_estimate))
-        ($db-size (* (db_size $db) $db_ratio))
-        ($subsize (subsmp-size $pattern $db-size $support_estimate))
-        ($n-resample 10)
-        )
-        (if (> $support_estimate $db-size)
-            (emp-tv-bs $pattern $db $n-resample $subsize)
-            (emp-tv $pattern $db)
-        )
-     )
 )
 
 
@@ -659,3 +544,51 @@
     (emp-tv $pattern $db))) ; If subsize >= db size, directly return empirical truth value
 
 
+
+
+;; =============================================================================
+;; Function: do_emp_tv
+;; -----------------------------------------------------------------------------
+;; Purpose:
+;;   Calculates the empirical truth value for a given pattern in a database.
+;;   It processes the database to obtain a sequence of atoms, estimates the joint truth value (JTV),
+;;   and then uses the support estimate calculator to compute the final empirical truth value.
+;;
+;; Parameters:
+;;   - $pattern: The pattern for which the empirical truth value is to be calculated.
+;;   - $db: The database in which the pattern's empirical truth value is to be calculated.
+;;   - $db_ratio: The ratio used to scale the database size.
+;;
+;; Internal Calculation:
+;;   1. Extract the sequence of atoms from the database using `get-atoms` and `collapse`.
+;;   2. Estimate the joint truth value (JTV) for the given pattern and database using `ji_tv_est`.
+;;   3. Extract the mean and confidence values from the joint truth estimate.
+;;   4. Use the `support_estimate_calculator` to compute the empirical truth value based on the mean and database ratio.
+;;
+;; Returns:
+;;   - The computed empirical truth value for the given pattern in the database.
+;; =============================================================================
+(= (do_emp_tv $pattern $db $db_ratio)
+    (let* ( 
+            ($jte  (do-ji-tv-est $db $pattern))         ;; after we get jte we must extract the mean
+            (($link $mean $confidence) $jte)
+           
+            )
+           (emp_tv_pbs $pattern $db $mean $db_ratio))
+)
+
+
+
+(= (emp_tv_pbs $pattern $db $prob_estimate $db_ratio)  
+     (let* (
+        ($support_estimate (prob_to_support $pattern $db $prob_estimate))
+        ($db-size (* (db_size $db) $db_ratio))
+        ($subsize (subsmp-size $pattern $db-size $support_estimate))
+        ($n-resample 10)
+        )
+        (if (> $support_estimate $db-size)
+            (emp-tv-bs $pattern $db $n-resample $subsize)
+            (emp-tv $pattern $db)
+        )
+     )
+)

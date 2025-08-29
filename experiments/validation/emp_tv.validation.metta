@@ -23,15 +23,15 @@
 ; ===============================
 ; do_emp_tv Validation 1
 ; ===============================
-; !(do_emp_tv
-;    (,
-;       (Inheritance $x ugly)
-;       (Inheritance $x man)
-;       (Inheritance $x sodaDrinker)
-;    )
-;    &kb        ; knowledge base: ugly-man-soda-drinker
-;    1          ; database ratio
-; )
+!(do_emp_tv
+   (,
+      (Inheritance $x ugly)
+      (Inheritance $x man)
+      (Inheritance $x sodaDrinker)
+   )
+   &kb        ; knowledge base: ugly-man-soda-drinker
+   1          ; database ratio
+)
 
 ; ===============================
 ; Parameters Info
@@ -61,14 +61,14 @@
 ; ===============================
 ; do_emp_tv Validation 2
 ; ===============================
-; !(do_emp_tv
-;    (,
-;       (Inheritance $x ugly)
-;       (Inheritance $x man)
-;    )
-;    &kb        ; knowledge base: ugly-man-soda-drinker
-;    1          ; database ratio
-; )
+(do_emp_tv
+   (,
+      (Inheritance $x ugly)
+      (Inheritance $x man)
+   )
+   &kb        ; knowledge base: ugly-man-soda-drinker
+   1          ; database ratio
+)
 
 ; ===============================
 ; Parameters Info
