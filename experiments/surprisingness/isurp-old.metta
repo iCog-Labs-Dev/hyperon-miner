@@ -1,3 +1,27 @@
+;;types
+(: total_counts (-> Pattern SpaceType Number))
+; (: accumulator-x (-> (List Number) Number))
+; (: accumulator-x (-> (List Number) Number Number))
+(: n_conjuncts_new (-> Pattern Number))
+; (: compute-component-support (-> (List Pattern) SpaceType (List Number)))
+(: compute-component-support (-> Any SpaceType Any))
+(: ptrn-support (-> Pattern SpaceType Number))
+(: prob (-> Pattern SpaceType Number Number))
+; (: add-pattern (-> (List Pattern) SpaceType Pattern))
+
+; (: blk-prob (-> (List Pattern) SpaceType Number Number))
+
+; (: iprob-old (-> (MList Pattern)) SpaceType Number)
+
+; (: iprob_ (-> (MList Pattern) SpaceType Number (List Number)))
+; (: iprob (-> (MList Pattern)) SpaceType Number Number)
+
+
+
+
+; (: isurp-old_ (-> (List (List Pattern)) SpaceType Number (List Number)))
+(: isurp-old (-> Pattern SpaceType Bool Number))
+
 
 ;;;;;;;;;;;;;;;;;;;;
 ;;High-Level Steps;;
@@ -27,7 +51,10 @@
 ;;   - $db: The database context in which the pattern appears.
 ;; Returns:
 ;;   - The total number of possible combinations based on database size and number of conjunctive clauses.
-(=(total_counts $pattern $db) (cal_binomial (db_size $db) (n_conjuncts_new $pattern)))
+(= (total_counts $pattern $db) (cal_binomial (db_size $db) (n_conjuncts_new $pattern)))
+
+
+
 
 
 ;; Function: accumulator-x
@@ -42,11 +69,6 @@
    if (== $num_list ()) $prev_value (let ($head $tail) (decons-atom $num_list) (accumulator-x $tail (* $head $prev_value)))
 ))
 
-;;Determines the number of conjunctive clauses in a pattern.
-(=(n_conjuncts_new $pattern) (
-   let ($head $tail) (decons-atom $pattern) (
-    if (== $head ,) (tuple-count $tail) 1)
-))
 
 
 ;;Recursively calculates the support for each component of a 
@@ -70,7 +92,7 @@
 ;   - $db: The database in which the pattern is evaluated.
 ; Returns:
 ;   - The probability value as a ratio of the pattern's support to its total possible count.
-(=(prob $pattern $db) (// (ptrn-support  $pattern $db) (total_counts $pattern $db)))
+(= (prob $pattern $db $total_count) (// (sup-num $db $pattern) $total_count))
 
 
 ;;Converts a list of blocks into a conjunctive pattern
@@ -81,8 +103,8 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
 
 ;;Calculates the probability of a block within a partition by first converting 
 ;;it into a pattern and then computing its probability.
-(= (blk-prob $blk $db) (
-    let $pattern (cons-atom , $blk) (prob $pattern $db)
+(= (blk-prob $blk $db $total_count) (
+    let $pattern (cons-atom , $blk) (prob $pattern $db $total_count)
   ))
                       
 
@@ -99,12 +121,12 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
 )
 
 ;;Recursive steps for iprob
-(=(iprob_ $partition $db)(
+(=(iprob_ $partition $db $total_count)(
     if (== $partition ()) () (
         let* (
            ( ($head $tail) (decons-atom $partition))
-           ($prob (blk-prob $head $db))
-           ($dummy (iprob_ $tail $db))
+           ($prob (blk-prob $head $db $total_count))
+           ($dummy (iprob_ $tail $db $total_count))
         ) 
              (cons-atom $prob $dummy)
     )
@@ -113,18 +135,18 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
 
 ;;This is the recursive version of iprob-old. While the non-deterministic (or above) 
 ;;implementation works within this file, it causes issues when used from other files.
-(=(iprob $partition $db) (
-    let $products (iprob_ $partition $db) (accumulator-x $products)
+(=(iprob $partition $db $total_count) (
+    let $products (iprob_ $partition $db $total_count) (accumulator-x $products)
 ))
 
 
 ;;Recursive steps for isurp
-(= (isurp-old_ $partitions $db) (
+(= (isurp-old_ $partitions $db $total_count) (
     if (== $partitions ()) () (
         let* (
             (($head $tail) (decons-atom $partitions))
-             ($res (iprob $head $db))
-             ($dummy (isurp-old_ $tail $db)))
+             ($res (iprob $head $db $total_count))
+             ($dummy (isurp-old_ $tail $db $total_count)))
         (cons-atom $res $dummy)
     )
 ))
@@ -141,17 +163,18 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
 ;   - $normalize: A boolean flag indicating whether to normalize the surprisingness by the pattern's probability.
 ; Returns:
 ;   - A numeric value representing the surprisingness score, optionally normalized and capped at 1.0.
-(: isurpo-old (-> Pattern Space Boolean Number)) 
+ 
 (= (isurp-old $pattern $db $normalize) (
     let* (
-        (() (println! (called-for $pattern)))
-        ($pattern_prob (prob $pattern $db ))
+        (() (println! "==== isurp-old surprisingness ====="))
+        ($total_count (total_counts $pattern $db))
+        ($pattern_prob (prob $pattern $db $total_count))
         ($partitions (generet-partition-without-pattern $pattern))
-        ($results  (isurp-old_  $partitions $db))
+        ($results  (isurp-old_  $partitions $db $total_count))
         (($emin $emax) (min-max $results))
         ($dst (dst_from_interval $emin $emax $pattern_prob))
     ) 
-         (min ((if $normalize (// $dst $pattern_prob) $dst) 1.0))       
+         (min ((if $normalize (// $dst (max $emax $pattern_prob)) $dst) 1.0))       
 ) )
 
 

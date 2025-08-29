@@ -1,10 +1,8 @@
 ;;Checks if **all elements** of $lst are in $used
-(= (all-in $lst $used)
-   (if (== $lst ())
-       True
-       (let* (($head (car-atom $lst))) (if (not (== ((intersection-atom ($head) $used)) (())))
-           (all-in (cdr-atom $lst) $used)
-           False))))
+(=(all-in $lst $used)
+(let $inter (intersection-atom $lst $used) (if (== (size-atom $inter) (size-atom $lst)) True False))
+
+)
 
 
 Generates all subsets (the powerset) of a given list
@@ -24,12 +22,7 @@ Generates all subsets (the powerset) of a given list
 )
 
 ;;Checks if **any element** of $lst is in $used
-(= (any-in $lst $used)
-   (if (== $lst ())
-       False
-       (let* (($head (car-atom $lst)))(if (not (== ((intersection-atom ($head) $used)) (())))
-           True
-           (any-in (cdr-atom $lst) $used)))))
+(=(any-in $lst $used)(let $inter (intersection-atom $lst $used) (if (== (size-atom $inter) 0) False True)))
 
 
 ;the subset can't be an empty set or the orginal set itself
@@ -61,12 +54,16 @@ Generates all subsets (the powerset) of a given list
 (= (partitions-helper $subsets $original $current $used)
    (if (all-in $original $used)
        ($current)
-       (partitions-collect $subsets $original $current $used)))            
+       (partitions-collect (cdr-atom $subsets) $original $current $used))
+       
+
+       
+       )
 
 
 ; Main: Generate all partitions
 (= (partitions $subsets $original)
-   (partitions-helper $subsets $original () ()))
+   (partitions-collect $subsets $original () ()))
 
 
 ;; ==============================================================================
@@ -113,6 +110,7 @@ Generates all subsets (the powerset) of a given list
 ;;   tasks where exhaustive enumeration of all disjoint covers is required.
 ;; ==============================================================================
 (:partitions (-> list_of_patterns partitions))
-(=(partitions $original) (partitions (powerset $original) $original))
 
-!(partitions ((Inheritance $x man) (Inheritance $x sodaDrinker) (Inheritance $x ugly)))
+
+(=(partitions $original) (partitions (powerset $original) $original))
+;!(partitions ((Inheritance $x man) (Inheritance $x sodaDrinker) (Inheritance $x ugly)))

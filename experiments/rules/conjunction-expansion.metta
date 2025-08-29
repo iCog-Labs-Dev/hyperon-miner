@@ -23,6 +23,7 @@
 ; ! (register-module! ../../experiments)
 ; ! (import! &self experiments:utils:common-utils)
 ; ! (import! &self experiments:utils:variable-combinations)
+! (import! &self freq-pat)
 ! (import! &self conj-exp)
 
  ; The starting point for the conjunction expansion. It passes
@@ -85,6 +86,9 @@
 )
 )
 
+(= (get_variables_for_tree ())
+    ()
+)
 
 (= (get_variables_for_tree $pattern)
    ( let* (
@@ -93,11 +97,9 @@
             ($x (if (== (get-metatype $head) Variable)
                      ($head)
                      (if (== (get-metatype $head) Expression)
-                        (if (== $head ())
-                           ()
-                           (get_variables_for_tree $head))
+                           (get_variables_for_tree $head)
                         () )))
-            ($y (if (== $tail ()) () (get_variables_for_tree $tail)))
+            ($y (get_variables_for_tree $tail))
         )(union-atom $x $y)
     )
 )
@@ -343,3 +345,48 @@
 ; !(expand_conjunction (INHERITANCE_LINK $X $Y) (INHERITANCE_LINK $G $F) &self 5 2 False)
 
 ; !(match &self (, (, (INHERITANCE_LINK $X $Y) (LIST_LINK A $D)) (LIST_LINK $X $G)) (, (, (INHERITANCE_LINK $X $Y) (LIST_LINK A $D)) (LIST_LINK $X $G)))
+
+(= (do-conjunct $db $cndb $coming_conj $ms Z)
+    (let* (
+        (() (println! (here $coming_conj)))
+        ($conjunct (replacev $coming_conj))
+        ($matches (match $cndb (CandidatePattern $pattern) (replacev $pattern)))
+        ($listconj (expand_conjunction $conjunct $matches $db $ms 2 False))
+        (() (println! ("Conjuncts: " $listconj)))
+        ($debconj (replace $listconj))
+        ($fitlered (remove_conjuncts_with_redundant_clauses $debconj))
+        (() (println! ("filtered:" $fitlered)))
+    )
+    $fitlered
+    )
+)
+
+(= (do-conjunct $db $cndb $coming_conj $ms (S $K))
+    (let* (
+        (() (println! (here1 $coming_conj)))
+        ($conjunct (replacev $coming_conj))
+        ($matches (match $cndb (CandidatePattern $pattern) (replacev $pattern)))
+        ($listconj (expand_conjunction $conjunct $matches $db $ms 2 False))
+        (() (println! ("Conjuncts2: " $listconj)))
+        ($debconj (replace $listconj))
+        (() (println! ("Conjuncts2deb: " $debconj)))
+        ($fitlered (remove_conjuncts_with_redundant_clauses $debconj))
+        ($varconj (replacev $fitlered))
+        (() (println! ("Conjuncts: " $varconj)))
+        ($conj (do-conjunct $db $cndb $varconj $ms $K))
+    )
+    $conj
+    )
+)
+
+(= (formatter $kb $conjspace $dbspace) 
+    (let* (
+        ($sorted (unique (match $conjspace $pattern (sort_conj $pattern))))
+        ($res (cons-atom , $sorted))
+        
+    )
+    (add-atom $kb (supportOf $res (sup-num $dbspace (replacev $res))))
+)
+)
+
+

@@ -38,6 +38,11 @@
   unify (, $ncnj $ptrn) $cnj (let $result (get-clauses $ncnj) (cons-atom $ptrn $result) ) ($cnj)
 ))
 
+(= (conj? $p)
+    (case $p
+    (((, $clause1 $clause2) True)
+     ($_ False))))
+
 ;; define system proofs 
 ------------------------------------------------------------------
 ;; System proof for ⍃
@@ -48,6 +53,8 @@
     (if (and (and (is-number $X) (is-number $Y)) (<= $X $Y))
           (: CPU (⍃ $X $Y))
              (empty)))
+
+
 ----------------------------------------------------------------------------
 ;; system proof  to calculate the emp-tv for the given pattern. 
 ;; The database is queried here because, when it was placed in the premises, 
@@ -65,14 +72,15 @@
 -----------------------------------------------------------------------------
 (= (syn $kb $_ (: $prf (est-cpu  $ptrn $emp $est))) 
     (let $dbb (match $kb (db-ref $db) $db)
-    (: CPUEST (est-cpu $ptrn $emp (do-ji-tv-est $dbb (flatten $ptrn) $emp))) ) 
+    (: CPUEST (est-cpu $ptrn $emp (do-ji-tv-est $dbb (flatten $ptrn)))) ) 
 )
 
 
 -----------------------------------------------------------------------------
-(= (syn $kb $_ (: $prf (prob-cpu  $pattern $prob))) 
+;; emperical probability of a pattern 
+(= (syn $kb $_ (: $prf (prob-cpu  $pattern $ucount $prob))) 
     (let $dbb (match $kb (db-ref $db) $db)
-    (: CPUPROB (prob-cpu  $pattern (prob $pattern  $dbb) ))
+    (: CPUPROB (prob-cpu  $pattern $ucount (// (sup-num $dbb $pattern) $ucount) ))
     ) 
 )
 
@@ -83,12 +91,34 @@
     (: CPUPARTN (partition-cpu  $pattern $partitions)) ) 
 )
 
+
+;; it turns the block into pattern and computes it's probability 
+(= (blk-prob-surp $blk $db $total_count) (
+    let $pattern (cons-atom , $blk) (// (sup-num  $db $pattern) $total_count)
+  ))
+
+;; gives the product of the probability of each block of the partition
+(= (iprob $partition $db $total-count) 
+    (let $list  (collapse  (blk-prob-surp  (superpose $partition) $db $total-count)) (foldl-atom $list 1 $acc $elem (* $acc $elem) ) )                             
+)
+
+
+
 ----------------------------------------------------------------------------
 ;; min max estimation of the pattern for isurp old
-(= (syn $kb $_ (: $prf (est-prob-cpu  $pattern $partitions $emin-emax))) 
-    (let $dbb (match $kb (db-ref $db) $db)
-    (: CPUESTPROB (est-prob-cpu   $pattern $partitions (min-max (isurp-old_  $partitions $dbb)))) ) 
+(= (syn $kb $_ (: $prf (est-prob-cpu  $pattern $partitions $ucount $emin-emax))) 
+    (let* (($dbb (match $kb (db-ref $db) $db))
+            ($min-max (let $products (collapse (iprob (superpose $partitions) $dbb $ucount) ) (min-max $products))))
+    (: CPUESTPROB (est-prob-cpu   $pattern $partitions $ucount  $min-max)) ) 
 )
+
+----------------------------------------------------------------------------
+;; min max estimation of the pattern for isurp 
+(= (syn $kb $_ (: $prf (ji-prob-est-cpu  $pattern $partitions  $db_ratio $emin-emax))) 
+    (let $dbb (match $kb (db-ref $db) $db)
+    (: CPUESTPROB (ji-prob-est-cpu  $pattern $partitions $db_ratio (min-max (do-ji-prob $partitions $pattern $dbb $db_ratio)))) ) 
+)
+
 
 -------------------------------------------------------------------------
 ;; calculates the distance between the estimate value and emperical value
@@ -97,11 +127,27 @@
     (: CPUDST (dst-cpu  $x $y $dst)) ) 
 )
 
+
+------------------------------------------------------------------------
+;; calculates the all possible same number of conjuct pattern 
+(= (syn $kb $_ (: $prf (universal-cpu $pattern $db-size $ucount))) (
+    let $number-of-conjuct (n_conjuncts_new $pattern) 
+       (: CPUUNIVERSAL (universal-cpu $pattern $db-size (cal_binomial $db-size $number-of-conjuct)))
+))
+
+
 -------------------------------------------------------------------------
 ;; create the minimum relation 
 (= (syn $kb $_ (: $prf (minimum $x $y $z)))
          (let $min (min $x $y)
                (: MINIMUMCPU  (minimum $x $y $min))))
+
+
+-------------------------------------------------------------------------
+;; create the maximum relation 
+(= (syn $kb $_ (: $prf (maximum $x $y $z)))
+         (let $max (max $x $y)
+               (: MAXIMUMCPU  (maximum $x $y $max))))
 
 -------------------------------------------------------------------------
 ;; division relation 
@@ -157,7 +203,9 @@
 (= (syn $kb $_ (: $prf (sup_count $ptrn $count)))
     (let* (
         ($db (match $kb (db-ref $db) $db))
-        ($new_ptrn (collapse (match $db $ptrn $ptrn)))
+        ($conjuncts (get-conjuncts $ptrn))
+        ($flat (cons-atom , $conjuncts))
+        ($new_ptrn (collapse (match $db $flat $flat)))
         ($count (size-atom $new_ptrn))
     )
      (: CPUCounter (sup_count $ptrn $count))
@@ -278,7 +326,14 @@
         )
     )  
     )
-)            
+)     
+
+------------------------------------------------------------------------------
+(= (syn $kb $_ (: $prf (is-conj $p))) 
+    (if (conj? $p)
+        (: CPUConjprf (is-conj $p))
+        (empty)))
+        
 ==============================================================================
 ;; chainner 
 ==============================================================================

@@ -7,15 +7,24 @@
 ! (import! &self experiments:utils:miner-utils)
 ! (import! &self experiments:utils:gen_partition)
 ! (import! &self experiments:utils:bs-utils) 
-
+! (import! &self experiments:utils:customType)
 ! (import! &self experiments:truth-values:est-tv)
 ! (import! &self experiments:truth-values:emp-tv)
 ! (import! &self experiments:surprisingness:isurp)
 ! (import! &self experiments:surprisingness:emp-prob)
 ! (import! &kb experiments:data:ugly_man_sodaDrinker)
 ! (import! &self experiments:utils:binomialMetta)
-
 ! (import! &self experiments:utils:eq_prob_adaptor)
+! (import! &self experiments:utils:blk-abstractness)
+! (import! &self experiments:utils:eq-prob)
+! (import! &self experiments:utils:index_to_var)
+
+
+
+
+
+
+
 
 
 
@@ -36,7 +45,7 @@
 ;;   - Ratio: 0.5
 ;;
 ;; Expected Output:
-;;   0.009135566413047788 (probability estimate)
+;;   3.858024691358025e-6 (probability estimate)
 ;;
 ;; Verification:
 ;;   Tests basic JI-Prob calculation when clauses are distributed across two
@@ -49,7 +58,7 @@
     (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker))
     &kb 
     0.5) 
-  0.009135566413047788)
+  3.858024691358025e-6)
 
 
 ;; =============================================================================
@@ -68,7 +77,7 @@
 ;;   - Ratio: 0.5
 ;;
 ;; Expected Output:
-;;   0.13155215634788814 (higher probability due to disjoint distribution)
+;;   1.2860082304526748e-6 (higher probability due to disjoint distribution)
 ;;
 ;; Verification:
 ;;   Tests that completely separated clauses in partition yield higher JI-Prob
@@ -82,7 +91,7 @@
     (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker))
     &kb 
     0.5) 
-  0.13155215634788814)
+  1.2860082304526748e-6)
 
 
 
@@ -124,9 +133,9 @@
      (((Inheritance $x man)) 
       ((Inheritance $x sodaDrinker) (Inheritance $x ugly))))
     (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker))
-    &Kb 
+    &kb 
     0.5)
-  (0.1 0.1 0.01 0.1))
+  (3.858024691358025e-6 3.858024691358025e-6 1.2860082304526748e-6 3.858024691358025e-6))
 
 
 ;; =============================================================================
@@ -154,7 +163,7 @@
     (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker))
     &kb
     0.2)
-  (0.009135566413047788 0.13155215634788814))
+  (1.2860082304526748e-6 3.858024691358025e-6))
 
 
 ;; =============================================================================
@@ -170,7 +179,7 @@
 ;;   - Ratio: 0.2
 ;;
 ;; Expected Output:
-;;   0.8684478436521119 - Independent surprise value
+;;   1.9290123456790123e-5 - Independent surprise value
 
 ;; Verification:
 ;;   1. Tests correct calculation of independent surprise
@@ -178,6 +187,5 @@
 ;;   3. Checks proper output format
 ;; =============================================================================
 
-!(assertEqual (isurp (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker) ) &kb True 0.2) 0.8684478436521119)
+ !(assertEqual (isurp (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker) ) &kb False 0.2) 1.9290123456790123e-5)
 
-(isurp (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker) ) &kb True 0.2)
