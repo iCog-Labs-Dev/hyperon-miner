@@ -9,7 +9,7 @@
 ! (import! &self experiments:surprisingness:isurp)
 ! (import! &self experiments:surprisingness:emp-prob)
 ! (import! &self experiments:truth-values:emp-tv)
-! (import! &db experiments:data:ugly_man_sodaDrinker)
+! (import! &kb experiments:data:ugly_man_sodaDrinker)
 ! (import! &self experiments:utils:beta-dist)
 ! (import! &self experiments:utils:constants)
 ! (import! &self experiments:utils:TruthValue)
@@ -19,7 +19,7 @@
 ; ========== ji-tv-est in our implementation versus the classic one =================
 ;;;; here i have listed out the examples i have tested with, their values on the classic and on our implementation ;;;;
 
-!(do-ji-tv-est  &db (,(Inheritance $x ugly) (Inheritance $x man) (Inheritance $x sodaDrinker)))
+!(do-ji-tv-est  &kb (,(Inheritance $x ugly) (Inheritance $x man) (Inheritance $x sodaDrinker)))
 ; conjunction: (,(Inheritance $x ugly) (Inheritance $x man) (Inheritance $x sodaDrinker))
 ; result 
 ;   on our implementation: (STV 0 0.00027229280235977334)
