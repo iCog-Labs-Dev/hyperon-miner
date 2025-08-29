@@ -1,3 +1,27 @@
+;;types
+(: total_counts (-> Pattern SpaceType Number))
+; (: accumulator-x (-> (List Number) Number))
+; (: accumulator-x (-> (List Number) Number Number))
+(: n_conjuncts_new (-> Pattern Number))
+; (: compute-component-support (-> (List Pattern) SpaceType (List Number)))
+(: compute-component-support (-> Any SpaceType Any))
+(: ptrn-support (-> Pattern SpaceType Number))
+(: prob (-> Pattern SpaceType Number Number))
+; (: add-pattern (-> (List Pattern) SpaceType Pattern))
+
+; (: blk-prob (-> (List Pattern) SpaceType Number Number))
+
+; (: iprob-old (-> (MList Pattern)) SpaceType Number)
+
+; (: iprob_ (-> (MList Pattern) SpaceType Number (List Number)))
+; (: iprob (-> (MList Pattern)) SpaceType Number Number)
+
+
+
+
+; (: isurp-old_ (-> (List (List Pattern)) SpaceType Number (List Number)))
+(: isurp-old (-> Pattern SpaceType Bool Number))
+
 
 ;;;;;;;;;;;;;;;;;;;;
 ;;High-Level Steps;;
@@ -30,8 +54,7 @@
 (= (total_counts $pattern $db) (cal_binomial (db_size $db) (n_conjuncts_new $pattern)))
 
 
-(: Pattern Type)
-(: ($link $a $b) Pattern)
+
 
 
 ;; Function: accumulator-x
@@ -140,7 +163,7 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
 ;   - $normalize: A boolean flag indicating whether to normalize the surprisingness by the pattern's probability.
 ; Returns:
 ;   - A numeric value representing the surprisingness score, optionally normalized and capped at 1.0.
-(: isurp-old (-> Pattern SpaceType Bool Number)) 
+ 
 (= (isurp-old $pattern $db $normalize) (
     let* (
         (() (println! "==== isurp-old surprisingness ====="))

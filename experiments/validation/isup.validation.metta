@@ -9,6 +9,7 @@
 
 ! (import! &self experiments:utils:blk-abstractness)
 ! (import! &self experiments:utils:eq-prob)
+! (import! &self experiments:utils:customType)
 ! (import! &self experiments:utils:index_to_var)
 ! (import! &self experiments:utils:surp-utils)
 
@@ -24,16 +25,16 @@
 ; ===============================
 ; isurp Validation 1
 ; ===============================
-; !(isurp 
-;    (,
-;       (Inheritance $x man)
-;       (Inheritance $x ugly)
-;       (Inheritance $x sodaDrinker)
-;    )
-;    &db       ; database: ugly-man-soda-drinker
-;    False     ; normalization: False
-;    1         ; database ratio
-; )
+!(isurp 
+   (,
+      (Inheritance $x man)
+      (Inheritance $x ugly)
+      (Inheritance $x sodaDrinker)
+   )
+   &db       ; database: ugly-man-soda-drinker
+   False     ; normalization: False
+   1         ; database ratio
+)
 
 
 ; ===============================

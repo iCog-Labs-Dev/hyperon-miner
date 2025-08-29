@@ -7,8 +7,34 @@
 ! (import! &self hyperon-miner:experiments:utils:gen_partition)
 
 
+; (= (can-unify-ground $ground1 $ground2)
+;     (if (== $ground1 $ground2)
+;         True
+;         (if (or (== (get-metatype $ground1) Variable)
+;                 (== (get-metatype $ground2) Variable))
+;                 True
+;                 False)
+;     )
+; )
 
-!(is-blk-syntax-more-abstract ((Human $x $y)) ((Human $x Abebe)) $x)
+; (= (can-unify-ground $ground1 $ground2)
+; (unify $ground1 $ground2 True False)
+; )
+
+; !(can-unify-ground $x $x)
+; !(can-unify-ground Abebe kebede)
+
+
+ !(is-blk-syntax-more-abstract ((Human $x $y)) ((Human $x Abebe)) $x)
+
 !(is-blk-syntax-more-abstract ((Human $x Abebe)) ((Human $x $y)) $x)
+
+; !(is-blk-syntax-more-abstract ((Human (Person $x) (Person $y))) ((Human (Person $x) (Person Abebe))) (Person $x))
+
+; !(is-blk-syntax-more-abstract ((Human (Person $x) (Person $y))) ((Human (Person $x) (Person Abebe))) $x)
+
+;  !(is-blk-syntax-more-abstract ((Human (Person $x) (Person Abebe))) ((Human (Person $x) (Person $y))) (Person $x))
+
+; !(is-blk-syntax-more-abstract ((Inheritance $x (Person $y))) ((Inheritance $x (Person Abebe) )) $x)
 
 
