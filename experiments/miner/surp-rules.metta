@@ -125,7 +125,7 @@
 
 ------------------------------------------------------------------------
 ;; Rule to calculate the old surprisingness value (normalized True).
-(: isurp 
+(: isurp-rule 
    (-> (normalized True) 
       (-> (universal-count-of $pattern $count)
          (-> (empProb $pattern $count $emp)
@@ -141,7 +141,7 @@
 
 ---------------------------------------------------------------------
 ;; Rule to calculate the old surprisingness value (normalized False).
-(: isurp 
+(: isurp-rule 
    (-> (normalized False) 
       (->  (universal-count-of $pattern $count)
          (-> (empProb $pattern $count $emp)

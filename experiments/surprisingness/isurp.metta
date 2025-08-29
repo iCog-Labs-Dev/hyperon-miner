@@ -226,9 +226,6 @@
 
 
 
-
-
-
 ;; ==============================================================
 ;; Function: isurp (Independent Surprisingness)
 ;; Purpose:  Measures how statistically surprising a pattern is

@@ -53,9 +53,8 @@
 (add-atom $kb (db-ref $db))
 (add-reduct $kb (: surpMode (surp-mode $surp-mode)))
 (add-reduct $kb (: dbsize (db-size (db_size $db))))
-(add-reduct $kb (if $normalization
-                                    (: normalize (normalized True))  
-                                    (: normalize (normalized False)))))))
+(add-atom $kb (: normalize (normalized $normalization))  
+                                    ))))
                                 
 
 (=(remove-params $kb) 
@@ -101,16 +100,16 @@
 
 ------------------------------------------------------------------------------------
 ;; old-isurprisingnes with normalization 
-;; define hyper parameters -> 1
+;; define hyper parameters -> 2
 (=(min-sup2) 6)
 (=(surp-mode2 ) isurp-old)
 (=(db-ratio2) 0.5)
 (= (normalization2) True)
 
-!(init-params &kb &db (min-sup2) (surp-mode2) (db-ratio2) (normalization2))
+(init-params &kb &db (min-sup2) (surp-mode2) (db-ratio2) (normalization2))
 
-!(println! ("========== isurp-old test with normalization =============="))
-! (syn &kb (fromNumber 19) (: $prf (Isurp $pattern $surp)))
+(println! ("========== isurp-old test with normalization =============="))
+(syn &kb (fromNumber 19) (: $prf (Isurp $prattern  $surp)))
 
 ;;Expected result 
 ;;()]
@@ -121,3 +120,15 @@
 ;;(isurp (, (Inheritance $x#45638 man) (Inheritance $x#45638 ugly) (Inheritance $x#45638 sodaDrinker)) 0.999707773232028))
 
 
+------------------------------------------------------------------------------------
+;; isurp with normalization 
+;; define hyper parameters -> 1
+(=(min-sup3) 6)
+(=(surp-mode3 ) isurp)
+(=(db-ratio3) 0.5)
+(= (normalization3) True)
+
+!(init-params &kb &db (min-sup3) (surp-mode3) (db-ratio3) (normalization3))
+
+!(println! ("========== isurp test with normalization =============="))
+! (syn &kb (fromNumber 19) (: $prf (est-prob $prattern $count $surp)))
