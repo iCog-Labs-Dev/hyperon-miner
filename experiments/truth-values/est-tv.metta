@@ -30,7 +30,7 @@
 ;; Returns:
 ;;   - The average empirical truth value, representing the product of the probabilities over the subpatterns without considering joint variables.
 ;; =============================================================================
-(=(pro_prob_without_joint $db $subpatterns )(
+(=(pro_prob_without_joint $db $subpatterns)(
     let* (
         ($tv (emp_tv_mem $subpatterns $db))  ;; Get empirical truth value for subpatterns in the database
         ($prod_etv (avrg_tv $tv))             ;; Calculate the average of the empirical truth values

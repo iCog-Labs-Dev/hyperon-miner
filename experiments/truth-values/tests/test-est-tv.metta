@@ -19,19 +19,31 @@
 
 
 
-; !(do-ji-tv-est &db (,(Inheritance $x ugly) (Inheritance $x man) (Inheritance $x sodaDrinker)))
 
 
-!(ji-est-tv &db 60 (,(Inheritance $x ugly) (Inheritance $x man) (Inheritance $x sodaDrinker)) 
+(assertEqual (ji-est-tv &db 60 (,(Inheritance $x ugly) (Inheritance $x man) (Inheritance $x sodaDrinker)) 
    (
 (((Inheritance $x man)) ((Inheritance $x sodaDrinker) (Inheritance $x ugly))) 
 (((Inheritance $x man) (Inheritance $x ugly)) ((Inheritance $x sodaDrinker))) 
 (((Inheritance $x man) (Inheritance $x sodaDrinker)) ((Inheritance $x ugly))) 
 (((Inheritance $x man)) ((Inheritance $x sodaDrinker)) ((Inheritance $x ugly)))
-) )
+  ) 
+)
 
-; !(pro_prob_without_joint &db (((Inheritance $x man)) ((Inheritance $x sodaDrinker) (Inheritance $x ugly))))
+((STV 0.0 0.0001979229795046239) 
+ (STV 0.0 0.0001979229795046239) 
+ (STV 0.0 0.0001979229795046239) 
+ (STV 4.6296296296296274e-5 0.0006976744186046506))
+)
 
-; !(joint-variables (,(Inheritance $x ugly) (Inheritance $x man) (Inheritance $x sodaDrinker)) (((Inheritance $x man)) ((Inheritance $x sodaDrinker) (Inheritance $x ugly))))
+(assertEqual 
+ (pro_prob_without_joint &db (((Inheritance $x man)) ((Inheritance $x sodaDrinker) (Inheritance $x ugly))))
+ (0 0.001979229795046239)
+)
 
-; !(prob-with-joint &db 60 (((Inheritance $x man)) ((Inheritance $x sodaDrinker) (Inheritance $x ugly))) ($x) 1)
+(assertEqual 
+   (joint-variables (,(Inheritance $x ugly) (Inheritance $x man) (Inheritance $x sodaDrinker)) (((Inheritance $x man)) ((Inheritance $x sodaDrinker) (Inheritance $x ugly))))
+   ($x)
+)
+
+!(prob-with-joint &db 60 (((Inheritance $x man)) ((Inheritance $x sodaDrinker) (Inheritance $x ugly))) ($x) 1)
