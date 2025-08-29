@@ -42,7 +42,32 @@
   (cons-atom , $flatten)  
 ))
 
-
+;; =============================================================================
+;; Function: get-clauses
+;; -----------------------------------------------------------------------------
+;; Purpose:
+;;   Extracts clauses from an expression, specifically handling AND-conjunctions
+;;
+;; Type Signature:
+;;   (-> Expression Expression)
+;;
+;; Parameters:
+;;   $element - Input expression to analyze
+;;
+;; Returns:
+;;   - Body of expression if it's an AND-conjunction
+;;   - Original expression otherwise
+;;
+;; Example:
+;;   (get-clauses '(And A B C)) → (A B C)
+;;   (get-clauses '(Or X Y)) → (Or X Y)
+;; =============================================================================
+; (: get-clauses (-> Expression Expression))
+(= (get-clauses $element)
+    (let $link (car-atom $element)
+        (if (== $link ,)
+            (cdr-atom $element)
+            $element)))
 
 (= (add-atom-nodup $space $atom)
    (case (match $space $atom $atom)

@@ -34,9 +34,9 @@
 )
 
 
-(= (get-clauses $cnj) (
-  unify (, $ncnj $ptrn) $cnj (let $result (get-clauses $ncnj) (cons-atom $ptrn $result) ) ($cnj)
-))
+; (= (get-clauses $cnj) (
+;   unify (, $ncnj $ptrn) $cnj (let $result (get-clauses $ncnj) (cons-atom $ptrn $result) ) ($cnj)
+; ))
 
 (= (conj? $p)
     (case $p
@@ -85,6 +85,13 @@
 )
 
 -----------------------------------------------------------------------------
+;; emperical probability of a pattern for isurp
+(= (syn $kb $_ (: $prf (prob-cpu  $pattern $db-ratio $emax $prob))) 
+    (let $dbb (match $kb (db-ref $db) $db)
+    (: CPUPROB (prob-cpu  $pattern $db-ration $emax (emp-prob-pbs  $pattern $dbb $emax $db-ratio) ))
+    ) 
+)
+-----------------------------------------------------------------------------
 ;; system proof to calculate the partitions for the given pattern.
 (= (syn $kb $_ (: $prf (partition-cpu  $pattern $partitions))) 
     (let $partitions (generet-partition-without-pattern $pattern)
@@ -115,8 +122,9 @@
 ----------------------------------------------------------------------------
 ;; min max estimation of the pattern for isurp 
 (= (syn $kb $_ (: $prf (ji-prob-est-cpu  $pattern $partitions  $db_ratio $emin-emax))) 
-    (let $dbb (match $kb (db-ref $db) $db)
-    (: CPUESTPROB (ji-prob-est-cpu  $pattern $partitions $db_ratio (min-max (do-ji-prob $partitions $pattern $dbb $db_ratio)))) ) 
+    (let* (($dbb (match $kb (db-ref $db) $db))
+            ($min-max (let $products  (collapse (ji-prob-est (superpose $partitions) $pattern $dbb $db_ratio)) (min-max $products))))
+    (: CPUESTPROB (ji-prob-est-cpu  $pattern $partitions $db_ratio $min-max)) ) 
 )
 
 

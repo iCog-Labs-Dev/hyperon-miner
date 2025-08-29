@@ -1,6 +1,6 @@
 !(register-module! ../../../experiments)
 
-;; import utils and rules files 
+;; import utils 
 ! (import! &self experiments:utils:common-utils)
 ! (import! &self experiments:utils:binomialMetta)
 ! (import! &self experiments:utils:beta-dist)
@@ -13,6 +13,9 @@
 ! (import! &self experiments:utils:util-jsd)
 ! (import! &self experiments:utils:eq_prob_adaptor)
 ! (import! &self experiments:utils:customType)
+! (import! &self experiments:utils:blk-abstractness)
+! (import! &self experiments:utils:eq-prob)
+! (import! &self experiments:utils:index_to_var)
 
 
 ;; import truth value computing components
@@ -32,6 +35,14 @@
 !(import! &temp   experiments:miner:surp-rules)
 !(import! &self  experiments:miner:system-proofs)
 !(import! &self experiments:miner:miner-utils)
+
+
+
+
+
+
+
+
 
 ;;create new space for kb
 !(bind! &kb (new-space))
@@ -106,10 +117,10 @@
 (=(db-ratio2) 0.5)
 (= (normalization2) True)
 
-(init-params &kb &db (min-sup2) (surp-mode2) (db-ratio2) (normalization2))
+; !(init-params &kb &db (min-sup2) (surp-mode2) (db-ratio2) (normalization2))
 
-(println! ("========== isurp-old test with normalization =============="))
-(syn &kb (fromNumber 19) (: $prf (Isurp $prattern  $surp)))
+; !(println! ("========== isurp-old test with normalization =============="))
+; !(syn &kb (fromNumber 19) (: $prf (Isurp $prattern  $surp)))
 
 ;;Expected result 
 ;;()]
@@ -131,4 +142,6 @@
 !(init-params &kb &db (min-sup3) (surp-mode3) (db-ratio3) (normalization3))
 
 !(println! ("========== isurp test with normalization =============="))
-! (syn &kb (fromNumber 19) (: $prf (est-prob $prattern $count $surp)))
+!(syn &kb (fromNumber 19) (: $prf (Isurp $prattern  $surp)))
+
+ 

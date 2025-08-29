@@ -85,7 +85,7 @@
 (= (emp_prob_subsmp $pattern $db $subsize)
 
     (if (< $subsize (db_size $db))
-        (emp-prob $pattern (subsample-py $db $subsize))
+        (let $space (subsample-py $db $subsize) (emp-prob $pattern $space ))
         (emp-prob $pattern $db)
     )
 )
