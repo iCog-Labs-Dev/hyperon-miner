@@ -2,6 +2,7 @@
 Hyperon-based utility script for pattern mining
 Includes: variable extraction, abstraction sorting, more/less abstract filtering,
 joint variable detection, and probability computation.
+Ported from the MeTTa
 
 August 2025
 """
@@ -182,13 +183,8 @@ def calculate_prob_for_vars(vars_: List[str], partition: List[ExpressionAtom],
     remaining = vars_[1:]
 
     var_partition = connected_subpatterns_with_var(partition, var)
-    print(f"Processing var {var} with partition {var_partition}")
-
     sorted_partition = sort_by_abstraction(var_partition, var)
-    print(f"Sorted partition for var {var}: {sorted_partition}")
-
     new_p = process_blocks(sorted_partition, var, db, p)
-    print(f"Probability after processing var {var}: {new_p}")
 
     return calculate_prob_for_vars(remaining, partition, db, new_p)
 
