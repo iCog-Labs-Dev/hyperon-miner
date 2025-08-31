@@ -250,9 +250,12 @@
 ;; =============================================================================
 (= (copy-db $db $old-db-content)
     (if (== $old-db-content ()) $db
-        (let* ( ($_ (add-reduct $db (car-atom $old-db-content)) )
+        (let* ( 
+            ($head (car-atom $old-db-content))
+            ($tail (cdr-atom $old-db-content))
+            ($_ (add-reduct $db $head) )
             )
-        (copy-db $db (cdr-atom $old-db-content))
+        (copy-db $db $tail)
     )
 ))
 
