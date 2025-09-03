@@ -101,6 +101,58 @@ def validate_unification(left_body, right_body):
     # Use existing MeTTa unification logic
     return unify_with_metta(left_body, indexed_right_body)
 
+def blocks_can_unify(l_blk, r_blk, var):
+    """Check if two blocks can be unified relative to var"""
+    return unify_with_metta(l_blk, r_blk)
+
+def is_blk_syntax_more_abstract(l_blk, r_blk, var):
+    """Check if l_blk is more abstract than r_blk with respect to var"""
+    if var not in str(l_blk) or var not in str(r_blk):
+        return False
+
+    l_erased = erase(l_blk, var, "@eyob")
+    r_erased = erase(r_blk, var, "@eyob")
+
+    l_erased_flat = []
+    def flatten(l):
+        for el in l:
+            if isinstance(el, list):
+                flatten(el)
+            else:
+                l_erased_flat.append(el)
+    flatten(l_erased)
+    r_erased_flat = []
+    def flatten(l):
+        for el in l:
+            if isinstance(el, list):
+                flatten(el)
+            else:
+                r_erased_flat.append(el)
+    flatten(r_erased)
+    
+    can_unify_result = blocks_can_unify(l_blk, r_blk, var)
+    if can_unify_result:
+        return validate_unification(l_erased, r_erased)
+    return False
+
+def is_blk_more_abstract(l_blk, r_blk, var):
+    """Check if l_blk is more abstract than r_blk relative to var"""
+    r_subsets = powerset_without_empty(r_blk)
+    l_partitions = partitions(l_blk)
+    # Step 3: Check each partition against each power set
+    for lp in l_partitions:  # For each partition of left block
+        for rs in r_subsets:  # For each subset of right block
+            # Check if ALL parts of left partition can be unified with right subset
+            all_parts_unifiable = True
+            for lb in lp:  # For each part in left partition
+                if not is_blk_syntax_more_abstract(lb, rs, var):
+                    all_parts_unifiable = False
+                    break
+            
+            if all_parts_unifiable:
+                return True    
+    return False
+
 # ============================
     # Import to metta 
 # # ============================
