@@ -208,3 +208,34 @@
     )
 
 )
+
+
+;; ===========================================================================
+;; FUNCTION: remove-hashtag
+;;
+;; DESCRIPTION:
+;;   Processes an expression and removes all occurrences of the `#` symbol
+;;   from variable names. This is used to normalize variables that enter or
+;;   leave the space, ensuring they are represented without the hashtag.
+;;
+;; PARAMETERS:
+;;   • $x — An expression potentially containing variables with `#` in their names.
+;;
+;; RETURNS:
+;;   A transformed expression where all variables have been stripped of `#`.
+;;
+;; EXAMPLE:
+;;   (remove-hashtag '(#x + #y))
+;;   ⇒ (x + y)
+;;
+;;   (remove-hashtag '(foo #bar #baz))
+;;   ⇒ (foo bar baz)
+;; ===========================================================================
+
+((= remove-hashtag $x) 
+    (remove-hashtag-py $x))
+
+
+
+
+
