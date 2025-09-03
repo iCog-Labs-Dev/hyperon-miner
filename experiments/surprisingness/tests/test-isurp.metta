@@ -5,7 +5,8 @@
 ! (import! &self experiments:utils:TruthValue)
 ! (import! &self experiments:utils:surp-utils)
 ! (import! &self experiments:utils:miner-utils)
-! (import! &self experiments:utils:gen_partition)
+ ! (import! &self experiments:utils:gen_partition)
+; !(import! &self experiments:utils:partition-metta)
 ! (import! &self experiments:utils:bs-utils) 
 ! (import! &self experiments:utils:customType)
 ! (import! &self experiments:truth-values:est-tv)
@@ -189,4 +190,13 @@
 
 ; !(assertEqual (isurp (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker) ) &kb False 0.2) 1.9290123456790123e-5)
 
-!(isurp (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker)) &kb True 0.5)
+;!(isurp  &kb True 0.5)
+;!(emp-prob-pbs  (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker)) &kb $emax $db_ratio)
+;!(ji_prob_est_interval (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker)) &kb 0.5)
+;!(eq-prob (((Inheritance $x man) (Inheritance $x ugly)) ((Inheritance $x sodaDrinker)))  &kb)
+
+!(bind! &test-db (new-space))
+!(add-atom &test-db (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker)))
+;!(let $atom (get-atoms &test-db) (ji_prob_est_interval $atom  &kb 0.5))
+;!(generet-partition-without-pattern (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker)))
+!(let $atom (get-atoms &test-db) (generet-partition-without-pattern $atom ));

@@ -34,13 +34,29 @@
 
 (: -> (-> Atom Atom Type))
 
+;; Initialize hyperparameters            
+(= (init-params $kb $db $min-sup $db-ratio )
+(superpose
+((add-atom $kb (: msT (ms-threshold $min-sup)))
+(add-atom $kb (: dbref (db-ref $db)))
+(add-atom $kb (: dbr (db-ratio $db-ratio)))
+(add-atom $kb (db-ratio $db-ratio))
+(add-atom $kb (db-size (db_size $db)))
+(add-atom $kb (db-ref $db))
+(add-reduct $kb (: dbsize (db-size (db_size $db))))
+)))
 
 ;; define parameters 
-(=(min-sup) 2)
-(=(surp-mode ) nisurp-old)
-(=(db-ratio) 0.5)
+(= (min-sup) 2)
+(= (db-ratio) 0.5)
+(= (num-of-conjuct) 2)
 
-! (cog-mine &db &kb (min-sup) (surp-mode) (db-ratio) 1 1)
+;! (cog-mine &db &kb (min-sup) (surp-mode) (db-ratio) 1 1)
+!(init-params  &kb &db  (min-sup) (db-ratio) )
+!(frequent-miner &db &kb (num-of-conjuct))
+;!(syn $kb (S Z) (: $prf (equals 4 4)))
+
+!(match &kb $x $x)
 
 
 

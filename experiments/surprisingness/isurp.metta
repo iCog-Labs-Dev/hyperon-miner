@@ -120,9 +120,9 @@
   ($p (pro-prob-wout-joint $partition $db $db_ratio 1))
   ($db-size (db_size $db))
   ; ($eq_prob (eq-prob-py $partition $pattern $db-size)) ; TODO: for fast excution use eq-prob-py
-  (() (println! (part $partition)))
+ 
   ($eq_prob (eq-prob $partition $pattern $db))
-  (() (println! (eq-prob $eq_prob)))
+
 
   )
   (* $p $eq_prob)

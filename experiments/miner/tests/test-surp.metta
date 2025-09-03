@@ -142,6 +142,5 @@
 !(init-params &kb &db (min-sup3) (surp-mode3) (db-ratio3) (normalization3))
 
 !(println! ("========== isurp test with normalization =============="))
-!(syn &kb (fromNumber 19) (: $prf (Isurp $prattern  $surp)))
+!(syn &kb (fromNumber 19) (: $prf (est-prob $prattern  $surp)))
 
- 

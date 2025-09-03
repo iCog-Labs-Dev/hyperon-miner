@@ -34,9 +34,9 @@
 )
 
 
-; (= (get-clauses $cnj) (
-;   unify (, $ncnj $ptrn) $cnj (let $result (get-clauses $ncnj) (cons-atom $ptrn $result) ) ($cnj)
-; ))
+(= (get-clauses-inner $cnj) (
+  unify (, $ncnj $ptrn) $cnj (let $result (get-clauses-inner $ncnj) (cons-atom $ptrn $result) ) ($cnj)
+))
 
 (= (conj? $p)
     (case $p
@@ -276,8 +276,9 @@
 ;;system proof to count the number of clauses in a pattern
 (= (syn $kb $_ (: $prf (clause_count $ptrn $cnt)))
     (let* (
-        ($clauses (get-clauses $ptrn))
-        ($cnt (size-atom $clauses))
+
+        ($cnt (let $clauses (get-clauses-inner $ptrn) (size-atom $clauses)))
+
         )
     (if (== $cnt 0)
           (empty)
