@@ -190,13 +190,5 @@
 
 ; !(assertEqual (isurp (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker) ) &kb False 0.2) 1.9290123456790123e-5)
 
-;!(isurp  &kb True 0.5)
-;!(emp-prob-pbs  (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker)) &kb $emax $db_ratio)
-;!(ji_prob_est_interval (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker)) &kb 0.5)
-;!(eq-prob (((Inheritance $x man) (Inheritance $x ugly)) ((Inheritance $x sodaDrinker)))  &kb)
+!(isurp (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker)) &kb True 0.5)
 
-!(bind! &test-db (new-space))
-!(add-atom &test-db (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker)))
-;!(let $atom (get-atoms &test-db) (ji_prob_est_interval $atom  &kb 0.5))
-;!(generet-partition-without-pattern (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker)))
-!(let $atom (get-atoms &test-db) (generet-partition-without-pattern $atom ));

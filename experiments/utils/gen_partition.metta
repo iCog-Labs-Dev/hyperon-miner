@@ -207,7 +207,7 @@
 ;;   ⇒ (foo bar baz)
 ;; ===========================================================================
 
-((= remove-hashtag $x) 
+(= ( remove-hashtag $x) 
     (remove-hashtag-py $x))
 
 
