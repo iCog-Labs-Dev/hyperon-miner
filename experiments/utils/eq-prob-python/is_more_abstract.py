@@ -30,3 +30,77 @@ def partitions(hs):
         new_partition.append([head])
         result.append(new_partition)    
     return result
+
+def sub_var(atom, var, replacement):
+    """Substitute variable in a single atom"""
+    if atom == var:
+        return replacement
+    # Handle nested lists recursively
+    if isinstance(atom, list):
+        return [sub_var(item, var, replacement) for item in atom]
+    return atom
+
+def replace_var_exp(exp, var, replacement):
+    """Replace variable inside an expression (list)"""
+    return [sub_var(atom, var, replacement) for atom in exp]
+
+def erase(pattern, var, replacement):
+    """Erasing variable by replacing with given value"""
+    return replace_var_exp(pattern, var, replacement)
+
+def is_variable(atom):
+    """Check if an atom is a variable (starts with $)"""
+    return isinstance(atom, str) and atom.startswith('$')
+
+def unify_with_metta(l_blk, r_blk):
+    def to_expr(blk):
+        """Converts a nested list block into a MeTTa expression string."""
+        if isinstance(blk, list):
+            # If the block is a list, recursively convert its children
+            # and wrap the result in parentheses.
+            children_str = " ".join([to_expr(item) for item in blk])
+            return f"({children_str})"
+        else:
+            # If it's a single atom, just return its string representation.
+            return str(blk)
+    l_expr = to_expr(l_blk)
+    r_expr = to_expr(r_blk)
+
+    code = f"! (unify {l_expr} {r_expr} pass fail)"
+    print("code:", code)
+    result = metta.run(code)
+    print("result:", result)
+    # Normalize: flatten and stringify
+    flat_result = [str(item) for sub in result for item in sub]
+    return "fail" not in flat_result
+
+
+def replace_variables_with_indices(pattern):
+    """Replace variables with De Bruijn-like indices for standardization"""
+    var_map = {}
+    index = 0
+    
+    def replace_in_structure(item):
+        nonlocal index
+        if isinstance(item, list):
+            return [replace_in_structure(sub_item) for sub_item in item]
+        elif is_variable(item):
+            if item not in var_map:
+                var_map[item] = f"deb-{index}"
+                index += 1
+            return var_map[item]
+        else:
+            return item
+    return replace_in_structure(pattern)
+
+def validate_unification(left_body, right_body):
+    """Validate unification with variable indexing"""
+    # Replace variables in right body with indices for standardization
+    indexed_right_body = replace_variables_with_indices(right_body)
+    print("indexed_right_body:",indexed_right_body)
+    # Use existing MeTTa unification logic
+    return unify_with_metta(left_body, indexed_right_body)
+
+# ============================
+    # Import to metta 
+# # ============================
