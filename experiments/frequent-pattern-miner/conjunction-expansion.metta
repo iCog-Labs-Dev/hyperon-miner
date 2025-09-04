@@ -234,14 +234,28 @@
 )
 
 (= (checker $db $pattern $ms) 
-   (let* (
-   ( () (println! (pattern $pattern)))
-   ($flat (flatten $pattern))
-   ($result (sup-eval $db $flat $ms))
-   ($final (if $result $pattern ()))
-   ) 
-  $final)
+    (let*
+    (
+        ($conjuncts (get-conjuncts $pattern))
+        ($flat (cons-atom , $conjuncts))
+        ; ( () (println! ("==== flat" $flat)))
+         ($result (sup-eval $db $flat $ms))
+        ; ( () (println! ("==== result" $result)))
+        ($final (if $result $pattern ()))
+    )
+   $final
+    )
 )
+
+; (= (checker $db $pattern $ms) 
+;    (let* (
+;    ( () (println! (pattern $pattern)))
+;    ($flat (flatten $pattern))
+;    ($result (sup-eval $db $flat $ms))
+;    ($final (if $result $pattern ()))
+;    ) 
+;   $final)
+; )
 ; (= (checker $db $pattern $ms) 
 ;    (let* (
 ;    ( () (println! (pattern $pattern)))
@@ -364,26 +378,29 @@
 ;     $conj
 ;     )
 ; )
-(= (do-conjunct $db $cndb () $ms $_)
-()
-)
+; (= (do-conjunct $db $cndb () $ms $_)
+; ()
+; )
 
 (= (do-conjunct $db $cndb $coming_conj  $ms Z)
+    (if (== $coming_conj ()) ()
     (let* (
         (() (println! ("==== Build conjunction with depth 0 ====" $coming_conj)))
         ($conjunct (replacev $coming_conj))
         ($matches (match $cndb (CandidatePattern $pattern $cnt) (replacev $pattern)))
         ($listconj (expand_conjunction $conjunct $matches $db $ms 2 False))
-        (() (println! ("====list_conj" $listconj)))
+        ; (() (println! ("====list_conj" $listconj)))
         ($debconj (replace $listconj))
         ($fitlered (remove_conjuncts_with_redundant_clauses $debconj))
-        (() (println! ("==== Filtered conjunctions ====" $fitlered)))
+        ; (() (println! ("==== Filtered conjunctions ====" $fitlered)))
     )
     $fitlered
-    )
+    ))
 )
 
 (= (do-conjunct $db $cndb $coming_conj $ms (S $K))
+    (if (== $coming_conj ())
+        ()
     (let* (
         (() (println! ("==== Build conjunction with depth greater than 0 =====" $coming_conj)))
         ($conjunct (replacev $coming_conj))
@@ -395,7 +412,7 @@
         ($conj (do-conjunct $db $cndb $varconj $ms $K))
     )
     $conj
-    )
+    ))
 )
 
 ; (= (do-conjunct $db $cndb $coming_conj  $ms Z)
@@ -490,10 +507,13 @@
 (= (conjunct $dbspace $cndpspace $conjspace $minsup $depth )   
      (match $cndpspace (CandidatePattern $pattern $cnt)
                    (let* (
-                        (() (println! ("==== Conjuntion expansion started")))
+                        (() (println! ("==== Conjuntion expansion started" $pattern)))
                         ($conj  (do-conjunct $dbspace $cndpspace  $pattern $minsup (fromNumber $depth)))
-                        ($reduct (if (== $conj ()) () (add-atom $conjspace $conj)))
-                        )$reduct
+                        ; (() (println! ($conj $pattern)))
+                        ($reduct (add-atom $conjspace $conj))
+                        )
+                        $reduct
+                        ; $conj
                     )
         ))
    
