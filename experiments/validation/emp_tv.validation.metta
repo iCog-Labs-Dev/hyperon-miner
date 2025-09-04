@@ -90,3 +90,80 @@
 ;
 ; OpenCog miner implementation (do_emp_tv result with the above parameters): 
 ;   STV (0.00138889, 0.0818182)
+
+
+
+
+
+
+; ===============================
+; do_emp_tv Validation 3
+; ===============================
+(do_emp_tv
+   (,
+      (Inheritance $x ugly)
+      (Inheritance $x woman)
+   )
+   &db        ; knowledge base: ugly-man-soda-drinker
+   0.02          ; database ratio
+)
+
+; ===============================
+; Parameters Info
+; ===============================
+; Pattern:
+;   (, (Inheritance $x ugly)
+;       (Inheritance $x woman))
+
+; Corpus:
+;   &db -> ugly-man-soda-drinker
+
+; Database Ratio: 0.02
+
+; ===============================
+; Results
+; ===============================
+; Our implementation (Hyperon do_emp_tv result with the above parameters): 
+;   stv 0 0.0001249843769528809
+;
+; OpenCog miner implementation (do_emp_tv result with the above parameters): 
+;   (stv 0 0.000124984)
+
+
+
+
+
+; ===============================
+; do_emp_tv Validation 4
+; ===============================
+!(do_emp_tv
+   (,
+      (Inheritance $x ugly)
+      (Inheritance $x woman)
+      (Inheritance $x sodaDrinker)
+   )
+   &db        ; knowledge base: ugly-man-soda-drinker
+   0.02          ; database ratio
+)
+
+; ===============================
+; Parameters Info
+; ===============================
+; Pattern:
+;   (, (Inheritance $x ugly)
+;       (Inheritance $x woman)
+;       (Inheritance $x sodaDrinker))
+
+; Corpus:
+;   &db -> ugly-man-soda-drinker
+
+; Database Ratio: 0.02
+
+; ===============================
+; Results
+; ===============================
+; Our implementation (Hyperon do_emp_tv result with the above parameters): 
+;   (stv 0.0 0.09963099630996311)
+;
+; OpenCog miner implementation (do_emp_tv result with the above parameters): 
+;   (stv 0 0.099631)

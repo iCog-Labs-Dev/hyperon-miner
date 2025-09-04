@@ -24,10 +24,9 @@
 (: subsample (-> SpaceType Number SpaceType))
 (: do_emp_tv (-> Pattern SpaceType Number TruthValue))
 (: gen-random (-> Number Number))
-(: get-element (-> Number Expression Expression))
 (: gen-random-subsample (-> SpaceType Number SpaceType SpaceType))
 (: emp-tv-subsmp (-> Pattern SpaceType Number TruthValue))
-; (: emp-tv-bs-helper (-> Pattern SpaceType Number Number (List TruthValue)))
+(: emp-tv-bs-helper (-> Pattern SpaceType Number Number (List TruthValue)))
 (: subsmp-size (-> Pattern Number Number Number))
 (: emp-tv-bs (-> Pattern SpaceType Number Number Number TruthValue))
 (: emp-tv-bs (-> Pattern SpaceType Number Number TruthValue))
@@ -250,12 +249,13 @@
 ;; =============================================================================
 (= (copy-db $db $old-db-content)
     (if (== $old-db-content ()) $db
-        (let* ( ($_ (add-reduct $db (car-atom $old-db-content)) )
+        (let* ( 
+                (($head $tail) (decons-atom $old-db-content))
+                ($_ (add-atom $db $head) )
             )
-        (copy-db $db (cdr-atom $old-db-content))
+        (copy-db $db $tail)
     )
 ))
-
 
 ;; =============================================================================
 ;; Function: add_n_atoms_to_db
@@ -361,8 +361,11 @@
 ;; =============================================================================
 (= (copy-db-by-size $db $old-db-content $n $size)
     (if (or (== $old-db-content ()) (>= $n $size)) $db
-        (let* ( ($_ (add-atom $db (car-atom $old-db-content)) ))
-            (copy-db-by-size $db (cdr-atom $old-db-content) (+ $n 1) $size)
+        (let* ( 
+            (($head $tail) (decons-atom $old-db-content))
+            ($_ (add-atom $db $head)) 
+            ($filledAmount (+ $n 1)))
+            (copy-db-by-size $db $tail $filledAmount $size)
         )
     )
 )
@@ -538,8 +541,10 @@
         (let* (
                 ($esstvs (emp-tv-bs-helper $pattern $db $n-resample $subsize))
                 ((EMPTV $mean $variance) (avrg-tv-py $esstvs))
+                ($mk_stv_val (mk_stv $mean $variance))
+                ($finalAnswer (cons-atom EMPTV $mk_stv_val))
             )
-            (mk_stv $mean $variance)
+            $finalAnswer
         ) ; Return average of the empirical truth values
     (emp-tv $pattern $db))) ; If subsize >= db size, directly return empirical truth value
 
