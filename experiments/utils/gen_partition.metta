@@ -34,7 +34,7 @@
 ;;   (get-clauses '(And A B C)) → (A B C)
 ;;   (get-clauses '(Or X Y)) → (Or X Y)
 ;; =============================================================================
-(: get-clauses (-> Expression Expression))
+; (: get-clauses (-> Expression Expression))
 (= (get-clauses $element)
     (let $link (car-atom $element)
         (if (== $link ,)
@@ -60,7 +60,7 @@
 ;; Example:
 ;;   (add-to-subsets 'A '((B) (C))) → ((A B) (A C))
 ;; =============================================================================
-(: add-to-subsets (-> Expression Expression Expression))
+; (: add-to-subsets (-> Expression Expression Expression))
 (= (add-to-subsets $element $subsets)
     (if (== $subsets ())
         ()
@@ -113,7 +113,7 @@
 ;; Example:
 ;;   (powerset '(A B)) → (() (A) (B) (A B))
 ;; =============================================================================
-(: powerset (-> Expression Expression))
+; (: powerset (-> Expression Expression))
 (= (powerset $lst)
     (if (== $lst ())
         (cons-atom () ())
@@ -146,10 +146,10 @@
 ;;   (generet-partition-without-pattern '(And A B C))
 ;;   → ((A B C)) or other valid partitions
 ;; =============================================================================
-(: generet-partition-without-pattern (-> Expression Expression))
+; (: generet-partition-without-pattern (-> Expression Expression))
 (= (generet-partition-without-pattern $pattern)
     (let* (
-            ($clause (get-cnj-clouses $pattern))
+            ($clause (get-clauses $pattern))
             ($subsets (gen-subsets $clause)))
         (gen-partition $subsets $clause)))
 
@@ -172,12 +172,12 @@
 ;; ===========================================================================
 
 (= (powerset-without-empity $list)
-    (collapse
+  (let $subset (powerset $list) (collapse
         (subtraction
-            (superpose (powerset $list))
+            (superpose $subset)
             (superpose (()))
         )
-    )
+    ))
 )
 
 
@@ -208,3 +208,34 @@
     )
 
 )
+
+
+;; ===========================================================================
+;; FUNCTION: remove-hashtag
+;;
+;; DESCRIPTION:
+;;   Processes an expression and removes all occurrences of the `#` symbol
+;;   from variable names. This is used to normalize variables that enter or
+;;   leave the space, ensuring they are represented without the hashtag.
+;;
+;; PARAMETERS:
+;;   • $x — An expression potentially containing variables with `#` in their names.
+;;
+;; RETURNS:
+;;   A transformed expression where all variables have been stripped of `#`.
+;;
+;; EXAMPLE:
+;;   (remove-hashtag '(#x + #y))
+;;   ⇒ (x + y)
+;;
+;;   (remove-hashtag '(foo #bar #baz))
+;;   ⇒ (foo bar baz)
+;; ===========================================================================
+
+((= remove-hashtag $x) 
+    (remove-hashtag-py $x))
+
+
+
+
+

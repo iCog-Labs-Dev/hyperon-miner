@@ -62,10 +62,8 @@
 ;; get-patterns
 -----------------------------------------------------------
 ;;Returns frequent patters with their support from the kb
-(= (get-patterns $kb) (
-  chain (match $kb (: msT (ms-threshold $ms)) $ms) $msT
-          ( match $kb (: $x (supportOf $pattern $value))
-                (let True (>= $value $msT) (($pattern) (sup $value))))           
+(= (get-patterns $kb $res) (
+    match $kb  (: $prf (hasSupport $nptrn $count))  (add-atom $res   (hasSupport $nptrn $count))        
 ))
 
 
@@ -77,7 +75,7 @@
 ;; otherwise launches the backward chainer for surprising patterns mining
 (= (mine-surp $kb $res $surp-mode)  
   ( case $surp-mode (
-        (none  (let $result  (get-patterns $kb) (add-atom $res $result)) ) 
+        (none  (let $result  (get-patterns $kb $res) (add-atom $res $result)) ) 
         (jsdsurp (let $result  (syn $kb (fromNumber 13) (: $prf (jsdsurp $what_is_surprise $value)))   (add-atom $res $result)))
         ($_        (let (: $prf $ccln) (syn $kb (fromNumber 17) (: $prf (isurp $what_is_surprise $value)))    (add-atom $res $ccln)))
     )                                                         
@@ -101,6 +99,6 @@
         (() (println! "==== Surprissingness Scoring Started ====="))
         ($dummy4  (mine-surp &surp-kb &res $surp-mode))
     )    
-       ; (match $surp-kb $x $x)
-          (get-atoms &res)
+        (match &freq-kb $x $x)
+         ; (get-atoms &res)
 ))

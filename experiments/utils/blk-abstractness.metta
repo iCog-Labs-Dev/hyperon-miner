@@ -46,9 +46,9 @@
 (= (is-var-exist $exp $var) 
    (if (== $exp ())
        False
-       (if (var-exist-exp (car-atom $exp) $var) 
+       (let $che (var-exist-exp (car-atom $exp) $var) (if $che 
            True
-           (is-var-exist (cdr-atom $exp) $var))))
+           (is-var-exist (cdr-atom $exp) $var)))))
 
 ; Get all variables from a pattern
 ; Check if two patterns can be unified after treating var as constant
@@ -94,12 +94,12 @@
            (if (or $left_empty $right_empty)
                False
                (let* (
-                    ($_ (println! (can-unify called with $l_body $r_body)))
                    ($l_head (car-atom $l_body))
                    ($l_tail (cdr-atom $l_body))
                    ($r_head (car-atom $r_body))
                    ($r_tail (cdr-atom $r_body))
                    ($head_unify (can-unify-expr $l_head $r_head))
+          
                )
                (if $head_unify
                    (can-unify $l_tail $r_tail)
@@ -120,8 +120,22 @@
  
  )
 
+ (= (can-unify-expr ($link1 $pridicate1 ) ($link2 $pridicate2)) 
+    (
+        if (== $link1 $link2)
+            (let* (
+                ($can-unify1 (can-unify-ground $pridicate1 $pridicate2))
+                
+            )
+             $can-unify1)
+        
+            False
+    )
+ 
+ )
 
 
+;we need to change this so that (Person $x) can be unified with (Person Abebe), becasuse eventhough they are not equal, since the expression with the variable is just a more absract version of the second expression.
 (= (can-unify-ground $ground1 $ground2)
     (if (== $ground1 $ground2)
         True
@@ -132,9 +146,31 @@
     )
 )
 
+;main change to handle calls like this as well: (is-blk-syntax-more-abstract ((Human (Person $x) (Person Abebe))) ((Human (Person $x) (Person $y))) (Person $x))
+; (= (can-unify-ground $ground1 $ground2)
+;     (if (== $ground1 $ground2)
+;         True
+;         (if (and (== (get-metatype $ground1  ) Expression) (== (get-metatype $ground2 ) Expression ) ) (can-unify-expr $ground1 $ground2) (if (or (== (get-metatype $ground1) Variable)
+;                 (== (get-metatype $ground2) Variable))
+;                 True
+;                 False))
+;     )
+; )
+
+
+; (= (validate-unification $left-body $right-body) 
+;    (let $indexed-right-body (replace $right-body) 
+;         (can-unify $left-body $indexed-right-body)
+;     )
+; )
+
 (= (validate-unification $left-body $right-body) 
-   (let $indexed-right-body (replace $right-body) 
-        (can-unify $left-body $indexed-right-body)
+   (let* ( ($indexed-right-body (replace $right-body)) 
+;    ($_ (println! (right body is $right-body validate called et the replaced is $indexed-right-body ) ))
+   ) 
+        (let* (($for (can-unify $left-body $indexed-right-body)) 
+        ; ($_ (println! (the bool of val_uni is $for ))) 
+        ) $for)
     )
 )
 ; Main function: check if l_pat is more abstract than r_pat with respect to var
@@ -157,6 +193,7 @@
            
            ; Try to unify the modified patterns
            ($can_unify_result (can-unify $l_body $r_body))
+          
        )
             (if $can_unify_result 
                 (validate-unification $l_body $r_body) 
@@ -198,7 +235,7 @@
 (= (check-subsets $lp $subsets $var)
    (if (== $subsets ())
        False  ; No more subsets, return False
-       (let $rs (car-atom $subsets)
+       (let $rs  (car-atom $subsets)
          (if (check-all-blocks $lp $rs $var)
              True  ; All blocks match with this subset
              (check-subsets $lp (cdr-atom $subsets) $var)))))  ; Try next subset
@@ -224,9 +261,8 @@
         ) 
 
     )
-
 ))
-; (: merge-list (-> Expression Expression Expression))
+(: merge-list (-> Expression Expression Expression))
 (= (merge-list $list1 $list2)  (unique-list (union-atom  $list1 $list2)))
 ; (: unique-list (-> Expression Expression))
 (= (unique-list $list)
