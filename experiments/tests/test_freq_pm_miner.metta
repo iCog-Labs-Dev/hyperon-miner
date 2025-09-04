@@ -156,6 +156,7 @@ $cnd
 )
 
 ; !(test_transitivity)
+; !(test_transitivity)
 ; !(assertEqual (intersection (test_transitivity) (superpose ((, (Inheritance Z (S Z)) (Inheritance (S Z) (S (S Z))))))) (superpose ((, (Inheritance Z (S Z)) (Inheritance (S Z) (S (S Z)))))))
 
 ; !(match &cndpspace $pattern $pattern)
