@@ -49,7 +49,7 @@
                     ($add1 (if (>= $result $minsup) (remove-atom $aptrnspace (AbstractPattern ($linkunique Z (S Z)))) ()))
                     ($rem1 (if (>= $result $minsup) (add-atom $aptrnspace (AbstractPattern ($linkunique Z (S Z)))) ()))
                     ($add2 (if (>= $result $minsup) (remove-atom $cndpspace (CandidatePattern ($linkunique Z (S Z)) $result)) ()))
-                    ($rem2 (if (>= $result $minsup) (add-reduct $cndpspace (CandidatePattern ($linkunique Z (S Z)) $result)) ()))
+                    ($rem2 (if (>= $result $minsup) (add-atom $cndpspace (CandidatePattern ($linkunique Z (S Z)) $result)) ()))
                 )
                ($add1 $rem1 $add2 $rem2)
 )
