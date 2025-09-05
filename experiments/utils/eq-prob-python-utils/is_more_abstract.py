@@ -240,6 +240,58 @@ def sort_by_abstraction(patterns, var):
     
     return sorted_more + [pivot] + sorted_less
 
+
+
+def get_variables_from_pattern(pattern):
+    """Extract all variables from a pattern (list), returning a set of variable names."""
+    vars_set = set()
+    def extract_vars(item):
+        if isinstance(item, list):
+            for sub_item in item:
+                extract_vars(sub_item)
+        elif is_variable(item):
+            vars_set.add(item)
+    
+    extract_vars(pattern)
+    print(vars_set)
+    return vars_set
+
+
+def is_variable_in_block(block, var):
+    """Check if a variable appears anywhere in a block (list)."""
+    if isinstance(block, list):
+        for item in block:
+            if is_variable_in_block(item, var):
+                return True
+    else:
+        return block == var
+    return False
+
+def joint_variables(pattern, partition):
+    """Find variables that appear in multiple blocks of partition"""
+    # Get all variables from the pattern (equivalent to get_variables(pattern).varset)
+    pattern_vars = get_variables_from_pattern(pattern)
+    
+    var_count = {}
+    
+    # For each variable in the pattern
+    for var in pattern_vars:
+        count = 0
+        # Count how many blocks contain this variable
+        for block in partition:
+            if is_variable_in_block(block, var):
+                count += 1
+        var_count[var] = count
+    
+    # Return variables that appear in more than 1 block
+    joint_vars = []
+    for var, count in var_count.items():
+        if count > 1:  # appears in 2+ blocks
+            joint_vars.append(var)
+    
+    return joint_vars
+
+
 # ============================
     # Import to metta 
 # # ============================
