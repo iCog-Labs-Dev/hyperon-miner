@@ -139,4 +139,5 @@ Added and configured a dedicated test file for validation.
 ; OpenCog miner implementation (isurp result with the above parameters):  0.000925926
 
 
-
+!(sort-by-abstraction (((Human $x Chala)) ((Human $x $y) (Human $x $z))) $x)
+!(filter-more-abstract ((Human $x Chala)) (((Human $x $y) (Human $x $z))) $x)

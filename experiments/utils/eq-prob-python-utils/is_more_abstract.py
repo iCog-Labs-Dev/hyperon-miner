@@ -67,9 +67,7 @@ def unify_with_metta(l_blk, r_blk):
     r_expr = to_expr(r_blk)
 
     code = f"! (unify {l_expr} {r_expr} pass fail)"
-    print("code:", code)
     result = metta.run(code)
-    print("result:", result)
     # Normalize: flatten and stringify
     flat_result = [str(item) for sub in result for item in sub]
     return "fail" not in flat_result
@@ -97,7 +95,7 @@ def validate_unification(left_body, right_body):
     """Validate unification with variable indexing"""
     # Replace variables in right body with indices for standardization
     indexed_right_body = replace_variables_with_indices(right_body)
-    print("indexed_right_body:",indexed_right_body)
+    # print("indexed_right_body:",indexed_right_body)
     # Use existing MeTTa unification logic
     return unify_with_metta(left_body, indexed_right_body)
 
@@ -153,6 +151,59 @@ def is_blk_more_abstract(l_blk, r_blk, var):
                 return True    
     return False
 
+
+def normalize_pattern(p):
+    if not isinstance(p, list):
+        return [p]
+    if len(p) == 0:
+        return []
+    if any(isinstance(el, list) for el in p):
+        return p
+    return [p]
+
+
+
+def filter_more_abstract(patterns, pivot, var):
+    """Keep only patterns that are MORE abstract than pivot."""
+    if not patterns:
+        return []
+    head, *tail = patterns
+
+    # Normalize shapes before comparing
+    head_norm = normalize_pattern(head)
+    pivot_norm = normalize_pattern(pivot)
+
+    is_head_abstract = is_blk_more_abstract(head_norm, pivot_norm, var)
+    # print("in filter-more", is_head_abstract, "head_norm=", head_norm, "pivot_norm=", pivot_norm)
+
+    rest_filtered = filter_more_abstract(tail, pivot, var)
+    if is_head_abstract:
+        return [head] + rest_filtered
+    else:
+        return rest_filtered
+
+
+def filter_less_abstract(patterns, pivot, var):
+    """Keep only patterns that are NOT more-abstract than pivot."""
+    if not patterns:
+        return []
+    head, *tail = patterns
+
+    head_norm = normalize_pattern(head)
+    pivot_norm = normalize_pattern(pivot)
+
+    is_head_abstract = is_blk_more_abstract(head_norm, pivot_norm, var)
+    # print("in filter-less", is_head_abstract, "head_norm=", head_norm, "pivot_norm=", pivot_norm)
+
+    rest_filtered = filter_less_abstract(tail, pivot, var)
+    if not is_head_abstract:
+        return [head] + rest_filtered
+    else:
+        return rest_filtered
+
+
+
 # ============================
     # Import to metta 
 # # ============================
+
