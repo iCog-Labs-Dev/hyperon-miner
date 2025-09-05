@@ -201,7 +201,44 @@ def filter_less_abstract(patterns, pivot, var):
     else:
         return rest_filtered
 
+    
+# =============================================================================
+# Function: sort_by_abstraction
+# -----------------------------------------------------------------------------
+# Purpose:
+#   Sorts a list of patterns based on abstraction level using is-blk-more-abstract
+#   More abstract patterns come first in the sorted result
+#
+#
+# Parameters:
+#   patterns - List of patterns to sort
+#   var - Variable to use for abstraction comparison
+#
+# Returns:
+#   Sorted list where more abstract patterns appear first
+#
+# Example:
+#   sort_by_abstraction((pattern1 pattern2 pattern3) var)
+# =============================================================================
 
+def sort_by_abstraction(patterns, var):
+    """Sort patterns so that more abstract ones come first, using quicksort style."""
+    if not patterns:
+        return []
+    
+    if len(patterns) == 1:
+        return patterns  # Single element list is already sorted
+    
+    pivot = patterns[0]
+    rest = patterns[1:]
+    
+    more_abstract = filter_more_abstract(rest, pivot, var)
+    less_abstract = filter_less_abstract(rest, pivot, var)
+    
+    sorted_less = sort_by_abstraction(less_abstract, var)
+    sorted_more = sort_by_abstraction(more_abstract, var)
+    
+    return sorted_more + [pivot] + sorted_less
 
 # ============================
     # Import to metta 
