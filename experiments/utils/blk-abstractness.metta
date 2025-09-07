@@ -1,5 +1,5 @@
 
-
+(= (checkPat $x) (let $type (get-metatype $x) (if (not (== $type Expression)) False (and  ( > (size-atom $x) 1) (let $head (car-atom $x) (== (get-metatype $head) Symbol))) ) ))
 
 
 (: Constant (-> String $a))
@@ -19,28 +19,52 @@
 
 
 ; Replace variable in an expression 
-(= (replace-var-exp $exp $var $replacement)  
+; (= (replace-var-exp $exp $var $replacement)  
+;    (let* (
+;        (($link $var1 $var2) $exp)
+;        ($subvar1 (sub-var $var1 $var $replacement))
+;        ($subvar2 (sub-var $var2 $var $replacement)) 
+;    )
+;    ($link $subvar1 $subvar2)))
+
+
+; ; Substitute variable in a single atom
+; (= (sub-var $atom $var $replacement)  
+;    (if (== (get-metatype $atom) Variable)
+;        (if (== $atom $var)
+;            $replacement
+;            $atom)
+;        $atom))
+
+(=(handle_predicate $predicate $var $replacement)
+(let () (println! ("handle pred")) (if (checkPat $predicate) (replace-var-exp $predicate $var $replacement)  (if (== $predicate $var) $replacement $predicate))))
+
+
+(= (replace-var-exp $exp $var $replacement )  
    (let* (
-       (($link $var1 $var2) $exp)
-       ($subvar1 (sub-var $var1 $var $replacement))
-       ($subvar2 (sub-var $var2 $var $replacement)) 
+      ;  ($is_pat (checkPat $exp))
+       (($link $tail) (decons-atom $exp))
+       ($updated-tail (handle_tail $tail $var $replacement () ))
+    ;    ($_ (println! ("called with" $exp)))
+       
+       ($ans (union-atom ($link) $updated-tail)) 
    )
-   ($link $subvar1 $subvar2)))
+   $ans ))
 
 
-; Substitute variable in a single atom
-(= (sub-var $atom $var $replacement)  
-   (if (== (get-metatype $atom) Variable)
-       (if (== $atom $var)
-           $replacement
-           $atom)
-       $atom))
+(= (handle_tail $tale $var $replacement $acc) (if (== $tale ()) $acc (let* ((($cur $nxt) (decons-atom $tale)) ($updated-cur (handle_predicate $cur $var $replacement  )) ($new-acc (union-atom $acc ($updated-cur)))) (handle_tail $nxt $var $replacement $new-acc) )) )
 
 
 ; Check if variable exists in a single expression
+; (= (var-exist-exp $exp $var)  
+;    (let ($link $var1 $var2) $exp
+;        (or (== $var1 $var) (== $var2 $var))))
+
 (= (var-exist-exp $exp $var)  
-   (let ($link $var1 $var2) $exp
-       (or (== $var1 $var) (== $var2 $var))))
+   (if (checkPat $exp) 
+      (let* (($tail (cdr-atom $exp)) ($ans (collapse (is-var-same (superpose $tail) $var) ) ) ($len (size-atom $ans)) ) (if (== $len 0) False True)) False))
+
+(=(is-var-same $predicate $var) (if (checkPat $predicate ) (let $tail (cdr-atom $predicate ) (is-var-same (superpose $tail) $var)) (if (== $predicate $var) True (empty))))
 
 ; Check if variable exists in the entire pattern
 (= (is-var-exist $exp $var) 
@@ -82,6 +106,8 @@
 ; )
 ; )
 
+;the block from one possible parition of the the oringial left-block is $l_body and $r_body is one of subsets of the orignal right-block
+
 ; Main unification function for atom bodies
 (= (can-unify $l_body $r_body)
    (if (== (size-atom $l_body) (size-atom $r_body))
@@ -99,7 +125,7 @@
                    ($l_tail (cdr-atom $l_body))
                    ($r_head (car-atom $r_body))
                    ($r_tail (cdr-atom $r_body))
-                   ($head_unify (can-unify-expr $l_head $r_head))
+                   (($head_unify) (can-unify-expr $l_head $r_head))
                     ($_ (println! (in can-unify 2)))
           
                )
@@ -108,45 +134,64 @@
                    False)))))
        False))
 
-(= (can-unify-expr ($link1 $pridicate1 $conclusion) ($link2 $pridicate2 $conclusion2)) 
-    (
-        if (== $link1 $link2)
-            (let* (
-                ($can-unify1 (can-unify-ground $pridicate1 $pridicate2))
-                ($can-unify2 (can-unify-ground $conclusion $conclusion2))
-            )
-            (and $can-unify1 $can-unify2))
+; (= (can-unify-expr ($link1 $pridicate1 $conclusion) ($link2 $pridicate2 $conclusion2)) 
+;     (
+;         if (== $link1 $link2)
+;             (let* (
+;                 ($can-unify1 (can-unify-ground $pridicate1 $pridicate2))
+;                 ($can-unify2 (can-unify-ground $conclusion $conclusion2))
+;                 ($_ (println! ($can-unify1 $can-unify2)))
+;             )
+;             (and $can-unify1 $can-unify2))
         
-            False
-    )
+;             False
+;     )
  
- )
+;  )
 
- (= (can-unify-expr ($link1 $pridicate1 ) ($link2 $pridicate2)) 
-    (
-        if (== $link1 $link2)
-            (let* (
-                ($can-unify1 (can-unify-ground $pridicate1 $pridicate2))
+;  (= (can-unify-expr ($link1 $pridicate1 ) ($link2 $pridicate2)) 
+;     (
+;         if (== $link1 $link2)
+;             (let* (
+;                 ($can-unify1 (can-unify-ground $pridicate1 $pridicate2))
                 
-            )
-             $can-unify1)
+;             )
+;              $can-unify1)
         
-            False
-    )
+;             False
+;     )
+ 
+;  )
+
+ (= (can-unify-expr $body1 $body2) 
+   ( collapse (
+        unify $body1 $body2 True False
+    ))
  
  )
 
 
-;we need to change this so that (Person $x) can be unified with (Person Abebe), becasuse eventhough they are not equal, since the expression with the variable is just a more absract version of the second expression.
-(= (can-unify-ground $ground1 $ground2)
-    (if (== $ground1 $ground2)
-        True
-        (if (or (== (get-metatype $ground1) Variable)
-                (== (get-metatype $ground2) Variable))
-                True
-                False)
-    )
-)
+;we need to change this  b that (Person $x) can be unified with (Person Abebe), becasuse eventhough they are not equal, since the expression with the variable is just a more absract version of the second expression.
+; (= (can-unify-ground $ground1 $ground2)
+;     (if (== $ground1 $ground2)
+;         True
+;         (if (or (== (get-metatype $ground1) Variable)
+;                 (== (get-metatype $ground2) Variable))
+;                 True
+;                 False)
+;     )
+; )
+
+
+; (= (can-unify-ground $ground1 $ground2)
+;     (if (== $ground1 $ground2)
+;         True
+;         (if (or (== (get-metatype $ground1) Variable)
+;                 (== (get-metatype $ground2) Variable))
+;                 True
+;                 False)
+;     )
+; )
 
 ;main change to handle calls like this as well: (is-blk-syntax-more-abstract ((Human (Person $x) (Person Abebe))) ((Human (Person $x) (Person $y))) (Person $x))
 ; (= (can-unify-ground $ground1 $ground2)
@@ -182,9 +227,11 @@
 
        ($l_has_var (is-var-exist $l_pat $var))
        ($r_has_var (is-var-exist $r_pat $var))
+
        
        ; If var is not in both patterns, return False
        ($both_have_var (and $l_has_var $r_has_var))
+       (() (println! ("both blocks have vars" $both_have_var)  ))
    )
    (if (not $both_have_var)
        False
@@ -192,6 +239,8 @@
            ; Convert var to constant (@eyob) in both patterns
            ($l_body (erase $l_pat $var))
            ($r_body (erase $r_pat $var))
+
+           (() (println! ("l_pat " $l_body )))
            
            ; Try to unify the modified patterns
            ($can_unify_result (can-unify $l_body $r_body))
@@ -218,7 +267,7 @@
 (= (is-blk-more-abstract $l_blk $r_blk $var) 
    (let* (
             ($rps (powerset-without-empity $r_blk))  
-            (() (println! (in is-blk-more pworeset result $rps)))
+            ($_ (println! ("in is-blk-more pworeset result" $rps)))
             ($l_partitions (partition $l_blk))  
          
         )
@@ -229,7 +278,7 @@
 (= (check-partitions $partitions $rps $var) 
    (if (== $partitions ())
        False  ; No more partitions, return False
-       (let $lp (car-atom $partitions)
+       (let* (($lp (car-atom $partitions)) (() (println! "check part called")))
          (if (check-subsets $lp $rps $var)
              True  ; Found valid combination
              (check-partitions (cdr-atom $partitions) $rps $var)))))  ; Try next partition
@@ -247,7 +296,7 @@
 (= (check-all-blocks $blocks $rs $var)
    (if (== $blocks ())
        True   ; All blocks checked, return True
-       (let $lb (car-atom $blocks)
+       (let* (($lb (car-atom $blocks)) (() (println! "chek-all-blocks called")))
          (if (is-blk-syntax-more-abstract $lb $rs $var)
              (check-all-blocks (cdr-atom $blocks) $rs $var)  ; Continue checking
              False))))  ; One block failed, return False

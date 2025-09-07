@@ -106,8 +106,11 @@
   if (== $link1 $link2) (and (== $x1 $x2) (== $x2 $var)) False
 ))
 
+; (=(dst_from_interval $emin $emax $emp) (
+;   if (< $emax $emp) (- $emp $emax) (if (< $emp $emin ) (- $emin $emp) 0.0)
+; ))
 (=(dst_from_interval $emin $emax $emp) (
-  if (< $emax $emp) (- $emp $emax) (if (< $emp $emin ) (- $emin $emp) 0.0)
+  if (< $emax $emp) (let* (($ans (- $emp $emax) )($_ (println! "postive corrlation " ))) $ans) (if (< $emp $emin ) (let* ( ($ans2 (- $emin $emp)) (() (println! "negative corrlation ")) ) $ans2) 0.0)
 ))
 
 

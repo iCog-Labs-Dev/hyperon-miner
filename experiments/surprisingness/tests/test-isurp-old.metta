@@ -12,9 +12,13 @@
 ! (import! &self experiments:truth-values:est-tv)
 ! (import! &self experiments:surprisingness:isurp-old)
 
- ! (import! &db experiments:data:ugly_man_sodaDrinker)
+;  ! (import! &db experiments:data:ugly_man_sodaDrinker)
  ; ! (import! &db experiments:data:mock_coupled)
 ;  ! (import! &db experiments:data:true_nested)
+
+;  ! (import! &db experiments:data:man_human)
+  ! (import! &db experiments:data:ugly_soda-drinker)
+
 
 
 
@@ -36,9 +40,34 @@
 ;    (Inheritance $x ugly)
 ;    (Inheritance $x sodaDrinker)) &db False) 0.00014607068574401343)
 
-!(assertEqual (isurp-old (, (Inheritance $x man)
-   (Inheritance $x ugly)
-   (Inheritance $x sodaDrinker)) &db True) 0.999707773232028)
+; !(assertEqual (isurp-old (, (Inheritance $x man)
+;    (Inheritance $x ugly)
+;    (Inheritance $x sodaDrinker)) &db True) 0.999707773232028)
+
+; !(isurp-old (, (Inheritance $x man)
+;    (Inheritance $x ugly)
+;    (Inheritance $x sodaDrinker)) &db True)
+
+
+; !(isurp-old (, (Inheritance $x human)
+;    (Inheritance $x man)
+;    ) &db True)
+
+; !(isurp-old (, (Inheritance $x human)
+;    (Inheritance $x man)
+;    ) &db False)
+
+!(isurp-old (, (Inheritance $x ugly)
+   (Inheritance $x sodaDrinker)
+   ) &db True)
+
+; !(isurp-old (, (Inheritance $x ugly)
+;    (Inheritance $x sodaDrinker)
+;    ) &db False)
+
+
+
+
 
 ; !(isurp-old (, (Inheritance (And (And (Person $x) man) (Or human sodaDrinker)) (Or (And human man) (And human sodaDrinker)))
 

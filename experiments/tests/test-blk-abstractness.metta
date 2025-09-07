@@ -25,13 +25,16 @@
 ; !(can-unify-ground Abebe kebede)
 
 
- !(is-blk-syntax-more-abstract ((Human $x $y)) ((Human $x Abebe)) $x)
+!(is-blk-more-abstract ((Human $x $y)) ((Human $x Abebe)) $x)
 
 !(is-blk-syntax-more-abstract ((Human $x Abebe)) ((Human $x $y)) $x)
 
-; !(is-blk-syntax-more-abstract ((Human (Person $x) (Person $y))) ((Human (Person $x) (Person Abebe))) (Person $x))
+; !(is-blk-more-abstract ((Human $x Abebe)) ((Human $x $y)) $x)
 
 ; !(is-blk-syntax-more-abstract ((Human (Person $x) (Person $y))) ((Human (Person $x) (Person Abebe))) $x)
+
+; !(is-blk-syntax-more-abstract ((Human (Person $x) (Person $y))) ((Human (Person $x) (Person Abebe))) $x)
+; !(is-blk-more-abstract ((Human (Person $x) (Person $y)) (Human (Person $x) (Person $y))) ((Human (Person $x) (Person Abebe))) $x)
 
 ;  !(is-blk-syntax-more-abstract ((Human (Person $x) (Person Abebe))) ((Human (Person $x) (Person $y))) (Person $x))
 
