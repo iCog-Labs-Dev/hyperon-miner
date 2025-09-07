@@ -2,6 +2,10 @@
 ;; Common Utils ;;
 ;;;;;;;;;;;;;;;;;;
 
+;predicate to check if a given expression is a pattern or not
+
+(=(checkPat $x) (let $type (get-metatype $x) (if (not (== $type Expression)) False (and  ( > (size-atom $x) 1) (let $head (car-atom $x) (== (get-metatype $head) Symbol))) ) ))
+
 
 ;;;;;;;;;; functions related to Conjunction ;;;;;;;;;;;;
 

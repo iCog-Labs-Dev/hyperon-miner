@@ -1,29 +1,49 @@
-(= (connected-subpatterns-with-var $partition $var)
-    (filter-blocks-with-var $partition $var ()))
+;connected-subpatterns-with-var
 
-;; Helper function to filter blocks recursively
-(= (filter-blocks-with-var $partition $var $acc)
-    (if (== $partition ())
-        $acc
-        (let* (
-            ($current-block (car-atom $partition))
-            ($remaining-blocks (cdr-atom $partition))
-            ($connected-sub (connected-subpattern-with-var $current-block $var))
-        )
-        (if (== $connected-sub ())
-            ;; No connected subpattern found, continue with next block
-            (filter-blocks-with-var $remaining-blocks $var $acc)
-            ;; Found connected subpattern, add to accumulator
-            (let $new-acc (union-atom $acc ($connected-sub))
-                (filter-blocks-with-var $remaining-blocks $var $new-acc)
+;argumets: $paratition (the target patition which is a list of blocks)
+;$var the variable we are concerned with
+
+;Returns:
+;The blocks inside the partiton that contain the target variable $var
+;
+;================================
+ (=(connected-subpatterns-with-var $partition $var)
+
+(collapse (rmvPar (process-pattern (superpose $partition ) $var))))
+
+(= (checkInterSuper $var $el) (if (checkPat $el) (let $tail (cdr-atom $el) (checkInterSuper $var (superpose $tail)) ) (if (== $var $el) True (empty))) )  
+
+(=(process-pattern $pattern $var)
+    (let* (
+        ($is_pat (checkPat $pattern)))
+    
+        (if $is_pat
+            ; If it's a pattern, do the normal check
+            (let* (
+                ;($is_expression (== (get-metatype $pattern) Expression))
+                ; ($vars (cdr-atom $pattern))
+                ;($exp (if $is_exp $pattern (car-atom $pattern)))
+                ($exp (if (== (size-atom $pattern) 1) (car-atom $pattern) $pattern))
+                ($vars (cdr-atom $exp))
+                ; ($is_connected (checkIntersection $var $vars))
+                ($is_connected (checkInterSuper $var (superpose $vars)))
             )
-        ))))
+                (if $is_connected
+                    $pattern
+                    (empty)
+                )
+            )
+            ;    (process-pattern (superpose $pattern) $var)
+            ;(collapse (process-pattern (superpose $pattern) $var)) ;activate this for checking inside the block, comment out if not              
+            (let $ch (collapse (process-pattern (superpose $pattern) $var)) (if (not (== $ch ())) $pattern (empty) )) ;activate this for returning the whole block, comment out if not
+        )
+    ))
 
-(= (connected-subpattern-with-var $block $var)
-    (let $che (is-var-exist $block $var) (if (not $che)
-        ()  ;; Variable not in block, return empty
-        $block   ; TODO: we can extract one step down using extract function 
-        )))
+(=(rmvPar $x) (if (== $x ()) (empty) (let $fuc (checkPat $x) (if $fuc $x  (if (== (size-atom $x) 1) (car-atom $x) $x))))) 
+
+
+
+;=================================
 
 (= (extract $exp $var)  (let $che (var-exist-exp $exp $var)  (
     if $che 
@@ -319,53 +339,30 @@
 ;;
 ;; Example:
 ;;   (get-var '((Pattern $x $y) (Pattern $z Jon))) → ($x $y $z)
-;; =============================================================================
-; (: get-var (-> Expression Expression))
-(= (get-var $pattern)
-    (unique-list (extract-vars-from-pattern $pattern ())))
 
-;; Helper function to recursively extract variables from pattern
-; (: extract-vars-from-pattern (-> Expression Expression Expression))
-(= (extract-vars-from-pattern $pattern $acc)
-    (if (== $pattern ())
-        $acc
-        (if (== (car-atom $pattern) ,) 
-           (let* (
-            ($pattern-wout-and (cdr-atom $pattern))
-            ($current-expr (car-atom $pattern-wout-and))
-            ($remaining (cdr-atom $pattern-wout-and))
-            ($expr-vars (extract-vars-from-expr $current-expr))
-            ($new-acc (merge-list $acc $expr-vars))
-        )
-        (extract-vars-from-pattern $remaining $new-acc))
 
-           (let* (
-            ($current-expr (car-atom $pattern))
-            ($remaining (cdr-atom $pattern))
-            ($expr-vars (extract-vars-from-expr $current-expr))
-            ($new-acc (merge-list $acc $expr-vars))
-        )
-        (extract-vars-from-pattern $remaining $new-acc))
-        )
+(=(get-var $conjunct) (let $lst (collapse (let $a (car-atom $conjunct) (if (not (== $a ,)) (let $firtype (get-metatype $a) 
 
-     
-    )
-)
-1
-;; Extract variables from a single expression
-; (: extract-vars-from-expr (-> Expression Expression))
-(= (extract-vars-from-expr $expr)
-    (if (== $expr ())
-        ()
-        (let* (
-            ($head (car-atom $expr))
-            ($tail (cdr-atom $expr))
-            ($head-vars (if (== (get-metatype $head) Variable)
-                           ($head)
-                           ()))
-            ($tail-vars (extract-vars-from-expr $tail))
-        )
-        (merge-list $head-vars $tail-vars))))
+(if (== $firtype Expression) (get-variables-helper (superpose $conjunct) ) (get-variables-helper $conjunct ))) 
+
+
+(let $b (cdr-atom $conjunct) (get-variables-helper (superpose $b)))))) (get-variables-step $lst ())) )
+
+(=(ret-vars $x) (let $invar (checkPat $x ) (if $invar (get-variables-helper $x ) (if (== ( get-metatype $x ) Variable) $x (empty)))))
+
+
+
+(=(get-variables-helper $pattern) (let $a (cdr-atom $pattern) (ret-vars (superpose $a))))
+
+
+
+(=(get-variables-step $lst $acc) (if  (== $lst ()) $acc (let* ((($head $tail) (decons-atom $lst))) (if (== ((intersection-atom ($head) $acc)) (())) (get-variables-step $tail (cons-atom $head $acc)) (get-variables-step $tail $acc))) ))
+
+
+
+
+
+
 
 ;; =============================================================================
 ;; Function: joint-variables
@@ -385,47 +382,30 @@
 ;;   List of variables that appear in multiple blocks
 ;;
 ;; Example:
-;;   Pattern: ((Pattern $x $y) (Pattern $x Jon))  
+;;   Pattern: (, (Pattern $x $y) (Pattern $x Jon))  
 ;;   Partition: ( ((Pattern $x Jon))  ((Pattern $x $y)) )  
-;;   Result: ($x $y) - because they appear in both blocks, $z only in first block
+;;   Result: ($x) - because it appear in both blocks
 ;; =============================================================================
 ; (: joint-variables (-> Expression Expression Expression))
-(= (joint-variables $pattern $partition)
-    (let $pattern-vars (get-var $pattern)   
-        (filter-joint-vars $pattern-vars $partition))) 
+(=(joint-vars-helper $partition $uniqueVars) (collapse (retJointvar $partition (superpose $uniqueVars))))
 
-;; Filter variables that appear in multiple blocks
-; (: filter-joint-vars (-> Expression Expression Expression))
-(= (filter-joint-vars $vars $partition)
-    (if (== $vars ())
-        ()
-        (let* (
-            ($var (car-atom $vars))
-            ($remaining-vars (cdr-atom $vars))
-            ($rest-joint (filter-joint-vars $remaining-vars $partition))
-        )
-        (let $che (is-joint-var $var $partition) (if $che
-            (cons-atom $var $rest-joint)
-            $rest-joint)))))
+(=(retJointvar $partition $var) (let $retPats (collapse (retJointPat (superpose $partition) $var)) (if (> (size-atom $retPats) 1)  $var (empty))))
 
-;; Check if a variable appears in multiple blocks of partition
-; (: is-joint-var (-> Expression Expression Bool))
-(= (is-joint-var $var $partition)
-    (let $block-count (count-blocks-with-var $var $partition 0)
-        (> $block-count 1)))
 
-;; Count how many blocks contain the variable
-; (: count-blocks-with-var (-> Expression Expression Number Number))
-(= (count-blocks-with-var $var $partition $count)
-    (if (== $partition ())
-        $count
-        (let* (
-            ($current-block (car-atom $partition))
-            ($remaining-blocks (cdr-atom $partition))
-            ($var-in-block (is-var-exist $current-block $var))
-            ($new-count (if $var-in-block (+ $count 1) $count))
-        )
-        (count-blocks-with-var $var $remaining-blocks $new-count))))
+
+(=(retJointPat $block $var)  (let $blo (collapse (retjointSubPat (superpose $block) $var)) (if (> (size-atom $blo) 0) $block (empty) )) )
+
+
+
+(=(retjointSubPat $subpat $var) (let* (($tail (cdr-atom $subpat)) ($JoinedVars (collapse (checkSubInter (superpose $tail) $var)) )) (if (== (size-atom $JoinedVars) 0) (empty) $subpat)))
+
+
+(=(checkSubInter $part $var) (let $invar (checkPat $part) (if $invar (retjointSubPat $part $var) (if (and (== (get-metatype $part) Variable) (== $var $part)) $part (empty)) )))
+
+;we could pass the origninal conjunct pattern and the partiton if we want,then get-variables retrunds a list of unique variables in the list
+(=(joint-variables  $pattern $partition) (let $invar (get-var $pattern) (joint-vars-helper $partition $invar)))
+
+
 
 ;; Get all variables from entire partition (updated implementation)
 ; (: get-all-partition-variables (-> Expression Expression))
