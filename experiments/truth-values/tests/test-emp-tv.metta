@@ -144,15 +144,15 @@
 ; ;; Verifies zero-based indexing of knowledge base elements  
 ; ;; Expected: Third element is (Inheritance Bob human)
 ; ;; =============================================================================
-; !(assertEqual (get-element 2 ((Inheritance Abe human) 
-;                              (Inheritance Rio human)
-;                              (Inheritance Bob human)
-;                              (Inheritance Mike human)
-;                              (Inheritance Mike Nil)
-;                              (Inheritance Zac human)
-;                              (Inheritance Zac human)
-;                              (Parent Abe Nil)))
-;               (Inheritance Bob human))
+!(assertEqual (get-element 2 ((Inheritance Abe human) 
+                             (Inheritance Rio human)
+                             (Inheritance Bob human)
+                             (Inheritance Mike human)
+                             (Inheritance Mike Nil)
+                             (Inheritance Zac human)
+                             (Inheritance Zac human)
+                             (Parent Abe Nil)))
+              (Inheritance Bob human))
 
 ; ;; =============================================================================
 ; ;; Test: Sample Size Calculation
@@ -181,8 +181,8 @@
 ; ;; Verifies EMPTV struct creation from raw values
 ; ;; Expected: (EMPTV 0 0.00012498)
 ; ;; =============================================================================
-; !(assertEqual (mk-stv 1.7689693569125715 1.0178393379503528)
-;               (EMPTV 0 0.0001249843769528809))
+!(assertEqual (mk-stv 1.7689693569125715 1.0178393379503528)
+              (EMPTV 0 0.0001249843769528809))
 
 
 
