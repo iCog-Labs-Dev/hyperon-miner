@@ -249,7 +249,7 @@
 ;; =============================================================================
 (= (copy-db $db $old-db-content)
     (if (== $old-db-content ()) $db
-        (let* ( 
+        (let* (
                 (($head $tail) (decons-atom $old-db-content))
                 ($_ (add-atom $db $head) )
             )

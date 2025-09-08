@@ -44,7 +44,51 @@
 ;; =============================================================================
 !(assertEqual (sup (Inheritance $x $y) (get-space)) 60)
 
+; ;; =============================================================================
+; ;; Test: List Element Access
+; ;; -----------------------------------------------------------------------------
+; ;; Verifies zero-based indexing of knowledge base elements  
+; ;; Expected: Third element is (Inheritance Bob human)
+; ;; =============================================================================
+!(assertEqual (get-element 2 ((Inheritance Abe human) 
+                             (Inheritance Rio human)
+                             (Inheritance Bob human)
+                             (Inheritance Mike human)
+                             (Inheritance Mike Nil)
+                             (Inheritance Zac human)
+                             (Inheritance Zac human)
+                             (Parent Abe Nil)))
+              (Inheritance Bob human))
 
+; ;; =============================================================================
+; ;; Test: Sample Size Calculation
+; ;; -----------------------------------------------------------------------------
+; ;; Verifies statistical sample size calculation
+; ;; Expected: numpy.power(44.444, 1) 
+; ;; Note: Uses Python numpy integration
+; ;; =============================================================================
+; !(assertEqual (subsmp-size (Inheritance Abe human) 20 0.9)
+;               ((py-atom numpy.power) 44.44444444444445 1))
+
+; ;; =============================================================================
+; ;; Test: Bootstrapped Truth Value
+; ;; -----------------------------------------------------------------------------
+; ;; Verifies truth value with bootstrap sampling
+; ;; Expected: (EMPTV 0.2428 0.04109)
+; ;;   - Strength: ~24.28%
+; ;;   - Confidence: ~4.11%
+; ;; =============================================================================
+; !(assertEqual (emp-tv-bs (Inheritance Zac $x) (get-space) 8 0.6 0.9)
+;               (EMPTV 0.2428095704426711 0.04109232092138521))
+
+; ;; =============================================================================
+; ;; Test: Simple Truth Value Construction  
+; ;; -----------------------------------------------------------------------------
+; ;; Verifies EMPTV struct creation from raw values
+; ;; Expected: (EMPTV 0 0.00012498)
+; ;; =============================================================================
+!(assertEqual (mk-stv 1.7689693569125715 1.0178393379503528)
+              (EMPTV 0 0.0001249843769528809))
 
 ;; =============================================================================
 ;; Test: Universe Counting
