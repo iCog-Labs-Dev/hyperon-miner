@@ -65,7 +65,7 @@
 
 ; (3.858024691358025e-6 0.0011574074074074073 3.858024691358025e-6 3.858024691358025e-6) ;coupled
 
-!(ji-prob-est  (((Inheritance (Person $x) man)) ((Inheritance (Person $x) sodaDrinker)) ((Inheritance (Person $x) ugly))) (, (Inheritance (Person $x) man) (Inheritance (Person $x) ugly) (Inheritance (Person $x) sodaDrinker) ) &db 0.2 )
+; !(ji-prob-est  (((Inheritance (Person $x) man)) ((Inheritance (Person $x) sodaDrinker)) ((Inheritance (Person $x) ugly))) (, (Inheritance (Person $x) man) (Inheritance (Person $x) ugly) (Inheritance (Person $x) sodaDrinker) ) &db 0.2 )
 
 ; !(sort-by-abstraction (((Inheritance (Person $x) man)) ((Inheritance (Person $x) sodaDrinker)) ((Inheritance (Person $x) ugly))) $x)
 
