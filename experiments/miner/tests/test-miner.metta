@@ -26,8 +26,8 @@
 
 
 ;; load rules , system-proofs and miner-utils ...
-!(import! &temp   experiments:miner:freq-miner-rules)
-!(import! &temp2   experiments:miner:surp-rules)
+!(import! &temp experiments:miner:freq-miner-rules)
+!(import! &temp2 experiments:miner:surp-rules)
 !(import! &self  experiments:miner:system-proofs)
 !(import! &self experiments:miner:miner-utils)
 !(import! &self experiments:miner:main)
@@ -60,7 +60,7 @@
 ; (isurp (, (Inheritance $j57#15899571 human) (Inheritance $j57#15899571 sodaDrinker)) 0.53125),
 ;  (isurp (, (Inheritance $i90#15899572 human) (Inheritance $i90#15899572 ugly)) 0.53125), (isurp (, (Inheritance $t46#15899573 human) (Inheritance $t46#15899573 man)) 0.53125),
 ;  (isurp (, (Inheritance $m52#15899574 man) (Inheritance $m52#15899574 sodaDrinker)) 0.53125), (isurp (, (Inheritance $e66#15899575 man) (Inheritance $e66#15899575 ugly)) 0.53125),
-; (isurp (, (Inheritance $e27#15899576 man) (Inheritance $e27#15899576 human)) 0.53125), (isurp (, (Inheritance $f96#15899577 ugly) (Inheritance $f96#15899577 sodaDrinker)) 0.53125,
+; (isurp (, (Inheritance $e27#15899576 man) (Inheritance $e27#15899576 human)) 0.53125), (isurp (, (Inheritance $f96#15899577 ugly) (Inheritance $f96#15899577 sodaDrinker)) 0.53125), 
 ; (isurp (, (Inheritance $b90#15899578 ugly) (Inheritance $b90#15899578 man)) 0.53125), (isurp (, (Inheritance $u01#15899579 ugly) (Inheritance $u01#15899579 human)) 0.53125), 
 ; (isurp (, (Inheritance $f31#15899580 sodaDrinker) (Inheritance $f31#15899580 ugly)) 0.53125), (isurp (, (Inheritance $s05#15899581 sodaDrinker) (Inheritance $s05#15899581 man)) 0.53125), (isurp (, (Inheritance $s41#15899582 sodaDrinker) (Inheritance $s41#15899582 human)) 0.53125), 
 ; (isurp (, (Inheritance Allen $y29#15899583) (Inheritance Cason $y29#15899583)) 0.53125), 

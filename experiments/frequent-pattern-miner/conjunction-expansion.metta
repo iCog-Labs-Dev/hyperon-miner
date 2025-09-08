@@ -509,11 +509,9 @@
                    (let* (
                         (() (println! ("==== Conjuntion expansion started" $pattern)))
                         ($conj  (do-conjunct $dbspace $cndpspace  $pattern $minsup (fromNumber $depth)))
-                        ; (() (println! ($conj $pattern)))
-                        ($reduct (add-atom $conjspace $conj))
+                        ($reduct (if (== $conj ()) () (add-reduct $conjspace $conj)))
                         )
                         $reduct
-                        ; $conj
                     )
         ))
    
