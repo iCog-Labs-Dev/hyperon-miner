@@ -36,8 +36,8 @@
 
 ! (import! &self experiments:truth-values:emp-tv)
 
-;  ! (import! &db experiments:data:ugly_man_sodaDrinker)
- ! (import! &db experiments:data:nested_coupled:mock_coupled)
+! (import! &kb experiments:data:ugly_man_sodaDrinker)
+;  ! (import! &kb experiments:data:nested_coupled:mock_coupled)
 
 
 
@@ -216,9 +216,9 @@
 ;;   3. Checks proper output format
 ;; =============================================================================
 
-; !(assertEqual (isurp (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker) ) &kb False 0.2) 1.9290123456790123e-5)
+!(assertEqual (isurp (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker) ) &kb False 0.2) 1.9290123456790123e-5)
 
 ;  !(assertEqual  (isurp (, (Inheritance (Person $x) man) (Inheritance (Person $x) ugly) (Inheritance (Person $x) sodaDrinker) ) &kb False 0.2) 1.9290123456790123e-5)
 
-! (isurp (, (Inheritance (Person $x) man) (Inheritance (Person $x) ugly) (Inheritance (Person $x) sodaDrinker) ) &kb False 0.2)
+; ! (isurp (, (Inheritance (Person $x) man) (Inheritance (Person $x) ugly) (Inheritance (Person $x) sodaDrinker) ) &kb False 0.2)
 

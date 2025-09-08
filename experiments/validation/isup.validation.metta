@@ -18,8 +18,10 @@
 
 ! (import! &self experiments:truth-values:emp-tv)
 
-;  ! (import! &db experiments:data:ugly_man_sodaDrinker)
- ! (import! &db experiments:data:nested_coupled:mock_coupled)
+  ! (import! &db experiments:data:ugly_man_sodaDrinker)
+  ;commnet the above and uncommnet the below to work on coupled kb
+  
+; ! (import! &db experiments:data:nested_coupled:mock_coupled)
 
 
 
@@ -36,6 +38,9 @@
 ;    False     ; normalization: False
 ;    1         ; database ratio
 ; )
+(assertEqual (isurp (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker) ) &db False 0.2) 1.9290123456790123e-5)
+
+ !(assertEqual  (isurp (, (Inheritance (Person $x) man) (Inheritance (Person $x) ugly) (Inheritance (Person $x) sodaDrinker) ) &db False 0.2) 1.9290123456790123e-5)
 
 ; !(isurp 
    ; (,
