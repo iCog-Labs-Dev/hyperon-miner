@@ -250,9 +250,14 @@
 ;; =============================================================================
 (= (copy-db $db $old-db-content)
     (if (== $old-db-content ()) $db
-        (let* ( ($_ (add-reduct $db (car-atom $old-db-content)) )
+        (let* ( 
+            (() (println! ("inside copy-db")))
+            ($interel (car-atom $old-db-content))
+            
+            ($_ (add-reduct $db $interel) )
+            ($interrest (cdr-atom $old-db-content))
             )
-        (copy-db $db (cdr-atom $old-db-content))
+        (copy-db $db $interrest)
     )
 ))
 

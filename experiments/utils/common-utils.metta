@@ -711,18 +711,20 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
  ; Returns:
  ;   - The sum of the elements in the list as an integer.
 
-(= (sum $list) (
-        if (== $list ())
-        0
-        (+ (car-atom $list) (sum (cdr-atom $list)))
-    ))
+; (= (sum $list) (
+;         if (== $list ())
+;         0
+;         (+ (car-atom $list) (sum (cdr-atom $list)))
+;     ))
+(= (sum $list) (foldl-atom $list 0 $acc $x (+ $acc $x)))
 
  ; This function calculates the average of a tuple of numbers.
  ; It takes a tuple as input and returns the average value.
  ; The average is computed by dividing the sum of the tuple elements by the tuple-count of the tuple.
 
 (= (avrg-tuple $tuple)
-    (// (sum $tuple) (tuple-count $tuple))
+    ; (// (sum $tuple) (tuple-count $tuple))
+    (// (sum $tuple) (size-atom $tuple))
 )
 
  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

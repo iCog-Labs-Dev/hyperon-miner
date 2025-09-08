@@ -23,7 +23,7 @@
       ;  ($is_pat (checkPat $exp))
        (($link $tail) (decons-atom $exp))
        ($updated-tail (handle_tail $tail $var $replacement () ))
-       ($_ (println! ("called with" $exp)))
+    ;    ($_ (println! ("called with" $exp)))
        
        ($ans (union-atom ($link) $updated-tail)) 
    )
@@ -32,7 +32,7 @@
 (= (handle_tail $tale $var $replacement $acc) (if (== $tale ()) $acc (let* ((($cur $nxt) (decons-atom $tale)) ($updated-cur (handle_predicate $cur $var $replacement  )) ($new-acc (union-atom $acc ($updated-cur)))) (handle_tail $nxt $var $replacement $new-acc) )) )
 
 (=(handle_predicate $predicate $var $replacement)
-(let () (println! ("pred called wiht" $predicate)) (let $invar (checkPat $predicate) (if $invar (replace-var-exp $predicate $var $replacement)  (if (== $predicate $var) $replacement $predicate)))))
+(let $invar (checkPat $predicate) (if $invar (replace-var-exp $predicate $var $replacement)  (if (== $predicate $var) $replacement $predicate))))
 
 ; Check if variable exists in a single expression
 ; (= (var-exist-exp $exp $var)  

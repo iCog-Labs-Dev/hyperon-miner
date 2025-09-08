@@ -9,7 +9,7 @@
 ;================================
  (=(connected-subpatterns-with-var $partition $var)
 
-(collapse (rmvPar (process-pattern (superpose $partition ) $var))))
+(let () (println! (the-var-is $var)) (collapse (rmvPar (process-pattern (superpose $partition ) $var)))))
 
 (= (checkInterSuper $var $el) (if (checkPat $el) (let $tail (cdr-atom $el) (checkInterSuper $var (superpose $tail)) ) (if (== $var $el) True (empty))) )  
 
@@ -39,7 +39,7 @@
         )
     ))
 
-(=(rmvPar $x) (if (== $x ()) (empty) (let $fuc (checkPat $x) (if $fuc $x  (if (== (size-atom $x) 1) (car-atom $x) $x))))) 
+(=(rmvPar $x) (if (== $x ()) (empty) (let $fuc (checkPat $x) (if $fuc $x  (if (== (size-atom $x) 1) $x $x))))) 
 
 
 
@@ -221,7 +221,10 @@
 ;; =============================================================================
 ; (: eq-prob (-> Expression Expression Expression Number))
 (= (eq-prob $partition $pattern $db)
-    (let $joint-vars (joint-variables $pattern $partition)
+    (let* (($joint-vars (joint-variables $pattern $partition))
+    (() (println! ("joint vars are " $joint-vars))) 
+    
+     )
         (calculate-prob-for-vars $joint-vars $partition $db 1.0)))
 
 ;; =============================================================================
@@ -244,10 +247,13 @@
     (if (== $vars ())
         $p
         (let* (
+            ($top (car-atom $vars) )
             
-            ($var-partition (connected-subpatterns-with-var $partition (car-atom $vars)))
-            ($sorted-partition (sort-by-abstraction $var-partition (car-atom $vars)))
-            ($new-p (process-blocks $sorted-partition (car-atom $vars) $db $p 1))
+            ($var-partition (connected-subpatterns-with-var $partition $top))
+            ($sorted-partition (sort-by-abstraction $var-partition $top))
+            (() (println! ("calc prob done with sorting and got" $sorted-partition)))
+            ($new-p (process-blocks $sorted-partition $top $db $p 1))
+            (() (println! ("calc prob done with process block for" $top)))
         )
         (calculate-prob-for-vars (cdr-atom $vars) $partition $db $new-p))))
 
@@ -276,20 +282,43 @@
             $p
             (let* (
                 ($j-blk (index-atom $sorted-partition $j))
+                (() (println! ("the j-blk at the start is  " $j-blk)))
                 ($i (find-most-specialized-abstract $sorted-partition $j-blk $var (- $j 1)))
+                (() (println! ("the most speacialized abstract index is " $i)))
                 ($c (if (>= $i 0)
                         (let $i-blk (index-atom $sorted-partition $i)
                             (value-count $i-blk $var $db))
                         (let $U (collapse (get-atoms $db)) (size-atom $U))))  ; Use |U| = db.size() as fallback
+                (() (println! ("the size after value count is " $c)))
                 ($j-blk-count (value-count $j-blk $var $db))
+                (() (println! ("the j-blk-count is " $j-blk-count)))
+
                 ($new-p (/ $p $c))
             )
             (process-blocks $sorted-partition $var $db $new-p (+ $j 1))))))
 
 
 
+; (= (value-count $blk $var $db) 
+;     (let $conj-blk (union-atom (,) $blk) (let*
+;      (
+;         (() (println! ("the conj-blk in value-count is : " $conj-blk "and the var is " $var)))
+;         ($match-values (collapse (match $db $conj-blk $var)) )
+;         (() (println! ("the matched values in value count: " $matched-values)))
+;         ($ground-value (unique-atom $match-values))
+;      (() (println! ("the ground value in value count is: " $ground-value)))
+;      ) (size-atom $ground-value))))
+
+
 (= (value-count $blk $var $db) 
-    (let $conj-blk (union-atom (,) $blk) (let $ground-value (unique-atom (collapse (match $db $conj-blk $var))) (size-atom $ground-value))))
+    (let $conj-blk (union-atom (,) $blk) (let*
+     (
+        (() (println! ("the conj-blk in value-count is : " $conj-blk "and the var is " $var)))
+        ($match-values (collapse (match $db $conj-blk $var)) )
+        (() (println! ("the matched values in value count: " $matched-values)))
+        ($ground-value (unique-atom $match-values))
+     (() (println! ("the ground value in value count is: " $ground-value)))
+     ) (size-atom $ground-value))))
 ;; =============================================================================
 ;; Function: find-most-specialized-abstract
 ;; -----------------------------------------------------------------------------
