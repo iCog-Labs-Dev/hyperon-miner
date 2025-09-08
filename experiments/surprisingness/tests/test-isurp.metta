@@ -1,4 +1,4 @@
-; ! (register-module! ../../../../hyperon-miner/experiments)
+! (register-module! ../../../../hyperon-miner/experiments)
 ; ! (import! &self experiments:utils:common-utils)
 ; ! (import! &self experiments:utils:beta-dist)
 ; ! (import! &self experiments:utils:constants)
@@ -19,7 +19,7 @@
 ; ! (import! &self experiments:utils:blk-abstractness)
 ; ! (import! &self experiments:utils:eq-prob)
 ; ! (import! &self experiments:utils:index_to_var)
-!(register-module! ../../../hyperon-miner/experiments)
+
 
 ! (import! &self experiments:utils:gen_partition)
 ! (import! &self experiments:utils:common-utils)

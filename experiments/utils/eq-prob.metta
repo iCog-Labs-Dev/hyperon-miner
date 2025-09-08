@@ -299,15 +299,7 @@
 
 
 
-; (= (value-count $blk $var $db) 
-;     (let $conj-blk (union-atom (,) $blk) (let*
-;      (
-;         (() (println! ("the conj-blk in value-count is : " $conj-blk "and the var is " $var)))
-;         ($match-values (collapse (match $db $conj-blk $var)) )
-;         (() (println! ("the matched values in value count: " $matched-values)))
-;         ($ground-value (unique-atom $match-values))
-;      (() (println! ("the ground value in value count is: " $ground-value)))
-;      ) (size-atom $ground-value))))
+
 
 
 (= (value-count $blk $var $db) 
