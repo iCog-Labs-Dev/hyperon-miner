@@ -359,14 +359,41 @@
 ;; Returns:
 ;;   - A new database instance containing the first $size atoms from the original database.
 ;; =============================================================================
+; (= (copy-db-by-size $db $old-db-content $n $size)
+;     (if (or (== $old-db-content ()) (>= $n $size)) $db
+;         (let* ( ($_ (add-atom $db (car-atom $old-db-content)) ))
+;             (copy-db-by-size $db (cdr-atom $old-db-content) (+ $n 1) $size)
+;         )
+;     )
+; )
+
 (= (copy-db-by-size $db $old-db-content $n $size)
-    (if (or (== $old-db-content ()) (>= $n $size)) $db
-        (let* ( 
-            (($head $tail) (decons-atom $old-db-content))
-            ($_ (add-atom $db $head)) 
-            ($filledAmount (+ $n 1)))
-            (copy-db-by-size $db $tail $filledAmount $size)
-        )
+    (
+        let*
+            (
+                
+                ($first_bool (== $old-db-content ()))
+                ($second_bool (>= $n $size))
+                ($third_bool (or $first_bool $second_bool))
+                ($next_num (+ $n 1))
+                
+               
+            )
+            (
+                if $third_bool
+                    $db
+                    (
+                        let*
+                            (
+                                (($head $tail) (decons-atom $old-db-content))
+                                ($_ (add-atom $db $head)) 
+                                
+                            )
+                            (copy-db-by-size $db $tail $next_num $size)
+                            
+                    )
+                
+            )
     )
 )
 

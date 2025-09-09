@@ -227,7 +227,7 @@
  (= (ji-est-tv $db $db_size $pattern $partitions)
  (   if (== $partitions ()) () (
          let* (
-             (() (println! (pat $partitions)))
+             
              (($head $tail) (decons-atom $partitions))
                 ($prod_etv (pro_prob_without_joint $db $head))
                 (($rp $rc) (decons-atom $prod_etv))
