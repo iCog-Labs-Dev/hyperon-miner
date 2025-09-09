@@ -455,7 +455,28 @@ def value_count(block, var, db):
     else:
         return max(1, len(db) // (constraints + 1))
     
-
+def eq_prob(partition, pattern, db):
+    p = 1.0
+    
+    # Calculate the probability of a variable taking the same value
+    # across all blocks/subpatterns where that variable appears.
+    joint_vars = joint_variables(pattern, partition)
+    for var in joint_vars:
+        # Select all strongly connected subpatterns containing var
+        var_partition = connected_subpatterns_with_var(partition, var)
+        
+        # For each variable, sort the partition so that abstract
+        # blocks, relative to var, appear first.
+        sorted_var_partition = sort_by_abstraction(var_partition, var)
+        print("sorted_var_partition:", sorted_var_partition)
+        # Process blocks starting from j=1 (skip first block)
+        # This implements the C++ loop: for (int j = 1; j < (int)var_partition.size(); j++)
+        var_prob = process_blocks(sorted_var_partition, var, db, 1.0, 1)
+        
+        # Multiply the probability for this variable
+        p *= var_prob
+    
+    return p
 # ============================
     # Import to metta 
 # ============================
