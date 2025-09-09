@@ -251,11 +251,11 @@
 (= (copy-db $db $old-db-content)
     (if (== $old-db-content ()) $db
         (let* ( 
-            ($interel (car-atom $old-db-content))
-            ($_ (add-reduct $db $interel) )
-            ($interrest (cdr-atom $old-db-content))
+            ($head (car-atom $old-db-content))
+            ($tail (cdr-atom $old-db-content))
+            ($_ (add-reduct $db $head) )
             )
-        (copy-db $db $interrest)
+        (copy-db $db $tail)
     )
 ))
 

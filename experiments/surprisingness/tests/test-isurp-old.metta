@@ -20,12 +20,12 @@
 
 
 
-; ! (add-reduct &self (= (get-space) (new-space)))
+! (add-reduct &self (= (get-space) (new-space)))
 
-; ! (add-atom (get-space) (Inheritance A B))
-; ! (add-atom (get-space) (Inheritance B C))
-; ! (add-atom (get-space) (Inheritance D E))
-; ! (add-atom (get-space) (Inheritance E F))
+! (add-atom (get-space) (Inheritance A B))
+! (add-atom (get-space) (Inheritance B C))
+! (add-atom (get-space) (Inheritance D E))
+! (add-atom (get-space) (Inheritance E F))
 
 
 ;;;;;;;;;;;
@@ -38,6 +38,25 @@
    (Inheritance $x ugly)
    (Inheritance $x sodaDrinker)) &db False) 0.00014607068574401343)
 
+
+;; =============================================================================
+;; Test: isurp-old with normalization
+;; -----------------------------------------------------------------------------
+;; Purpose:
+;;   Verify `isurp-old` produces a near-1 independent-surprise value when
+;;   the given pattern is highly likely in the database.
+;;
+;; Inputs:
+;;   - Pattern: (, (Inheritance $x man)
+;;                  (Inheritance $x ugly)
+;;                  (Inheritance $x sodaDrinker))
+;;   - DB Reference: &db
+;;   - Total Count Flag: True
+;;
+;; Expected Output:
+;;   0.999707773232028
+;;
+;; =============================================================================
 !(assertEqual (isurp-old (, (Inheritance $x man)
    (Inheritance $x ugly)
    (Inheritance $x sodaDrinker)) &db True) 0.999707773232028)
