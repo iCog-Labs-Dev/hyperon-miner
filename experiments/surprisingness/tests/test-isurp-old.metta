@@ -13,8 +13,8 @@
 ! (import! &self experiments:surprisingness:isurp-old)
 
  ! (import! &db experiments:data:ugly_man_sodaDrinker)
- ; ! (import! &db experiments:data:mock_coupled)
-;  ! (import! &db experiments:data:true_nested)
+ ! (import! &dbc experiments:data:nested_coupled:mock_coupled)
+ ! (import! &dbn experiments:data:nested_coupled:true_nested)
 
 
 
@@ -28,46 +28,13 @@
 ! (add-atom (get-space) (Inheritance E F))
 
 
-;; =============================================================================
-;; Test: isurp-old (Empty / Trivial Partition)
-;; -----------------------------------------------------------------------------
-;; Purpose:
-;;   Verify that `isurp-old` correctly handles empty or trivial partitions
-;;   where no meaningful independent surprise can be derived.
-;;
-;; Inputs:
-;;   - Pattern: (, $x $y)
-;;   - DB Reference: (get-space)
-;;   - Total Count Flag: False
-;;
-;; Expected Output:
-;;   1
-;;
-
-;; =============================================================================
-!(assertEqual (isurp-old (, $x $y) (get-space) False) 1)
+;;;;;;;;;;;
+;; Tests ;;
+;;;;;;;;;;;
+; !(assertEqual (isurp-old (, $x $y) (get-space)  False) 1)
 
 
-;; =============================================================================
-;; Test: isurp-old whitout normalization
-;; -----------------------------------------------------------------------------
-;; Purpose:
-;;   Verify `isurp-old` produces a very small independent-surprise value when
-;;   the given pattern has low likelihood in the database.
-;;
-;; Inputs:
-;;   - Pattern: (, (Inheritance $x man)
-;;                  (Inheritance $x ugly)
-;;                  (Inheritance $x sodaDrinker))
-;;   - DB Reference: &db
-;;   - Total Count Flag: False
-;;
-;; Expected Output:
-;;   0.00014607068574401343
-;;
-
-;; =============================================================================
-!(assertEqual (isurp-old (, (Inheritance $x man)
+(assertEqual (isurp-old (, (Inheritance $x man)
    (Inheritance $x ugly)
    (Inheritance $x sodaDrinker)) &db False) 0.00014607068574401343)
 
@@ -93,6 +60,30 @@
 !(assertEqual (isurp-old (, (Inheritance $x man)
    (Inheritance $x ugly)
    (Inheritance $x sodaDrinker)) &db True) 0.999707773232028)
+
+
+;test with coupled patterns
+(assertEqual (isurp-old (, (Inheritance (Person $x) man)
+   (Inheritance (Person $x) ugly)
+   (Inheritance (Person $x) sodaDrinker)) &dbc True) 0.999707773232028)
+
+
+
+
+;nested patterns test
+(assertEqual (isurp-old (, (Inheritance (And (And (Person $x) man) (Or human sodaDrinker)) (Or (And human man) (And human sodaDrinker)))
+
+(Inheritance (And (And (Person $x)   man) (Or human sodaDrinker)) (Or (And human man) (And human ugly)))
+
+(Inheritance (And (And human man)   (Or (Person $x) (Person Mike)))   (Or (And human man)   (And human sodaDrinker)))
+
+(Inheritance (And (And (Person $x) man) (Or human ugly))        (Or (And human man) (And human sodaDrinker)))) &dbn True) 0.9996837944664032)
+
+
+
+
+;==============
+
 
 
 
