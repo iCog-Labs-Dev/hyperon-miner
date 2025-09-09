@@ -65,6 +65,7 @@ def unify_with_metta(l_blk, r_blk):
             return str(blk)
     l_expr = to_expr(l_blk)
     r_expr = to_expr(r_blk)
+    
 
     code = f"! (unify {l_expr} {r_expr} pass fail)"
     result = metta.run(code)
@@ -253,7 +254,6 @@ def get_variables_from_pattern(pattern):
             vars_set.add(item)
     
     extract_vars(pattern)
-    print(vars_set)
     return vars_set
 
 
@@ -291,8 +291,30 @@ def joint_variables(pattern, partition):
     
     return joint_vars
 
+def connected_subpattern_with_var(block, var):
+    if not is_free_in_any_tree(block, var):
+        return []
+    
+    # Get all strongly connected components
+    components = get_components(block)
+    
+    # Find the component containing the variable
+    for component in components:
+        if is_free_in_any_tree(component, var):
+            return component
+    
+    return []
+
+def connected_subpatterns_with_var(partition, var):
+    var_partition = []
+    for block in partition:
+        connected_subpattern = connected_subpattern_with_var(block, var)
+        if connected_subpattern:  # Only add non-empty results
+            var_partition.append(connected_subpattern)
+    
+    return var_partition
 
 # ============================
     # Import to metta 
-# # ============================
+# ============================
 
