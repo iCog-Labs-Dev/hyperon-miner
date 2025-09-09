@@ -314,6 +314,78 @@ def connected_subpatterns_with_var(partition, var):
     
     return var_partition
 
+
+def is_free_in_any_tree(block, var):
+    """Check if variable is free in any clause in the block"""
+    def is_var_in_item(item, var):
+        if isinstance(item, list):
+            return any(is_var_in_item(sub, var) for sub in item)
+        return item == var
+    
+    if isinstance(block, list):
+        return any(is_var_in_item(clause, var) for clause in block)
+    return is_var_in_item(block, var)
+
+def get_components(clauses):
+    if not clauses:
+        return []
+    
+    # Extract all variables from all clauses
+    def get_vars_from_clause(clause):
+        vars_set = set()
+        def extract_vars(item):
+            if isinstance(item, list):
+                for sub in item:
+                    extract_vars(sub)
+            elif is_variable(item):
+                vars_set.add(item)
+        extract_vars(clause)
+        return vars_set
+    
+    # Build variable-to-clauses mapping
+    var_to_clauses = {}
+    clause_vars = {}
+    
+    for i, clause in enumerate(clauses):
+        vars_in_clause = get_vars_from_clause(clause)
+        clause_vars[i] = vars_in_clause
+        
+        for var in vars_in_clause:
+            if var not in var_to_clauses:
+                var_to_clauses[var] = set()
+            var_to_clauses[var].add(i)
+    
+    # Find connected components using union-find approach
+    components = []
+    visited = set()
+    
+    for i, clause in enumerate(clauses):
+        if i in visited:
+            continue
+            
+        # Start a new component
+        component = []
+        to_visit = [i]
+        
+        while to_visit:
+            current = to_visit.pop()
+            if current in visited:
+                continue
+                
+            visited.add(current)
+            component.append(clauses[current])
+            
+            # Find all clauses connected through shared variables
+            for var in clause_vars[current]:
+                for connected_clause_idx in var_to_clauses[var]:
+                    if connected_clause_idx not in visited:
+                        to_visit.append(connected_clause_idx)
+        
+        if component:
+            components.append(component)
+    # print("component:", components)
+    return components
+
 # ============================
     # Import to metta 
 # ============================
