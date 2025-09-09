@@ -1,4 +1,4 @@
-from is_more_abstract import *
+from eq_prob_update import *
 
 
 # l_blk = [['Human', '$x', 'assd'], ["Human", "$x", "$y"]]

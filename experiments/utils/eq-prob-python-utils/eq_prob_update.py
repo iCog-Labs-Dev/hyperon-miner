@@ -386,6 +386,74 @@ def get_components(clauses):
     # print("component:", components)
     return components
 
+
+# =============================================================================
+# Function: process-blocks
+# -----------------------------------------------------------------------------
+# Purpose:
+#   Processes blocks in sorted partition starting from index j=1
+#   (skipping the first block as per the C++ algorithm)
+#
+# Parameters:
+#   $sorted-partition - Partition sorted by abstraction
+#   $var - Current variable being processed
+#   $db - Database
+#   $p - Current probability
+#   $j - Current block index (starts at 1)
+#
+# Returns:
+#   Updated probability after processing all blocks
+# =============================================================================
+
+def process_blocks(sorted_partition, var, db, p, j): 
+    # Base case: if j >= partition_size, return p
+    partition_size = len(sorted_partition)
+    if j >= partition_size:
+        return p
+    
+    # Get current block j
+    j_blk = sorted_partition[j]
+    
+    # Find most specialized abstract block (find-most-specialized-abstract equivalent)
+    i = find_most_specialized_abstract(sorted_partition, j_blk, var, j - 1)
+    
+    # Calculate count c
+    if i >= 0:
+        i_blk = sorted_partition[i]
+        c = value_count(i_blk, var, db)
+    else:
+        # Use |U| = db.size() as fallback
+        c = len(db)
+    
+    # Calculate new probability
+    new_p = p / c if c > 0 else p
+    
+    # Recursive call to process next block
+    return process_blocks(sorted_partition, var, db, new_p, j + 1)
+
+def find_most_specialized_abstract(sorted_partition, j_blk, var, max_i):
+
+    i = max_i
+    while i >= 0:
+        i_blk = sorted_partition[i]
+        if is_blk_more_abstract(i_blk, j_blk, var):
+            return i
+        i -= 1
+    return -1  # No abstract block found
+
+def value_count(block, var, db):
+    # Count constraints on the variable in this block
+    constraints = 0
+    for clause in block:
+        if var in str(clause):
+            # Count non-variable terms in clauses containing var
+            constraints += sum(1 for term in clause if isinstance(term, str) and not term.startswith('$'))
+    
+    # More constraints = fewer possible values
+    if constraints == 0:
+        return len(db)  # No constraints, can take any value
+    else:
+        return max(1, len(db) // (constraints + 1))
 # ============================
     # Import to metta 
 # ============================
