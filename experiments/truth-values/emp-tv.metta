@@ -251,9 +251,7 @@
 (= (copy-db $db $old-db-content)
     (if (== $old-db-content ()) $db
         (let* ( 
-            (() (println! ("inside copy-db")))
             ($interel (car-atom $old-db-content))
-            
             ($_ (add-reduct $db $interel) )
             ($interrest (cdr-atom $old-db-content))
             )
@@ -376,13 +374,13 @@
     (
         let*
             (
-                ; (() (println! (started---)))
+                
                 ($first_bool (== $old-db-content ()))
                 ($second_bool (>= $n $size))
                 ($third_bool (or $first_bool $second_bool))
                 ($next_num (+ $n 1))
                 
-                ; (() (println! (reached $next_num , $first_bool , $second_bool)))
+               
             )
             (
                 if $third_bool
@@ -390,11 +388,11 @@
                     (
                         let*
                             (
-                                ; (() (println! (inner started---)))
+                               
                                 (($head $tail) (decons-atom $old-db-content))
-                                ; (() (println! (inner middle---)))
+                                
                                 ($_ (add-atom $db $head)) 
-                                ; (() (println! (inner end---)))
+                                
                             )
                             (copy-db-by-size $db $tail $next_num $size)
                             

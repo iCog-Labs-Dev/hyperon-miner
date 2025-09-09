@@ -54,10 +54,10 @@
 (= (emp-prob $pattern $db)
     (let*
         ( 
-            (() (println! ("inside emp-prob")))
+            
             ( $ucount   (universe-count $pattern $db))     
             ( $sup  (sup-num $db $pattern))
-             (() (println! ("universe count and sup num computed")))
+            
         ) 
         (// $sup  $ucount)      
 ))
@@ -86,10 +86,10 @@
 ;; =============================================================================
 (= (emp_prob_subsmp $pattern $db $subsize)
 
-   (let* (($interdb (db_size $db)) (() (println! ("inside emp-prb-subsmp and db-size computed")))) (if (< $subsize $interdb)
-        (let* (($intvar (subsample-py $db $subsize)) (() (println! ("subsample-py call completed inside emp-prb-subsmp")))
+   (let* (($interdb (db_size $db)) ) (if (< $subsize $interdb)
+        (let* (($intvar (subsample-py $db $subsize)) 
         ($emp-rslt (emp-prob $pattern $intvar) )
-        (() (println! ("completed emp-prob inside the if of emp-prob-subsmp")))
+        
         
         ) $emp-rslt)
         (emp-prob $pattern $db)
@@ -120,11 +120,11 @@
     (if (== $n_resample 0) 
         () 
         (let* (
-             (() (println! ("inside emp-prob-helper")))
+             
             ($head-emp (emp_prob_subsmp $pattern $db $subsize))
-             (() (println! ("inside emp-prob and emp-prob-subsmp call completed for head")))
+             
             ($tail-emp (emp_prob_helper $pattern $db (- $n_resample 1) $subsize))
-            (() (println! ("emp prob helper  completed")))
+            
 
             )
         (cons-atom  $head-emp $tail-emp)
@@ -155,9 +155,9 @@
 ;;   - Averaged probability estimate
 ;; =============================================================================
 ( = (emp_prob_bs $pattern $db $n_resample $subsize)
-    (let* (($interdb  (db_size $db)) (() (println! ("inside emp-prob-bs and dbsize computed")))) (if (< $subsize $interdb)
+    (let* (($interdb  (db_size $db)) ) (if (< $subsize $interdb)
 
-        (let* (($intervar (emp_prob_helper $pattern $db $n_resample $subsize))  (() (println! ("emp prob helper call completed")))) (avrg-tuple $intervar))
+        (let* (($intervar (emp_prob_helper $pattern $db $n_resample $subsize))  ) (avrg-tuple $intervar))
         (emp-prob $pattern $db)
     ))
 
@@ -223,30 +223,30 @@
 
 (= (emp-prob-pbs $pattern $db $prob-estimate $db-ratio)
     (let* ( 
-        (() (println! ("in emp-prob-pbs")))
+        
         ($support-estimate (prob_to_support $pattern $db $prob-estimate))
-        (() (println! ("prob to support completed")))
+        
              ($db-size-unorm (db_size $db))
             ($db-size (* $db-size-unorm $db-ratio))
-            (() (println! ("db-size found")))
+            
             )
             
 
         (if (< $db-size $support-estimate)
             (let* ( 
-                (() (println! ("subsmp-size called in emp-prob-pbs inside the if")))
+                
                 ($subsize (subsmp-size $pattern $db-size $support-estimate))
-                (() (println! ("subsmp-size call emp-prob-pbs inside the if completed")))
+                
                     ($n-resample 10)
                     ($emp-prob (emp_prob_bs $pattern $db $n-resample $subsize))
-                    (() (println! ("emp prob bs call completed")))
+                    
                     )
                     
                 $emp-prob
             )
-            (let* ((() (println! ("emp prob called in the 'then' condition")))
+            (let* (
              ($real-prob (emp-prob $pattern $db))
-             (() (println! ("emp prob call completed")))
+             
              
              ) 
              $real-prob)

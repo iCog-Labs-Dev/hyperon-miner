@@ -19,13 +19,13 @@
 ;; =============================================================================
 (= (subsample-py $db $subsize)
     (let* (
-         (() (println! ("inside subsample-py")))
+         
             ($db-content (collapse (get-atoms $db)))
-            (() (println! ("db-content call completed")))
+
             ($random-selected (generet_random_subsample $db-content $subsize))
-            (() (println! ("generet random subsample completed")))
+
             ($space (copy-db (new-space) $random-selected))
-            (() (println! ("copy-db call completed")))
+
             
             )
 

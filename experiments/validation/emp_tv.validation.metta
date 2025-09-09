@@ -23,7 +23,7 @@
 ; ===============================
 ; do_emp_tv Validation 1
 ; ===============================
-!(do_emp_tv
+(assertEqual (do_emp_tv
    (,
       (Inheritance $x ugly)
       (Inheritance $x man)
@@ -31,7 +31,7 @@
    )
    &kb        ; knowledge base: ugly-man-soda-drinker
    1          ; database ratio
-)
+) (EMPTV 2.3148148148148147e-5, 0.09963099630996311))
 
 ; ===============================
 ; Parameters Info
@@ -61,14 +61,14 @@
 ; ===============================
 ; do_emp_tv Validation 2
 ; ===============================
-(do_emp_tv
+(assertEqual (do_emp_tv
    (,
       (Inheritance $x ugly)
       (Inheritance $x man)
    )
    &kb        ; knowledge base: ugly-man-soda-drinker
    1          ; database ratio
-)
+) (EMPTV 0.001388888888888889, 0.08181818181818183))
 
 ; ===============================
 ; Parameters Info

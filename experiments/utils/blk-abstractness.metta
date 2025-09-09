@@ -23,7 +23,7 @@
       ;  ($is_pat (checkPat $exp))
        (($link $tail) (decons-atom $exp))
        ($updated-tail (handle_tail $tail $var $replacement () ))
-    ;    ($_ (println! ("called with" $exp)))
+ 
        
        ($ans (union-atom ($link) $updated-tail)) 
    )
@@ -57,35 +57,7 @@
 
 ; Get all variables from a pattern
 ; Check if two patterns can be unified after treating var as constant
-; (= (can-unify $l_body $r_body $db)
-;    (let*( 
-    
-;     ($conj-l (union-atom (,) $l_body))
-;     ($conj-r (union-atom (,) $r_body))
 
-;     ($value-l (collapse (match $db $conj-l $conj-l)))
-;     ($value-r (collapse (match $db) $conj-r $conj-l)))
-
-;     ($is-unify1 (== (subsctract-atom $value-l $value-r) ()))
-;     ($is-unify2 (== (subsctract-atom $value-r $value-l) ()))
-
-;     )
-
-;     (Or $is-unify1 $is-unify2)  ; Both conditions must be true for unification
-
-;    )
-        
-
-; (= (can-unify $l_body $r_body)
-; (
-;     let* (
-;        ($- (!(bind! &left $l_body)) )
-;        ($__ (!(bind! &right $r_body)) )
-;        ($_ (println! (can un called with (&left) (&right))))
-;     )
-;     (unify &left &right True False)
-; )
-; )
 
 ; Main unification function for atom bodies
 (= (can-unify $l_body $r_body)
@@ -123,34 +95,7 @@
 
 
 
-;we need to change this so that (Person $x) can be unified with (Person Abebe), becasuse eventhough they are not equal, since the expression with the variable is just a more absract version of the second expression.
-; (= (can-unify-ground $ground1 $ground2)
-;     (if (== $ground1 $ground2)
-;         True
-;         (if (or (== (get-metatype $ground1) Variable)
-;                 (== (get-metatype $ground2) Variable))
-;                 True
-;                 False)
-;     )
-; )
 
-;main change to handle calls like this as well: (is-blk-syntax-more-abstract ((Human (Person $x) (Person Abebe))) ((Human (Person $x) (Person $y))) (Person $x))
-; (= (can-unify-ground $ground1 $ground2)
-;     (if (== $ground1 $ground2)
-;         True
-;         (if (and (== (get-metatype $ground1  ) Expression) (== (get-metatype $ground2 ) Expression ) ) (can-unify-expr $ground1 $ground2) (if (or (== (get-metatype $ground1) Variable)
-;                 (== (get-metatype $ground2) Variable))
-;                 True
-;                 False))
-;     )
-; )
-
-
-; (= (validate-unification $left-body $right-body) 
-;    (let $indexed-right-body (replace $right-body) 
-;         (can-unify $left-body $indexed-right-body)
-;     )
-; )
 
 (= (validate-unification $left-body $right-body) 
    (let* ( ($indexed-right-body (replace $right-body)) 

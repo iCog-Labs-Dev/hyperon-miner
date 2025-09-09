@@ -65,7 +65,7 @@
       ($joined_comma (cons-atom , $subpattern) )
     ($empr (emp-prob $joined_comma   $db))
     ($new_prob (* $p $empr))
-    ; ($_ (println! ("new_prob" $new_prob)))
+    
     )
        (pro-prob-wout-joint $tail $db $db_ratio $new_prob)
   )
@@ -118,13 +118,13 @@
 ( 
   
   ($p (pro-prob-wout-joint $partition $db $db_ratio 1))
-  (() (println! ("the prob wout joint is " $p)))
+  
   ($db-size (db_size $db))
-  (() (println! ("the db-size is " $db-size)))
+
   ; ($eq_prob (eq-prob-py $partition $pattern $db-size)) ; TODO: for fast excution use eq-prob-py
-  (() (println! ("eq-prob called in ji-prob-est with" $partition )))
+  
   ($eq_prob (eq-prob $partition $pattern $db))
-  (() (println! ("the prob WITH joint is " $eq_prob)))
+  
   )
   (* $p $eq_prob)
 
@@ -171,9 +171,9 @@
 (=(do-ji-prob $partitions $pattern $db $db_ratio) (
   if (== $partitions ()) () (
      let* ((($partition $tail) (decons-atom $partitions))
-     (() (println! ("ji-prob-est called with" $partition)))
+     
             ($jip (ji-prob-est $partition $pattern $db $db_ratio))
-            (() (println! ("completed ji-prob-est for one partition")))
+            
              ($dummy (do-ji-prob $tail $pattern $db $db_ratio)))
              (cons-atom $jip $dummy) ))
 )
@@ -218,19 +218,16 @@
 ;; Return Value:
 ;;   Returns a pair (emin emax) representing the estimated probability range
 ;; ==============================================================
-; (=(ji_prob_est_interval $pattern $db $db_ratio) (
-;    let $_ (println! (ji_prob_est_interval is called with pattern $pattern)) (let ($emin $emax) (min-max  (do-ji-prob (generet-partition-without-pattern $pattern) $pattern $db $db_ratio))
-;         ($emin $emax))
-; ))
+
 (=(ji_prob_est_interval $pattern $db $db_ratio) 
    (let* (($gen-parts (generet-partition-without-pattern $pattern))  
-   (() (println! ("do ji prob called ")))
+
    ($comp-ji (do-ji-prob $gen-parts $pattern $db $db_ratio))
-   (() (println! ("do ji prob completed with " $comp-ji))) 
+    
   ;  ($emin $emax) (min-max $comp-ji)
   ($emin (min-atom $comp-ji))
   ($emax (max-atom $comp-ji))
-   (() (println! ("min max interval is done" ))) 
+
     
     ; (($emin $emax) (min-max  (do-ji-prob (generet-partition-without-pattern $pattern) $pattern $db $db_ratio)))
     )
@@ -280,14 +277,14 @@
 
 (=(isurp $pattern $db $normalize $db_ratio) (
     let* (
-      (() (println! ("ji prob est interval called ")))
+
       (($emin $emax) (ji_prob_est_interval $pattern $db $db_ratio))
-      (() (println! ("ji prob est interval completed  ")))
+      
            ($emp (emp-prob-pbs  $pattern $db $emax $db_ratio))
-           (() (println! ("emp-prob-pbs call completed after ji prob est ")))
+
             ($dst (dst_from_interval $emin $emax $emp))
-            (() (println! ("dst from interval call completed after emp prob pbs ")))
-             ($maxprb (max ($emp $emax)))
+
+             ($maxprb (max-atom ($emp $emax)))
 
              )
                (min ((if $normalize (// $dst $maxprb) $dst) 1.0))
