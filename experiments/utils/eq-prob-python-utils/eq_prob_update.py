@@ -454,6 +454,8 @@ def value_count(block, var, db):
         return len(db)  # No constraints, can take any value
     else:
         return max(1, len(db) // (constraints + 1))
+    
+
 # ============================
     # Import to metta 
 # ============================
