@@ -6,9 +6,10 @@
 ! (import! &self experiments:utils:gen_partition)
 ! (import! &self experiments:utils:common-utils)
 ! (import! &self experiments:utils:beta-dist)
-
+! (import! &self experiments:utils:bs-utils)
 ! (import! &self experiments:utils:blk-abstractness)
 ! (import! &self experiments:utils:eq-prob)
+! (import! &self experiments:utils:customType)
 ! (import! &self experiments:utils:index_to_var)
 ! (import! &self experiments:utils:surp-utils)
 
@@ -17,7 +18,11 @@
 
 ! (import! &self experiments:truth-values:emp-tv)
 
-! (import! &db experiments:data:ugly_man_sodaDrinker)
+  ! (import! &db experiments:data:ugly_man_sodaDrinker)
+ 
+  
+! (import! &dbc experiments:data:nested_coupled:mock_coupled)
+! (import! &dbn experiments:data:nested_coupled:true_nested)
 
 
 
@@ -34,6 +39,15 @@
 ;    False     ; normalization: False
 ;    1         ; database ratio
 ; )
+(assertEqual (isurp (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker) ) &db False 0.2) 1.9290123456790123e-5)
+
+;===================================================================
+;isurp validation with equivalent but coupled patterns with the corpus: mock_copuled
+
+(assertEqual  (isurp (, (Inheritance (Person $x) man) (Inheritance (Person $x) ugly) (Inheritance (Person $x) sodaDrinker) ) &dbc False 0.2) 1.9290123456790123e-5)
+
+
+
 
 
 ; ===============================
@@ -70,16 +84,16 @@ Added and configured a dedicated test file for validation.
 ; ===============================
 ; isurp Validation 2
 ; ===============================
-; !(isurp 
-;    (,
-;       (Inheritance $x man)
-;       (Inheritance $x ugly)
-;       (Inheritance $x sodaDrinker)
-;    )
-;    &db       ; database: ugly-man-soda-drinker
-;    True     ; normalization: True
-;    1         ; database ratio
-; )
+(assertEqual (isurp 
+   (,
+      (Inheritance $x man)
+      (Inheritance $x ugly)
+      (Inheritance $x sodaDrinker)
+   )
+   &db       ; database: ugly-man-soda-drinker
+   True     ; normalization: True
+   1         ; database ratio
+) 0.8333333333333334)
 
 ; ===============================
 ; Parameters Info
@@ -107,15 +121,15 @@ Added and configured a dedicated test file for validation.
 ; ===============================
 ; isurp Validation 3
 ; ===============================
-; !(isurp 
-;    (,
-;       (Inheritance $x man)
-;       (Inheritance $x ugly)
-;    )
-;    &db       ; database: ugly-man-soda-drinker
-;    False     ; normalization: False
-;    1         ; database ratio
-; )
+(assertEqual (isurp 
+   (,
+      (Inheritance $x man)
+      (Inheritance $x ugly)
+   )
+   &db       ; database: ugly-man-soda-drinker
+   False     ; normalization: False
+   1         ; database ratio
+) 0.000925925925925926)
 
 ; ===============================
 ; Parameters Info
@@ -139,4 +153,27 @@ Added and configured a dedicated test file for validation.
 ; OpenCog miner implementation (isurp result with the above parameters):  0.000925926
 
 
+
 ; ! (connected-subpatterns-with-var ((Human $x Eat)) (((Human) ($x Eat))))
+=======
+
+
+; !(isurp (, (Inheritance (And (And (Person $x) man) (Or human sodaDrinker)) (Or (And human man) (And human sodaDrinker)))
+
+; (Inheritance (And (And (Person $x)   man) (Or human sodaDrinker)) (Or (And human man) (And human ugly)))
+
+; (Inheritance (And (And human man)   (Or (Person $x) (Person Mike)))   (Or (And human man)   (And human sodaDrinker)))
+
+; (Inheritance (And (And (Person $x) man) (Or human ugly))        (Or (And human man) (And human sodaDrinker)))) &dbn False 1)
+
+(assertEqual (isurp (, (Inheritance (And (And (Person $x) man) (Or human sodaDrinker)) (Or (And human man) (And human sodaDrinker)))
+
+(Inheritance (And (And (Person $x)   man) (Or human sodaDrinker)) (Or (And human man) (And human ugly)))
+
+) &dbn False 1) 0.001216)
+
+
+
+
+
+

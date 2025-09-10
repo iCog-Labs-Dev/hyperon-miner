@@ -18,69 +18,46 @@
 
 
 
-; Replace variable in an expression 
-(= (replace-var-exp $exp $var $replacement)  
+(= (replace-var-exp $exp $var $replacement )  
    (let* (
-       (($link $var1 $var2) $exp)
-       ($subvar1 (sub-var $var1 $var $replacement))
-       ($subvar2 (sub-var $var2 $var $replacement)) 
+      ;  ($is_pat (checkPat $exp))
+       (($link $tail) (decons-atom $exp))
+       ($updated-tail (handle_tail $tail $var $replacement () ))
+ 
+       
+       ($ans (union-atom ($link) $updated-tail)) 
    )
-   ($link $subvar1 $subvar2)))
+   $ans ))
 
+(= (handle_tail $tale $var $replacement $acc) (if (== $tale ()) $acc (let* ((($cur $nxt) (decons-atom $tale)) ($updated-cur (handle_predicate $cur $var $replacement  )) ($new-acc (union-atom $acc ($updated-cur)))) (handle_tail $nxt $var $replacement $new-acc) )) )
 
-; Substitute variable in a single atom
-(= (sub-var $atom $var $replacement)  
-   (if (== (get-metatype $atom) Variable)
-       (if (== $atom $var)
-           $replacement
-           $atom)
-       $atom))
-
+(=(handle_predicate $predicate $var $replacement)
+(let $invar (checkPat $predicate) (if $invar (replace-var-exp $predicate $var $replacement)  (if (== $predicate $var) $replacement $predicate))))
 
 ; Check if variable exists in a single expression
-(= (var-exist-exp $exp $var)  
-   (let ($link $var1 $var2) $exp
-       (or (== $var1 $var) (== $var2 $var))))
+; (= (var-exist-exp $exp $var)  
+;    (let ($link $var1 $var2) $exp
+;        (or (== $var1 $var) (== $var2 $var))))
+
+
 
 ; Check if variable exists in the entire pattern
 (= (is-var-exist $exp $var) 
    (if (== $exp ())
        False
-       (if (var-exist-exp (car-atom $exp) $var) 
+       (let $che (var-exist-exp (car-atom $exp) $var) (if $che 
            True
-           (is-var-exist (cdr-atom $exp) $var))))
+           (is-var-exist (cdr-atom $exp) $var)))))
+
+(= (var-exist-exp $exp $var)  
+   (if (checkPat $exp) 
+      (let* (($tail (cdr-atom $exp)) ($ans (collapse (is-var-same (superpose $tail) $var) ) ) ($len (size-atom $ans)) ) (if (== $len 0) False True)) False))
+
+(=(is-var-same $predicate $var) (if (checkPat $predicate ) (let $tail (cdr-atom $predicate ) (is-var-same (superpose $tail) $var)) (if (== $predicate $var) True (empty))))
 
 ; Get all variables from a pattern
 ; Check if two patterns can be unified after treating var as constant
-; (= (can-unify $l_body $r_body $db)
-;    (let*( 
-    
-;     ($conj-l (union-atom (,) $l_body))
-;     ($conj-r (union-atom (,) $r_body))
 
-;     ($value-l (collapse (match $db $conj-l $conj-l)))
-;     ($value-r (collapse (match $db) $conj-r $conj-l)))
-
-;     ($is-unify1 (== (subsctract-atom $value-l $value-r) ()))
-;     ($is-unify2 (== (subsctract-atom $value-r $value-l) ()))
-
-;     )
-
-;     (Or $is-unify1 $is-unify2)  ; Both conditions must be true for unification
-
-;    )
-        
-
-; (= (can-unify $l_body $r_body)
-; (
-;     let* (
-;        ($- (!(bind! &left $l_body)) )
-;        ($__ (!(bind! &right $r_body)) )
-;        ($_ (println! (can un called with (&left) (&right))))
-;     )
-;     (unify &left &right True False)
-; )
-; )
 
 ; Main unification function for atom bodies
 (= (can-unify $l_body $r_body)
@@ -94,13 +71,11 @@
            (if (or $left_empty $right_empty)
                False
                (let* (
-                    ($_ (println! (can-unify called with $l_body $r_body)))
                    ($l_head (car-atom $l_body))
                    ($l_tail (cdr-atom $l_body))
                    ($r_head (car-atom $r_body))
                    ($r_tail (cdr-atom $r_body))
-                   ($head_unify (can-unify-expr $l_head $r_head))
-                    ($_ (println! (in can-unify 2)))
+                   (($head_unify) (can-unify-expr $l_head $r_head))
           
                )
                (if $head_unify
@@ -108,35 +83,27 @@
                    False)))))
        False))
 
-(= (can-unify-expr ($link1 $pridicate1 $conclusion) ($link2 $pridicate2 $conclusion2)) 
-    (
-        if (== $link1 $link2)
-            (let* (
-                ($can-unify1 (can-unify-ground $pridicate1 $pridicate2))
-                ($can-unify2 (can-unify-ground $conclusion $conclusion2))
-            )
-            (and $can-unify1 $can-unify2))
-        
-            False
-    )
+
+
+ (= (can-unify-expr $body1 $body2) 
+   ( collapse (
+        unify $body1 $body2 True False
+    ))
  
  )
 
 
 
-(= (can-unify-ground $ground1 $ground2)
-    (if (== $ground1 $ground2)
-        True
-        (if (or (== (get-metatype $ground1) Variable)
-                (== (get-metatype $ground2) Variable))
-                True
-                False)
-    )
-)
+
+
 
 (= (validate-unification $left-body $right-body) 
-   (let $indexed-right-body (replace $right-body) 
-        (can-unify $left-body $indexed-right-body)
+   (let* ( ($indexed-right-body (replace $right-body)) 
+;    ($_ (println! (right body is $right-body validate called et the replaced is $indexed-right-body ) ))
+   ) 
+        (let* (($for (can-unify $left-body $indexed-right-body)) 
+        ; ($_ (println! (the bool of val_uni is $for ))) 
+        ) $for)
     )
 )
 ; Main function: check if l_pat is more abstract than r_pat with respect to var
@@ -159,7 +126,7 @@
            
            ; Try to unify the modified patterns
            ($can_unify_result (can-unify $l_body $r_body))
-           (() (println! (in is-blk-syntax $can_unify_result)))
+          
        )
             (if $can_unify_result 
                 (validate-unification $l_body $r_body) 
@@ -182,7 +149,6 @@
 (= (is-blk-more-abstract $l_blk $r_blk $var) 
    (let* (
             ($rps (powerset-without-empity $r_blk))  
-            (() (println! (in is-blk-more pworeset result $rps)))
             ($l_partitions (partition $l_blk))  
          
         )
@@ -202,7 +168,7 @@
 (= (check-subsets $lp $subsets $var)
    (if (== $subsets ())
        False  ; No more subsets, return False
-       (let $rs (let () (println! (in check-subsets $subsets)) (car-atom $subsets))
+       (let $rs  (car-atom $subsets)
          (if (check-all-blocks $lp $rs $var)
              True  ; All blocks match with this subset
              (check-subsets $lp (cdr-atom $subsets) $var)))))  ; Try next subset
@@ -229,7 +195,7 @@
 
     )
 ))
-; (: merge-list (-> Expression Expression Expression))
+(: merge-list (-> Expression Expression Expression))
 (= (merge-list $list1 $list2)  (unique-list (union-atom  $list1 $list2)))
 ; (: unique-list (-> Expression Expression))
 (= (unique-list $list)

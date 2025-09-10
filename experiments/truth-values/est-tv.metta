@@ -1,4 +1,14 @@
 
+;types
+; (: pro_prob_without_joint (-> SpaceType (BList Pattern) TruthValue))
+; (: estimate_v_xi (-> SpaceType (List Pattern) Number))
+; (: inner_temp (-> SpaceType (BList Pattern) (List Pattern) Number Any (List Number)))
+; (: eq-prob (-> SpaceType Number (BList Pattern) (BList Pattern) Number Number Any Number Number))
+; (: prob-with-joint (-> SpaceType Number (BList Pattern) Any Number Number))
+; (: ji-est-tv (-> SpaceType Number Pattern (PList Pattern) (List TruthValue)))
+
+(: do-ji-tv-est (-> SpaceType Pattern TruthValue))
+
 ;; =============================================================================
 ;; Function: pro_prob_without_joint
 ;; -----------------------------------------------------------------------------
@@ -20,7 +30,7 @@
 ;; Returns:
 ;;   - The average empirical truth value, representing the product of the probabilities over the subpatterns without considering joint variables.
 ;; =============================================================================
-(=(pro_prob_without_joint $db $subpatterns )(
+(=(pro_prob_without_joint $db $subpatterns)(
     let* (
         ($tv (emp_tv_mem $subpatterns $db))  ;; Get empirical truth value for subpatterns in the database
         ($prod_etv (avrg_tv $tv))             ;; Calculate the average of the empirical truth values
@@ -151,7 +161,8 @@
         ($compJ (car-atom $tail))
         ($most_spec  (let $result (inner_temp $db $original $compJ $i $var) (max $result) ))
        ($M_xj (if (<= $most_spec 0) $db_size $most_spec))
-        ($prob_j (* $prob (// 1 $M_xj)))  ;; from general formula
+       ($inverse_M_xj (// 1 $M_xj))
+        ($prob_j (* $prob $inverse_M_xj))  ;; from general formula
         ($dummy (eq-prob $db $db_size $original $tail (+ $i 1) (- $count 1) $var $prob_j))) 
          $dummy)
            $prob
@@ -216,7 +227,7 @@
  (= (ji-est-tv $db $db_size $pattern $partitions)
  (   if (== $partitions ()) () (
          let* (
-             (() (println! (pat $partitions)))
+             
              (($head $tail) (decons-atom $partitions))
                 ($prod_etv (pro_prob_without_joint $db $head))
                 (($rp $rc) (decons-atom $prod_etv))

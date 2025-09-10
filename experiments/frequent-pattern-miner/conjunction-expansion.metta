@@ -305,7 +305,7 @@
 
 ; returns:
 ; a superpose of conjunctions that satisfy the minimum support and are not redundant.
-;(: do-conjunct space space conj_pattern Number debruijin-index Atom)
+;(: do-conjunct SpaceType SpaceType Pattern Number Nat Atom)
 (= (do-conjunct $db $cndb $coming_conj  $ms Z)
     (let* (
         (() (println! "==== Build conjunction with depth 0 ===="))
@@ -354,7 +354,7 @@
 ;; 2: sort the conjunctions with a custom sorting function and get only the unique conjunctions from the sorte results
 ;; 3: create a flattened conjunction  using cons-atom with the sorted conjunctions and ,.
 ;; 4: add the results to the knowledge base with their support
-;(: formatter (-> space space Number Atom ))
+;(: formatter (-> SpaceType SpaceType Number Atom ))
 (= (formatter  $conjspace $dbspace $depth) 
    (let* (
         (() (println! "==== Formating  started ====="))
@@ -370,7 +370,7 @@
 ;; conjunct 
 -----------------------------------------------
 ;; function to extract candidate patterns and call do-conjunct 
-;(: conjunct (-> space space space Number Number Atom))
+;(: conjunct (-> SpaceType SpaceType SpaceType Number Number Atom))
 (= (conjunct $dbspace $cndpspace $conjspace $minsup $depth )   
       (let $pattern (match $cndpspace (CandidatePattern $Cpattern) $Cpattern)
                    (let $conj  (do-conjunct $dbspace $cndpspace  $pattern $minsup (fromNumber $depth)) 

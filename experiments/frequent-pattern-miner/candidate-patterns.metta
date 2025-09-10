@@ -9,6 +9,7 @@
 ;; 2. calculate the support of the pattern
 ;; 3. store as a candidate if the support is greater than the minimum support
 ;(: (candidatePattern (-> space space Number space Atom)))
+; (:candidatePattern (-> SpaceType SpaceType Number SpaceType Any))
 (= (candidatePattern  $dbspace $spezspace $minsup $cndpspace)
     (match $spezspace (SpecializationOf $specialized $pattern)
         (let* ( 

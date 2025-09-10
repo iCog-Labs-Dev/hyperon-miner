@@ -1,4 +1,15 @@
 
+
+;;types
+(: emp-prob (-> Pattern SpaceType Number))
+(: emp_prob_subsmp (-> Pattern SpaceType Number Number))
+; (: emp_prob_helper (-> Pattern SpaceType Number Number (List Number)))'
+ (: emp_prob_helper (-> Pattern SpaceType Number Number Any))
+(: emp_prob_bs (-> Pattern SpaceType Number Number Number))
+(: emp-prob-pbs (-> Pattern SpaceType Number Number))
+(: emp-prob-pbs (-> Pattern SpaceType Number Number Number))
+
+
 ;;; File Dependency Documentation:
 ;;;
 ;;; Overview:
@@ -42,7 +53,9 @@
 ;; =============================================================================
 (= (emp-prob $pattern $db)
     (let*
-        ( ( $ucount   (universe-count $pattern $db))     
+        ( 
+            
+            ( $ucount   (universe-count $pattern $db))     
             ( $sup  (sup-num $db $pattern))
             
         ) 
@@ -73,10 +86,14 @@
 ;; =============================================================================
 (= (emp_prob_subsmp $pattern $db $subsize)
 
-    (if (< $subsize (db_size $db))
-        (emp-prob $pattern (subsample-py $db $subsize))
+   (let* (($interdb (db_size $db)) ) (if (< $subsize $interdb)
+        (let* (($intvar (subsample-py $db $subsize)) 
+        ($emp-rslt (emp-prob $pattern $intvar) )
+        
+        
+        ) $emp-rslt)
         (emp-prob $pattern $db)
-    )
+    ))
 )
 
 ;; =============================================================================
@@ -103,8 +120,11 @@
     (if (== $n_resample 0) 
         () 
         (let* (
+             
             ($head-emp (emp_prob_subsmp $pattern $db $subsize))
+             
             ($tail-emp (emp_prob_helper $pattern $db (- $n_resample 1) $subsize))
+            
 
             )
         (cons-atom  $head-emp $tail-emp)
@@ -135,10 +155,11 @@
 ;;   - Averaged probability estimate
 ;; =============================================================================
 ( = (emp_prob_bs $pattern $db $n_resample $subsize)
-    (if (< $subsize (db_size $db))
-        (avrg-tuple (emp_prob_helper $pattern $db $n_resample $subsize))
+    (let* (($interdb  (db_size $db)) ) (if (< $subsize $interdb)
+
+        (let* (($intervar (emp_prob_helper $pattern $db $n_resample $subsize))  ) (avrg-tuple $intervar))
         (emp-prob $pattern $db)
-    )
+    ))
 
 )
 
@@ -201,15 +222,34 @@
 ;; =============================================================================
 
 (= (emp-prob-pbs $pattern $db $prob-estimate $db-ratio)
-    (let* ( ($support-estimate (prob_to_support $pattern $db $prob-estimate))
-            ($db-size (* (db_size $db) $db-ratio)))
+    (let* ( 
+        
+        ($support-estimate (prob_to_support $pattern $db $prob-estimate))
+        
+             ($db-size-unorm (db_size $db))
+            ($db-size (* $db-size-unorm $db-ratio))
+            
+            )
+            
+
         (if (< $db-size $support-estimate)
-            (let* ( ($subsize (subsmp-size $pattern $db-size $support-estimate))
+            (let* ( 
+                
+                ($subsize (subsmp-size $pattern $db-size $support-estimate))
+                
                     ($n-resample 10)
-                    ($emp-prob (emp_prob_bs $pattern $db $n-resample $subsize)))
+                    ($emp-prob (emp_prob_bs $pattern $db $n-resample $subsize))
+                    
+                    )
+                    
                 $emp-prob
             )
-            (emp-prob $pattern $db)
+            (let* (
+             ($real-prob (emp-prob $pattern $db))
+             
+             
+             ) 
+             $real-prob)
         )
     )
 )
