@@ -12,6 +12,6 @@ from eq_prob_update import *
 #     [["Smart", "$y"]]             # Block 3: $y
 # ]
 
-# print("is Left Block more abstract:", is_blk_more_abstract(l_blk, r_blk,var))
+print("is Left Block more abstract:", is_blk_more_abstract(l_blk, r_blk,var))
 # print("Sorted by abstraction:", sort_by_abstraction(l_blk + r_blk, var)) 
 # print("The Joint Variable: ", joint_variables(pattern, partition))
