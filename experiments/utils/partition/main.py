@@ -90,6 +90,14 @@ def generate_partitions(metta, subsets, original):
 
     return atom
 
+def remove_hashtag(metta, expression):
+    # Remove hashtags from the expression
+    print("Removing hashtags from:", expression)
+    value = get_string_value(expression)
+    value = re.sub(r"#\w+", "", value)
+    return metta.parse_all(value)
+
+   
 
 @register_atoms(pass_metta=True)
 def generete_partionReg(metta: MeTTa):
@@ -97,9 +105,11 @@ def generete_partionReg(metta: MeTTa):
     # Define the operation atom with its parameters and function
     generatePartiton = OperationAtom('generate-partitions', lambda a, b: generate_partitions(metta, a, b),
                                      ['Expression', 'Expression', 'Expression'], unwrap=False)
-    # generateRandomVar = OperationAtom('generateRandomVar', lambda a, b: (print(S(a),S(b)),generate_random_var(metta,a, b)[1],['Atom', 'Atom', 'Expression'], unwrap=False))
+
+    removeHashtag = OperationAtom('remove-hashtag-py', lambda a: remove_hashtag(metta, a),
+                                     ['Expression', 'Expression'], unwrap=False)
 
     return {
-        r"gen-partition": generatePartiton
-
+        r"gen-partition": generatePartiton,
+        r"remove-hashtag-py": removeHashtag
     }

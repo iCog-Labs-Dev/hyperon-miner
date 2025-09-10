@@ -71,9 +71,9 @@
         (if (== $trace Pass)
             False
             (let*(
-                (() (println! (here $trace)))
+                
                 (($headvar $bool $headov) (car-atom $trace))
-                (() (println! ($headvar $bool $headov)))
+                
                 (($tail) (cdr-atom $trace))
                 ($fold (fold $headov ()))
                 ($isAbstract (all_of $headvar $fold $clause))
@@ -181,7 +181,7 @@
   (if (== $others ())
         False
         (let*(
-            (() (println! (here3 $others)))
+            
             ($head (car-atom $others)) 
             ($isinpat (is_clause_in_pat $clause $head))
             ($result (if (== $isinpat True)
@@ -195,11 +195,11 @@
 
 (= (clause_others_check_for_subtree $clause $pattern)
     (let*(
-        (() (println! (here $clause)))
+        
         ($others (eval (subtraction-atom $pattern ($clause))))
-        (() (println! (here1 $others)))
+        
         ($res (is_pat_in_otherpat $clause $others))
-        (() (println! (here2 $res)))
+        
         )
         $res
     )
