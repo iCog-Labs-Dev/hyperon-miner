@@ -50,7 +50,8 @@
 
 ;; mocking the frequent pattern miner results 
 (= (mock-frequent-miner $kb) (
-   add-atom $kb  (superpose ( (: FACT1  (hasSupport (, (Inheritance $x human) (Inheritance $x ugly) (Inheritance $x woman)) 1)) 
+   add-reduct $kb  (superpose ( 
+       (: FACT1  (hasSupport (, (Inheritance $x human) (Inheritance $x ugly) (Inheritance $x woman)) 1)) 
                      (: FACT2 (hasSupport (, (Inheritance $x sodaDrinker) (Inheritance $x human) (Inheritance $x woman)) 1))
                      (: FACT3 (hasSupport (,  (Inheritance $x human) (Inheritance $x sodaDrinker) (Inheritance $x ugly)) 1))
                      (: FACT4 (hasSupport (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker)) 8))))
@@ -60,7 +61,8 @@
 ;; Initialize hyperparameters            
 (= (init-params $kb $db $min-sup $surp-mode $db-ratio $normalization )
 (superpose
-((mock-frequent-miner $kb)
+(
+(mock-frequent-miner $kb) 
 (add-atom $kb (: msT (ms-threshold $min-sup)))
 (add-atom $kb (: dbref (db-ref $db)))
 (add-atom $kb (: dbr (db-ratio $db-ratio)))
@@ -72,10 +74,6 @@
 (add-reduct $kb (: dbsize (db-size (db_size $db))))
 (add-atom $kb (: normalize (normalized $normalization))  
                                     ))))
-                                
-
-(=(remove-params $kb) 
-    (let $atom  (get-atoms $kb) (remove-atom $kb $atom))) 
 
 
 
@@ -88,8 +86,6 @@
 (= (normalization) False)
 
 !(init-params &kb &db (min-sup) (surp-mode) (db-ratio) (normalization))
-
-!(match &kb $x $x)
 
 !(println! ("========== isurp-old test without  normalization ==============="))
 
@@ -111,38 +107,38 @@
 (= (surp-mode2 ) isurp-old)
 (= (db-ratio2) 0.5)
 (= (normalization2) True)
-
  
 !(init-params &kb2 &db (min-sup2) (surp-mode2) (db-ratio2) (normalization2))
 
 !(println! ("========== isurp-old test with normalization =============="))
 
-!(let $result (remove-hashtag (syn &kb2 (fromNumber 19) (: $prf (Isurp $prattern  $surp)))) $result)
+!(let $result (remove-hashtag (syn &kb2 (fromNumber 19) (: $prf (Isurp $prattern  $surp)))) (assertEqual $result
 ;;Expected result 
-;;()]
-;;(: ((((((((isurp normalize) (((universal-count (((minsupport FACT4) msT) CPU)) dbsize) CPUUNIVERSAL)) 
-;;((emp-prob-rule (((universal-count (((minsupport FACT4) msT) CPU)) dbsize) CPUUNIVERSAL)) CPUPROB)) 
-;;((((est-prob-rule surpMode) (((universal-count (((minsupport FACT4) msT) CPU)) dbsize) CPUUNIVERSAL)) (partitions CPUPARTN)) CPUESTPROB)) 
-;;((dst-from-interval CPU) CPUDST)) MAXIMUMCPU) DIVIDECPU) MINIMUMCPU) 
-;;(isurp (, (Inheritance $x#45638 man) (Inheritance $x#45638 ugly) (Inheritance $x#45638 sodaDrinker)) 0.999707773232028))
+ (: ((((((((isurp-rule normalize) (((universal-count (((minsupport FACT4) msT) CPU)) dbsize) CPUUNIVERSAL)) 
+  (((emp-prob-rule surpMode) (((universal-count (((minsupport FACT4) msT) CPU)) dbsize) CPUUNIVERSAL)) CPUPROB)) 
+  ((((est-prob-rule surpMode) (((universal-count (((minsupport FACT4) msT) CPU)) dbsize) CPUUNIVERSAL)) (partitions CPUPARTN)) CPUESTPROB)) 
+   ((dst-from-interval CPU) CPUDST)) MAXIMUMCPU) DIVIDECPU) MINIMUMCPU) 
+   (Isurp (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker)) 0.999707773232028))))
+
+
 
 
 ------------------------------------------------------------------------------------
-;; isurp with normalization 
-;; define hyper parameters -> 1
-; (=(min-sup3) 6)
-; (=(surp-mode3 ) isurp)
-; (=(db-ratio3) 0.5)
-; (= (normalization3) True)
+; isurp with normalization 
+; define hyper parameters -> 1
+(=(min-sup3) 6)
+(=(surp-mode3 ) isurp)
+(=(db-ratio3) 0.5)
+(= (normalization3) True)
 
-; !(init-params &kb3 &db (min-sup3) (surp-mode3) (db-ratio3) (normalization3))
+!(init-params &kb3 &db (min-sup3) (surp-mode3) (db-ratio3) (normalization3))
 
-; !(println! ("========== isurp test with normalization =============="))
+!(println! ("========== isurp test with normalization =============="))
 
-
-; !(assertEqual (syn &kb (fromNumber 19) (: $prf (Isurp $prattern  $surp))) (: ((((((((isurp-rule normalize) 
-;          (((universal-count (((minsupport FACT4) msT) CPU)) dbsize) CPUUNIVERSAL)) ((((emp-prob-rule surpMode) 
-;           (((((est-prob-rule surpMode) (((minsupport FACT4) msT) CPU)) (partitions CPUPARTN)) dbr) CPUESTPROB)) dbr) CPUPROB)) 
-;           (((((est-prob-rule surpMode) (((minsupport FACT4) msT) CPU)) (partitions CPUPARTN)) dbr) CPUESTPROB)) 
-;          ((dst-from-interval CPU) CPUDST)) MAXIMUMCPU) DIVIDECPU) MINIMUMCPU) 
-;           (Isurp (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker)) 0.8333333333333334)))
+!(let $result (remove-hashtag (syn &kb3 (fromNumber 19) (: $prf (Isurp $prattern  $surp)))) (assertEqual $result 
+;;Expected result 
+   (: ((((((((isurp-rule normalize) (((universal-count (((minsupport FACT4) msT) CPU)) dbsize) CPUUNIVERSAL)) ((((emp-prob-rule surpMode) 
+   (((((est-prob-rule surpMode) (((minsupport FACT4) msT) CPU)) (partitions CPUPARTN)) dbr) CPUESTPROB)) dbr) CPUPROB)) 
+   (((((est-prob-rule surpMode) (((minsupport FACT4) msT) CPU)) (partitions CPUPARTN)) dbr) CPUESTPROB)) 
+   ((dst-from-interval CPU) CPUDST)) MAXIMUMCPU) DIVIDECPU) MINIMUMCPU) 
+   (Isurp (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker)) 0.8333333333333334))))

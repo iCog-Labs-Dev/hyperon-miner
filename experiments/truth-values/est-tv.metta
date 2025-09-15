@@ -226,7 +226,7 @@
  (= (ji-est-tv $db $db_size $pattern $partitions)
  (   if (== $partitions ()) () (
          let* (
-             (() (println! (pat $partitions)))
+             ;(() (println! (pat $partitions)))
              (($head $tail) (decons-atom $partitions))
                 ($prod_etv (pro_prob_without_joint $db $head))
                 (($rp $rc) (decons-atom $prod_etv))
@@ -261,6 +261,7 @@
 (=(do-ji-tv-est $db $pattern) (
     let $prtns (generet-partition-without-pattern $pattern)  
           ( let* (
+            (() (println! "======= Truth Value Estimation ======="))
             (($strength $confidence) (avrg_tv (ji-est-tv $db (db_size $db) $pattern $prtns) )))
            (STV $strength $confidence))           
 ))

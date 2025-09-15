@@ -56,7 +56,7 @@
 !(frequent-miner &db &kb (num-of-conjuct))
 ;!(syn $kb (S Z) (: $prf (equals 4 4)))
 
-!(remove-ashtag (match &kb $x $x))
+!(remove-ashtag (match &kb (:$prf (hasSupport $pattern $sup) ) (:$prf (hasSupport $pattern $sup) )))
 
 
 
