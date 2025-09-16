@@ -11,7 +11,7 @@
 ! (import! &self experiments:surprisingness:isurp)
 ! (import! &self experiments:surprisingness:emp-prob)
 ! (import! &self experiments:truth-values:emp-tv)
-! (import! &kb experiments:data:ugly_man_sodaDrinker)
+! (import! &db experiments:data:ugly_man_sodaDrinker)
 ! (import! &self experiments:utils:beta-dist)
 ! (import! &self experiments:utils:customType)
 ! (import! &self experiments:utils:constants)
@@ -37,6 +37,7 @@
 
 
 (assertEqual (do-ji-tv-est  &kb (,(Inheritance $x ugly) (Inheritance $x human) (Inheritance $x sodaDrinker))) (STV 0 0.0002141712796459233) )
+
 ; conjunction: (,(Inheritance $x ugly) (Inheritance $x human) (Inheritance $x sodaDrinker))
 ; result 
 ;   on our implementation: (STV 0 0.0002141712796459233)
@@ -51,6 +52,7 @@
 
 
 (assertEqual (do-ji-tv-est  &kb (,(Inheritance $x ugly) (Inheritance $x sodaDrinker))) (STV 0.0027777777777780515 0.0006976744186046523))
+
 ; conjunction: (,(Inheritance $x ugly) (Inheritance $x sodaDrinker))
 ; result 
 ;   on our implementation: (STV 0.0027777777777780515 0.0006976744186046523)
