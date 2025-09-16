@@ -304,18 +304,24 @@ def joint_variables(pattern, partition):
     return joint_vars
 
 def connected_subpattern_with_var(block, var):
-    if not is_free_in_any_tree(block, var):
-        return []
-    
-    # Get all strongly connected components
-    components = get_components(block)
-    
-    # Find the component containing the variable
-    for component in components:
-        if is_free_in_any_tree(component, var):
-            return component
-    
+    # If the variable appears anywhere in the block, return the whole block
+    if is_free_in_any_tree(block, var):
+        return block
     return []
+
+# def connected_subpattern_with_var(block, var):
+#     if not is_free_in_any_tree(block, var):
+#         return []
+    
+#     # Get all strongly connected components
+#     components = get_components(block)
+    
+#     # Find the component containing the variable
+#     for component in components:
+#         if is_free_in_any_tree(component, var):
+#             return component
+    
+#     return []
 
 def connected_subpatterns_with_var(partition, var):
     var_partition = []
@@ -325,6 +331,15 @@ def connected_subpatterns_with_var(partition, var):
             var_partition.append(connected_subpattern)
     
     return var_partition
+
+# def connected_subpatterns_with_var(partition, var):
+#     var_partition = []
+#     for block in partition:
+#         connected_subpattern = connected_subpattern_with_var(block, var)
+#         if connected_subpattern:  # Only add non-empty results
+#             var_partition.append(connected_subpattern)
+    
+#     return var_partition
 
 
 def is_free_in_any_tree(block, var):
