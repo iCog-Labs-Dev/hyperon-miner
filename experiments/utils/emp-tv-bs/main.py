@@ -12,6 +12,9 @@ import numpy as np
 
 DEFAULT_K = 800.0
 
+def register_input(prompt):
+    print("i am in register input, python function")
+    return [metta.parse_single(input(prompt))]
 
 def get_beta_distribution(emp_tv):
     emp_tv = emp_tv.get_children()  # cdr-atom
@@ -154,7 +157,11 @@ def avrage_tv(metta: MeTTa):
     random_subsample = OperationAtom('generet_random_subsample', lambda db_elemet, subsize:  generet_random_subsample(metta, db_elemet, subsize),
                                      ['Expression', 'Atom', 'Expression'], unwrap=False)
 
+    takeInput = OperationAtom("takingInput", lambda prompt: register_input(prompt),
+    ["Atom" , "Atom"], unwrap=False)
+
     return {
         r"mean-tv": avrageTv,
         r"generet_random_subsample": random_subsample,
+        r"takingInput": takeInput,
     }

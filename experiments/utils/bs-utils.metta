@@ -1,6 +1,17 @@
 
 !(import! &self  emp-tv-bs)
 
+;; py-input
+;; takes input from the terminal through python
+;; 
+;; Parameters:
+;;   prompt – user informing message for the input.
+;; 
+;; Returns:
+;;   The number received from the user
+
+(= (py-input $x) (takingInput $x))
+
 
 ;; =============================================================================
 ;; Function: subsample-py

@@ -812,10 +812,9 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
 ; )
 ; )
 (= (n_conjuncts $pattern) (
-        if (not (is-pattern-et $pattern))
-        0
- (let $che (has-type , $pattern) (if $che (get-arity $pattern) 1)))
-            
+        if (== (get-metatype $var) Symbol)
+            0
+            (let $che (has-type , $pattern) (if $che (get-arity $pattern) 1)))
         )
 
 ;; Function: intilize

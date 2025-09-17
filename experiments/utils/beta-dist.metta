@@ -38,31 +38,20 @@
 
 (=(mean_accumulater $tv_list $pre_value)(
    if (== $tv_list ()) $pre_value (
-       let* (
-           ($head (car-atom $tv_list));;(Beta (mean 54) (variance 57))
-           ($tail (cdr-atom $tv_list))
-           ($mean_value (get_beta_mean_var $head mean)) ;; 54
-           ($accumulate (+ $mean_value $pre_value))
-           ($dummy (mean_accumulater $tail $accumulate))
-       )
-            $dummy
+       let (Beta (mean $mean) $_) (car-atom $tv_list) ;;(Beta (mean 54) (variance 57))    
+            (mean_accumulater (cdr-atom $tv_list) (+ $mean $pre_value))
    )
-))
-
+))  
 
 (=(var_accumulater $tv_list $pre_value $mean)(
     if (== $tv_list ()) $pre_value (
-        let* (
-            ($head (car-atom $tv_list));;(Beta (mean 54) (variance 57))
-           ($tail (cdr-atom $tv_list))
-           ($mean_value_i (get_beta_mean_var $head mean))
-           ($variance (get_beta_mean_var $head var))
-           ($diff (- $mean_value_i $mean))
-           ($relative_var (+ $variance (* $diff $diff)))
-           ($rel_var_sum (+ $relative_var $pre_value))
-           ($dummy (var_accumulater $tail $rel_var_sum $mean))
+        let* ( 
+            ((Beta (mean $mean_value_i) (variance $variance)) (car-atom $tv_list)) 
+            ($diff (- $mean_value_i $mean))
+            ($relative_var (+ $variance (* $diff $diff)))
+            ($rel_var_sum (+ $relative_var $pre_value)) 
         )
-           $dummy
+            (var_accumulater (cdr-atom $tv_list) $rel_var_sum $mean)
     )
 ))
 
@@ -116,7 +105,7 @@
 )
 
 
-; This function `mk-stv` creates a standard truth value (STV) using the provided mean and variance.
+; This function `mk_stv` creates a standard truth value (STV) using the provided mean and variance.
  ; It calculates the alpha and beta parameters based on the mean and variance.
  ; It then computes the count and confidence values using these parameters.
  ; The mode is determined based on the values of alpha and beta, following specific conditions.
