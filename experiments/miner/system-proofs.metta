@@ -61,8 +61,10 @@
 ;; it caused infinite results in CPUEMP.
 ----------------------------------------------------------------------------
 (= (syn $kb $_ (: $prf (emp-cpu $ptrn  $emp ))) 
-    (let $dbb (match $kb (db-ref $db) $db)
-    (: CPUEMP (emp-cpu $ptrn  (emp-tv (flatten $ptrn) $dbb ))) ) 
+    (let* (($dbb (match $kb (db-ref $db) $db))
+            ($pattern   (remove-hashtag $ptrn)))
+       
+    (: CPUEMP (emp-cpu $ptrn  (emp-tv $pattern $dbb))) ) 
 )
 
 -----------------------------------------------------------------------------
@@ -71,9 +73,15 @@
 ;; it caused infinite results in CPUEST.
 -----------------------------------------------------------------------------
 (= (syn $kb $_ (: $prf (est-cpu  $ptrn $emp $est))) 
-    (let $dbb (match $kb (db-ref $db) $db)
-    (: CPUEST (est-cpu $ptrn $emp (do-ji-tv-est $dbb (flatten $ptrn)))) ) 
+    (let* (($dbb (match $kb (db-ref $db) $db))
+           ($pattern (remove-hashtag $ptrn)))
+    (: CPUEST (est-cpu $ptrn $emp (do-ji-tv-est $dbb $pattern ))) ) 
 )
+
+
+(= (syn $kb $_ (: $prf (jsd-cpu $emp $est $surp)))
+    (let $surp-val (do-jsd $emp $est) 
+       (: JSDCPU (jsd-cpu $emp $est $surp-val))))
 
 
 -----------------------------------------------------------------------------
@@ -91,6 +99,7 @@
     (: CPUPROB (prob-cpu  $pattern $db-ration $emax (emp-prob-pbs  $pattern $dbb $emax $db-ratio) ))
     ) 
 )
+
 -----------------------------------------------------------------------------
 ;; system proof to calculate the partitions for the given pattern.
 (= (syn $kb $_ (: $prf (partition-cpu  $pattern $partitions))) 
@@ -356,7 +365,7 @@
 (= (syn $kb (S $k) (: ($prfabs $prfarg) $ccln))
    (let* (
      ((: $prfabs (-> $prms $ccln)) (syn $kb $k (: $prfabs (-> $prms $ccln))))
-          ;(() (println! (Next prims : $prms)))
+          (() (println! (Next prims : $prms)))
           ((: $prfarg $prms) (syn $kb $k (: $prfarg $prms)))
           )
      (: ($prfabs $prfarg) $ccln)))

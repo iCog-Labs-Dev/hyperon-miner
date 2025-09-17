@@ -17,10 +17,10 @@
 ! (import! &self experiments:utils:eq-prob)
 ! (import! &self experiments:utils:index_to_var)
 
-
 ;; import truth value computing components
 ! (import! &self experiments:truth-values:est-tv)
 ! (import! &self experiments:truth-values:emp-tv)
+! (import! &self experiments:utils:jsd-helper)
 
 ;; import surprisingness scoring functions 
 ! (import! &self experiments:surprisingness:isurp)
@@ -42,10 +42,12 @@
 !(bind! &kb1 (new-space))
 !(bind! &kb2 (new-space))
 !(bind! &kb3 (new-space))
+!(bind! &kb4 (new-space))
+
 
 
 ;;copy atoms from temp space to kb to remove unnecessary atoms from the space
-!(let $atoms  (get-atoms &temp) (add-atom (superpose (&kb &kb1 &kb2 &kb3)) $atoms) )
+!(let $atoms  (get-atoms &temp) (add-atom (superpose (&kb &kb1 &kb2 &kb3 &kb4)) $atoms) )
 
 
 ;; mocking the frequent pattern miner results 
@@ -78,8 +80,8 @@
 
 
 ------------------------------------------------------------------------------------
-;; old-isurprisingnes without normalization 
-;; define hyper parameters -> 1
+; old-isurprisingnes without normalization 
+; define hyper parameters -> 1
 (=(min-sup) 6)
 (=(surp-mode ) isurp-old)
 (=(db-ratio) 0.5)
@@ -89,7 +91,7 @@
 
 !(println! ("========== isurp-old test without  normalization ==============="))
 
-! (let $result (remove-hashtag (syn &kb (fromNumber 19) (: $prf (Isurp $pattern $surp)))) (assertEqual $result 
+!(let $result (remove-hashtag (syn &kb (fromNumber 19) (: $prf (Isurp $pattern $surp)))) (assertEqual $result 
  ;; Expected result
  (: ((((((isurp-rule normalize) (((universal-count (((minsupport FACT4) msT) CPU)) dbsize) CPUUNIVERSAL)) 
  (((emp-prob-rule surpMode) (((universal-count (((minsupport FACT4) msT) CPU)) dbsize) CPUUNIVERSAL)) CPUPROB)) 
@@ -142,3 +144,25 @@
    (((((est-prob-rule surpMode) (((minsupport FACT4) msT) CPU)) (partitions CPUPARTN)) dbr) CPUESTPROB)) 
    ((dst-from-interval CPU) CPUDST)) MAXIMUMCPU) DIVIDECPU) MINIMUMCPU) 
    (Isurp (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker)) 0.8333333333333334))))
+
+
+
+------------------------------------------------------------------------------------
+; Jsd surprisingness 
+; define hyper parameters -> 4
+(=(min-sup4) 6)
+(=(surp-mode4 ) jsd)
+(=(db-ratio4) 0.5)
+(= (normalization4) True)
+
+! (import! &db-sm experiments:data:small-ugly)
+
+
+!(init-params &kb4 &db-sm (min-sup4) (surp-mode4) (db-ratio4) (normalization4))
+
+!(println! ("========== JSD Test =============="))
+
+!(let $result (remove-hashtag (syn &kb4 (fromNumber 19) (: $prf (jsd-surp $pattern $surp))))  
+(assertEqual $result (: ((((jsd-tv (((minsupport FACT4) msT) CPU)) ((emp-rule (((minsupport FACT4) msT) CPU)) CPUEMP)) 
+(((est-rule (((minsupport FACT4) msT) CPU)) ((emp-rule (((minsupport FACT4) msT) CPU)) CPUEMP)) CPUEST)) JSDCPU) 
+(jsd-surp (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker)) 0.8605207271269311))) )

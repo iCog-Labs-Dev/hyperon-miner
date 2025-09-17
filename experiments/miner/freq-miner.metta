@@ -84,7 +84,7 @@
 ;;format the patterns and add them to the knowledge base with their support
 (= (format $depth $kb)
    (collapse 
-   (let*(
+   (let* (
     (() (println! "==== Formatting patterns  =====") )
     ($res (syn $kb $depth (: $prf (hasSupport $ptrn $cnt)))) 
     ($rem2 (remove-atom $kb $res))
@@ -111,7 +111,7 @@
          ($result (collapse (candidate (fromNumber 5) $kb)))
          ($rem (remove-atom $kb $atom))
          ($results (collapse (conjunction (fromNumber 18) $kb 1 (- $number-of-conjuct 1))))
-         ($resultf (collapse (format (fromNumber 3) $kb)))
+         ($resultf (collapse (format (fromNumber 6) $kb)))
       ) ()
 )
 )

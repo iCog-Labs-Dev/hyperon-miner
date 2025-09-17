@@ -52,10 +52,11 @@
 ;; truth value and the truth value estimate of a pattern according to
 ;; some db.
 (: jsd-tv 
-            (-> (minsup $ptrn)
-                 (-> (emp-val $ptrn $emp)
-                       (-> (est-tv $ptrn $est)
-                              (jsdsurp $ptrn (do-jsd $emp $est))))))
+        (-> (minsup $ptrn)
+            (-> (emp-val $ptrn $emp)
+                 (-> (est-tv $ptrn $est)
+                      (-> (jsd-cpu $emp $est $surp)
+                            (jsd-surp $ptrn $surp))))))
 
 
 
