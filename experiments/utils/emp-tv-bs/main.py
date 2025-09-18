@@ -63,16 +63,6 @@ def relative_variance_helper(means, variances, mean):
     return adjusted_variances
 
 
-def combine_variance(variances, relative_variance):
-    if not relative_variance or not variances:
-        return []
-
-    combined_variances = []
-    for var, rel_var in zip(variances, relative_variance):
-        combined_variances.append(var + rel_var)
-
-    return combined_variances
-
 
 def average_truth_value(metta: MeTTa, tvs):
     tvs = tvs.get_children()
@@ -92,11 +82,8 @@ def average_truth_value(metta: MeTTa, tvs):
     # Calculate relative variances
     relative_variances = relative_variance(means, variances, mean)
 
-    # Add relative variances to the variances
-    combined_variances = combine_variance(variances, relative_variances)
-
     # Calculate the average variance
-    variance = average_variances(combined_variances)
+    variance = average_variances(relative_variances)
 
     # Create the final truth value with the average mean and variance
     final_tv = (mean, variance)  # Assuming EMPTV is a tuple
