@@ -27,6 +27,17 @@
             (-> (depth-handler $valx $shabx)
             (-> (replace_variables ($shabx $ny))
               (specializationOf ($link $x $y) ($link $shabx $ny))))))))
+; (: specializationx
+;        (-> (AbstractPattern ($link $x $y)) 
+;         (-> (replace_index ($link $x $y) ($link $nx $ny)) 
+;           (-> (valuation X ($link $nx $ny) $valx)
+;             (-> (depth-handler X $valx $valy $shab $shabx)
+;             (-> (replace_variables ($shabx $ny))
+;               (specializationOf ($link $x $y) ($link $shabx $ny))))))))
+
+; (: specializationabs
+;        (-> (AbstractPattern ($link $x $y)) 
+;               (specializationOf ($link $x $y) ($link $x $y))))
 
 
 ;;specialization of abstract patterns on the $y rule
@@ -37,6 +48,23 @@
             (-> (depth-handler $valy $shaby)
             (-> (replace_variables ($nx $shaby))
               (specializationOf ($link $x $y) ($link $nx $shaby))))))))
+; (: specializationy
+;        (-> (AbstractPattern ($link $x $y)) 
+;         (-> (replace_index ($link $x $y) ($link $nx $ny)) 
+;           (-> (valuation Y ($link $nx $ny) $valy)
+;             (-> (depth-handler Y $valy $valx $shab $shaby)
+;             (-> (replace_variables ($nx $shaby))
+;               (specializationOf ($link $x $y) ($link $nx $shaby))))))))
+
+; (: specializationxy
+;        (-> (AbstractPattern ($link $x $y)) 
+;         (-> (replace_index ($link $x $y) ($link $nx $ny)) 
+;           (-> (valuation X ($link $nx $ny) $valx)
+;           (-> (valuation Y ($link $nx $ny) $valy)
+;             (-> (depth-handler X $valx $valy $shab $shabx)
+;             (-> (depth-handler Y $valy $valx $shabx $shaby)
+;             (-> (replace_variables ($shabx $shaby))
+;               (specializationOf ($link $x $y) ($link $shabx $shaby))))))))))
 
 
 ;;support of specialized patterns rule
@@ -73,6 +101,7 @@
 ;;; rule to format the patterns with their support
 (: supportFormat
       (-> (candidatePattern $ptrn $count)
-      (-> (replace_index $ptrn $nptrn)
-      (-> (is-conj $nptrn)
-          (hasSupport $nptrn $count)))))
+         (-> (clause_count $ptrn $clcnt)
+          (-> (maxClauses $max)
+           (-> (⍄ $clcnt $max)
+            (hasSupport $ptrn $count))))))
