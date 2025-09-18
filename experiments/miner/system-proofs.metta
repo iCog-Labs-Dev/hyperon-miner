@@ -115,6 +115,8 @@
     let $pattern (cons-atom , $blk) (// (sup-num  $db $pattern) $total_count)
   ))
 
+
+
 ;; gives the product of the probability of each block of the partition
 (= (iprob $partition $db $total-count) 
     (let $list  (collapse  (blk-prob-surp  (superpose $partition) $db $total-count)) (foldl-atom $list 1 $acc $elem (* $acc $elem) ) )                             
@@ -129,6 +131,7 @@
             ($min-max (let $products (collapse (iprob (superpose $partitions) $dbb $ucount) ) (min-max $products))))
     (: CPUESTPROB (est-prob-cpu   $pattern $partitions $ucount  $min-max)) ) 
 )
+
 
 ----------------------------------------------------------------------------
 ;; min max estimation of the pattern for isurp 
@@ -354,6 +357,13 @@
     (if (conj? $p)
         (: CPUConjprf (is-conj $p))
         (empty)))
+
+
+------------------------------------------------------------------------------
+(= (syn $kb $_ (: $prf  (flatten-cpu $nptrn $fptrn))) (
+    let $flatten (flatten $nptrn) (: FLATCPU (flatten-cpu $nptrn $flatten))
+))
+    
         
 ==============================================================================
 ;; chainner 

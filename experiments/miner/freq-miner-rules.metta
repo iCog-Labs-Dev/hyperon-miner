@@ -71,20 +71,11 @@
 
 
 ;;; rule to format the patterns with their support
-
-; (: supportFormat
-;       (-> (candidatePattern $ptrn $count)
-;        (-> (replace_index $ptrn $nptrn)
-;          (-> (clause_count $nptrn $clcnt)
-;           (-> (maxClauses $max)
-;            (-> (⍄ $clcnt $max)
-;             (hasSupport $nptrn $count)))))))
-           
-
-    (: supportFormat
-      (-> (candidatePattern $ptrn $count)
-        (-> (replace_index $ptrn $nptrn)
-            (-> (clause_count $nptrn $clcnt)
-             (-> (maxClauses $max) 
-                   (-> (⍄ $clcnt $max)
-                      (hasSupport $nptrn $count)))))))
+(: supportFormat
+(-> (candidatePattern $ptrn $count)
+  (-> (replace_index $ptrn $nptrn)
+      (-> (clause_count $nptrn $clcnt)
+        (-> (maxClauses $max) 
+         (-> (⍄  $clcnt $max)
+          (-> (flatten-cpu $nptrn $fptrn)
+           (hasSupport $fptrn $count))))))))

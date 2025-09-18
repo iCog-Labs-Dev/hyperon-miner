@@ -7,17 +7,7 @@
 (: isurp (-> Pattern SpaceType Bool Number Number))
 
 
-;;! (register-module! ../../experiments)
-;;! (import! &self experiments:utils:common-utils)
-;;! (import! &self experiments:utils:beta-dist)
-;;! (import! &self experiments:utils:constants)
-;;! (import! &self experiments:utils:TruthValue)
-;;! (import! &self experiments:utils:surp-utils)
-;;! (import! &self experiments:utils:miner-utils)
-;;! (import! &self experiments:utils:gen_partition)
-;;! (import! &self experiments:rules:est-tv)
-;;! (import! &self experiments:rules:emp-tv)
-;;! (import! &self experiments:rules:emp-prob-pbs)
+
 
 
 ;; Calculate the empirical probability of pattern, using

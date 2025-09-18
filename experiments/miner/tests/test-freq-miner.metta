@@ -12,7 +12,7 @@
 ! (import! &self experiments:rules:conjunction-expansion)
 
 ; ! (import! &dbspace experiments:data:ugly_man_sodaDrinker)
-! (import! &dbspace experiments:data:small-ugly)
+! (import! &dbspace experiments:data:very-small-ugly)
 
 
 
