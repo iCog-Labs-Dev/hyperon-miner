@@ -9,6 +9,7 @@ on:
     branches:
       - master
       - experiments
+    types: [opened, synchronize, reopened]
 
 jobs:
   setup-and-test:
