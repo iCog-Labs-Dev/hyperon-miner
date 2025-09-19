@@ -111,6 +111,7 @@
 (= (emp-tv $pattern $db)
     (let*
         (  
+             (() (println! "======= Emperical Truth Value ======="))
             ( $ucount  (universe-count $pattern $db))
             ( $ms $ucount) ;;  we didn't use ms for support calculation
             ( $sup (sup-num $db $pattern))

@@ -50,14 +50,14 @@
 ; ;; Verifies zero-based indexing of knowledge base elements  
 ; ;; Expected: Third element is (Inheritance Bob human)
 ; ;; =============================================================================
-!(assertEqual (get-element 2 ((Inheritance Abe human) 
+!(assertEqual (get-element-by-Index  ((Inheritance Abe human) 
                              (Inheritance Rio human)
                              (Inheritance Bob human)
                              (Inheritance Mike human)
                              (Inheritance Mike Nil)
                              (Inheritance Zac human)
                              (Inheritance Zac human)
-                             (Parent Abe Nil)))
+                             (Parent Abe Nil)) 2) 
               (Inheritance Bob human))
 
 ; ;; =============================================================================
@@ -87,8 +87,8 @@
 ; ;; Verifies EMPTV struct creation from raw values
 ; ;; Expected: (EMPTV 0 0.00012498)
 ; ;; =============================================================================
-!(assertEqual (mk-stv 1.7689693569125715 1.0178393379503528)
-              (EMPTV 0 0.0001249843769528809))
+!(assertEqual (mk_stv 1.7689693569125715 1.0178393379503528)
+              (0 0.0001249843769528809))
 
 ;; =============================================================================
 ;; Test: Universe Counting

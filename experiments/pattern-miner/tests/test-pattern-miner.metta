@@ -1,22 +1,31 @@
-! (register-module! ../../../../hyperon-miner)
+! (register-module! ../../../../hyperon-miner/experiments)
 
-! (import! &self hyperon-miner:experiments:frequent-pattern-miner:frequent-pattern-miner)
-! (import! &self hyperon-miner:experiments:pattern-miner:pattern-miner)
-! (import! &self hyperon-miner:experiments:utils:common-utils)
+! (import! &self experiments:frequent-pattern-miner:frequent-pattern-miner)
+! (import! &self experiments:pattern-miner:pattern-miner)
+! (import! &self experiments:utils:common-utils)
 
-! (import! &self hyperon-miner:experiments:pattern-miner:pattern-miner)
+! (import! &self experiments:pattern-miner:pattern-miner)
 
-! (import! &self hyperon-miner:experiments:surprisingness:isurp-old)
-! (import! &self hyperon-miner:experiments:utils:binomialMetta)
-! (import! &self hyperon-miner:experiments:utils:beta-dist)
-! (import! &self hyperon-miner:experiments:utils:constants)
-! (import! &self hyperon-miner:experiments:utils:TruthValue)
-! (import! &self hyperon-miner:experiments:utils:surp-utils)
-! (import! &self hyperon-miner:experiments:utils:miner-utils)
-! (import! &self hyperon-miner:experiments:utils:gen_partition)
-! (import! &self hyperon-miner:experiments:truth-values:est-tv)
+! (import! &self experiments:surprisingness:isurp-old)
+! (import! &self experiments:utils:binomialMetta)
+! (import! &self experiments:utils:beta-dist)
+! (import! &self experiments:utils:constants)
+! (import! &self experiments:utils:TruthValue)
+! (import! &self experiments:utils:surp-utils)
+! (import! &self experiments:utils:miner-utils)
+! (import! &self experiments:utils:gen_partition)
+! (import! &self experiments:truth-values:est-tv)
+! (import! &self experiments:utils:emp-tv-bs)
+! (import! &self experiments:utils:bs-utils)
+! (import! &self experiments:utils:customType)
+! (import! &self experiments:truth-values:emp-tv)
+! (import! &self experiments:utils:blk-abstractness)
+! (import! &self experiments:utils:eq-prob)
+! (import! &self experiments:surprisingness:jsd)
+! (import! &self experiments:utils:jsd-helper)
 
-! (import! &db hyperon-miner:experiments:data:small-ugly)
+
+! (import! &db experiments:data:small-ugly)
 
 
 
@@ -41,7 +50,7 @@
 ;; minimum support 3
 
 !(pattern-miner &res1 &db 3 0 none) 
- !(collapse (match &res1 $pattern $pattern ))
+!(collapse (match &res1 $pattern $pattern ))
 ;; Expected result 
           ; ((supportOf (, (Inheritance $y human) (Inheritance $y man)) 3) 
           ; (supportOf (, (Inheritance $j human) (Inheritance $j ugly)) 3) 
@@ -157,3 +166,25 @@
 ; (surprisingnessOf (, (Inheritance $i64#4271079 human) (Inheritance $i64#4271079 sodaDrinker) (Inheritance $i64#4271079 ugly)) 0.7142857142857143)
 ;  (surprisingnessOf (, (Inheritance $a93#4271080 man) (Inheritance $a93#4271080 sodaDrinker) (Inheritance $a93#4271080 ugly)) 0.7142857142857143)
 ;   (surprisingnessOf (, (Inheritance Abe $h27#4271081) (Inheritance Allen $h27#4271081) (Inheritance Cason $h27#4271081)) 0.7142857142857143))
+
+
+
+----------------------------------------------------------------
+;; mine frequent patterns with jsd surprissingness (3 - conjunct)
+----------------------------------------------------------------
+;; number of conjucts -> 3 , so the depth will be 1
+;; surprissingness mode -> jsd
+;; minimum support ->  3
+
+; !(bind! &res7 (new-space))
+
+;  !(pattern-miner &res7 &db 3 1 jsd) 
+;  !(collapse (match &res7 $pattern $pattern ))
+;; Expected result 
+;((surprisingnessOf (, (Inheritance $h99#9978924 human) (Inheritance $h99#9978924 sodaDrinker) (Inheritance $h99#9978924 ugly)) 0.8602770128397317) 
+;(surprisingnessOf (, (Inheritance $u24#9978925 human) (Inheritance $u24#9978925 man) (Inheritance $u24#9978925 sodaDrinker)) 0.8602770128397317) 
+;(surprisingnessOf (, (Inheritance $n61#9978926 human) (Inheritance $n61#9978926 man) (Inheritance $n61#9978926 ugly)) 0.8602770128397317) 
+;(surprisingnessOf (, (Inheritance $h49#9978927 man) (Inheritance $h49#9978927 sodaDrinker) (Inheritance $h49#9978927 ugly)) 0.8602770128397317) 
+;(surprisingnessOf (, (Inheritance Abe $t43#9978928) (Inheritance Allen $t43#9978928) (Inheritance Cason $t43#9978928)) 0.8602249031703285))
+
+
