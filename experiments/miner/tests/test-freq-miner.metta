@@ -3,7 +3,7 @@
 
 !(import! &self experiments:miner:freq-miner)
 !(import! &self experiments:rules:conj-exp)
-!(import! &self experiments:rules:freq-pat)
+!(import! &self experiments:frequent-pattern-miner:freq-pat)
 !(import! &self experiments:rules:use-python)
 !(import! &self experiments:utils:variable-combinations)
 
@@ -52,11 +52,11 @@
 (= (num-of-conjuct) 2)
 
 ;! (cog-mine &db &kb (min-sup) (surp-mode) (db-ratio) 1 1)
-!(init-params  &kb &db  (min-sup) (db-ratio) )
+!(init-params &kb &db  (min-sup) (db-ratio) )
 !(frequent-miner &db &kb (num-of-conjuct))
 ;!(syn $kb (S Z) (: $prf (equals 4 4)))
 
-!(remove-ashtag (match &kb (:$prf (hasSupport $pattern $sup) ) (:$prf (hasSupport $pattern $sup) )))
+!(match &kb (:$prf (hasSupport $pattern $sup) ) (:$prf (hasSupport $pattern $sup)))
 
 
 
