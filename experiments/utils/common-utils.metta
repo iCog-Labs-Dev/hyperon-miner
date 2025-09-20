@@ -2,6 +2,10 @@
 ;; Common Utils ;;
 ;;;;;;;;;;;;;;;;;;
 
+;predicate to check if a given expression is a pattern or not
+
+(=(checkPat $x) (let $type (get-metatype $x) (if (not (== $type Expression)) False (and  ( > (size-atom $x) 1) (let $head (car-atom $x) (== (get-metatype $head) Symbol))) ) ))
+
 
 ;;;;;;;;;; functions related to Conjunction ;;;;;;;;;;;;
 
@@ -42,7 +46,32 @@
   (cons-atom , $flatten)  
 ))
 
-
+;; =============================================================================
+;; Function: get-clauses
+;; -----------------------------------------------------------------------------
+;; Purpose:
+;;   Extracts clauses from an expression, specifically handling AND-conjunctions
+;;
+;; Type Signature:
+;;   (-> Expression Expression)
+;;
+;; Parameters:
+;;   $element - Input expression to analyze
+;;
+;; Returns:
+;;   - Body of expression if it's an AND-conjunction
+;;   - Original expression otherwise
+;;
+;; Example:
+;;   (get-clauses '(And A B C)) → (A B C)
+;;   (get-clauses '(Or X Y)) → (Or X Y)
+;; =============================================================================
+; (: get-clauses (-> Expression Expression))
+(= (get-clauses $element)
+    (let $link (car-atom $element)
+        (if (== $link ,)
+            (cdr-atom $element)
+            $element)))
 
 (= (add-atom-nodup $space $atom)
    (case (match $space $atom $atom)
@@ -164,7 +193,9 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
 ;; =============================================================================
 
 (=(remove-parenthesis $x) (
-    let ($head $tail) (decons-atom $x) (if (== $tail ()) (remove-parenthesis $head) $x)
+   if (== (get-metatype $x) Expression)
+      (if (== (size-atom $x) 1) (remove-parenthesis (car-atom $x))  $x )
+      ($x)
 ))
 
 
@@ -514,13 +545,7 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
 ;;      b. Creates pair `(append-list $main_head $x)`
 ;;      c. Recursively processes `$tail` and combines results
 ;;
-(=(comp $main_head ()) ())
-(=(comp $main_head $list)(
-    let* (
-        (($x $tail) (decons-atom $list))
-        ($rst (append-list (append-list $main_head  $x) (comp  $main_head $tail)))   
-    ) $rst))
-
+(= (comp $main_head $list)(map-atom $list $x ($x $main_head)))
 
 ;; =============================================================================
 ;; Function: get-clouses 
@@ -548,16 +573,18 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
 ;;         i. Adds the expression itself to results
 ;;         ii. Recursively processes both its contents and the tail
 ;;      c. For atomic heads, just processes the tail
-(=(get-clouses () ) ())
-(= (get-clouses $pattern)
-        (let* (
-                (($head $tail) (decons-atom $pattern)))
-            (if (== (get-metatype $head) Expression)
-                (   let $result  (concatTuple ($head)
-                    (get-clouses $tail)) (concatTuple $result (get-clouses $head)))
-                    (get-clouses $tail))) )
-
-
+(= (get-clouses $pattern)(let $clouses (_get-clouses $pattern) (cons-atom , $clouses)))
+(= (_get-clouses $pattern)(
+    if (== () $pattern) () (
+        let* (
+            (($h $t) (decons-atom $pattern))
+            ($l (if (== (get-metatype $h) Expression)
+                    (_get-clouses $h)
+                    (if (== , $h) () ($h))))
+            ($r (_get-clouses $t))
+        ) (union-atom $l $r)
+    )
+))
 
 ;; =============================================================================
 ;; Function: find_max
@@ -707,18 +734,20 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
  ; Returns:
  ;   - The sum of the elements in the list as an integer.
 
-(= (sum $list) (
-        if (== $list ())
-        0
-        (+ (car-atom $list) (sum (cdr-atom $list)))
-    ))
+; (= (sum $list) (
+;         if (== $list ())
+;         0
+;         (+ (car-atom $list) (sum (cdr-atom $list)))
+;     ))
+(= (sum $list) (foldl-atom $list 0 $acc $x (+ $acc $x)))
 
  ; This function calculates the average of a tuple of numbers.
  ; It takes a tuple as input and returns the average value.
  ; The average is computed by dividing the sum of the tuple elements by the tuple-count of the tuple.
 
 (= (avrg-tuple $tuple)
-    (// (sum $tuple) (tuple-count $tuple))
+    ; (// (sum $tuple) (tuple-count $tuple))
+    (// (sum $tuple) (size-atom $tuple))
 )
 
  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -894,13 +923,7 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
 )
 
  ;Check if atom is member of list or not
-(= (is-member $y ()) False)
-(= (is-member $y ($x $xs))
-    (if (== $y $x)
-        True
-        (is-member $y $xs)
-    )
-)
+(= (is-member $y $list) (== (intersection-atom ($y) $list) ($y)))
 
 
  ;check if atom is variable or not
@@ -984,16 +1007,16 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
 ;;      b. If Variable: adds to results and processes remainder
 ;;      c. Otherwise: just processes remainder
 
-(= (get_variables $pattern)
-    (if (== $pattern ())
-        ()
-        (if (== (let* (
-                        ($var (car-atom $pattern)))
-                    (get-metatype $var)) Variable)
-            ( (car-atom $pattern) (get_variables (cdr-atom $pattern)))
-            (get_variables (cdr-atom $pattern))
-        ))
-)
+(= (get_variables $exp) (
+   if (and (== (get-metatype $exp) Expression) (not (== $exp ())))(
+      let* (
+         (($h $t) (decons-atom $exp))
+         ($x (if (== (get-metatype  $h) Variable) ($h) (if (== (get-metatype $h) Expression) (get_variables $h) ())))
+         ($y (get_variables $t))
+      ) (union-atom $x $y)
+   ) (if (== (get-metatype  $exp) Variable) ($exp) ())
+))
+
 
  ; Helper function to check if a variable is in a nested list
 (= (is_variable_in_list $variable $list)
@@ -1065,12 +1088,37 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
 ;;      c. If False: immediately returns False (short-circuit)
 ;;
 (= (are_all_variables_joint () $clauses) True)
-(= (are_all_variables_joint ($v $vs) $clauses)
-    (if (is_variable_joint_with_clauses $v $clauses)
-        (are_all_variables_joint $vs $clauses) ; Check the next variable
-        False ; If one variable is not joint, return False
-    )
-)
+(= (are_all_variables_joint $variables $clauses)(
+   let ($h $t) (decons-atom $variables)
+       (and 
+            (not (== () (find_common $h $clauses)))
+            (are_all_variables_joint $t $clauses)
+      )
+))
+
+;; Function: find_common
+;; -----------------------------------------------------------------------------
+;; Purpose:
+;;   Identifies if a specific element exists in any clause from a list of clauses.
+;;   Returns the element if found, otherwise returns an empty list.
+;;
+;; Inputs:
+;;   - `$el`: The target element to find (e.g., `$x`)
+;;   - `$list`: List of clauses to search through (e.g., `((P $x) (Q $y) (R $z))`)
+;;
+;; Output:
+;;   - The element `$el` if it appears in any clause
+;;   - An empty list if `$el` isn't found in any clause
+;;
+;; How it works:
+;;   1. Collapses the list of clauses into a single flat list of elements
+;;   2. Uses helper function `_find_common` to check for presence of `$el`
+;;   3. Returns `$el` if found, otherwise returns empty list
+(= (find_common $el $list) (collapse (_find_common $el (superpose $list))))
+(= (_find_common $el $clause) (if (== () (intersection-atom ($el) $clause)) (empty) $el))
+
+
+
 
  ;; =============================================================================
 ;; Function: has_only_joint_variables
@@ -1190,31 +1238,16 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
 ;;      b. For exact matches: returns (True)
 ;;      c. For nested expressions: recursively searches both head and tail
 ;;      d. For atoms: just processes the tail
-;;
-(= (is_subclause_helper $head $pattern)
-    (if (== $pattern ())
-        ()
-        (let* (
-                ($headP (car-atom $pattern))
-                ($tail (cdr-atom $pattern)))
 
-            (if (== (get-metatype $headP) Expression)
-                (if (== $head $headP)
-                    (True)
-                    (concatTuple (is_subclause_helper $head $headP)
-                        (is_subclause_helper $head $tail)))
-                (is_subclause_helper $head $tail)
-            ))
-
-)
-)
-(= (is_subclause $pattern1 $pattern2)
-    (let $flag (is_subclause_helper $pattern1 $pattern2)
-        (if (== $flag ())
-            False
-            True)
-    )
-)
+(= (is_subclause $el $expr) (
+    let $res (collapse (_is_subclause $el $expr)) (not (== (intersection-atom (True) $res) ()))
+))
+(= (_is_subclause $el $expr) (
+   if (== $el $expr) True
+      (if (not (== (get-metatype $expr) Expression)) False
+          (_is_subclause $el (superpose $expr))
+      )
+))
 
 ;; =============================================================================
 ;; Function: remove_current

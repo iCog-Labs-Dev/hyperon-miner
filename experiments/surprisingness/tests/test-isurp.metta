@@ -12,12 +12,15 @@
 ! (import! &self experiments:truth-values:emp-tv)
 ! (import! &self experiments:surprisingness:isurp)
 ! (import! &self experiments:surprisingness:emp-prob)
-! (import! &kb experiments:data:ugly_man_sodaDrinker)
+! (import! &kb2 experiments:data:nested_coupled:mock_coupled)
 ! (import! &self experiments:utils:binomialMetta)
 ! (import! &self experiments:utils:eq_prob_adaptor)
 ! (import! &self experiments:utils:blk-abstractness)
 ! (import! &self experiments:utils:eq-prob)
 ! (import! &self experiments:utils:index_to_var)
+
+! (import! &kb experiments:data:ugly_man_sodaDrinker)
+;  ! (import! &kb experiments:data:nested_coupled:mock_coupled)
 
 
 
@@ -59,6 +62,8 @@
     &kb 
     0.5) 
   3.858024691358025e-6)
+
+
 
 
 ;; =============================================================================
@@ -187,5 +192,9 @@
 ;;   3. Checks proper output format
 ;; =============================================================================
 
- !(assertEqual (isurp (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker) ) &kb False 0.2) 1.9290123456790123e-5)
+!(assertEqual (isurp (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker) ) &kb False 0.2) 1.9290123456790123e-5)
+
+(assertEqual  (isurp (, (Inheritance (Person $x) man) (Inheritance (Person $x) ugly) (Inheritance (Person $x) sodaDrinker) ) &kb2 False 0.2) 1.9290123456790123e-5)
+
+
 

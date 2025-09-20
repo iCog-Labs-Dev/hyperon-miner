@@ -52,10 +52,11 @@
 ;; truth value and the truth value estimate of a pattern according to
 ;; some db.
 (: jsd-tv 
-            (-> (minsup $ptrn)
-                 (-> (emp-val $ptrn $emp)
-                       (-> (est-tv $ptrn $est)
-                              (jsdsurp $ptrn (do-jsd $emp $est))))))
+        (-> (minsup $ptrn)
+            (-> (emp-val $ptrn $emp)
+                 (-> (est-tv $ptrn $est)
+                      (-> (jsd-cpu $emp $est $surp)
+                            (jsd-surp $ptrn $surp))))))
 
 
 
@@ -70,11 +71,22 @@
 
 
 ----------------------------------------------------------------------
-;; Rule to calculate the empirical probability of a pattern.
+;; Rule to calculate the empirical probability of a pattern.(isurp-old)
 (: emp-prob-rule 
-      (->  (universal-count-of $pattern $ucount)
+     (-> (surp-mode isurp-old)
+        (->  (universal-count-of $pattern $ucount)
           (-> (prob-cpu $pattern $ucount $prob)
-                (empProb $pattern $ucount $prob))))
+                (empProb $pattern  $prob)))))
+
+
+----------------------------------------------------------------------
+;; Rule to calculate the empirical probability of a pattern.(isurp)
+(: emp-prob-rule 
+      (-> (surp-mode isurp)
+        (->  (est-prob $pattern  ($emin $emax))
+          (-> (db-ratio $db-ratio)
+             (-> (prob-cpu $pattern $db-ratio $emax $prob)
+                 (empProb $pattern  $prob))))))
 
 
 ------------------------------------------------------------------------
@@ -91,7 +103,7 @@
             (->  (universal-count-of $pattern $ucount)
                 (-> (partitions $pattern $partitions)
                     (-> (est-prob-cpu  $pattern $partitions $ucount $emin-emax)
-                           (est-prob $pattern $ucount $emin-emax)))))) 
+                           (est-prob $pattern  $emin-emax)))))) 
 
 
 
@@ -99,10 +111,11 @@
 ;; Rule to estimate the probability interval for a pattern.(isurp)
 (: est-prob-rule 
           (-> (surp-mode isurp)
-              (-> (partitions $pattern $partitions)
-                  (-> (db-ratio $db-ratio) 
+              (->(minsup $pattern)
+                  (-> (partitions $pattern $partitions)
+                      (-> (db-ratio $db-ratio) 
                         (-> (ji-prob-est-cpu $pattern $partitions $db-ratio $emin-emax)
-                              (est-prob $pattern  $emin-emax))))))
+                              (est-prob $pattern  $emin-emax)))))))
         
                            
 ------------------------------------------------------------------------
@@ -125,28 +138,28 @@
 
 ------------------------------------------------------------------------
 ;; Rule to calculate the old surprisingness value (normalized True).
-(: isurp 
+(: isurp-rule 
    (-> (normalized True) 
       (-> (universal-count-of $pattern $count)
-         (-> (empProb $pattern $count $emp)
-              (-> (est-prob $pattern $count ($emin $emax)) 
+         (-> (empProb $pattern  $emp)
+              (-> (est-prob $pattern ($emin $emax)) 
                   (-> (dst $pattern $emp ($emin $emax) $dst)
                      (-> (maximum $emp $emax $max)
                              (-> (divide $dst $max $normalized) 
                                  (-> (minimum $normalized 1.0 $minimum)
-                                      (isurp $pattern $minimum ))))))))))
+                                      (Isurp  $pattern $minimum ))))))))))
 
 
 
 
 ---------------------------------------------------------------------
 ;; Rule to calculate the old surprisingness value (normalized False).
-(: isurp 
+(: isurp-rule 
    (-> (normalized False) 
       (->  (universal-count-of $pattern $count)
-         (-> (empProb $pattern $count $emp)
-             (-> (est-prob $pattern $count ($emin $emax))
+         (-> (empProb $pattern  $emp)
+             (-> (est-prob $pattern  ($emin $emax))
                  (-> (dst $pattern $emp ($emin $emax) $dst)
                     (-> (minimum $dst 1.0 $minimum )
-                         (isurp $pattern $minimum ))))))))
+                         (Isurp  $pattern $minimum ))))))))
                                                   
