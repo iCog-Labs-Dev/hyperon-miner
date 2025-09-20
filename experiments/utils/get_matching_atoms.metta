@@ -9,24 +9,6 @@
 (Inheritance Judy Kevin Liam)
 (Inheritance Mona Nina Oscar)
 (Inheritance Peggy Quentin Rita)
-; (Inheritance Steve Trent Ursula)
-; (Inheritance Victor Wendy Xavier)
-; (Inheritance Yara Zoe Adam)
-; (Inheritance Ben Chris Dan)
-; (Inheritance Eric Fred George)
-; (Inheritance Harry Ian Jack)
-; (Inheritance Kyle Leo Mike)
-; (Inheritance Nick Oliver Paul)
-; (Inheritance Quinn Rob Sam)
-; (Inheritance Tom Uma Vince)
-; (Inheritance Will Xander Yoda)
-; (Inheritance Zack Alice Betty)
-; (Inheritance Carol Diana Emily)
-; (Inheritance Fiona Gina Helen)
-; (Inheritance Irene Jane Kate)
-; (Inheritance Laura Mary Nancy)
-; (Inheritance Olivia Penny Queenie)
-; (Inheritance Rachel Sarah Tina)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -71,7 +53,8 @@
 ;;    $pattern : any pattern containing symbols, variables or grounded atoms
 ;; Returns: a list of all the matches of the variables in the pattern from the database (space)
 ;; E.g,
-;; !(get_matching_atoms (Inheritance $a $b $c)) -> ((($j) (Alex Dave Grace Judy Mona Peggy)) (($b) (Bob Eve Heidi Kevin Nina Quentin)) (($c) (Charlie Frank Ivan Liam Oscar Rita)))
+;; !(get_matching_atoms (Inheritance $a $b $c)) ; -> ((($j) (Alex Dave Grace Judy Mona Peggy)) (($b) (Bob Eve Heidi Kevin Nina Quentin)) (($c) (Charlie Frank Ivan Liam Oscar Rita)))
+;; !(get_matching_atoms (Inheritance Alex $b $c)) ; -> ((($b) (Bob)) (($c) (Charlie)))
 (= (get_matching_atoms $pattern)(
     let* (
       ($indexed (set-index $pattern))
@@ -80,3 +63,14 @@
     ) (map-atom $indexed_vars $i ((cdr-atom $i) (foldl-atom $matches ()  $acc $match (union-atom $acc ((index-atom $match (car-atom $i)))))))
 ))
 
+; ;; Test
+; !(get_matching_atoms (Inheritance $a $b $c)) ; -> ((($a) (Alex Dave Grace Judy Mona Peggy)) (($b) (Bob Eve Heidi Kevin Nina Quentin)) (($c) (Charlie Frank Ivan Liam Oscar Rita)))
+
+; !(assertEqual (get_matching_atoms (Inheritance $a $b $c)) 
+;               ((($a) (Alex Dave Grace Judy Mona Peggy)) 
+;                (($b) (Bob Eve Heidi Kevin Nina Quentin)) 
+;                (($c) (Charlie Frank Ivan Liam Oscar Rita))))
+
+; !(assertEqual (get_matching_atoms (Inheritance Alex $b $c)) 
+;               ((($b) (Bob)) 
+;                (($c) (Charlie))))
