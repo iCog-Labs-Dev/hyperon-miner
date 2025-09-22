@@ -107,7 +107,7 @@
    &db        ; knowledge base: ugly-man-soda-drinker
    0.02          ; database ratio
 ) (stv 0 0.0001249843769528809))
-)
+
 
 ; ===============================
 ; Parameters Info
@@ -146,7 +146,7 @@
    &db        ; knowledge base: ugly-man-soda-drinker
    0.02          ; database ratio
 ) (stv 0.0 0.09963099630996311))
-)
+
 
 ; ===============================
 ; Parameters Info
