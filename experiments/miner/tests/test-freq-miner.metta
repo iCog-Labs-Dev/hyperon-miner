@@ -2,17 +2,17 @@
 ; !(register-module!  ../../../../chaining)
 
 !(import! &self experiments:miner:freq-miner)
-!(import! &self experiments:rules:conj-exp)
+!(import! &self experiments:frequent-pattern-miner:conj-exp)
 !(import! &self experiments:frequent-pattern-miner:freq-pat)
-!(import! &self experiments:rules:use-python)
+!(import! &self experiments:frequent-pattern-miner:use-python)
 !(import! &self experiments:utils:variable-combinations)
 
 ! (import! &self experiments:utils:common-utils)
-! (import! &self experiments:rules:build-specialization)
-! (import! &self experiments:rules:conjunction-expansion)
+! (import! &self experiments:frequent-pattern-miner:build-specialization)
+! (import! &self experiments:frequent-pattern-miner:conjunction-expansion)
 
-; ! (import! &dbspace experiments:data:ugly_man_sodaDrinker)
-! (import! &dbspace experiments:data:very-small-ugly)
+! (import! &dbspace experiments:data:ugly_man_sodaDrinker)
+; ! (import! &dbspace experiments:data:very-small-ugly)
 
 
 
@@ -47,16 +47,53 @@
 )))
 
 ;; define parameters 
-(= (min-sup) 2)
+(= (min-sup) 5)
 (= (db-ratio) 0.5)
 (= (num-of-conjuct) 2)
 
-;! (cog-mine &db &kb (min-sup) (surp-mode) (db-ratio) 1 1)
+
 !(init-params &kb &db  (min-sup) (db-ratio) )
 !(frequent-miner &db &kb (num-of-conjuct))
-;!(syn $kb (S Z) (: $prf (equals 4 4)))
+!(match &kb (: $prf (hasSupport $pattern $sup)) (: $prf (hasSupport $pattern $sup)))
 
-!(match &kb (:$prf (hasSupport $pattern $sup) ) (:$prf (hasSupport $pattern $sup)))
+; (: ((((((supportFormat ((((((((((((((((((conjunction-expand ((candidate (((minsupport (((support (((((specializationy ((((abstract-pattern
+; CPUUnique) msT) CPU) CPUReplacevar)) CPUReplaceindex) CPUHandleValuation) CPUHandleNestedExp) CPUReplacevar)) CPUReplaceindex) 
+; CPUCounter)) msT) CPU)) CPUReplacevar)) CPUReplaceindex) CPUCount) maxClauses) CPUequals) ((candidate (((minsupport (((support 
+; (((((specializationy ((((abstract-pattern CPUUnique) msT) CPU) CPUReplacevar)) CPUReplaceindex) CPUHandleValuation) CPUHandleNestedExp)
+; CPUReplacevar)) CPUReplaceindex) CPUCounter)) msT) CPU)) CPUReplacevar)) CPUReplaceindex) CPUCount) CPUequals) msT) 
+; CPUGetPatternVariables) CPUGetPatternVariables) CPUCombineVariables) CPUSubstituteVariables) CPUCounter) CPU) CPUReplacevar) 
+; CPUConjunctionClean)) CPUCount) maxClauses) CPU) CPUSortConjunctions) CPUJoin) 
+; (hasSupport (, (Inheritance Z human) (Inheritance Z man)) 10))
+
+; (: ((((((supportFormat ((((((((((((((((((conjunction-expand ((candidate (((minsupport (((support (((((specializationy 
+; ((((abstract-pattern CPUUnique) msT) CPU) CPUReplacevar)) CPUReplaceindex) CPUHandleValuation) CPUHandleNestedExp) CPUReplacevar)) 
+; CPUReplaceindex) CPUCounter)) msT) CPU)) CPUReplacevar)) CPUReplaceindex) CPUCount) maxClauses) CPUequals) ((candidate (((minsupport 
+; (((support (((((specializationy ((((abstract-pattern CPUUnique) msT) CPU) CPUReplacevar)) CPUReplaceindex) CPUHandleValuation) 
+; CPUHandleNestedExp) CPUReplacevar)) CPUReplaceindex) CPUCounter)) msT) CPU)) CPUReplacevar)) CPUReplaceindex) CPUCount) CPUequals) msT) 
+; CPUGetPatternVariables) CPUGetPatternVariables) CPUCombineVariables) CPUSubstituteVariables) CPUCounter) CPU) CPUReplacevar) 
+; CPUConjunctionClean)) CPUCount) maxClauses) CPU) CPUSortConjunctions) CPUJoin) 
+; (hasSupport (, (Inheritance Z human) (Inheritance Z ugly)) 10))
+
+; (: ((((((supportFormat ((((((((((((((((((conjunction-expand ((candidate (((minsupport (((support (((((specializationy 
+; ((((abstract-pattern CPUUnique) msT) CPU) CPUReplacevar)) CPUReplaceindex) CPUHandleValuation) CPUHandleNestedExp) CPUReplacevar))
+; CPUReplaceindex) CPUCounter)) msT) CPU)) CPUReplacevar)) CPUReplaceindex) CPUCount) maxClauses) CPUequals) ((candidate (((minsupport 
+; (((support (((((specializationy ((((abstract-pattern CPUUnique) msT) CPU) CPUReplacevar)) CPUReplaceindex) CPUHandleValuation) 
+; CPUHandleNestedExp) CPUReplacevar)) CPUReplaceindex) CPUCounter)) msT) CPU)) CPUReplacevar)) CPUReplaceindex) CPUCount) CPUequals) msT) 
+; CPUGetPatternVariables) CPUGetPatternVariables) CPUCombineVariables) CPUSubstituteVariables) CPUCounter) CPU) CPUReplacevar) 
+; CPUConjunctionClean)) CPUCount) maxClauses) CPU) CPUSortConjunctions) CPUJoin) 
+; (hasSupport (, (Inheritance Z human) (Inheritance Z sodaDrinker)) 10)) 
+
+; (: ((((((supportFormat ((((((((((((((((((conjunction-expand ((candidate (((minsupport (((support (((((specializationy 
+; ((((abstract-pattern CPUUnique) msT) CPU) CPUReplacevar)) CPUReplaceindex) CPUHandleValuation) CPUHandleNestedExp) CPUReplacevar)) 
+; CPUReplaceindex) CPUCounter)) msT) CPU)) CPUReplacevar)) CPUReplaceindex) CPUCount) maxClauses) CPUequals) ((candidate (((minsupport 
+; (((support (((((specializationy ((((abstract-pattern CPUUnique) msT) CPU) CPUReplacevar)) CPUReplaceindex) CPUHandleValuation) 
+; CPUHandleNestedExp) CPUReplacevar)) CPUReplaceindex) CPUCounter)) msT) CPU)) CPUReplacevar)) CPUReplaceindex) CPUCount) CPUequals) msT)
+; CPUGetPatternVariables) CPUGetPatternVariables) CPUCombineVariables) CPUSubstituteVariables) CPUCounter) CPU) CPUReplacevar) 
+; CPUConjunctionClean)) CPUCount) maxClauses) CPU) CPUSortConjunctions) CPUJoin) 
+; (hasSupport (, (Inheritance Z human) (Inheritance Z woman)) 10))
+
+(= (num-of-conjuct2) 3)
 
 
-
+(frequent-miner &db &kb (num-of-conjuct2))
+(match &kb (: $prf (hasSupport $pattern $sup)) (: $prf (hasSupport $pattern $sup)))
