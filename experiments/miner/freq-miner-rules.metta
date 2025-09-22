@@ -76,6 +76,6 @@
     (-> (clause_count $ptrn $clcnt)
       (-> (maxClauses $max) 
         (-> (⍄  $clcnt $max)
-          (-> (sort_conjunctions $ptrn $sorted))
+          (-> (sort_conjunctions $ptrn $sorted)
             (-> (join-cpu $sorted $jptrn)
-              (hasSupport $jptrn $count)))))))
+             (hasSupport $jptrn $count))))))))
