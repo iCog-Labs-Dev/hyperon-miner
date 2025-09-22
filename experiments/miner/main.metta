@@ -98,9 +98,10 @@
         (() (frequent-miner &db &freq-kb $num-of-conjuct)) 
         ($dummy3 (collapse (match &freq-kb (: $prf (hasSupport $nptrn $count))  (add-atom &surp-kb (: $prf (hasSupport $nptrn $count))))))
         (() (println! "==== Surprissingness Scoring Started ====="))
-        ($dummy4  (mine-surp &surp-kb &res $surp-mode))
+        ($dummy4  (collapse (mine-surp &surp-kb &res $surp-mode)))
     )    
        ; (match &surp-kb $x $x)
           (get-atoms &res)
+        ; $dummy4
     
 ))
