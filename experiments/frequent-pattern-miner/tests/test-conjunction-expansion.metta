@@ -26,7 +26,5 @@
 
 !(expand_conjunction (,(INHERITANCE_LINK $X $Y) (LIST_LINK A $D)) (LIST_LINK $G $F) &self 5 2 False)
 ; expected:
-    ; (, (, (INHERITANCE_LINK $X $Y) (LIST_LINK A $D)) (LIST_LINK $X $G)),
     ; (, (, (INHERITANCE_LINK $X $Y) (LIST_LINK A $D)) (LIST_LINK $X $F)), 
     ; (, (, (INHERITANCE_LINK $X $Y) (LIST_LINK A $D)) (LIST_LINK $G $D)),
-    ; (, (, (INHERITANCE_LINK $X $Y) (LIST_LINK A $D)) (LIST_LINK $F $D))

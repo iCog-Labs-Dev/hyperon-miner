@@ -1,6 +1,6 @@
-; ! (register-module! ../../../hyperon-miner)
-; ! (import! &self hyperon-miner:experiments:utils:common-utils)
-; ! (import! &self hyperon-miner:experiments:rules:freq-pat)
+! (register-module! ../../../hyperon-miner)
+! (import! &self hyperon-miner:experiments:utils:common-utils)
+! (import! &self hyperon-miner:experiments:frequent-pattern-miner:freq-pat)
 
 
 (= (debruijn2num Z) 0)
@@ -74,3 +74,4 @@
 
 !(replace (,(, (link $x $y) (an $o $y)) (this $x $t)))
 !(replacev (Inheritance Z (S Z)))
+!(replacev (Inheritance (LINK Z (S Z)) (S (S Z))))
