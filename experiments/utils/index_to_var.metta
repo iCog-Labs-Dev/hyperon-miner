@@ -1,7 +1,6 @@
-! (register-module! ../../../hyperon-miner)
-! (import! &self hyperon-miner:experiments:utils:common-utils)
-! (import! &self hyperon-miner:experiments:frequent-pattern-miner:freq-pat)
-
+(: Nat Type)
+(: Z Nat)
+(: S (-> Nat Nat))
 
 (= (debruijn2num Z) 0)
 
@@ -9,15 +8,24 @@
 
 (= (fromNum $n) (if (<= $n 0) Z (S (fromNum (- $n 1)))))
 
+(= (make_var1 $x) (let $v (format-args "$var{}" ($x)) (parse (parse (repr $v)))))
 
-(= (replacev $pattern)
-    (map-atom $pattern $x (if (== (get-type $x) Nat) (gen_var (eval (debruijn2num $x))) (if (and (not (== (get-type $x) Nat)) (== (get-metatype $x) Expression)) (replacev $x) $x))) ;
+(= (generate $x)
+    (let* (
+        ($num (eval (debruijn2num $x)))
+        )
+        (make_var1 $num))
+)
+
+
+(= (replacev1 $pattern)
+    (map-atom $pattern $x (if (== (get-type $x) Nat) (generate $x) (if (and (not (== (get-type $x) Nat)) (== (get-metatype $x) Expression)) (replacev1 $x) $x))) ;
 )
 (= (num2deb $pattern)
     (map-atom $pattern $x (if (== (get-type $x) Number) (fromNumber $x) (if (and (not (== (get-type $x) Number)) (== (get-metatype $x) Expression)) (num2deb $x) $x)))
 )
 
-(= (replace $pattern)
+(= (replace1 $pattern)
     (let* (
         (($numpat $index $list) (var2num $pattern 0 ()))
         ($deb  (num2deb $numpat)) 
@@ -72,6 +80,3 @@
     
 )
 
-!(replace (,(, (link $x $y) (an $o $y)) (this $x $t)))
-!(replacev (Inheritance Z (S Z)))
-!(replacev (Inheritance (LINK Z (S Z)) (S (S Z))))
