@@ -29,6 +29,13 @@
 
 ;  !(coherence human &db Inheritance)
 
-!(pairwise-coherence-list (Liam Mia Noah Ava Zoe Leo Aria Max Ella Omar Abe Allen Bob Carlos David Ethan Frank George Theo Victor Hannah Irene Julia Olivia Priya Rosa Uma Nora Sam Quinn Kai Wren Tessa OmarA Yuki) () 0 35 &db Inheritance)
+; !(pairwise-coherence-list (Liam Mia Noah Ava Zoe Leo Aria Max Ella Omar Abe Allen Bob Carlos David Ethan  ) () 0 16 &db Inheritance)
+
+!(coherence human &db Inheritance)
+
+; !(fun ((Liam Noah) (Mia Noah) (Noah Noah) (Liam Mia) (Mia Mia) (Noah Mia) (Liam Liam) (Mia Liam) (Noah Liam)) ())
+
+; !(cart-helper-set 2 (Liam Mia Noah Ava Zoe Leo Aria Max Ella Omar Abe Allen Bob Carlos David Ethan Frank George Theo Victor Hannah Irene Julia Olivia Priya Rosa Uma Nora Sam Quinn Kai Wren Tessa OmarA Yuki) ())
+
 
 ; !(collapse (match &db (Inheritance $x human) $x))

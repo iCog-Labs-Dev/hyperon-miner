@@ -71,24 +71,57 @@ $superCons
 (let* (
   ($ins (collapse (match $db ($link $any $concept) $any)))
   ($n (size-atom $ins))
-   ($pair-H (pairwise-coherence-list $ins () 0 $n $db $link))
-  ;   ($sum-pair-H (foldl-atom $pair-H 0 $acc $x (+ $acc $x)))
-  ;   ($H-joint-approx (// (* $sum-pair-H 2) (* $n (- $n 1))))
+  (() (println! (1 ... $n ... $ins)))
+  ; helper -> 0.5, 0.5
+  ($pairwise  (cart-helper-set 2 $ins ()))
+
+  ; filter pairwise
+  ($uniquePairWise (fun $pairwise ()))
+  (() (println! (2 .-.-.-. $uniquePairWise)))
+  ($pair-H  (collapse (calcom (superpose $uniquePairWise) $db $link)))
+  
+  ; ;  ($pair-H (pairwise-coherence-list $ins () 0 $n $db $link))
+  (() (println! (3 ... )))
+    ($sum-pair-H (foldl-atom $pair-H 0 $acc $x (+ $acc $x)))
+  ; (() (println! 4))
+    ($H-joint-approx  (// (* $sum-pair-H 2) (* $n (- $n 1))))
 
 
 )
 
-; $H-joint-approx
-$n
+$H-joint-approx
+; $n
 
 )
 
 
  )
 
+( = (fun $pairwise $acc) 
+  (
+    if (== () $pairwise)
+      $acc
+      (let*
+        (
+          ((($head1 $head2) $tail) (decons-atom $pairwise))
+          (() (println! ($head1 $head2)))
+          
+          ($intersection (intersection-atom (($head2 $head1)) $acc))
 
-(=(calcom $Ins1 $Ins2 $db $link)
-(let* (
+          ($newAcc (if (== (size-atom $intersection) 0)
+          (cons-atom ($head1 $head2) $acc)
+          $acc
+        ))
+
+        )
+        (fun $tail $newAcc))
+      
+  )
+)
+
+
+(=(calcom ($Ins1 $Ins2) $db $link)
+(if (== $Ins1 $Ins2) (empty) (let* (
   ($fconcs (collapse (match $db ($link $Ins1 $cons1) $cons1)))
   ($scons (collapse (match $db ($link $Ins2 $cons2) $cons2)))
   ($inter (intersection-atom $fconcs $scons))
@@ -99,31 +132,52 @@ $n
   $paircoh
   
   )
+)
+)
+
+; (= (pairwise-coherence-list $lst $acc $i $n $db $link)
+;    (if (>= $i $n)
+;        $acc
+;        (pairwise-coherence-list-helper $lst $acc $i (+ $i 1) $n $db $link)
+;    )
+; )
+
+; (= (pairwise-coherence-list-helper $lst $acc $i $j $n $db $link)
+;    (if (>= $j $n)
+;        (pairwise-coherence-list $lst $acc (+ $i 1) $n $db $link)
+;        (let* (
+;            ($pi (index-atom $lst $i))
+;            ($pj (index-atom $lst $j))
+;            ($H (calcom $pi $pj $db $link))
+;            ($new-acc (union-atom $acc ($H)))
+;          )
+;          (pairwise-coherence-list-helper $lst $new-acc $i (+ $j 1) $n $db $link)
+;        )
+;    )
+; )
+
+
+
+(=(cart-helper-set $n $x $acc) (collapse (cart-helper-set_ $n $x $acc)))
+(=(cart-helper-set_ $n $x $acc) 
+  (if (> $n 0)
+
+  (let* (
+  ($num (superpose $x))
+  ;the accumulator here is also undetrministic becuase we are adding superposed elements to it
+  
+  ($new (cons-atom $num $acc))
+  (() (println! ($new ----))))
+  ;each time it cals itself, its creating branches with all the elemnts superposed on each previous braches
+  (cart-helper-set_ (- $n 1) $x $new)
+  )
+
+  $acc
+  )
 
 )
 
 
-
-(= (pairwise-coherence-list $lst $acc $i $n $db $link)
-   (if (>= $i $n)
-       $acc
-       (pairwise-coherence-list-helper $lst $acc $i (+ $i 1) $n $db $link)
-   )
-)
-
-(= (pairwise-coherence-list-helper $lst $acc $i $j $n $db $link)
-   (if (>= $j $n)
-       (pairwise-coherence-list $lst $acc (+ $i 1) $n $db $link)
-       (let* (
-           ($pi (index-atom $lst $i))
-           ($pj (index-atom $lst $j))
-           ($H (calcom $pi $pj $db $link))
-           ($new-acc (union-atom $acc ($H)))
-         )
-         (pairwise-coherence-list-helper $lst $new-acc $i (+ $j 1) $n $db $link)
-       )
-   )
-)
 
 (= (rmvEl $tar $list)
 (collapse (let $el (superpose $list) (if (== $el $tar) (empty) $el)))
