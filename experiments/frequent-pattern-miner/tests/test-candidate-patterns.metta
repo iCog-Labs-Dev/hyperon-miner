@@ -1,7 +1,7 @@
 ! (register-module! ../../../../hyperon-miner)
-! (import! &self hyperon-miner:experiments:rules:candidate-patterns)
+! (import! &self hyperon-miner:experiments:frequent-pattern-miner:candidate-patterns)
 ! (import! &self hyperon-miner:experiments:utils:common-utils)
-! (import! &self hyperon-miner:experiments:rules:freq-pat)
+! (import! &self hyperon-miner:experiments:frequent-pattern-miner:freq-pat)
 ! (bind! &specspace (new-space))
 ! (bind! &cndpspace (new-space))
 

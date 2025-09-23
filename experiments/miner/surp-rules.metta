@@ -2,10 +2,11 @@
 -----------------------------------------------------------------
 ;; Rule to check if a pattern meets the minimum support threshold.
 (: minsupport 
-    (-> (hasSupport $ptrn $cnt)
-          (-> (ms-threshold $ms)
+    (-> (hasSupport $nptrn $cnt)
+        (-> (replace_index $nptrn $ptrn)
+           (-> (ms-threshold $ms)
                  (-> (⍃ $ms $cnt)
-                        (minsup $ptrn)))))
+                        (minsup $ptrn))))))
 
 
 

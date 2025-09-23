@@ -1,11 +1,3 @@
-; ! (register-module! ../../experiments)
-; ! (import! &self experiments:rules:conjunction-expansion)
-; ! (import! &self experiments:rules:use-python)
-; ! (import! &self experiments:utils:common-utils)
-; ! (import! &self experiments:rules:freq-pat)
-; ! (import! &self experiments:utils:index_to_var)
-; ! (import! &self experiments:utils:blk-abstractness)
-; ! (import! &self experiments:utils:gen_partition)
 
 (= (filter_in_others $var $others)
     ((map-atom $others $x (if (== (get-metatype $x) Variable) (if (== $x $var) Pass $x) (if (== (get-metatype $x) Expression) (filter_in_others $var $x) $x)) ) $others)
