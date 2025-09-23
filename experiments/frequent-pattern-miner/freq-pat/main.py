@@ -162,9 +162,21 @@ def replace_with_variable(metta: MeTTa, pattern):
 
 def sort_conjunction(metta: MeTTa, conjunction):
     nested_str = str(conjunction)
-    atoms = re.findall(r'\([^()]+\)', nested_str)  # Match only atomic elements
+    def extract(expr):
+        expr = expr.strip()
+        if expr.startswith("(,"):
+            # Remove outer ( and ) and the ","
+            inner = expr[1:-1].strip()[1:].strip()
+            parts = []
+            for match in re.finditer(r'\((?:[^()]++|(?R))*\)', inner):
+                parts.extend(extract(match.group()))
+            return parts
+        else:
+            return [expr]
+
+    atoms = extract(nested_str)
     sorted_elements =  sorted(atoms)
-    flattend_str = f"( {' '.join(sorted_elements)})"
+    flattend_str = f"({' '.join(sorted_elements)})"
     return [metta.parse_single(flattend_str)]
 
 
@@ -185,6 +197,9 @@ def redundancy(metta):
     sort_conj = OperationAtom(
         "sort_conj", lambda conjunction: sort_conjunction(metta, conjunction), unwrap=False
     )
-    return {r"redunpat": redundancyFreeAtom, r"replace": replace, r"replacev": replacev, r"sort_conj": sort_conj}
+    gen_var = OperationAtom(
+        "gen_var", lambda suffix: generate_var(metta, suffix), unwrap=False
+    )
+    return {r"redunpat": redundancyFreeAtom, r"replace": replace, r"replacev": replacev, r"sort_conj": sort_conj, r"gen_var": gen_var}
 
 

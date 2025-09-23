@@ -15,11 +15,22 @@
 ;; 3: Create an Abstract pattern using the links and variables
 ;; 4: Calculate the support for the Abstract patterns and store the ones satisfy the minimum support in a space
 ;(: abstract-pattern (-> SpaceType Number SpaceType Atoms))
-(= (abstract-pattern $dbspace $minsup $aptrnspace)        
- (let $linkunique (unique (match $dbspace ($link $x $y) $link))
-                       ( let True (sup-eval $dbspace ($linkunique $z $t) $minsup)
-                         (add-atom $aptrnspace (AbstractPattern ($linkunique Z (S Z)))))))
+; (= (abstract-pattern $dbspace $minsup $aptrnspace)        
+;  (let $linkunique (unique (match $dbspace ($link $x $y) $link))
+;                        ( let True (sup-eval $dbspace ($linkunique $z $t) $minsup)
+;                          (add-atom $aptrnspace (AbstractPattern ($linkunique Z (S Z)))))))
 
+
+(= (abstract-pattern $dbspace $minsup $aptrnspace)
+            (let* (
+                    ($linkunique (unique (match $dbspace ($link $x $y) $link)))
+                    ($result (sup-num $dbspace ($linkunique $z $t)))
+                    ($rem (if (>= $result $minsup) (remove-atom $aptrnspace (AbstractPattern ($linkunique Z (S Z)))) ()))
+                    ($add (if (>= $result $minsup) (add-atom $aptrnspace (AbstractPattern ($linkunique Z (S Z)))) ()))
+                )
+               ($add $rem)
+)
+)
 
 
 
@@ -39,11 +50,11 @@
 (= (frequency-pattern-miner $dbspace $specspace $cndpspace $aptrnspace $conjspace $minsup $depth)
    (let*(
            (() (println! "==== Frequent miner started ====="))
-           (() (abstract-pattern $dbspace $minsup $aptrnspace)) ; prevent patterns that dont have a support from being speciallized
+           ($abs (collapse (abstract-pattern $dbspace $minsup $aptrnspace))) ; prevent patterns that dont have a support from being speciallized
            ($var  (collapse (match $aptrnspace (AbstractPattern $pattern) (build-specialization $pattern $dbspace $specspace)))) ; specializa abstract patterns
            ($temp2  (collapse (candidatePattern $dbspace $specspace $minsup $cndpspace))); get candidate patterns
             ($temp3  (collapse (conjunct $dbspace $cndpspace $conjspace $minsup $depth ))) ; store candidate patterns
-            ($temp4    (formatter  $conjspace $dbspace $depth))      
+            ($temp4    (formatter $conjspace $dbspace))      
         )  $temp4)
 )
 
