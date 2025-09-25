@@ -197,6 +197,9 @@ def redundancy(metta):
     sort_conj = OperationAtom(
         "sort_conj", lambda conjunction: sort_conjunction(metta, conjunction), unwrap=False
     )
-    return {r"redunpat": redundancyFreeAtom, r"replace": replace, r"replacev": replacev, r"sort_conj": sort_conj}
+    gen_var = OperationAtom(
+        "gen_var", lambda suffix: generate_var(metta, suffix), unwrap=False
+    )
+    return {r"redunpat": redundancyFreeAtom, r"replace": replace, r"replacev": replacev, r"sort_conj": sort_conj, r"gen_var": gen_var}
 
 

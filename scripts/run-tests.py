@@ -68,6 +68,11 @@ metta_run_command = "metta"
 allowed_tests = {
     "test-isurp-old.metta",
     "test-isurp.metta",
+    "test-common-utils.metta",
+    "test-est-tv.metta",
+    "test-emp-tv.metta",
+    "test-surp.metta",
+
 }
 
 # Collect only test files that start with test- and end with .metta
