@@ -29,13 +29,6 @@
 
 
 
-(=(joint-variables () $partion) ())
-(=(joint-variables $vars  $partion )(
-    let ($head $tail)    (decons-atom $vars)
-       (if   (>= (tuple-count (var-appers $head $partion)) 2) 
-             (let $dummy (joint-variables $tail $partion) (cons-atom $head $dummy)) 
-             (joint-variables $tail $partion))         
-))
 
 
 (=(mk-unique ()) ())
@@ -61,8 +54,8 @@
               (($head $tail) (decons-atom $pattern_list))
               ($new_head (remove-parenthesis $head)) ;; to remove unnecessary parenthesis if there is any
               ($emp_value (
-                 unify (Inheritance $x $y) $new_head  (emp-tv $new_head $db) 
-                       (chain (conjunct-pattern $new_head $db) $ptrn (emp-tv $ptrn $db))));;conjunct if it is not single pattern 
+                 unify ($link $x $y) $new_head  (emp-tv $new_head $db) 
+                       (chain (cons-atom , $new_head) $ptrn (emp-tv $ptrn $db))));;conjunct if it is not single pattern
               ($dummy (emp_tv_mem $tail $db))
         )  
             (cons-atom  $emp_value $dummy)
@@ -95,11 +88,9 @@
         ($size (tuple-count $tv_list))
         ($mean (let $sum (mean_accumulater $tv_list 0) (// $sum $size)))
         ($re_variance (let $var_sum  (var_accumulater $tv_list 0 $mean) (// $var_sum $size)))
-        ($mk_stv_val (mk_stv $mean $re_variance))
-        (($mode $confidence)  (decons-atom $mk_stv_val))
+        ($finalAnswer (mk_stv $mean $re_variance))
     )
-     ($mode (car-atom $confidence) ) 
-       
+    $finalAnswer
 ))
 
 

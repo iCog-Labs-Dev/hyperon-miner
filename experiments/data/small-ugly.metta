@@ -1,6 +1,7 @@
 (Inheritance Allen sodaDrinker)
+(Inheritance Abe sodaDrinker)
 (Inheritance Lily sodaDrinker)
-; (Inheritance Cason sodaDrinker)
+(Inheritance Cason sodaDrinker)
 
 (Inheritance Lily ugly)
 (Inheritance Allen ugly)
@@ -18,3 +19,5 @@
 (Inheritance Allen human)
 (Inheritance Abe human)
 (Inheritance Cason human)
+
+

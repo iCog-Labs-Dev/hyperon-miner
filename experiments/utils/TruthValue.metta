@@ -1,7 +1,7 @@
 ;; Simple Truth Value.  A Second order probability TV constructor,
 ;; i.e. probability and confidence.  The probability is in fact the
 ;; mode of the corresponding beta distribution.
-(: STV (-> Number Number TruthValue))
+; (: STV (-> Number Number TruthValue))
 
 
 

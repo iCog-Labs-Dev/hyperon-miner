@@ -53,7 +53,7 @@
 ;; Search for Triplets in DB 
 ;; do variable mapping and generate specializations
 (= (variable-mapping $db $kb $msup)
-   ;(match $db (: $p ($link $x $y)) ;; To ignore type definition in bio-as
+   ;(match $db (: $p ($link $x $y)) ;; To ignore type definition in bio-as)
    (match $db ($link $x $y) 
     (superpose ((build-specialization ($link $x (VarIdx (S Z))) $kb $db $msup)
                 (build-specialization ($link (VarIdx Z) $y) $kb $db $msup)

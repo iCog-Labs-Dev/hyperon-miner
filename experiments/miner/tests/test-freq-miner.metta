@@ -2,17 +2,17 @@
 ; !(register-module!  ../../../../chaining)
 
 !(import! &self experiments:miner:freq-miner)
-!(import! &self experiments:rules:conj-exp)
-!(import! &self experiments:rules:freq-pat)
-!(import! &self experiments:rules:use-python)
+!(import! &self experiments:frequent-pattern-miner:conj-exp)
+!(import! &self experiments:frequent-pattern-miner:freq-pat)
+!(import! &self experiments:frequent-pattern-miner:use-python)
 !(import! &self experiments:utils:variable-combinations)
 
 ! (import! &self experiments:utils:common-utils)
-! (import! &self experiments:rules:build-specialization)
-! (import! &self experiments:rules:conjunction-expansion)
+! (import! &self experiments:frequent-pattern-miner:build-specialization)
+! (import! &self experiments:frequent-pattern-miner:conjunction-expansion)
 
 ; ! (import! &dbspace experiments:data:ugly_man_sodaDrinker)
-! (import! &dbspace experiments:data:small-ugly)
+! (import! &dbspace experiments:data:very-small-ugly)
 
 
 
@@ -32,51 +32,81 @@
 ;;copy atoms from temp space to kb to remove unnecessary atoms from the space
 !(let $atoms  (get-atoms &temp) (add-reduct &kb $atoms) )
 
-; !(add-atom &kb (: candidate (candidatePattern (Inheritance Z ugly))))
-; ; !(add-atom &kb (: candidate (candidatePattern ())))
-; !(add-atom &kb (: candidate (candidatePattern (Inheritance Z sodaDrinker))))
 (: -> (-> Atom Atom Type))
 
+;; Initialize hyperparameters            
+(= (init-params $kb $db $min-sup $db-ratio )
+(superpose
+((add-atom $kb (: msT (ms-threshold $min-sup)))
+(add-atom $kb (: dbref (db-ref $db)))
+(add-atom $kb (: dbr (db-ratio $db-ratio)))
+(add-atom $kb (db-ratio $db-ratio))
+(add-atom $kb (db-size (db_size $db)))
+(add-atom $kb (db-ref $db))
+(add-reduct $kb (: dbsize (db-size (db_size $db))))
+)))
 
 ;; define parameters 
-(=(min-sup) 2)
-(=(surp-mode ) nisurp-old)
-(=(db-ratio) 0.5)
-; !(add-atom &kb (: msT (ms-threshold 2)))
-; !(add-atom &kb (: SUP (supportOf $ptrn 5)))
-
-; !(init-miner &db &kb (min-sup) (surp-mode) (db-ratio))
-
-;; test the cog-miner
-;; without sorting 
-; ! (cog-mine &db &kb (min-sup) (surp-mode) (db-ratio) )
-! (cog-mine &db &kb (min-sup) (surp-mode) (db-ratio) 1 1)
-; !(union-atom () (1 2 3 4 5 6 7 8 9 10))
+(= (min-sup) 2)
+(= (db-ratio) 0.5)
+(= (num-of-conjuct) 2)
 
 
-; !(syn &kb (fromNumber 0) (: $prf (uniqueLink $pattern $cnt))) 
-; !(syn &kb (fromNumber 0) (: $prf (valuation X (Inheritance $x $y) $val))) 
-; !(syn &kb (fromNumber 0) (: $prf (valuation Y (Inheritance $x $y) $val))) 
-; !(abstract (fromNumber 5) &kb)
-; !(specialization (fromNumber 3) &kb)
-; !(support (fromNumber 4) &kb)
-; !(let $atom  (: candidate (-> (minsup $ptrn) (-> (replace_variables $ptrn) (candidatePattern $ptrn)))) (add-atom &kb $atom) )
-; !(candidate (fromNumber 5) &kb)
-; !(let $atom  (: candidate (-> (minsup $ptrn) (-> (replace_variables $ptrn) (candidatePattern $ptrn)))) (remove-atom &kb $atom) )
-; !(conjunction (fromNumber 11) &kb 1 2)
-; 
+!(init-params &kb &db  (min-sup) (db-ratio) )
+(frequent-miner &db &kb (num-of-conjuct))
+(match &kb (: $prf (hasSupport $pattern $sup)) (: $prf (hasSupport $pattern $sup)))
 
-; !(match &kb $x $x)
-;!(get-metatype (@doc random-int (@desc "Returns random int number from range defined by two numbers (first and second argument)")))
+; (: ((((((supportFormat ((((((((((((((((((conjunction-expand ((candidate (((minsupport (((support (((((specializationx
+; ((((abstract-pattern CPUUnique) msT) CPU) CPUReplacevar)) CPUReplaceindex) CPUHandleValuation) CPUHandleNestedExp) CPUReplacevar))
+; CPUReplaceindex) CPUCounter)) msT) CPU)) CPUReplacevar)) CPUReplaceindex) CPUCount) maxClauses) CPUequals) ((candidate (((minsupport 
+; (((support (((((specializationx ((((abstract-pattern CPUUnique) msT) CPU) CPUReplacevar)) CPUReplaceindex) CPUHandleValuation)
+; CPUHandleNestedExp) CPUReplacevar)) CPUReplaceindex) CPUCounter)) msT) CPU)) CPUReplacevar)) CPUReplaceindex) CPUCount) CPUequals) msT)
+; CPUGetPatternVariables) CPUGetPatternVariables) CPUCombineVariables) CPUSubstituteVariables) CPUCounter) CPU) CPUReplacevar)
+; CPUConjunctionClean)) CPUCount) maxClauses) CPU) CPUSortConjunctions) CPUJoin)
+; (hasSupport (, (Inheritance Allen Z) (Inheritance Lily Z)) 3))
 
-;;add the rb ref to the kb 
-;;!(add-atom &kb (rb-ref &rb))
+; (: ((((((supportFormat ((((((((((((((((((conjunction-expand ((candidate (((minsupport (((support (((((specializationy
+; ((((abstract-pattern CPUUnique) msT) CPU) CPUReplacevar)) CPUReplaceindex) CPUHandleValuation) CPUHandleNestedExp) CPUReplacevar))
+; CPUReplaceindex) CPUCounter)) msT) CPU)) CPUReplacevar)) CPUReplaceindex) CPUCount) maxClauses) CPUequals) ((candidate (((minsupport
+; (((support (((((specializationy ((((abstract-pattern CPUUnique) msT) CPU) CPUReplacevar)) CPUReplaceindex) CPUHandleValuation)
+; CPUHandleNestedExp) CPUReplacevar)) CPUReplaceindex) CPUCounter)) msT) CPU)) CPUReplacevar)) CPUReplaceindex) CPUCount) CPUequals) msT)
+; CPUGetPatternVariables) CPUGetPatternVariables) CPUCombineVariables) CPUSubstituteVariables) CPUCounter) CPU) CPUReplacevar)
+; CPUConjunctionClean)) CPUCount) maxClauses) CPU) CPUSortConjunctions) CPUJoin)
+; (hasSupport (, (Inheritance Z man) (Inheritance Z ugly)) 2))
+
+; (: ((((((supportFormat ((((((((((((((((((conjunction-expand ((candidate (((minsupport (((support (((((specializationy 
+; ((((abstract-pattern CPUUnique) msT) CPU) CPUReplacevar)) CPUReplaceindex) CPUHandleValuation) CPUHandleNestedExp) CPUReplacevar))
+; CPUReplaceindex) CPUCounter)) msT) CPU)) CPUReplacevar)) CPUReplaceindex) CPUCount) maxClauses) CPUequals) ((candidate (((minsupport
+; (((support (((((specializationy ((((abstract-pattern CPUUnique) msT) CPU) CPUReplacevar)) CPUReplaceindex) CPUHandleValuation)
+; CPUHandleNestedExp) CPUReplacevar)) CPUReplaceindex) CPUCounter)) msT) CPU)) CPUReplacevar)) CPUReplaceindex) CPUCount) CPUequals) msT)
+; CPUGetPatternVariables) CPUGetPatternVariables) CPUCombineVariables) CPUSubstituteVariables) CPUCounter) CPU) CPUReplacevar)
+; CPUConjunctionClean)) CPUCount) maxClauses) CPU) CPUSortConjunctions) CPUJoin)
+; (hasSupport (, (Inheritance Z man) (Inheritance Z sodaDrinker)) 2))
+
+; (: ((((((supportFormat ((((((((((((((((((conjunction-expand ((candidate (((minsupport (((support (((((specializationy
+; ((((abstract-pattern CPUUnique) msT) CPU) CPUReplacevar)) CPUReplaceindex) CPUHandleValuation) CPUHandleNestedExp) CPUReplacevar))
+; CPUReplaceindex) CPUCounter)) msT) CPU)) CPUReplacevar)) CPUReplaceindex) CPUCount) maxClauses) CPUequals) ((candidate (((minsupport
+; (((support (((((specializationy ((((abstract-pattern CPUUnique) msT) CPU) CPUReplacevar)) CPUReplaceindex) CPUHandleValuation)
+; CPUHandleNestedExp) CPUReplacevar)) CPUReplaceindex) CPUCounter)) msT) CPU)) CPUReplacevar)) CPUReplaceindex) CPUCount) CPUequals) msT)
+; CPUGetPatternVariables) CPUGetPatternVariables) CPUCombineVariables) CPUSubstituteVariables) CPUCounter) CPU) CPUReplacevar)
+; CPUConjunctionClean)) CPUCount) maxClauses) CPU) CPUSortConjunctions) CPUJoin)
+; (hasSupport (, (Inheritance Z sodaDrinker) (Inheritance Z ugly)) 2))
+
+(= (num-of-conjuct2) 3)
 
 
+!(frequent-miner &db &kb (num-of-conjuct2))
+!(match &kb (: $prf (hasSupport $pattern $sup)) (: $prf (hasSupport $pattern $sup)))
 
-(: Grounded Type)
-(: check Grounded)
-(=(check $v) (> $v 3))
-
-
-
+; (: ((((((supportFormat ((((((((((((((((((conjunction-expand ((((((((((((((((((conjunction-expand ((candidate (((minsupport
+; (((support (((((specializationy ((((abstract-pattern CPUUnique) msT) CPU) CPUReplacevar)) CPUReplaceindex) CPUHandleValuation)
+; CPUHandleNestedExp) CPUReplacevar)) CPUReplaceindex) CPUCounter)) msT) CPU)) CPUReplacevar)) CPUReplaceindex) CPUCount) maxClauses)
+; CPUequals) ((candidate (((minsupport (((support (((((specializationy ((((abstract-pattern CPUUnique) msT) CPU) CPUReplacevar))
+; CPUReplaceindex) CPUHandleValuation) CPUHandleNestedExp) CPUReplacevar)) CPUReplaceindex) CPUCounter)) msT) CPU)) CPUReplacevar))
+; CPUReplaceindex) CPUCount) CPUequals) msT) CPUGetPatternVariables) CPUGetPatternVariables) CPUCombineVariables) CPUSubstituteVariables)
+; CPUCounter) CPU) CPUReplacevar) CPUConjunctionClean)) CPUReplaceindex) CPUCount) maxClauses) CPUequals) ((candidate (((minsupport
+; (((support (((((specializationy ((((abstract-pattern CPUUnique) msT) CPU) CPUReplacevar)) CPUReplaceindex) CPUHandleValuation)
+; CPUHandleNestedExp) CPUReplacevar)) CPUReplaceindex) CPUCounter)) msT) CPU)) CPUReplacevar)) CPUReplaceindex) CPUCount) CPUequals) msT)
+; CPUGetPatternVariables) CPUGetPatternVariables) CPUCombineVariables) CPUSubstituteVariables) CPUCounter) CPU) CPUReplacevar) CPUConjunctionClean))
+; CPUCount) maxClauses) CPU) CPUSortConjunctions) CPUJoin) 
+; (hasSupport (, (Inheritance Z man) (Inheritance Z sodaDrinker) (Inheritance Z ugly)) 2))

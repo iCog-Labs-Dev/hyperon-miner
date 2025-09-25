@@ -14,32 +14,7 @@
 
 ! (import! &self partition)
 
-;; =============================================================================
-;; Function: get-clauses
-;; -----------------------------------------------------------------------------
-;; Purpose:
-;;   Extracts clauses from an expression, specifically handling AND-conjunctions
-;;
-;; Type Signature:
-;;   (-> Expression Expression)
-;;
-;; Parameters:
-;;   $element - Input expression to analyze
-;;
-;; Returns:
-;;   - Body of expression if it's an AND-conjunction
-;;   - Original expression otherwise
-;;
-;; Example:
-;;   (get-clauses '(And A B C)) → (A B C)
-;;   (get-clauses '(Or X Y)) → (Or X Y)
-;; =============================================================================
-(: get-clauses (-> Expression Expression))
-(= (get-clauses $element)
-    (let $link (car-atom $element)
-        (if (== $link And)
-            (cdr-atom $element)
-            $element)))
+
 
 ;; =============================================================================
 ;; Function: add-to-subsets
@@ -60,7 +35,7 @@
 ;; Example:
 ;;   (add-to-subsets 'A '((B) (C))) → ((A B) (A C))
 ;; =============================================================================
-(: add-to-subsets (-> Expression Expression Expression))
+; (: add-to-subsets (-> Expression Expression Expression))
 (= (add-to-subsets $element $subsets)
     (if (== $subsets ())
         ()
@@ -113,7 +88,7 @@
 ;; Example:
 ;;   (powerset '(A B)) → (() (A) (B) (A B))
 ;; =============================================================================
-(: powerset (-> Expression Expression))
+; (: powerset (-> Expression Expression))
 (= (powerset $lst)
     (if (== $lst ())
         (cons-atom () ())
@@ -146,9 +121,96 @@
 ;;   (generet-partition-without-pattern '(And A B C))
 ;;   → ((A B C)) or other valid partitions
 ;; =============================================================================
-(: generet-partition-without-pattern (-> Expression Expression))
+; (: generet-partition-without-pattern (-> Expression Expression))
 (= (generet-partition-without-pattern $pattern)
     (let* (
-            ($clause (get-cnj-clouses $pattern))
+            ($clause (get-clauses $pattern))
             ($subsets (gen-subsets $clause)))
         (gen-partition $subsets $clause)))
+
+
+;; ===========================================================================
+;; FUNCTION: powerset-without-empity
+;;
+;; DESCRIPTION:
+;;   Generates all non-empty subsets of the given list.
+;;
+;; PARAMETERS:
+;;   • $list — A list of elements to compute the subsets from.
+;;
+;; RETURNS:
+;;   A flat list of lists, each representing a non-empty subset of $list.
+;;
+;; EXAMPLE:
+;;   (powerset-without-empity '(a b c))
+;;   ⇒ ((a) (b) (c) (a b) (a c) (b c) (a b c))
+;; ===========================================================================
+
+(= (powerset-without-empity $list)
+  (let $subset (powerset $list) (collapse
+        (subtraction
+            (superpose $subset)
+            (superpose (()))
+        )
+    ))
+)
+
+
+;; Documentation for (partition $conj-pattern)
+;;
+;; Generates all partitions that include the specified conjunctive
+;; pattern as an atomic element in each result.
+;;
+;; Parameters:
+;;   $conj-pattern
+;;     The pattern to be treated as a single unit in every
+;;     partition.
+;;
+;; Returns:
+;;   A list of partitions. Each partition is formed by:
+;;     1. Computing all partitions of the input space without
+;;        the given pattern (via generet-partition-without-pattern).
+;;     2. Unioning the original $conj-pattern (as an atom) with
+;;        each of those partitions.
+;;
+;; Example:
+;;   (partition '(a b))
+;;   ;; => returns all partitions where '(a b) appears as one block
+(= (partition $conj-pattern)  
+    (
+        let $part_wout-patt (generet-partition-without-pattern $conj-pattern)
+            (union-atom (($conj-pattern)) $part_wout-patt )
+    )
+
+)
+
+
+;; ===========================================================================
+;; FUNCTION: remove-hashtag
+;;
+;; DESCRIPTION:
+;;   Processes an expression and removes all occurrences of the `#` symbol
+;;   from variable names. This is used to normalize variables that enter or
+;;   leave the space, ensuring they are represented without the hashtag.
+;;
+;; PARAMETERS:
+;;   • $x — An expression potentially containing variables with `#` in their names.
+;;
+;; RETURNS:
+;;   A transformed expression where all variables have been stripped of `#`.
+;;
+;; EXAMPLE:
+;;   (remove-hashtag '(#x + #y))
+;;   ⇒ (x + y)
+;;
+;;   (remove-hashtag '(foo #bar #baz))
+;;   ⇒ (foo bar baz)
+;; ===========================================================================
+
+(= ( remove-hashtag $x) 
+    (remove-hashtag-py $x))
+
+
+
+
+

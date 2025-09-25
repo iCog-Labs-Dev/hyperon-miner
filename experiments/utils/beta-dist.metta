@@ -84,13 +84,36 @@
     $conf))
 
 
-(= (find_alpha $mean $variance) (
-    * $mean (- (// (* $mean (- 1 $mean) ) $variance) 1)
-))
+; (= (find_alpha $mean $variance) (
+;     * $mean (- (// (* $mean (- 1 $mean) ) $variance) 1)
+; ))
+(= (find_alpha $mean $variance)
+   (let* (
+       ($one_minus_mean (- 1 $mean))
+       ($mean_prod (* $mean $one_minus_mean))
+       ($mean_prod_div_var (// $mean_prod $variance))
+       ($mean_prod_div_var_minus1 (- $mean_prod_div_var 1))
+       ($result (* $mean $mean_prod_div_var_minus1))
+   )
+   $result
+   )
+)
 
-(= (find_beta $mean $variance) (
-    * (- 1 $mean) (- ( // (* $mean (- 1 $mean)) $variance) 1)
-))
+; (= (find_beta $mean $variance) (
+;     * (- 1 $mean) (- ( // (* $mean (- 1 $mean)) $variance) 1)
+; ))
+
+(= (find_beta $mean $variance)
+   (let* (
+       ($one_minus_mean (- 1 $mean))
+       ($mean_prod (* $mean $one_minus_mean))
+       ($mean_prod_div_var (// $mean_prod $variance))
+       ($mean_prod_div_var_minus1 (- $mean_prod_div_var 1))
+       ($result (* $one_minus_mean $mean_prod_div_var_minus1))
+   )
+   $result
+   )
+)
 
 
 ; This function `mk-stv` creates a standard truth value (STV) using the provided mean and variance.

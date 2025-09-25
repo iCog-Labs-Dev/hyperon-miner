@@ -34,9 +34,14 @@
 )
 
 
-(= (get-clauses $cnj) (
-  unify (, $ncnj $ptrn) $cnj (let $result (get-clauses $ncnj) (cons-atom $ptrn $result) ) ($cnj)
+(= (get-clauses-inner $cnj) (
+  unify (, $ncnj $ptrn) $cnj (let $result (get-clauses-inner $ncnj) (cons-atom $ptrn $result) ) ($cnj)
 ))
+
+(= (conj? $p)
+    (case $p
+    (((, $clause1 $clause2) True)
+     ($_ False))))
 
 ;; define system proofs 
 ------------------------------------------------------------------
@@ -48,14 +53,18 @@
     (if (and (and (is-number $X) (is-number $Y)) (<= $X $Y))
           (: CPU (⍃ $X $Y))
              (empty)))
+
+
 ----------------------------------------------------------------------------
 ;; system proof  to calculate the emp-tv for the given pattern. 
 ;; The database is queried here because, when it was placed in the premises, 
 ;; it caused infinite results in CPUEMP.
 ----------------------------------------------------------------------------
 (= (syn $kb $_ (: $prf (emp-cpu $ptrn  $emp ))) 
-    (let $dbb (match $kb (db-ref $db) $db)
-    (: CPUEMP (emp-cpu $ptrn  (emp-tv (flatten $ptrn) $dbb ))) ) 
+    (let* (($dbb (match $kb (db-ref $db) $db))
+            ($pattern   (remove-hashtag $ptrn)))
+       
+    (: CPUEMP (emp-cpu $ptrn  (emp-tv $pattern $dbb))) ) 
 )
 
 -----------------------------------------------------------------------------
@@ -64,31 +73,75 @@
 ;; it caused infinite results in CPUEST.
 -----------------------------------------------------------------------------
 (= (syn $kb $_ (: $prf (est-cpu  $ptrn $emp $est))) 
-    (let $dbb (match $kb (db-ref $db) $db)
-    (: CPUEST (est-cpu $ptrn $emp (do-ji-tv-est $dbb (flatten $ptrn) $emp))) ) 
+    (let* (($dbb (match $kb (db-ref $db) $db))
+           ($pattern (remove-hashtag $ptrn)))
+    (: CPUEST (est-cpu $ptrn $emp (do-ji-tv-est $dbb $pattern ))) ) 
 )
 
 
+(= (syn $kb $_ (: $prf (jsd-cpu $emp $est $surp)))
+    (let $surp-val (do-jsd $emp $est) 
+       (: JSDCPU (jsd-cpu $emp $est $surp-val))))
+
+
 -----------------------------------------------------------------------------
-(= (syn $kb $_ (: $prf (prob-cpu  $pattern $prob))) 
+;; emperical probability of a pattern 
+(= (syn $kb $_ (: $prf (prob-cpu  $pattern $ucount $prob))) 
     (let $dbb (match $kb (db-ref $db) $db)
-    (: CPUPROB (prob-cpu  $pattern (prob $pattern  $dbb) ))
+    (: CPUPROB (prob-cpu  $pattern $ucount (// (sup-num $dbb $pattern) $ucount) ))
+    ) 
+)
+
+-----------------------------------------------------------------------------
+;; emperical probability of a pattern for isurp
+(= (syn $kb $_ (: $prf (prob-cpu  $pattern $db-ratio $emax $prob))) 
+    (let $dbb (match $kb (db-ref $db) $db)
+    (: CPUPROB (prob-cpu  $pattern $db-ration $emax (emp-prob-pbs  $pattern $dbb $emax $db-ratio) ))
     ) 
 )
 
 -----------------------------------------------------------------------------
 ;; system proof to calculate the partitions for the given pattern.
 (= (syn $kb $_ (: $prf (partition-cpu  $pattern $partitions))) 
-    (let $partitions (generet-partition-without-pattern $pattern)
+    (let* (
+         ($cleaned-pattern (remove-hashtag $pattern))
+        ($partitions (generet-partition-without-pattern $cleaned-pattern)))
     (: CPUPARTN (partition-cpu  $pattern $partitions)) ) 
 )
 
+
+;; it turns the block into pattern and computes it's probability 
+(= (blk-prob-surp $blk $db $total_count) (
+    let $pattern (cons-atom , $blk) (// (sup-num  $db $pattern) $total_count)
+  ))
+
+
+
+;; gives the product of the probability of each block of the partition
+(= (iprob $partition $db $total-count) 
+    (let $list  (collapse  (blk-prob-surp  (superpose $partition) $db $total-count)) (foldl-atom $list 1 $acc $elem (* $acc $elem) ) )                             
+)
+
+
+
 ----------------------------------------------------------------------------
 ;; min max estimation of the pattern for isurp old
-(= (syn $kb $_ (: $prf (est-prob-cpu  $pattern $partitions $emin-emax))) 
-    (let $dbb (match $kb (db-ref $db) $db)
-    (: CPUESTPROB (est-prob-cpu   $pattern $partitions (min-max (isurp-old_  $partitions $dbb)))) ) 
+(= (syn $kb $_ (: $prf (est-prob-cpu  $pattern $partitions $ucount $emin-emax))) 
+    (let* (($dbb (match $kb (db-ref $db) $db))
+            ($min-max (let $products (collapse (iprob (superpose $partitions) $dbb $ucount) ) (min-max $products))))
+    (: CPUESTPROB (est-prob-cpu   $pattern $partitions $ucount  $min-max)) ) 
 )
+
+
+----------------------------------------------------------------------------
+;; min max estimation of the pattern for isurp 
+(= (syn $kb $_ (: $prf (ji-prob-est-cpu  $pattern $partitions  $db_ratio $emin-emax))) 
+    (let* (($dbb (match $kb (db-ref $db) $db))
+            ($cleaned-pattern (remove-hashtag $pattern))
+            ($min-max (let $products  (collapse (ji-prob-est (superpose $partitions) $cleaned-pattern $dbb $db_ratio)) (min-max $products))))
+    (: CPUESTPROB (ji-prob-est-cpu  $pattern $partitions $db_ratio $min-max)) ) 
+)
+
 
 -------------------------------------------------------------------------
 ;; calculates the distance between the estimate value and emperical value
@@ -97,11 +150,27 @@
     (: CPUDST (dst-cpu  $x $y $dst)) ) 
 )
 
+
+------------------------------------------------------------------------
+;; calculates the all possible same number of conjuct pattern 
+(= (syn $kb $_ (: $prf (universal-cpu $pattern $db-size $ucount))) (
+    let $number-of-conjuct (n_conjuncts_new $pattern) 
+       (: CPUUNIVERSAL (universal-cpu $pattern $db-size (cal_binomial $db-size $number-of-conjuct)))
+))
+
+
 -------------------------------------------------------------------------
 ;; create the minimum relation 
 (= (syn $kb $_ (: $prf (minimum $x $y $z)))
          (let $min (min $x $y)
                (: MINIMUMCPU  (minimum $x $y $min))))
+
+
+-------------------------------------------------------------------------
+;; create the maximum relation 
+(= (syn $kb $_ (: $prf (maximum $x $y $z)))
+         (let $max (max $x $y)
+               (: MAXIMUMCPU  (maximum $x $y $max))))
 
 -------------------------------------------------------------------------
 ;; division relation 
@@ -157,7 +226,9 @@
 (= (syn $kb $_ (: $prf (sup_count $ptrn $count)))
     (let* (
         ($db (match $kb (db-ref $db) $db))
-        ($new_ptrn (collapse (match $db $ptrn $ptrn)))
+        ($conjuncts (get-conjuncts $ptrn))
+        ($flat (cons-atom , $conjuncts))
+        ($new_ptrn (collapse (match $db $flat $flat)))
         ($count (size-atom $new_ptrn))
     )
      (: CPUCounter (sup_count $ptrn $count))
@@ -173,6 +244,19 @@
     (if (== $new_ptrn ())
           (empty)
              (: CPUReplaceindex (replace_index $ptrn $new_ptrn))
+        )    
+    )
+)
+
+-----------------------------------------------------------------------------
+;;system proof to replace debruijn index with variables
+(= (syn $kb $_ (: $prf (sort_conjunctions $ptrn $res)))
+    (let* (
+        ($new_ptrn (call_sort_conj $ptrn))
+        )
+    (if (== $new_ptrn ())
+          (empty)
+             (: CPUSortConjunctions (sort_conjunctions $ptrn $new_ptrn))
         )    
     )
 )
@@ -220,8 +304,9 @@
 ;;system proof to count the number of clauses in a pattern
 (= (syn $kb $_ (: $prf (clause_count $ptrn $cnt)))
     (let* (
-        ($clauses (get-clauses $ptrn))
-        ($cnt (size-atom $clauses))
+
+        ($cnt (let $clauses (get-clauses-inner $ptrn) (size-atom $clauses)))
+
         )
     (if (== $cnt 0)
           (empty)
@@ -278,7 +363,26 @@
         )
     )  
     )
-)            
+)     
+
+------------------------------------------------------------------------------
+(= (syn $kb $_ (: $prf (is-conj $p))) 
+    (if (conj? $p)
+        (: CPUConjprf (is-conj $p))
+        (empty)))
+
+
+------------------------------------------------------------------------------
+(= (syn $kb $_ (: $prf  (flatten-cpu $nptrn $fptrn))) (
+    let $flatten (flatten $nptrn) (: FLATCPU (flatten-cpu $nptrn $flatten))
+))
+
+------------------------------------------------------------------------------
+(= (syn $kb $_ (: $prf  (join-cpu $nptrn $jptrn))) (
+    let $joined (cons-atom , $nptrn) (: CPUJoin (join-cpu $nptrn $joined))
+))
+    
+        
 ==============================================================================
 ;; chainner 
 ==============================================================================

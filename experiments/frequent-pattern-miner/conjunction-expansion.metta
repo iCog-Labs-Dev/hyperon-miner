@@ -305,7 +305,7 @@
 
 ; returns:
 ; a superpose of conjunctions that satisfy the minimum support and are not redundant.
-;(: do-conjunct space space conj_pattern Number debruijin-index Atom)
+;(: do-conjunct SpaceType SpaceType Pattern Number Nat Atom)
 (= (do-conjunct $db $cndb $coming_conj  $ms Z)
     (let* (
         (() (println! "==== Build conjunction with depth 0 ===="))
@@ -334,17 +334,6 @@
     )
 )
 
-(= (add-atom-local $space $atom)
-   (case (match $space $atom $atom)
-     (
-      ($atom ())
-      (Empty (case $atom (
-               ((supportOf $x 1) () )
-               ($_ (add-atom $space $atom))))))))
-
-
-(= (format-helper $var-index $dbspace $depth) (
-     let $var (replacev $var-index) (supportOf $var (sup-num $dbspace $var))))
 
 --------------------------------------------
 ;;  formatter
@@ -354,23 +343,27 @@
 ;; 2: sort the conjunctions with a custom sorting function and get only the unique conjunctions from the sorte results
 ;; 3: create a flattened conjunction  using cons-atom with the sorted conjunctions and ,.
 ;; 4: add the results to the knowledge base with their support
-;(: formatter (-> space space Number Atom ))
-(= (formatter  $conjspace $dbspace $depth) 
-   (let* (
+;(: formatter (-> SpaceType SpaceType Atom ))
+
+
+(= (formatter $conjspace $dbspace) 
+    (let* (
         (() (println! "==== Formating  started ====="))
-        ($sorted  (match $conjspace $pattern (sort_conj $pattern)))
-        ($res  (cons-atom ,  $sorted))
-        ($formatted (format-helper $res $dbspace (fromNumber $depth)))
-    ) (case $formatted (
-                ((supportOf $x 1) (empty) )
-               ($_  $formatted)))
-))
+        ($sorted (unique (match $conjspace $pattern (sort_conj $pattern))))
+        ($res (cons-atom , $sorted))
+        ($var (replacev $res))
+        ($sup (sup-num $dbspace $var))
+        ($final (supportOf $var $sup))
+    )
+  $final
+)
+)
 
 -----------------------------------------------
 ;; conjunct 
 -----------------------------------------------
 ;; function to extract candidate patterns and call do-conjunct 
-;(: conjunct (-> space space space Number Number Atom))
+;(: conjunct (-> SpaceType SpaceType SpaceType Number Number Atom))
 (= (conjunct $dbspace $cndpspace $conjspace $minsup $depth )   
       (let $pattern (match $cndpspace (CandidatePattern $Cpattern) $Cpattern)
                    (let $conj  (do-conjunct $dbspace $cndpspace  $pattern $minsup (fromNumber $depth)) 
