@@ -2,7 +2,7 @@
 (: total_counts (-> Pattern SpaceType Number))
 ; (: accumulator-x (-> (List Number) Number))
 ; (: accumulator-x (-> (List Number) Number Number))
-(: n_conjuncts_new (-> Pattern Number))
+; (: n_conjuncts_new (-> Pattern Number))
 ; (: compute-component-support (-> (List Pattern) SpaceType (List Number)))
 (: compute-component-support (-> Any SpaceType Any))
 (: ptrn-support (-> Pattern SpaceType Number))

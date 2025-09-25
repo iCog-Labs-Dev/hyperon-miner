@@ -25,13 +25,14 @@
 
 ; !( IIsurp-old (, (Inheritance $x child) (Inheritance $x student) (Inheritance $x gamer)) &db False)
 
-; !(get-prob-func human &db (Inheritance $x child) ( (Inheritance $x child) (Inheritance $x student) (Inheritance $x gamer)) 600 )
+!(get-prob-func human &db (Inheritance $x child) ( (Inheritance $x child) (Inheritance $x student) (Inheritance $x gamer)) 4495 )
 
+; !(pow-math 0.5 0.5)
 ;  !(coherence human &db Inheritance)
 
 ; !(pairwise-coherence-list (Liam Mia Noah Ava Zoe Leo Aria Max Ella Omar Abe Allen Bob Carlos David Ethan  ) () 0 16 &db Inheritance)
 
-!(coherence human &db Inheritance)
+; !(coherence human &db Inheritance)
 
 ; !(fun ((Liam Noah) (Mia Noah) (Noah Noah) (Liam Mia) (Mia Mia) (Noah Mia) (Liam Liam) (Mia Liam) (Noah Liam)) ())
 

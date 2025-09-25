@@ -66,6 +66,9 @@ $superCons
     ))
 )
 
+(=(add-the-coherence $pair-H ) (foldl-atom $pair-H 0 $acc $x (+ $acc $x)))
+  (() (println! 4))
+
 
 (= (coherence $concept $db $link)
 (let* (
@@ -77,13 +80,13 @@ $superCons
 
   ; filter pairwise
   ($uniquePairWise (fun $pairwise ()))
-  (() (println! (2 .-.-.-. $uniquePairWise)))
+  (() (println! (2 .-.-.-. )))
   ($pair-H  (collapse (calcom (superpose $uniquePairWise) $db $link)))
   
   ; ;  ($pair-H (pairwise-coherence-list $ins () 0 $n $db $link))
   (() (println! (3 ... )))
-    ($sum-pair-H (foldl-atom $pair-H 0 $acc $x (+ $acc $x)))
-  ; (() (println! 4))
+    ($sum-pair-H (add-the-coherence $pair-H))
+  (() (println! 4))
     ($H-joint-approx  (// (* $sum-pair-H 2) (* $n (- $n 1))))
 
 
@@ -104,7 +107,7 @@ $H-joint-approx
       (let*
         (
           ((($head1 $head2) $tail) (decons-atom $pairwise))
-          (() (println! ($head1 $head2)))
+          ; (() (println! ($head1 $head2)))
           
           ($intersection (intersection-atom (($head2 $head1)) $acc))
 
@@ -167,7 +170,8 @@ $H-joint-approx
   ;the accumulator here is also undetrministic becuase we are adding superposed elements to it
   
   ($new (cons-atom $num $acc))
-  (() (println! ($new ----))))
+  ; (() (println! (chs ----)))
+  )
   ;each time it cals itself, its creating branches with all the elemnts superposed on each previous braches
   (cart-helper-set_ (- $n 1) $x $new)
   )
@@ -282,7 +286,7 @@ True False
 
 
 ; this will be the h(x) and g(x) funcitions mentioned on the paper
-(=(max-factor $coherence) (// 1 $coherence ))
+(=(max-factor $coherence) (// 1 (+ $coherence 0.0001) ))
 (=(min-factor $coherence ) (pow-math $coherence 0.5))
 
 
@@ -293,8 +297,10 @@ True False
 (let* (
 ($factor (if (== $maxOrmin max) (max-factor $coh) (min-factor $coh)  ) )
 ($new_prob (* $factor $prob))
-))
+)
 $new_prob
+)
+
 )
 
 ;supercalled by the super concepts list
@@ -304,16 +310,18 @@ $new_prob
 (let* (
   (($link $some1 $some2) $candPat)
 ; ($concCoh (getcohfact $superconc $db $maxOrmin))
+
 ($coher (coherence $superconc $db  $link))
+($con_super_pattern ($link $x $superconc))
 
 ;here we would have the the g(x) funcion that takes in the coherence 
 ($conjWoutCand (rmvEl $candPat $conjunct))
-($conjWSup (cons-atom $superconc $conjWoutCand))
-($compconj (union-atom (,) $conjWSup))
-($conjSup (sup-num $compconj   $db ))
+($conjWSup (cons-atom $con_super_pattern $conjWoutCand))
+($compconj (cons-atom , $conjWSup))
+($conjSup (sup-num  $db $compconj   ))
 ($conjProb (// $conjSup $total_count))
-($supConSup (sup-num ($linka $x $superconc) $db))
-($canConSup (sup-num $candidate $db ))
+($supConSup (sup-num $db $con_super_pattern ))
+($canConSup (sup-num $db $candidate  ))
 ($superprob (// $supConSup $total_count))
 ($candidateProb (// $canConSup $total_count))
 
@@ -322,8 +330,10 @@ $new_prob
 
 
 
-))
+)
 ($final_prob $coher)
+)
+
 
 )
 
@@ -335,7 +345,7 @@ $new_prob
 )
 
 
-
+(= (total_counts $pattern $db) (cal_binomial (db_size $db) (n_conjuncts_new $pattern)))
 
 ;=====================================
 (= (IIsurp-old $pattern $db $normalize) (
