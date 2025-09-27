@@ -4,7 +4,7 @@
 ; ! (import! &db hyperon-miner:experiments:data:small-ugly)
 ; ! (import! &self hyperon-miner:experiments:rules:conjunction-expansion)
 ! (import! &self hyperon-miner:experiments:frequent-pattern-miner:frequent-pattern-miner)
-! (import! &self hyperon-miner:experiments:rules:use-python)
+! (import! &self hyperon-miner:experiments:frequent-pattern-miner:use-python)
 ! (import! &self hyperon-miner:experiments:utils:common-utils)
 ! (import! &self hyperon-miner:experiments:utils:remove_useless_clauses)
 ! (import! &self hyperon-miner:experiments:utils:index_to_var)
@@ -18,6 +18,8 @@
 ! (bind! &cndpspace (new-space))
 ! (bind! &aptrnspace (new-space))
 ! (bind! &conjspace (new-space))
+
+!(let ($link $x $y) (get-atoms &db) (add-atom &dbspace ($link $x $y)))
 
 ; void MinerUTest::test_empty()
 ; {
@@ -575,11 +577,10 @@ $cnd
 
 (= (test_SodaDrinker_incremental)
     (let* (
-        (($link $x $y) (get-atoms &db))
-        ($add (add-atom &testspace ($link $x $y)))
-        ($res (collapse (frequency-pattern-miner &testspace &specspace &cndpspace &aptrnspace &conjspace 5 1 False)))
-        ($cnd (match &cndpspace (CandidatePattern $pattern $cnt) $pattern))
-    )$cnd)
+        ($add (collapse (match &dbspace $atom (add-atom &testspace $atom))))
+        ($res (collapse (frequency-pattern-miner &testspace &specspace &cndpspace &aptrnspace &conjspace 5 1 True)))
+        ($conj (match &conjspace $pattern $pattern))
+    )$conj)
 )
 
 ; !(assertEqual (intersection (test_SodaDrinker_incremental) (superpose ((, (, (Inheritance Z man) (Inheritance Z sodaDrinker)) (Inheritance Z ugly))))) (superpose ((, (, (Inheritance Z man) (Inheritance Z sodaDrinker)) (Inheritance Z ugly)))))
