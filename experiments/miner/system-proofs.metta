@@ -34,8 +34,8 @@
                 ))
 
 
-(= (get-clauses $cnj) (
-  unify (, $ncnj $ptrn) $cnj (let $result (get-clauses $ncnj) (cons-atom $ptrn $result) ) ($cnj)
+(= (get-clauses-inner $cnj) (
+  unify (, $ncnj $ptrn) $cnj (let $result (get-clauses-inner $ncnj) (cons-atom $ptrn $result) ) ($cnj)
 ))
 
 (= (conj? $p)
@@ -61,8 +61,10 @@
 ;; it caused infinite results in CPUEMP.
 ----------------------------------------------------------------------------
 (= (syn $kb $_ (: $prf (emp-cpu $ptrn  $emp ))) 
-    (let $dbb (match $kb (db-ref $db) $db)
-    (: CPUEMP (emp-cpu $ptrn  (emp-tv (flatten $ptrn) $dbb ))) ) 
+    (let* (($dbb (match $kb (db-ref $db) $db))
+            ($pattern   (remove-hashtag $ptrn)))
+       
+    (: CPUEMP (emp-cpu $ptrn  (emp-tv $pattern $dbb))) ) 
 )
 
 -----------------------------------------------------------------------------
@@ -71,9 +73,15 @@
 ;; it caused infinite results in CPUEST.
 -----------------------------------------------------------------------------
 (= (syn $kb $_ (: $prf (est-cpu  $ptrn $emp $est))) 
-    (let $dbb (match $kb (db-ref $db) $db)
-    (: CPUEST (est-cpu $ptrn $emp (do-ji-tv-est $dbb (flatten $ptrn)))) ) 
+    (let* (($dbb (match $kb (db-ref $db) $db))
+           ($pattern (remove-hashtag $ptrn)))
+    (: CPUEST (est-cpu $ptrn $emp (do-ji-tv-est $dbb $pattern ))) ) 
 )
+
+
+(= (syn $kb $_ (: $prf (jsd-cpu $emp $est $surp)))
+    (let $surp-val (do-jsd $emp $est) 
+       (: JSDCPU (jsd-cpu $emp $est $surp-val))))
 
 
 -----------------------------------------------------------------------------
@@ -85,9 +93,19 @@
 )
 
 -----------------------------------------------------------------------------
+;; emperical probability of a pattern for isurp
+(= (syn $kb $_ (: $prf (prob-cpu  $pattern $db-ratio $emax $prob))) 
+    (let $dbb (match $kb (db-ref $db) $db)
+    (: CPUPROB (prob-cpu  $pattern $db-ration $emax (emp-prob-pbs  $pattern $dbb $emax $db-ratio) ))
+    ) 
+)
+
+-----------------------------------------------------------------------------
 ;; system proof to calculate the partitions for the given pattern.
 (= (syn $kb $_ (: $prf (partition-cpu  $pattern $partitions))) 
-    (let $partitions (generet-partition-without-pattern $pattern)
+    (let* (
+         ($cleaned-pattern (remove-hashtag $pattern))
+        ($partitions (generet-partition-without-pattern $cleaned-pattern)))
     (: CPUPARTN (partition-cpu  $pattern $partitions)) ) 
 )
 
@@ -96,6 +114,8 @@
 (= (blk-prob-surp $blk $db $total_count) (
     let $pattern (cons-atom , $blk) (// (sup-num  $db $pattern) $total_count)
   ))
+
+
 
 ;; gives the product of the probability of each block of the partition
 (= (iprob $partition $db $total-count) 
@@ -112,11 +132,14 @@
     (: CPUESTPROB (est-prob-cpu   $pattern $partitions $ucount  $min-max)) ) 
 )
 
+
 ----------------------------------------------------------------------------
 ;; min max estimation of the pattern for isurp 
 (= (syn $kb $_ (: $prf (ji-prob-est-cpu  $pattern $partitions  $db_ratio $emin-emax))) 
-    (let $dbb (match $kb (db-ref $db) $db)
-    (: CPUESTPROB (ji-prob-est-cpu  $pattern $partitions $db_ratio (min-max (do-ji-prob $partitions $pattern $dbb $db_ratio)))) ) 
+    (let* (($dbb (match $kb (db-ref $db) $db))
+            ($cleaned-pattern (remove-hashtag $pattern))
+            ($min-max (let $products  (collapse (ji-prob-est (superpose $partitions) $cleaned-pattern $dbb $db_ratio)) (min-max $products))))
+    (: CPUESTPROB (ji-prob-est-cpu  $pattern $partitions $db_ratio $min-max)) ) 
 )
 
 
@@ -226,6 +249,19 @@
 )
 
 -----------------------------------------------------------------------------
+;;system proof to replace debruijn index with variables
+(= (syn $kb $_ (: $prf (sort_conjunctions $ptrn $res)))
+    (let* (
+        ($new_ptrn (call_sort_conj $ptrn))
+        )
+    (if (== $new_ptrn ())
+          (empty)
+             (: CPUSortConjunctions (sort_conjunctions $ptrn $new_ptrn))
+        )    
+    )
+)
+
+-----------------------------------------------------------------------------
 ;; system proof to get variables of a pattern
 (= (syn $kb $_ (: $prf (get_variables $ptrn $vars)))
     (let* (
@@ -268,8 +304,9 @@
 ;;system proof to count the number of clauses in a pattern
 (= (syn $kb $_ (: $prf (clause_count $ptrn $cnt)))
     (let* (
-        ($clauses (get-clauses $ptrn))
-        ($cnt (size-atom $clauses))
+
+        ($cnt (let $clauses (get-clauses-inner $ptrn) (size-atom $clauses)))
+
         )
     (if (== $cnt 0)
           (empty)
@@ -347,6 +384,18 @@
     (if (conj? $p)
         (: CPUConjprf (is-conj $p))
         (empty)))
+
+
+------------------------------------------------------------------------------
+(= (syn $kb $_ (: $prf  (flatten-cpu $nptrn $fptrn))) (
+    let $flatten (flatten $nptrn) (: FLATCPU (flatten-cpu $nptrn $flatten))
+))
+
+------------------------------------------------------------------------------
+(= (syn $kb $_ (: $prf  (join-cpu $nptrn $jptrn))) (
+    let $joined (cons-atom , $nptrn) (: CPUJoin (join-cpu $nptrn $joined))
+))
+    
         
 ==============================================================================
 ;; chainner 

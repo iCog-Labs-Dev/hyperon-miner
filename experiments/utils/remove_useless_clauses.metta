@@ -1,11 +1,3 @@
-; ! (register-module! ../../experiments)
-; ! (import! &self experiments:rules:conjunction-expansion)
-; ! (import! &self experiments:rules:use-python)
-; ! (import! &self experiments:utils:common-utils)
-; ! (import! &self experiments:rules:freq-pat)
-; ! (import! &self experiments:utils:index_to_var)
-; ! (import! &self experiments:utils:blk-abstractness)
-; ! (import! &self experiments:utils:gen_partition)
 
 (= (filter_in_others $var $others)
     ((map-atom $others $x (if (== (get-metatype $x) Variable) (if (== $x $var) Pass $x) (if (== (get-metatype $x) Expression) (filter_in_others $var $x) $x)) ) $others)
@@ -39,7 +31,7 @@
         
 (= (remove_Abstract_clauses $pattern)
     (let*(
-        ($unfolded (map-atom $pattern $clause (if (== (clause_others_check $clause $pattern) False) $clause ())))
+        ($unfolded (map-atom $pattern $clause (check_others $clause $pattern)))
         ($final (fold $unfolded ()))
         )
         $final
@@ -53,6 +45,11 @@
         $res
     )
 )
+
+(= (check_others $clause $pattern)
+    (let $res (clause_others_check $clause $pattern) (if (== $res False) $clause ()))
+)
+
 (= (is_more_abstract_for_each_var $clause $others)
     (let*
         (
@@ -71,9 +68,9 @@
         (if (== $trace Pass)
             False
             (let*(
-                (() (println! (here $trace)))
+                
                 (($headvar $bool $headov) (car-atom $trace))
-                (() (println! ($headvar $bool $headov)))
+                
                 (($tail) (cdr-atom $trace))
                 ($fold (fold $headov ()))
                 ($isAbstract (all_of $headvar $fold $clause))
@@ -181,7 +178,7 @@
   (if (== $others ())
         False
         (let*(
-            (() (println! (here3 $others)))
+            
             ($head (car-atom $others)) 
             ($isinpat (is_clause_in_pat $clause $head))
             ($result (if (== $isinpat True)
@@ -194,20 +191,24 @@
 )
 
 (= (clause_others_check_for_subtree $clause $pattern)
-    (let*(
-        (() (println! (here $clause)))
-        ($others (eval (subtraction-atom $pattern ($clause))))
-        (() (println! (here1 $others)))
+    (let*(   
+        ($others (eval (subtraction-atom $pattern ($clause))))  
         ($res (is_pat_in_otherpat $clause $others))
-        (() (println! (here2 $res)))
+        
         )
-        $res
+        (is_pat_in_otherpat $clause $others)
     )
 )
 
+(= (check_res $clause $pattern)
+   (let $res (clause_others_check_for_subtree $clause $pattern) (if (== $res False) $clause ()))
+)
+
+
+
 (= (remove_redundant_subclause $pattern)
     (let*(
-        ($unfolded (map-atom $pattern $clause (if (== (clause_others_check_for_subtree $clause $pattern) False) $clause ())))
+        ($unfolded (map-atom $pattern $clause (check_res $clause $pattern)))
         ($final (fold $unfolded ()))
         )
         $final

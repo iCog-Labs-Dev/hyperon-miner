@@ -1,7 +1,6 @@
-; ! (register-module! ../../../hyperon-miner)
-; ! (import! &self hyperon-miner:experiments:utils:common-utils)
-; ! (import! &self hyperon-miner:experiments:rules:freq-pat)
-
+(: Nat Type)
+(: Z Nat)
+(: S (-> Nat Nat))
 
 (= (debruijn2num Z) 0)
 
@@ -9,9 +8,18 @@
 
 (= (fromNum $n) (if (<= $n 0) Z (S (fromNum (- $n 1)))))
 
+(= (make_var1 $x) (let $v (format-args "$var{}" ($x)) (parse (parse (repr $v)))))
+
+(= (generate $x)
+    (let* (
+        ($num (eval (debruijn2num $x)))
+        )
+        (make_var1 $num))
+)
+
 
 (= (replacev $pattern)
-    (map-atom $pattern $x (if (== (get-type $x) Nat) (gen_var (eval (debruijn2num $x))) (if (and (not (== (get-type $x) Nat)) (== (get-metatype $x) Expression)) (replacev $x) $x))) ;
+    (map-atom $pattern $x (if (== (get-type $x) Nat) (generate $x) (if (and (not (== (get-type $x) Nat)) (== (get-metatype $x) Expression)) (replacev $x) $x))) ;
 )
 (= (num2deb $pattern)
     (map-atom $pattern $x (if (== (get-type $x) Number) (fromNumber $x) (if (and (not (== (get-type $x) Number)) (== (get-metatype $x) Expression)) (num2deb $x) $x)))
@@ -53,10 +61,11 @@
             ($tail (cdr-atom $pattern))
             ($is_var (== (get-metatype $head) Variable))
             ($is_expr (== (get-metatype $head) Expression))
+            ($check (check $list ($head)))
             ($processed_head_and_index (if $is_expr
                                         (var2num $head $index $list) ; Recursive call for sub-expression
                                         (if $is_var
-                                            (if (check $list ($head))
+                                            (if $check
                                                 ((find_index $list $head 0) $index $list) ; Return existing index, current index, and list
                                                 ($index (+ $index 1) (union-atom $list ($head))) ; Return new index, incremented index, and updated list
                                             )
@@ -72,5 +81,3 @@
     
 )
 
-!(replace (,(, (link $x $y) (an $o $y)) (this $x $t)))
-!(replacev (Inheritance Z (S Z)))

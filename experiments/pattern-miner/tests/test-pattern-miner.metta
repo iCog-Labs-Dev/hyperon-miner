@@ -1,22 +1,32 @@
-! (register-module! ../../../../hyperon-miner)
+! (register-module! ../../../../hyperon-miner/experiments)
 
-! (import! &self hyperon-miner:experiments:frequent-pattern-miner:frequent-pattern-miner)
-! (import! &self hyperon-miner:experiments:pattern-miner:pattern-miner)
-! (import! &self hyperon-miner:experiments:utils:common-utils)
+! (import! &self experiments:frequent-pattern-miner:frequent-pattern-miner)
+! (import! &self experiments:pattern-miner:pattern-miner)
+! (import! &self experiments:utils:common-utils)
 
-! (import! &self hyperon-miner:experiments:pattern-miner:pattern-miner)
+! (import! &self experiments:pattern-miner:pattern-miner)
 
-! (import! &self hyperon-miner:experiments:surprisingness:isurp-old)
-! (import! &self hyperon-miner:experiments:utils:binomialMetta)
-! (import! &self hyperon-miner:experiments:utils:beta-dist)
-! (import! &self hyperon-miner:experiments:utils:constants)
-! (import! &self hyperon-miner:experiments:utils:TruthValue)
-! (import! &self hyperon-miner:experiments:utils:surp-utils)
-! (import! &self hyperon-miner:experiments:utils:miner-utils)
-! (import! &self hyperon-miner:experiments:utils:gen_partition)
-! (import! &self hyperon-miner:experiments:truth-values:est-tv)
+! (import! &self experiments:surprisingness:isurp-old)
+! (import! &self experiments:utils:binomialMetta)
+! (import! &self experiments:utils:beta-dist)
+! (import! &self experiments:utils:constants)
+! (import! &self experiments:utils:TruthValue)
+! (import! &self experiments:utils:surp-utils)
+! (import! &self experiments:utils:miner-utils)
+! (import! &self experiments:utils:gen_partition)
+! (import! &self experiments:truth-values:est-tv)
+! (import! &self experiments:utils:emp-tv-bs)
+! (import! &self experiments:utils:bs-utils)
+! (import! &self experiments:utils:customType)
+! (import! &self experiments:truth-values:emp-tv)
+! (import! &self experiments:utils:blk-abstractness)
+! (import! &self experiments:utils:eq-prob)
+! (import! &self experiments:surprisingness:jsd)
+! (import! &self experiments:utils:jsd-helper)
 
-! (import! &db hyperon-miner:experiments:data:small-ugly)
+! (import! &self experiments:utils:remove_useless_clauses)
+! (import! &self experiments:utils:index_to_var)
+! (import! &db experiments:data:very-small-ugly)
 
 
 
@@ -38,22 +48,25 @@
 ---------------------------------------------------
 ;; number of conjucts 2 , so the depth will be 0
 ;; surprissingness mode none
-;; minimum support 3
+;; minimum support 4
 
-!(pattern-miner &res1 &db 3 0 none) 
- !(collapse (match &res1 $pattern $pattern ))
+; !(pattern-miner &res1 &db 4 0 none True) 
+; !(collapse (match &res1 $pattern $pattern))
 ;; Expected result 
-          ; ((supportOf (, (Inheritance $y human) (Inheritance $y man)) 3) 
-          ; (supportOf (, (Inheritance $j human) (Inheritance $j ugly)) 3) 
-          ; (supportOf (, (Inheritance $p human) (Inheritance $p sodaDrinker)) 3) 
-          ; (supportOf (, (Inheritance $r man) (Inheritance $r ugly)) 3) 
-          ; (supportOf (, (Inheritance $x man) (Inheritance $x sodaDrinker)) 3) 
-          ; (supportOf (, (Inheritance $x sodaDrinker) (Inheritance $x ugly)) 3) 
-          ; (supportOf (, (Inheritance Abe $r) (Inheritance Cason $r)) 4) (
-          ;   supportOf (, (Inheritance Abe $l) (Inheritance Allen $l)) 4) 
-          ;   (supportOf (, (Inheritance Allen $g) (Inheritance Cason $g)) 4))
-
-
+        ; ((supportOf (, (Inheritance $h10#3741032 $w01#3741033) (Inheritance Allen $w01#3741033)) 14)
+        ; (supportOf (, (Inheritance $r56#3741034 $r45#3741035) (Inheritance Abe $r45#3741035)) 14)
+        ; (supportOf (, (Inheritance $i60#3741036 $v92#3741037) (Inheritance Cason $v92#3741037)) 14)
+        ; (supportOf (, (Inheritance $p88#3741038 $x28#3741039) (Inheritance $p88#3741038 sodaDrinker)) 14)
+        ; (supportOf (, (Inheritance $h42#3741040 sodaDrinker) (Inheritance $h42#3741040 ugly)) 4)
+        ; (supportOf (, (Inheritance $v22#3741041 $u14#3741042) (Inheritance $v22#3741041 ugly)) 14)
+        ; (supportOf (, (Inheritance $p21#3741043 $a44#3741044) (Inheritance $p21#3741043 $f23#3741045)) 54)
+        ; (supportOf (, (Inheritance $l06#3741046 $u10#3741047) (Inheritance $u57#3741048 $u10#3741047)) 54)
+        ; (supportOf (, (Inheritance Allen $p44#3741049) (Inheritance Cason $p44#3741049)) 4)
+        ; (supportOf (, (Inheritance Allen $k34#3741050) (Inheritance $r80#3741051 $k34#3741050)) 14)
+        ; (supportOf (, (Inheritance Abe $j94#3741052) (Inheritance Allen $j94#3741052)) 4)
+        ; (supportOf (, (Inheritance Abe $a57#3741053) (Inheritance Cason $a57#3741053)) 4) 
+        ; (supportOf (, (Inheritance Abe $a11#3741054) (Inheritance $s37#3741055 $a11#3741054)) 14)
+        ; (supportOf (, (Inheritance Cason $b49#3741056) (Inheritance $d13#3741057 $b49#3741056)) 14))
 ----------------------------------------------------------------
 ;; mine frequent patterns without surprissingness (3 - conjunct)
 ----------------------------------------------------------------
@@ -63,8 +76,8 @@
 
 !(bind! &res2 (new-space))
 
- ;!(pattern-miner &res2 &db 3 1 none) 
- ;!(collapse (match &res2 $pattern $pattern ))
+ !(pattern-miner &res2 &db 4 1 none True) 
+ !(collapse (match &res2 $pattern $pattern ))
 ;; Expected result
 ; ((supportOf (, (Inheritance $a88#3981498 human) (Inheritance $a88#3981498 man) (Inheritance $a88#3981498 ugly)) 3) 
 ; (supportOf (, (Inheritance $t39#3981499 human) (Inheritance $t39#3981499 man) (Inheritance $t39#3981499 sodaDrinker)) 3) 
@@ -157,3 +170,25 @@
 ; (surprisingnessOf (, (Inheritance $i64#4271079 human) (Inheritance $i64#4271079 sodaDrinker) (Inheritance $i64#4271079 ugly)) 0.7142857142857143)
 ;  (surprisingnessOf (, (Inheritance $a93#4271080 man) (Inheritance $a93#4271080 sodaDrinker) (Inheritance $a93#4271080 ugly)) 0.7142857142857143)
 ;   (surprisingnessOf (, (Inheritance Abe $h27#4271081) (Inheritance Allen $h27#4271081) (Inheritance Cason $h27#4271081)) 0.7142857142857143))
+
+
+
+----------------------------------------------------------------
+;; mine frequent patterns with jsd surprissingness (3 - conjunct)
+----------------------------------------------------------------
+;; number of conjucts -> 3 , so the depth will be 1
+;; surprissingness mode -> jsd
+;; minimum support ->  3
+
+; !(bind! &res7 (new-space))
+
+;  !(pattern-miner &res7 &db 3 1 jsd) 
+;  !(collapse (match &res7 $pattern $pattern ))
+;; Expected result 
+;((surprisingnessOf (, (Inheritance $h99#9978924 human) (Inheritance $h99#9978924 sodaDrinker) (Inheritance $h99#9978924 ugly)) 0.8602770128397317) 
+;(surprisingnessOf (, (Inheritance $u24#9978925 human) (Inheritance $u24#9978925 man) (Inheritance $u24#9978925 sodaDrinker)) 0.8602770128397317) 
+;(surprisingnessOf (, (Inheritance $n61#9978926 human) (Inheritance $n61#9978926 man) (Inheritance $n61#9978926 ugly)) 0.8602770128397317) 
+;(surprisingnessOf (, (Inheritance $h49#9978927 man) (Inheritance $h49#9978927 sodaDrinker) (Inheritance $h49#9978927 ugly)) 0.8602770128397317) 
+;(surprisingnessOf (, (Inheritance Abe $t43#9978928) (Inheritance Allen $t43#9978928) (Inheritance Cason $t43#9978928)) 0.8602249031703285))
+
+

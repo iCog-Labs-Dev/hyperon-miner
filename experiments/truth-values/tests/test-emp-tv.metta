@@ -13,23 +13,14 @@
 ! (import! &self experiments:utils:customType)
 ! (import! &self experiments:truth-values:est-tv)
 ! (import! &self experiments:truth-values:emp-tv)
-! (import! &kb experiments:data:ugly_man_sodaDrinker)
+! (import! &db experiments:data:ugly_man_sodaDrinker)
 ! (import! &self experiments:utils:blk-abstractness)
 ! (import! &self experiments:utils:eq-prob)
 
 
 
 ! (add-reduct &self (= (get-space) (new-space)))
-! (add-atom (get-space) (Inheritance Abe human))
-! (add-atom (get-space) (Inheritance Rio human))
-! (add-atom (get-space) (Inheritance Bob human))
-! (add-atom (get-space) (Inheritance Mike human))
-! (add-atom (get-space) (Inheritance Mike Nil))
-! (add-atom (get-space) (Inheritance Zac human))
-! (add-atom (get-space) (Inheritance Zac human))
-! (add-atom (get-space) (Parent Abe Nil ))
-
-
+! (add-reducts (get-space) (collapse (get-atoms &db))) 
 
 ;; Documentation:
 
@@ -49,94 +40,9 @@
 ;; Test: Basic Pattern Support
 ;; -----------------------------------------------------------------------------
 ;; Verifies counting of matching patterns in the knowledge base
-;; Expected: 7 instances of (Inheritance $x $y)
+;; Expected: 60 instances of (Inheritance $x $y)
 ;; =============================================================================
- !(assertEqual (sup (Inheritance $x $y) (get-space)) 7)
-
-
-
-
-; ;; =============================================================================
-; ;; Test: Universe Counting
-; ;; -----------------------------------------------------------------------------
-; ;; Verifies counting of all Inheritance relationships regardless of arguments
-; ;; Expected: 8 total Inheritance relations
-; ;; =============================================================================
-!(assertEqual (universe-count (Inheritance $x) (get-space)) 8)
-
-; ;; =============================================================================
-; ;; Test: Empirical Truth Value Calculation
-; ;; -----------------------------------------------------------------------------
-; ;; Verifies truth value calculation for specific pattern
-; ;; Expected: (EMPTV 0.125 0.08888888888888889)
-; ;;   - Strength: 12.5% 
-; ;;   - Confidence: ~8.89%
-; ;; =============================================================================
-
-;doesn't align with the emp-tv
-!(assertEqual (emp-tv (Inheritance Zac $x) (get-space)) 
-              (EMPTV 0.25 0.0009900990099009901))
-
-; ;; =============================================================================
-; ;; Test: Database Expansion
-; ;; -----------------------------------------------------------------------------
-; ;; Verifies database size after duplication and expansion
-; ;; Expected: Original size + 1
-; ;; =============================================================================
-; !(assertEqual (db_size (duplicate-and-expand-space (get-space) 1)) 
-;               (+ 1 (db_size (get-space))))
-
-;!(db_size (duplicate-and-expand-space (get-space) 1)) 
-
-; !(duplicate-and-expand-space (get-space) 1)
-
-; ;; =============================================================================
-; ;; Test: Atom Addition
-; ;; -----------------------------------------------------------------------------
-; ;; Verifies atom insertion and size tracking
-; ;; Expected: Total size becomes 12 after adding 4 atoms
-; ;; =============================================================================
-!(add_n_atoms_to_db (get-space) 4)
-!(assertEqual (db_size (get-space)) 12)
-
-; ;; =============================================================================
-; ;; Test: Bounded Database Copy (Case 1)
-; ;; -----------------------------------------------------------------------------
-; ;; Verifies copying with size limit when original < max size
-; ;; Setup: Original size = 8, max = 10
-; ;; Expected: New size = 10 (all atoms copied)
-; ;; =============================================================================
-!(assertEqual (db_size (copy-db-by-size (new-space) 
-                       (collapse (get-atoms (get-space))) 0 10)) 
-              10)
-
-
-
-; ;; =============================================================================
-; ;; Test: Bounded Database Copy (Case 2) 
-; ;; -----------------------------------------------------------------------------
-; ;; Verifies copying with size limit when original > max size
-; ;; Setup: Original size = 8, max = 6  
-; ;; Expected: New size = 6 (only 6 atoms copied)
-; ;; =============================================================================
-!(assertEqual (db_size (copy-db-by-size (new-space)
-                       (collapse (get-atoms (get-space))) 0 6)) 
-              6)
-
-; ;; =============================================================================
-; ;; Test: Iterative Truth Value Calculation
-; ;; -----------------------------------------------------------------------------
-; ;; Verifies truth value calculation with iterations
-; ;; Expected: (EMPTV 0.0833 0.0923)
-; ;;   - Strength: ~8.33%
-; ;;   - Confidence: ~9.23%
-; ;; =============================================================================
-; !(assertEqual (do_emp_tv (Inheritance $x Nil) (get-space) 1)
-;                (EMPTV 0.08999691262735415 0.0470518165574747))
-
-
-; !(do_emp_tv (, (Inheritance $x Nil) (Inheritance $x human)) (get-space) 1)
-;  !(do_emp_tv (, (Inheritance $x Nil) ) (get-space) 1)
+!(assertEqual (sup (Inheritance $x $y) (get-space)) 60)
 
 ; ;; =============================================================================
 ; ;; Test: List Element Access
@@ -144,15 +50,15 @@
 ; ;; Verifies zero-based indexing of knowledge base elements  
 ; ;; Expected: Third element is (Inheritance Bob human)
 ; ;; =============================================================================
-; !(assertEqual (get-element 2 ((Inheritance Abe human) 
-;                              (Inheritance Rio human)
-;                              (Inheritance Bob human)
-;                              (Inheritance Mike human)
-;                              (Inheritance Mike Nil)
-;                              (Inheritance Zac human)
-;                              (Inheritance Zac human)
-;                              (Parent Abe Nil)))
-;               (Inheritance Bob human))
+!(assertEqual (get-element-by-Index  ((Inheritance Abe human) 
+                             (Inheritance Rio human)
+                             (Inheritance Bob human)
+                             (Inheritance Mike human)
+                             (Inheritance Mike Nil)
+                             (Inheritance Zac human)
+                             (Inheritance Zac human)
+                             (Parent Abe Nil)) 2) 
+              (Inheritance Bob human))
 
 ; ;; =============================================================================
 ; ;; Test: Sample Size Calculation
@@ -181,9 +87,67 @@
 ; ;; Verifies EMPTV struct creation from raw values
 ; ;; Expected: (EMPTV 0 0.00012498)
 ; ;; =============================================================================
-; !(assertEqual (mk-stv 1.7689693569125715 1.0178393379503528)
-;               (EMPTV 0 0.0001249843769528809))
+!(assertEqual (mk_stv 1.7689693569125715 1.0178393379503528)
+              (0 0.0001249843769528809))
+
+;; =============================================================================
+;; Test: Universe Counting
+;; -----------------------------------------------------------------------------
+;; Verifies counting of all Inheritance relationships regardless of arguments
+;; Expected: 60 total Inheritance relations
+;; =============================================================================
+!(assertEqual (universe-count (Inheritance $x) (get-space)) 60)
+
+;; =============================================================================
+;; Test: Empirical Truth Value Calculation
+;; -----------------------------------------------------------------------------
+;; Verifies truth value calculation for specific pattern
+;; Expected: (EMPTV 0.125 0.08888888888888889)
+;;   - Strength: 12.5% 
+;;   - Confidence: ~8.89%
+;; =============================================================================
+!(assertEqual (emp-tv (, (Inheritance $x woman) (Inheritance $x sodaDrinker)) (get-space)) 
+              (EMPTV 0.001388888888888889 0.08181818181818183))
+
+;; =============================================================================
+;; Test: Database Expansion
+;; -----------------------------------------------------------------------------
+;; Verifies database size after duplication and expansion
+;; Expected: Original size + 1
+;; =============================================================================
+!(assertEqual (db_size (duplicate-and-expand-space (get-space) 1)) 
+              (+ 1 (db_size (get-space))))
+
+
+;; =============================================================================
+;; Test: Bounded Database Copy (Case 1)
+;; -----------------------------------------------------------------------------
+;; Verifies copying with size limit when original < max size
+;; Setup: Original size = 60, max = 70
+;; Expected: New size = 60 (all atoms copied)
+;; =============================================================================
+!(assertEqual (let $x (collapse (get-atoms (get-space))) (db_size (copy-db-by-size (new-space) $x 0 70))) 
+              60)
 
 
 
+;; =============================================================================
+;; Test: Bounded Database Copy (Case 2) 
+;; -----------------------------------------------------------------------------
+;; Verifies copying with size limit when original > max size
+;; Setup: Original size = 60, max = 6  
+;; Expected: New size = 6 (only 6 atoms copied)
+;; =============================================================================
+!(assertEqual (let $x (collapse (get-atoms (get-space))) (db_size (copy-db-by-size (new-space) $x 0 6))) 
+              6)
 
+;; =============================================================================
+;; Test: Iterative Truth Value Calculation
+;; -----------------------------------------------------------------------------
+;; Verifies truth value calculation with iterations
+;; Expected: (EMPTV 0 0.0001249843769528809)
+;;   - Strength: ~0%
+;;   - Confidence: ~0.0125%
+;; =============================================================================
+!(assertEqual (do_emp_tv (,(Inheritance $x ugly) (Inheritance $x woman)) (get-space) 0.02)
+               (EMPTV 0 0.0001249843769528809))

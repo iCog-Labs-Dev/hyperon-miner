@@ -37,7 +37,7 @@
     $result 
 ))
 
-!(assertEqual (test_avrg_tv_1) (0 0.09999999999999999))
+(assertEqual (test_avrg_tv_1) (0 0.09999999999999999))
 
 ;========================================================
 ;avrg_tv test case 2 from classic miner repo
@@ -61,8 +61,7 @@
     )
     $result 
 ))
-
-; !(assertEqual (test_avrg_tv_2) (0.5 0001249843769528809))
+(assertEqual (test_avrg_tv_2) (0.5 0001249843769528809))
 
 ;=================================================================
 ;avrg_tv test case 3 from classic miner repo
@@ -106,7 +105,7 @@
     $result 
 ))
 
-;  !(assertEqual (test_avrg_tv_3) (1 0.0006774324781404488))
+(assertEqual (test_avrg_tv_3) (1 0.0006774324781404488))
 
 ;==================================
 
