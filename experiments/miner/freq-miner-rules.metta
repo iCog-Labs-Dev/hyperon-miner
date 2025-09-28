@@ -1,10 +1,4 @@
 ;; Rules 
-  ; (: minsupport 
-  ;   (-> (supportOf $ptrn)
-  ;         (-> (ms-threshold $ms)
-  ;                (-> (⍃ $ms $cnt)
-  ;                       (minsup $ptrn)))))
-;; Rules 
   (: minsupport 
     (-> (supportOf $ptrn $cnt)
           (-> (ms-threshold $ms)
@@ -24,20 +18,14 @@
        (-> (AbstractPattern ($link $x $y)) 
         (-> (replace_index ($link $x $y) ($link $nx $ny)) 
           (-> (valuation X ($link $nx $ny) $valx)
-            (-> (depth-handler $valx $shabx)
+            (-> (depth-handler X $valx $valy $shab $shabx)
             (-> (replace_variables ($shabx $ny))
               (specializationOf ($link $x $y) ($link $shabx $ny))))))))
-; (: specializationx
-;        (-> (AbstractPattern ($link $x $y)) 
-;         (-> (replace_index ($link $x $y) ($link $nx $ny)) 
-;           (-> (valuation X ($link $nx $ny) $valx)
-;             (-> (depth-handler X $valx $valy $shab $shabx)
-;             (-> (replace_variables ($shabx $ny))
-;               (specializationOf ($link $x $y) ($link $shabx $ny))))))))
 
-; (: specializationabs
-;        (-> (AbstractPattern ($link $x $y)) 
-;               (specializationOf ($link $x $y) ($link $x $y))))
+;;
+(: specializationabs
+       (-> (AbstractPattern ($link $x $y)) 
+              (specializationOf ($link $x $y) ($link $x $y))))
 
 
 ;;specialization of abstract patterns on the $y rule
@@ -45,26 +33,20 @@
        (-> (AbstractPattern ($link $x $y)) 
         (-> (replace_index ($link $x $y) ($link $nx $ny)) 
           (-> (valuation Y ($link $nx $ny) $valy)
-            (-> (depth-handler $valy $shaby)
+            (-> (depth-handler Y $valy $valx $shab $shaby)
             (-> (replace_variables ($nx $shaby))
               (specializationOf ($link $x $y) ($link $nx $shaby))))))))
-; (: specializationy
-;        (-> (AbstractPattern ($link $x $y)) 
-;         (-> (replace_index ($link $x $y) ($link $nx $ny)) 
-;           (-> (valuation Y ($link $nx $ny) $valy)
-;             (-> (depth-handler Y $valy $valx $shab $shaby)
-;             (-> (replace_variables ($nx $shaby))
-;               (specializationOf ($link $x $y) ($link $nx $shaby))))))))
 
-; (: specializationxy
-;        (-> (AbstractPattern ($link $x $y)) 
-;         (-> (replace_index ($link $x $y) ($link $nx $ny)) 
-;           (-> (valuation X ($link $nx $ny) $valx)
-;           (-> (valuation Y ($link $nx $ny) $valy)
-;             (-> (depth-handler X $valx $valy $shab $shabx)
-;             (-> (depth-handler Y $valy $valx $shabx $shaby)
-;             (-> (replace_variables ($shabx $shaby))
-;               (specializationOf ($link $x $y) ($link $shabx $shaby))))))))))
+;;
+(: specializationxy
+       (-> (AbstractPattern ($link $x $y)) 
+        (-> (replace_index ($link $x $y) ($link $nx $ny)) 
+          (-> (valuation X ($link $nx $ny) $valx)
+          (-> (valuation Y ($link $nx $ny) $valy)
+            (-> (depth-handler X $valx $valy $shab $shabx)
+            (-> (depth-handler Y $valy $valx $shabx $shaby)
+            (-> (replace_variables ($shabx $shaby))
+              (specializationOf ($link $x $y) ($link $shabx $shaby))))))))))
 
 
 ;;support of specialized patterns rule
