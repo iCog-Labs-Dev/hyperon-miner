@@ -50,14 +50,15 @@
 ; ;; Verifies zero-based indexing of knowledge base elements  
 ; ;; Expected: Third element is (Inheritance Bob human)
 ; ;; =============================================================================
-!(assertEqual (get-element-by-Index ((Inheritance Abe human) 
+
+!(assertEqual (get-element-by-Index ((Inheritance Abe human)
                              (Inheritance Rio human)
                              (Inheritance Bob human)
                              (Inheritance Mike human)
                              (Inheritance Mike Nil)
                              (Inheritance Zac human)
                              (Inheritance Zac human)
-                             (Parent Abe Nil)) 2)
+                             (Parent Abe Nil)) 2) 
               (Inheritance Bob human))
 
 ; ;; =============================================================================

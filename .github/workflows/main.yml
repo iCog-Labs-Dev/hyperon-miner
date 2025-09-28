@@ -9,6 +9,7 @@ on:
     branches:
       - master
       - experiments
+    types: [opened, synchronize, reopened]
 
 jobs:
   setup-and-test:
@@ -28,6 +29,7 @@ jobs:
         pip install numpy==2.2.1
         python -m pip install hyperon==0.2.6
         pip install regex==2023.12.25
+        pip install scipy==1.13.1
         metta --version
 
     - name: Run tests

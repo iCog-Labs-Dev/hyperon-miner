@@ -1,6 +1,6 @@
  ! (register-module! ../../../../hyperon-miner)
- ! (import! &self hyperon-miner:experiments:rules:freq-pat)
- ! (import! &self hyperon-miner:experiments:rules:build-specialization)
+ ! (import! &self hyperon-miner:experiments:frequent-pattern-miner:freq-pat)
+ ! (import! &self hyperon-miner:experiments:frequent-pattern-miner:build-specialization)
  ! (bind! &specspace (new-space))
  ! (bind! &specredspace (new-space))
 

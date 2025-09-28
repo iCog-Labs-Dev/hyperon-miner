@@ -47,9 +47,10 @@
                   (add-atom (superpose ($kb1 $kb2)) (: msT (ms-threshold $ms)))
                   (add-atom (superpose ($kb1 $kb2)) (: dbref (db-ref $db)))
                   (add-atom (superpose ($kb1 $kb2)) (: dbr (db-ratio $db-ratio)))
+                  (add-reduct (superpose ($kb1 $kb2)) (: dbsize (db-size (db_size $db))))
                   (add-atom (superpose ($kb1 $kb2)) (surp-mod $surp))
                   (add-atom (superpose ($kb1 $kb2)) (db-ratio $db-ratio))
-                  (add-atom (superpose ($kb1 $kb2)) (db-size (db_size $db)))
+                  (add-reduct (superpose ($kb1 $kb2)) (db-size (db_size $db)))
                   (add-atom (superpose ($kb1 $kb2)) (db-ref $db))
                   (add-atom $kb2 (: surpMode (surp-mode $surp)))
                   (add-reduct $kb2 (if $normalization
@@ -63,7 +64,7 @@
 -----------------------------------------------------------
 ;;Returns frequent patters with their support from the kb
 (= (get-patterns $kb $res) (
-    match $kb  (: $prf (hasSupport $nptrn $count))  (add-atom $res   (hasSupport $nptrn $count))        
+    match $kb  (: $prf (hasSupport $nptrn $count))  (add-atom $res   (: $prf (hasSupport $nptrn $count)))        
 ))
 
 
@@ -75,9 +76,9 @@
 ;; otherwise launches the backward chainer for surprising patterns mining
 (= (mine-surp $kb $res $surp-mode)  
   ( case $surp-mode (
-        (none  (let $result  (get-patterns $kb $res) (add-atom $res $result)) ) 
+        (none    (get-patterns $kb $res) ) 
         (jsdsurp (let $result  (syn $kb (fromNumber 13) (: $prf (jsdsurp $what_is_surprise $value)))   (add-atom $res $result)))
-        ($_        (let (: $prf $ccln) (syn $kb (fromNumber 17) (: $prf (isurp $what_is_surprise $value)))    (add-atom $res $ccln)))
+        ($_        (let (: $prf $ccln) (syn $kb (fromNumber 17) (: $prf (Isurp $what_is_surprise $value)))    (add-atom $res (: $prf $ccln))))
     )                                                         
 ))
 
@@ -97,8 +98,10 @@
         (() (frequent-miner &db &freq-kb $num-of-conjuct)) 
         ($dummy3 (collapse (match &freq-kb (: $prf (hasSupport $nptrn $count))  (add-atom &surp-kb (: $prf (hasSupport $nptrn $count))))))
         (() (println! "==== Surprissingness Scoring Started ====="))
-        ($dummy4  (mine-surp &surp-kb &res $surp-mode))
+        ($dummy4  (collapse (mine-surp &surp-kb &res $surp-mode)))
     )    
-        (match &freq-kb $x $x)
-         ; (get-atoms &res)
+       ; (match &surp-kb $x $x)
+          (get-atoms &res)
+        ; $dummy4
+    
 ))
