@@ -90,12 +90,12 @@
 ;; pattern-miner
 --------------------------------------------------------------------------------------
 ;; Chainer-based frequent and surprisingness pattern miner.
-(= (pattern-miner $dbspace $freq-kb $surp-kb $ms $num-of-conjuct $surp-mode $db-ratio $norm) (
+(= (pattern-miner $dbspace $freq-kb $surp-kb $ms $num-of-conjuct $cnj_exp $surp-mode $db-ratio $norm) (
     let* (
         (() (println! "==== Pattern Miner Started ====="))
         ($dummy (collapse (clean-atomspaces $dbspace $freq-kb $surp-kb)))
         ($dummy2 (collapse (init-miner &db &freq-kb &surp-kb $ms $surp-mode $db-ratio $norm)))
-        (() (frequent-miner &db &freq-kb $num-of-conjuct)) 
+        (() (frequent-miner &db &freq-kb $num-of-conjuct $cnj_exp)) 
         ($dummy3 (collapse (match &freq-kb (: $prf (hasSupport $nptrn $count))  (add-atom &surp-kb (: $prf (hasSupport $nptrn $count))))))
         (() (println! "==== Surprissingness Scoring Started ====="))
         ($dummy4  (collapse (mine-surp &surp-kb &res $surp-mode)))
