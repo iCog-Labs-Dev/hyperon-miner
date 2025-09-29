@@ -1,2 +1,11 @@
+!(register-module! ../../../../hyperon-miner/experiments)
 ! (import! &self eq_prob_update)
-! (eq-prob-func ((Human $y $z) (Human $x $y) (Human $x Tinsae)) (Human $x $z) ((Human $x Swe) (Human Yes $y) (Human $x No) (Human $x Swe)))
+! (import! &db experiments:data:ugly_man_sodaDrinker)
+
+
+(= (eq-prob-adapter $partition $pattern $db)
+    
+    (let $db_content (get-atoms $db) (eq-prob-func $partition $pattern $db_content))
+)
+
+! (eq-prob-adapter ((Inheritance $x $y) (Inheritance $x man) (Inheritance $z human)) (Inheritance $x $z) &db)
