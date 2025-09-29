@@ -26,7 +26,7 @@
 
 ! (import! &self experiments:utils:remove_useless_clauses)
 ! (import! &self experiments:utils:index_to_var)
-! (import! &db experiments:data:very-small-ugly)
+! (import! &db experiments:data:small-ugly)
 
 
 
