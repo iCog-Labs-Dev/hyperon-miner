@@ -249,6 +249,19 @@
 )
 
 -----------------------------------------------------------------------------
+;;system proof to replace debruijn index with variables
+(= (syn $kb $_ (: $prf (sort_conjunctions $ptrn $res)))
+    (let* (
+        ($new_ptrn (call_sort_conj $ptrn))
+        )
+    (if (== $new_ptrn ())
+          (empty)
+             (: CPUSortConjunctions (sort_conjunctions $ptrn $new_ptrn))
+        )    
+    )
+)
+
+-----------------------------------------------------------------------------
 ;; system proof to get variables of a pattern
 (= (syn $kb $_ (: $prf (get_variables $ptrn $vars)))
     (let* (
@@ -362,6 +375,11 @@
 ------------------------------------------------------------------------------
 (= (syn $kb $_ (: $prf  (flatten-cpu $nptrn $fptrn))) (
     let $flatten (flatten $nptrn) (: FLATCPU (flatten-cpu $nptrn $flatten))
+))
+
+------------------------------------------------------------------------------
+(= (syn $kb $_ (: $prf  (join-cpu $nptrn $jptrn))) (
+    let $joined (cons-atom , $nptrn) (: CPUJoin (join-cpu $nptrn $joined))
 ))
     
         
