@@ -7,6 +7,50 @@
 (=(checkPat $x) (let $type (get-metatype $x) (if (not (== $type Expression)) False (and  ( > (size-atom $x) 1) (let $head (car-atom $x) (== (get-metatype $head) Symbol))) ) ))
 
 
+;;
+;; custom intersection atom fucntionality as a work around for mettalog
+
+;; watchout for the inversion of order in inequalities like from <= ro =<
+(= (custom-intersection $a $b) (let* (($type-a (get-metatype $a ) ) ($type-b (get-metatype $b))) (if (or (not (== $type-a Expression) ) (not (== $type-b Expression))) (incorrect-inputs)
+
+(let* (
+    ($size-a (size-atom $a)) 
+    ($size-b (size-atom $b)) (($target-exp $other) (if  (=< $size-a $size-b) ($a $b) ($b $a))) 
+    
+    ($ans (custom-intersection-helper () $target-exp $other ))
+    ; ($ans (collapse (superInter $target-exp (superpose $other))))
+    )
+
+$ans
+)
+
+)))
+
+(=(superInter $tar $look) (if (== $tar $look) $tar (empty)))
+
+
+(= (custom-intersection-helper $acc $tar $other )
+
+(if (== $tar ()) $acc
+    
+    (let* (
+    (($head $tail) (decons-atom $tar))
+    
+    ($inter (intersection-atom ($head) $other))
+    ($size-inter (size-atom $inter))
+    ($new-acc (if (> $size-inter 0) (cons-atom $head $acc) $acc))
+    
+    )
+        (custom-intersection-helper $new-acc $tail $other)
+    
+    ))
+
+)
+
+
+;;
+
+
 ;;;;;;;;;; functions related to Conjunction ;;;;;;;;;;;;
 
 ;; Extracts conjuncts from a conjunctive expression,

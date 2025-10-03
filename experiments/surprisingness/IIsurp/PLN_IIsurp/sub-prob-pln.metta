@@ -22,8 +22,10 @@
 ; ))
 
 
+(= (cart-helper $lst $acc $db ) (collapse (cart-helper_ $lst $acc $db)))
+
 ;the output needs to be collasped by the caller
-(=(cart-helper $lstofsubpatterns  $acc $db) (if (not (== $lstofsubpatterns ()))
+(=(cart-helper_ $lstofsubpatterns  $acc $db) (if (not (== $lstofsubpatterns ()))
 
 (let* (
   (($head $tail) (decons-atom $lstofsubpatterns))
@@ -36,7 +38,7 @@
 ;the accumulator here is also undetrministic becuase we are adding superposed elements to it
 ($new (cons-atom  ($link $a $subcon-el) $acc)))
 ;each time it cals itself, its creating branches with all the elemnts superposed on each previous braches
-(cart-helper $tail $new $db)
+(cart-helper_ $tail $new $db)
 )
 
 $acc
@@ -140,7 +142,7 @@ $coh
 
 
 ; ($cart-combs (collapse (cart-helper $conjunct ())))
-($cart-combs (collapse (cart-helper $filted-conjunct-w-subconcepts () $db)))
+($cart-combs (cart-helper $filted-conjunct-w-subconcepts () $db))
 
 ; ($filtered-conc (collapse (filter-subpatterns-wout-subs (superpose $conjunct) $db )))
 

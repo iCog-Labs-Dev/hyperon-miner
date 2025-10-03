@@ -98,22 +98,23 @@ $coh
   ($comb-support (collapse (match $db $comb-conj $comb-conj)))
   ($sup-num (size-atom $comb-support))
   ($comb-prob-main (// $sup-num $total_count))
+  ($conf (count_to_confidence $total_count))
 
   
   ($prob-bodies (collapse (get-conc-prob-for-sub (superpose $comb) $db $total_count))) 
 
-($subProbsmax (collapse (getcohfact_sub (superpose $prob-bodies)  max)))
-($Accumulatedcohformax (prob-accumulator $subProbsmax))
-($maxsubprob (* $comb-prob-main $Accumulatedcohformax))
+; ($subProbsmax (collapse (getcohfact_sub (superpose $prob-bodies)  max)))
+($Accumulatedcohformax (prob-accumulator $prob-bodies))
+($new_conf (* $conf $Accumulatedcohformax))
 
-($subProbsmin (collapse (getcohfact_sub (superpose $prob-bodies)  min)))
-($Accumulatedcohformin (prob-accumulator $subProbsmin))
-($minsubprob (* $comb-prob-main $Accumulatedcohformin))
+; ($subProbsmin (collapse (getcohfact_sub (superpose $prob-bodies)  min)))
+; ($Accumulatedcohformin (prob-accumulator $subProbsmin))
+; ($minsubprob (* $comb-prob-main $Accumulatedcohformin))
  
 
 
 ))
-($maxsubprob $minsubprob)
+(TruthValue $comb-prob-main $new_conf)
 
 )
 
@@ -139,7 +140,7 @@ $coh
 
 
 ; ($cart-combs (collapse (cart-helper $conjunct ())))
-($cart-combs (cart-helper $filted-conjunct-w-subconcepts () $db))
+($cart-combs  (cart-helper $filted-conjunct-w-subconcepts () $db))
 
 ; ($filtered-conc (collapse (filter-subpatterns-wout-subs (superpose $conjunct) $db )))
 
@@ -154,17 +155,14 @@ $coh
 
 ($comb-probs (collapse (get-comb-prob (superpose $with-conc) $db $total_count)))
 
-($allMaxs (collapse (handleCartProbs (superpose $comb-probs) max)))
-($max-bound (max-atom $allMaxs))
+(($sub_avrg_str $sub_avrg_conf  ) (avrg_tv $comb-probs))
 
-($allMins (collapse (handleCartProbs (superpose $comb-probs) min)))
-($min-bound (max-atom $allMins))
 
 
 
 
 )
-($max-bound $min-bound)
+(TruthValue $sub_avrg_str $sub_avrg_conf)
 )))
 
 )
@@ -198,7 +196,7 @@ let ($max $min) $list-el (if (== $type max) $max $min)
 (=(filter-subpatterns-wout-subs $subpattern $wsubs $db)
 (let* (
   ($pats (collapse (return_only_pats (superpose $wsubs) )))
-  ($intersec (intersection-atom ($subpattern) $pats))
+  ($intersec (custom-intersection ($subpattern) $pats))
   ($size (size-atom $intersec))
   
   (($link $a $b) $subpattern)

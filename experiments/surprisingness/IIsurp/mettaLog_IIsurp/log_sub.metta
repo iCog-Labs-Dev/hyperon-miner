@@ -139,7 +139,7 @@ $coh
 
 
 ; ($cart-combs (collapse (cart-helper $conjunct ())))
-($cart-combs (cart-helper $filted-conjunct-w-subconcepts () $db))
+($cart-combs  (cart-helper $filted-conjunct-w-subconcepts () $db))
 
 ; ($filtered-conc (collapse (filter-subpatterns-wout-subs (superpose $conjunct) $db )))
 
@@ -198,7 +198,7 @@ let ($max $min) $list-el (if (== $type max) $max $min)
 (=(filter-subpatterns-wout-subs $subpattern $wsubs $db)
 (let* (
   ($pats (collapse (return_only_pats (superpose $wsubs) )))
-  ($intersec (intersection-atom ($subpattern) $pats))
+  ($intersec (custom-intersection ($subpattern) $pats))
   ($size (size-atom $intersec))
   
   (($link $a $b) $subpattern)
