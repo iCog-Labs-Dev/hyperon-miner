@@ -72,10 +72,10 @@
 
 ;;; rule to format the patterns with their support
 (: supportFormat
-(-> (candidatePattern $ptrn $count)
-  (-> (replace_index $ptrn $nptrn)
-      (-> (clause_count $nptrn $clcnt)
-        (-> (maxClauses $max) 
-         (-> (⍄  $clcnt $max)
-          (-> (flatten-cpu $nptrn $fptrn)
-           (hasSupport $fptrn $count))))))))
+  (-> (candidatePattern $ptrn $count)
+    (-> (clause_count $ptrn $clcnt)
+      (-> (maxClauses $max) 
+        (-> (⍄  $clcnt $max)
+          (-> (sort_conjunctions $ptrn $sorted)
+            (-> (join-cpu $sorted $jptrn)
+             (hasSupport $jptrn $count))))))))

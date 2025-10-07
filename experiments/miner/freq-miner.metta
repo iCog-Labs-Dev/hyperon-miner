@@ -34,7 +34,7 @@
 ;; support 
 -------------------------------------------------
 ;; Annotate the support of specialized patterns
-(= (support $depth $kb)
+(= (support_ $depth $kb)
    (let* (
     (() (println! "==== Computing support =====") )
     ($res (syn $kb $depth (: $prf (supportOf $sptrn $cnt))))
@@ -105,7 +105,7 @@
         (() (println! "==== Frequent Miner Started =====") )
          ($re (collapse (abstract (fromNumber 5) $kb)))
          ($res (collapse (specialization (fromNumber 5) $kb)))
-         ($resu (collapse (support (fromNumber 3) $kb)))
+         ($resu (collapse (support_ (fromNumber 3) $kb)))
          ($atom (: candidate (-> (minsup $ptrn $cnt) (-> (replace_variables $ptrn) (candidatePattern $ptrn $cnt)))))
          ($add (add-atom $kb $atom))
          ($result (collapse (candidate (fromNumber 5) $kb)))
