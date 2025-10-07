@@ -18,7 +18,7 @@
 
 ! (import! &self experiments:truth-values:emp-tv)
 
-  ! (import! &db experiments:data:ugly_man_sodaDrinker)
+! (import! &db experiments:data:ugly_man_sodaDrinker)
  
   
 ! (import! &dbc experiments:data:nested_coupled:mock_coupled)
@@ -168,8 +168,10 @@ Added and configured a dedicated test file for validation.
 (Inheritance (And (And (Person $x)   man) (Or human sodaDrinker)) (Or (And human man) (And human ugly)))
 
 ) &dbn False 1) 0.001216)
+; !(is-blk-more-abstract ((Inheritance $x $y)) ((Inheritance $x ugly)) $x)
 
 
 
 
 
+! (eq-prob ((Inheritance $x $y) (Inheritance $x man) (Inheritance $z human)) (Inheritance $x $z) &db)
