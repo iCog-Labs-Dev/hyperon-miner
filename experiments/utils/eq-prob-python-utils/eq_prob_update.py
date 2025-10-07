@@ -425,22 +425,25 @@ def is_free_in_any_tree(block, var):
 def process_blocks(sorted_partition, var, db, p, j): 
     # Base case: if j >= partition_size, return p
     partition_size = len(sorted_partition)
+    print("partition_size",partition_size)
     if j >= partition_size:
         return p
     
     # Get current block j
     j_blk = sorted_partition[j]
-    
+    print("j_blk",j_blk)
     # Find most specialized abstract block (find-most-specialized-abstract equivalent)
     i = find_most_specialized_abstract(sorted_partition, j_blk, var, j - 1)
-    
+    print("i",i)
     # Calculate count c
     if i >= 0:
         i_blk = sorted_partition[i]
         c = value_count(i_blk, var, db)
+        print("c",c)
     else:
         # Use |U| = db.size() as fallback
         c = len(db)
+        print("c fallback",c)
     
     # Calculate new probability
     new_p = p / c if c > 0 else p
@@ -454,6 +457,7 @@ def find_most_specialized_abstract(sorted_partition, j_blk, var, max_i):
     while i >= 0:
         i_blk = sorted_partition[i]
         if is_blk_more_abstract(i_blk, j_blk, var):
+            print("found abstract block at i:", i)
             return i
         i -= 1
     return -1  # No abstract block found
@@ -465,21 +469,22 @@ def parseToExpression(strings):
     return strings
 def value_count(blk, var, db):
     blk = parseToExpression(str(blk))
-    # print("blk:", blk)
+    # print(blk)
     db = parseToExpression(str(db))
     var = parseToExpression(str(var))
     count_value = metta.run(
         f""" 
         !(bind! &temp_db (new-space))
-        (= (create-space $db_content)
-            (let $atom (add-atom &temp_db $db_content))
-        )
-        ! (create-space {db})
+        
+        !(add-reducts &temp_db {db})
+        
         (= (value-count $blk $var $db) 
         (let $conj-blk (union-atom (,) $blk) (let*
         (  
-        ; (() (println! ("conj-blk:" $conj-blk)))
-        ($match-values (collapse (match $db $conj-blk $var)) )
+        (() (println! ("conj-blk:" $conj-blk)))
+        ($match-values (collapse (match &temp_db $conj-blk $var)) )
+        ;(() (println! ("match-values:" $match-values)))
+        ;(() (println! ("count:" (size-atom $match-values))))
         ($ground-value (unique-atom $match-values))
      
      ) (size-atom $ground-value))))
@@ -488,7 +493,9 @@ def value_count(blk, var, db):
         """
     )
     value = len(count_value)
-    return value
+    int_value = count_value[-1][0].get_object().value
+    print( type(int_value))
+    return int_value 
     
 def eq_prob(metta, partition, pattern, db):
     # db_m = f"! (get-atoms {db})"
@@ -503,14 +510,15 @@ def eq_prob(metta, partition, pattern, db):
     for var in joint_vars:
         # Select all strongly connected subpatterns containing var
         var_partition = connected_subpatterns_with_var(parsed_partition, var)
-
+        print("var_partition:", var_partition)
         # For each variable, sort the partition so that abstract
         # blocks, relative to var, appear first.
         sorted_var_partition = sort_by_abstraction(var_partition, var)
-        #print("sorted_var_partition:", sorted_var_partition)
+        print("sorted_var_partition:", sorted_var_partition)
         # Process blocks starting from j=1 (skip first block)
         # This implements the C++ loop: for (int j = 1; j < (int)var_partition.size(); j++)
         var_prob = process_blocks(sorted_var_partition, var, parsed_db, 1.0, 1)
+        print("var_prob:", var_prob)
         # Multiply the probability for this variable
         p *= var_prob
     
