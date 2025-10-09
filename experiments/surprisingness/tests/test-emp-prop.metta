@@ -7,12 +7,8 @@
 ; ! (import! &self experiments:rules:emp-prob)
 
 ! (import! &self experiments:surprisingness:emp-prob)
-; ! (import! &self experiments:rules:emp-tv)
-; ! (import! &self experiments:rules:est-tv)
 ! (import! &self experiments:truth-values:emp-tv)
 ! (import! &self experiments:truth-values:est-tv)
-; ! (import! &self experiments:utils:eq_prob)
-; ! (import! &self experiments:rules:isurp)
 ! (import! &self experiments:surprisingness:isurp)
 ! (import! &self experiments:utils:beta-dist)
 ! (import! &self experiments:utils:bs-utils)

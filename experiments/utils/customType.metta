@@ -18,7 +18,7 @@
 (: Z Nat)
 (: S (-> Nat Nat))
 
-
+; (: (get-space) SpaceType)  this is causing problem
 
 
 (: TruthValue Type)
