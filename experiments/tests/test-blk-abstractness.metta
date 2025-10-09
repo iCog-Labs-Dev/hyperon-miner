@@ -1,7 +1,7 @@
 
 ! (register-module! ../../../hyperon-miner)
 ! (import! &self hyperon-miner:experiments:utils:common-utils)
-! (import! &self hyperon-miner:experiments:rules:freq-pat)
+! (import! &self hyperon-miner:experiments:frequent-pattern-miner:freq-pat)
 ! (import! &self hyperon-miner:experiments:utils:index_to_var)
 ! (import! &self hyperon-miner:experiments:utils:blk-abstractness)
 ! (import! &self hyperon-miner:experiments:utils:gen_partition)
