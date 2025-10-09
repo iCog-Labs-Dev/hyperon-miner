@@ -154,9 +154,6 @@ Added and configured a dedicated test file for validation.
 
 
 
-; ! (connected-subpatterns-with-var ((Human $x Eat)) (((Human) ($x Eat))))
-=======
-
 
 ; !(isurp (, (Inheritance (And (And (Person $x) man) (Or human sodaDrinker)) (Or (And human man) (And human sodaDrinker)))
 
