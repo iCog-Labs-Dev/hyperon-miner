@@ -7,14 +7,31 @@ import re
 metta = MeTTa()
 
 def parseFromExpresstion(metta, expresion, dimention):
+    # Convert a MeTTa expression tree into nested Python lists of strings
+    def to_ast_list(node):
+        get_children = getattr(node, 'get_children', None)
+        if callable(get_children):
+            children = get_children()
+            return [to_ast_list(child) for child in children]
+        return str(node).replace("#", "")
+
     if dimention == 1:
-        return [str(child).replace("#", "") for child in expresion.get_children()]
+        # Produce a nested list AST for the expression
+        return to_ast_list(expresion)
     elif dimention == 2:
-        out = []
+        # Each top-level child is either a clause or a group of clauses (a block)
+        blocks = []
         for childExp in expresion.get_children():
-            out.append([[str(child).replace("#", "")
-                       for child in childExp.get_children()]])
-        return out
+            grandchildren = getattr(childExp, 'get_children', lambda: [])()
+            if grandchildren:
+                # If grandchildren are present, decide if this is a group of clauses
+                # We treat each grandchild as a clause
+                block = [to_ast_list(gc) for gc in grandchildren]
+            else:
+                # Single clause block
+                block = [to_ast_list(childExp)]
+            blocks.append(block)
+        return blocks
 
 def powerset_without_empty(blk):
     """Generate all non-empty subsets of a block"""
@@ -298,7 +315,7 @@ def joint_variables(pattern, partition):
     # Return variables that appear in more than 1 block
     joint_vars = []
     for var, count in var_count.items():
-        if count >= 1:  # appears in 2+ blocks
+        if count > 1:  # appears in 2+ blocks
             joint_vars.append(var)
     
     return joint_vars
@@ -309,19 +326,6 @@ def connected_subpattern_with_var(block, var):
         return block
     return []
 
-# def connected_subpattern_with_var(block, var):
-#     if not is_free_in_any_tree(block, var):
-#         return []
-    
-#     # Get all strongly connected components
-#     components = get_components(block)
-    
-#     # Find the component containing the variable
-#     for component in components:
-#         if is_free_in_any_tree(component, var):
-#             return component
-    
-#     return []
 
 def connected_subpatterns_with_var(partition, var):
     var_partition = []
@@ -343,65 +347,6 @@ def is_free_in_any_tree(block, var):
         return any(is_var_in_item(clause, var) for clause in block)
     return is_var_in_item(block, var)
 
-# def get_components(clauses):
-#     if not clauses:
-#         return []
-    
-#     # Extract all variables from all clauses
-#     def get_vars_from_clause(clause):
-#         vars_set = set()
-#         def extract_vars(item):
-#             if isinstance(item, list):
-#                 for sub in item:
-#                     extract_vars(sub)
-#             elif is_variable(item):
-#                 vars_set.add(item)
-#         extract_vars(clause)
-#         return vars_set
-    
-#     # Build variable-to-clauses mapping
-#     var_to_clauses = {}
-#     clause_vars = {}
-    
-#     for i, clause in enumerate(clauses):
-#         vars_in_clause = get_vars_from_clause(clause)
-#         clause_vars[i] = vars_in_clause
-        
-#         for var in vars_in_clause:
-#             if var not in var_to_clauses:
-#                 var_to_clauses[var] = set()
-#             var_to_clauses[var].add(i)
-    
-#     # Find connected components using union-find approach
-#     components = []
-#     visited = set()
-    
-#     for i, clause in enumerate(clauses):
-#         if i in visited:
-#             continue
-            
-#         # Start a new component
-#         component = []
-#         to_visit = [i]
-        
-#         while to_visit:
-#             current = to_visit.pop()
-#             if current in visited:
-#                 continue
-                
-#             visited.add(current)
-#             component.append(clauses[current])
-            
-#             # Find all clauses connected through shared variables
-#             for var in clause_vars[current]:
-#                 for connected_clause_idx in var_to_clauses[var]:
-#                     if connected_clause_idx not in visited:
-#                         to_visit.append(connected_clause_idx)
-        
-#         if component:
-#             components.append(component)
-#     # print("component:", components)
-#     return components
 
 
 # =============================================================================
@@ -425,25 +370,20 @@ def is_free_in_any_tree(block, var):
 def process_blocks(sorted_partition, var, db, p, j): 
     # Base case: if j >= partition_size, return p
     partition_size = len(sorted_partition)
-    print("partition_size",partition_size)
     if j >= partition_size:
         return p
     
     # Get current block j
     j_blk = sorted_partition[j]
-    print("j_blk",j_blk)
     # Find most specialized abstract block (find-most-specialized-abstract equivalent)
     i = find_most_specialized_abstract(sorted_partition, j_blk, var, j - 1)
-    print("i",i)
     # Calculate count c
     if i >= 0:
         i_blk = sorted_partition[i]
         c = value_count(i_blk, var, db)
-        print("c",c)
     else:
         # Use |U| = db.size() as fallback
         c = len(db)
-        print("c fallback",c)
     
     # Calculate new probability
     new_p = p / c if c > 0 else p
@@ -481,7 +421,7 @@ def value_count(blk, var, db):
         (= (value-count $blk $var $db) 
         (let $conj-blk (union-atom (,) $blk) (let*
         (  
-        (() (println! ("conj-blk:" $conj-blk)))
+        ;(() (println! ("conj-blk:" $conj-blk)))
         ($match-values (collapse (match &temp_db $conj-blk $var)) )
         ;(() (println! ("match-values:" $match-values)))
         ;(() (println! ("count:" (size-atom $match-values))))
@@ -494,7 +434,6 @@ def value_count(blk, var, db):
     )
     value = len(count_value)
     int_value = count_value[-1][0].get_object().value
-    print( type(int_value))
     return int_value 
     
 def eq_prob(metta, partition, pattern, db):
@@ -510,15 +449,12 @@ def eq_prob(metta, partition, pattern, db):
     for var in joint_vars:
         # Select all strongly connected subpatterns containing var
         var_partition = connected_subpatterns_with_var(parsed_partition, var)
-        print("var_partition:", var_partition)
         # For each variable, sort the partition so that abstract
         # blocks, relative to var, appear first.
         sorted_var_partition = sort_by_abstraction(var_partition, var)
-        print("sorted_var_partition:", sorted_var_partition)
         # Process blocks starting from j=1 (skip first block)
         # This implements the C++ loop: for (int j = 1; j < (int)var_partition.size(); j++)
         var_prob = process_blocks(sorted_var_partition, var, parsed_db, 1.0, 1)
-        print("var_prob:", var_prob)
         # Multiply the probability for this variable
         p *= var_prob
     
