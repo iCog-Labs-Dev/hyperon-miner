@@ -22,7 +22,7 @@
     (map-atom $pattern $x (if (== (get-type $x) Nat) (generate $x) (if (and (not (== (get-type $x) Nat)) (== (get-metatype $x) Expression)) (replacev $x) $x))) ;
 )
 (= (num2deb $pattern)
-    (map-atom $pattern $x (if (== (get-type $x) Number) (fromNumber $x) (if (and (not (== (get-type $x) Number)) (== (get-metatype $x) Expression)) (num2deb $x) $x)))
+    (map-atom $pattern $x (if (== (get-type $x) Number) (fromNum $x) (if (and (not (== (get-type $x) Number)) (== (get-metatype $x) Expression)) (num2deb $x) $x)))
 )
 
 (= (replace $pattern)
