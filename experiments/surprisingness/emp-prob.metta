@@ -237,7 +237,7 @@
                 
                 ($subsize (subsmp-size $pattern $db-size $support-estimate))
                 
-                    ($n-resample 10)
+                    ($n-resample (let $x (py-input "how many re-samples do you want:- " ) $x))
                     ($emp-prob (emp_prob_bs $pattern $db $n-resample $subsize))
                     
                     )
