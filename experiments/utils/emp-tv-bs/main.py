@@ -14,7 +14,7 @@ DEFAULT_K = 800.0
 
 def register_input(prompt):
     print("i am in register input, python function")
-    return [metta.parse_single(input(prompt))]
+    return [MeTTa().parse_single(input(prompt))]
 
 def get_beta_distribution(emp_tv):
     emp_tv = emp_tv.get_children()  # cdr-atom
