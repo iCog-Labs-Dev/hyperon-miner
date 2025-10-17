@@ -887,7 +887,6 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
 (= (db_size $db)
     (let* 
         (
-        ($__ (println! $db))
         ($db-content  (collapse (get-atoms $db))) 
         ($db-size (tuple-count $db-content))
        )

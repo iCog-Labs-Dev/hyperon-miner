@@ -148,3 +148,6 @@ Generates all subsets (the powerset) of a given list
                 ($head (car-atom $list1))
                 ($tail (concat-atom (cdr-atom $list1) $list2)))
             (cons-atom $head $tail))))
+
+(= (generet-partition-without-pattern $lst) (partitions (get-clauses $lst)))
+        
