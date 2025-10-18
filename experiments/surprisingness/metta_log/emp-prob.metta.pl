@@ -1,93 +1,8 @@
-%% Generated from /home/eyobderese/iCog-repo/hyperon-miner/experiments/surprisingness/metta_log/emp-prob.metta at 2025-10-03T12:03:53+03:00
+%% Generated from /home/eyobderese/iCog-repo/hyperon-miner/experiments/surprisingness/metta_log/emp-prob.metta at 2025-10-18T23:17:27+03:00
 :- style_check(-discontiguous).
 :- style_check(-singleton).
 :- include(library(metta_lang/metta_transpiled_header)).
 :- set_prolog_flag(pfc_term_expansion, true).
-
-
-
-<span class="pl-compound pl-level-0"><span class="pl-prefix">==&gt;</span>(<span class="pl-compound"><span class="pl-atom">top_call_11</span><span class="pl-infix">:-</span><span class="pl-compound"><span class="pl-functor">eval_H</span>(<span class="pl-args"><span class="pl-ellipsis">...</span>, <span class="pl-ellipsis">...</span></span>)</span></span>)</span>.
-
-
-
-
-<span class="pl-compound pl-level-0"><span class="pl-prefix">==&gt;</span>(<span class="pl-compound"><span class="pl-atom">top_call</span><span class="pl-infix">:-</span><span class="pl-compound"><span class="pl-functor">time</span>(<span class="pl-args"><span class="pl-ellipsis">...</span></span>)</span></span>)</span>.
-
-
-
-
-<span class="pl-atom">top_call_11</span>:- <span class="pl-compound pl-level-0"><span class="pl-functor">eval_H</span>(<span class="pl-args"><span class="pl-list"><span class="pl-functor"> [ </span><span class="pl-args"><span class="pl-atom">'import!'</span>|<span class="pl-ellipsis">...</span></span>]</span>, <span class="pl-var">ExecRes</span></span>)</span>.
-
-
-
-
-top_call :-
-    time(top_call_11).
-
-
-
-
-<span class="pl-compound pl-level-0"><span class="pl-prefix">==&gt;</span>(<span class="pl-compound"><span class="pl-atom">top_call_12</span><span class="pl-infix">:-</span><span class="pl-compound"><span class="pl-functor">eval_H</span>(<span class="pl-args"><span class="pl-ellipsis">...</span>, <span class="pl-ellipsis">...</span></span>)</span></span>)</span>.
-
-
-
-
-<span class="pl-compound pl-level-0"><span class="pl-prefix">==&gt;</span>(<span class="pl-compound"><span class="pl-atom">top_call</span><span class="pl-infix">:-</span><span class="pl-compound"><span class="pl-functor">time</span>(<span class="pl-args"><span class="pl-ellipsis">...</span></span>)</span></span>)</span>.
-
-
-
-
-<span class="pl-atom">top_call_12</span>:- <span class="pl-compound pl-level-0"><span class="pl-functor">eval_H</span>(<span class="pl-args"><span class="pl-list"><span class="pl-functor"> [ </span><span class="pl-args"><span class="pl-atom">'import!'</span>|<span class="pl-ellipsis">...</span></span>]</span>, <span class="pl-var">ExecRes</span></span>)</span>.
-
-
-
-
-top_call :-
-    time(top_call_12).
-
-
-
-
-( <span class="pl-atom">==&gt;</span><span class="pl-functor"> ( </span><span class="pl-ellipsis clickprev fold"></span><span class="pl-args">
-   <span class="pl-atom">top_call_14</span>:- <span class="pl-compound pl-level-0"><span class="pl-functor">eval_H</span>(<span class="pl-args"><span class="pl-list"><span class="pl-functor"> [ </span><span class="pl-args"><span class="pl-atom">'import!'</span>|<span class="pl-ellipsis">...</span></span>]</span>, <span class="pl-anon">_</span></span>)</span></span>) ).
-
-
-
-
-<span class="pl-compound pl-level-0"><span class="pl-prefix">==&gt;</span>(<span class="pl-compound"><span class="pl-atom">top_call</span><span class="pl-infix">:-</span><span class="pl-compound"><span class="pl-functor">time</span>(<span class="pl-args"><span class="pl-ellipsis">...</span></span>)</span></span>)</span>.
-
-
-
-
-<span class="pl-atom">top_call_14</span>:- <span class="pl-compound pl-level-0"><span class="pl-functor">eval_H</span>(<span class="pl-args"><span class="pl-list"><span class="pl-functor"> [ </span><span class="pl-args"><span class="pl-atom">'import!'</span>|<span class="pl-ellipsis">...</span></span>]</span>, <span class="pl-var">ExecRes</span></span>)</span>.
-
-
-
-
-top_call :-
-    time(top_call_14).
-
-
-
-
-<span class="pl-compound pl-level-0"><span class="pl-prefix">==&gt;</span>(<span class="pl-compound"><span class="pl-atom">top_call_15</span><span class="pl-infix">:-</span><span class="pl-compound"><span class="pl-functor">eval_H</span>(<span class="pl-args"><span class="pl-ellipsis">...</span>, <span class="pl-ellipsis">...</span></span>)</span></span>)</span>.
-
-
-
-
-<span class="pl-compound pl-level-0"><span class="pl-prefix">==&gt;</span>(<span class="pl-compound"><span class="pl-atom">top_call</span><span class="pl-infix">:-</span><span class="pl-compound"><span class="pl-functor">time</span>(<span class="pl-args"><span class="pl-ellipsis">...</span></span>)</span></span>)</span>.
-
-
-
-
-<span class="pl-atom">top_call_15</span>:- <span class="pl-compound pl-level-0"><span class="pl-functor">eval_H</span>(<span class="pl-args"><span class="pl-list"><span class="pl-functor"> [ </span><span class="pl-args"><span class="pl-atom">'import!'</span>|<span class="pl-ellipsis">...</span></span>]</span>, <span class="pl-var">ExecRes</span></span>)</span>.
-
-
-
-
-top_call :-
-    time(top_call_15).
-
 
 %  ; ;;types
 %  ; (: emp-prob (-> Pattern SpaceType Number))
@@ -142,18 +57,18 @@ top_call :-
 
 
 ( <span class="pl-atom">==&gt;</span><span class="pl-functor"> ( </span><span class="pl-ellipsis clickprev fold"></span><span class="pl-args">
-   <span class="pl-compound pl-level-0"><span class="pl-functor">mc</span>(<span class="pl-args"><span class="pl-atom">'emp-prob'</span>, <span class="pl-var">_pattern101</span>, <span class="pl-var">_db109</span>, <span class="pl-var">RetVal835</span></span>)</span> :- 
-     <span class="pl-compound pl-level-0"><span class="pl-functor">ensure_evaled</span>(<span class="pl-args"><span class="pl-atom">'%Undefined%'</span>, <span class="pl-avar">_73842126{vn = ..., cns = ...}</span>, <span class="pl-avar">_73842230{vn = ..., cns = ...}</span></span>)</span> , 
-     <span class="pl-compound pl-level-0"><span class="pl-functor">ensure_evaled</span>(<span class="pl-args"><span class="pl-atom">'%Undefined%'</span>, <span class="pl-avar">_73842154{vn = ..., cns = ...}</span>, <span class="pl-avar">_73842272{vn = ..., cns = ...}</span></span>)</span> , 
-     <span class="pl-compound pl-level-0"><span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">0</span></span>)</span> <span class="pl-infix">=</span> <span class="pl-avar">_73842230{vn = ..., cns = ...}</span></span> , 
-     <span class="pl-compound pl-level-0"><span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">1</span></span>)</span> <span class="pl-infix">=</span> <span class="pl-avar">_73842272{vn = ..., cns = ...}</span></span> , 
-     <span class="pl-compound pl-level-0"><span class="pl-functor">me</span>(<span class="pl-args"><span class="pl-atom">'universe-count'</span>, <span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">0</span></span>)</span>, <span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">1</span></span>)</span>, <span class="pl-avar">_73842340{$_ucount}</span></span>)</span> , 
-     <span class="pl-compound pl-level-0"><span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">2</span></span>)</span> <span class="pl-infix">=</span> <span class="pl-avar">_73842272{vn = ..., cns = ...}</span></span> , 
-     <span class="pl-compound pl-level-0"><span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">3</span></span>)</span> <span class="pl-infix">=</span> <span class="pl-avar">_73842230{vn = ..., cns = ...}</span></span> , 
-     <span class="pl-compound pl-level-0"><span class="pl-functor">me</span>(<span class="pl-args"><span class="pl-atom">'sup-num'</span>, <span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">2</span></span>)</span>, <span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">3</span></span>)</span>, <span class="pl-avar">_73842394{$_sup}</span></span>)</span> , 
-     <span class="pl-compound pl-level-0"><span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">4</span></span>)</span> <span class="pl-infix">=</span> <span class="pl-avar">_73842394{$_sup}</span></span> , 
-     <span class="pl-compound pl-level-0"><span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">5</span></span>)</span> <span class="pl-infix">=</span> <span class="pl-avar">_73842340{$_ucount}</span></span> , 
-     <span class="pl-compound pl-level-0"><span class="pl-functor">me</span>(<span class="pl-args"><span class="pl-atom">//</span>, <span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">4</span></span>)</span>, <span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">5</span></span>)</span>, <span class="pl-avar">_73842182{vn = ..., cns = ...}</span></span>)</span></span>) ).
+   <span class="pl-compound pl-level-0"><span class="pl-functor">mc</span>(<span class="pl-args"><span class="pl-atom">'emp-prob'</span>, <span class="pl-var">_pattern157</span>, <span class="pl-var">_db153</span>, <span class="pl-var">RetVal1271</span></span>)</span> :- 
+     <span class="pl-compound pl-level-0"><span class="pl-functor">ensure_evaled</span>(<span class="pl-args"><span class="pl-atom">'%Undefined%'</span>, <span class="pl-avar">_123064522{vn = ..., cns = ...}</span>, <span class="pl-avar">_123064626{vn = ..., cns = ...}</span></span>)</span> , 
+     <span class="pl-compound pl-level-0"><span class="pl-functor">ensure_evaled</span>(<span class="pl-args"><span class="pl-atom">'%Undefined%'</span>, <span class="pl-avar">_123064550{vn = ..., cns = ...}</span>, <span class="pl-avar">_123064668{vn = ..., cns = ...}</span></span>)</span> , 
+     <span class="pl-compound pl-level-0"><span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">0</span></span>)</span> <span class="pl-infix">=</span> <span class="pl-avar">_123064626{vn = ..., cns = ...}</span></span> , 
+     <span class="pl-compound pl-level-0"><span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">1</span></span>)</span> <span class="pl-infix">=</span> <span class="pl-avar">_123064668{vn = ..., cns = ...}</span></span> , 
+     <span class="pl-compound pl-level-0"><span class="pl-functor">me</span>(<span class="pl-args"><span class="pl-atom">'universe-count'</span>, <span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">0</span></span>)</span>, <span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">1</span></span>)</span>, <span class="pl-avar">_123064736{$_ucount}</span></span>)</span> , 
+     <span class="pl-compound pl-level-0"><span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">2</span></span>)</span> <span class="pl-infix">=</span> <span class="pl-avar">_123064668{vn = ..., cns = ...}</span></span> , 
+     <span class="pl-compound pl-level-0"><span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">3</span></span>)</span> <span class="pl-infix">=</span> <span class="pl-avar">_123064626{vn = ..., cns = ...}</span></span> , 
+     <span class="pl-compound pl-level-0"><span class="pl-functor">me</span>(<span class="pl-args"><span class="pl-atom">'sup-num'</span>, <span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">2</span></span>)</span>, <span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">3</span></span>)</span>, <span class="pl-avar">_123064790{$_sup}</span></span>)</span> , 
+     <span class="pl-compound pl-level-0"><span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">4</span></span>)</span> <span class="pl-infix">=</span> <span class="pl-avar">_123064790{$_sup}</span></span> , 
+     <span class="pl-compound pl-level-0"><span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">5</span></span>)</span> <span class="pl-infix">=</span> <span class="pl-avar">_123064736{$_ucount}</span></span> , 
+     <span class="pl-compound pl-level-0"><span class="pl-functor">me</span>(<span class="pl-args"><span class="pl-atom">//</span>, <span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">4</span></span>)</span>, <span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">5</span></span>)</span>, <span class="pl-avar">_123064578{vn = ..., cns = ...}</span></span>)</span></span>) ).
 
 
 %  ;; =============================================================================
@@ -181,28 +96,30 @@ top_call :-
       (if 
         (< $subsize $interdb) 
         (let* 
-          ( ($74190864 (println! "Using subsample")) 
+          ( ($123331794 (println! "Using subsample")) 
             ($intvar (subsample-py $db $subsize)) 
             ($emp_rslt (emp-prob $pattern $intvar)) 
-            ($74190976 (println! ("pattern" $pattern "empirical probability: " $emp_rslt)))) $emp_rslt) 
+            ($123331906 (println! ("pattern" $pattern "empirical probability: " $emp_rslt)))) $emp_rslt) 
         (emp-prob $pattern $db))))
 */
 
 
 ( <span class="pl-atom">==&gt;</span><span class="pl-functor"> ( </span><span class="pl-ellipsis clickprev fold"></span><span class="pl-args">
-   <span class="pl-compound pl-level-0"><span class="pl-functor">mc</span>(<span class="pl-args"><span class="pl-atom">emp_prob_subsmp</span>, <span class="pl-var">_pattern105</span>, <span class="pl-var">_db113</span>, <span class="pl-var">_subsize29</span>, <span class="pl-var">RetVal839</span></span>)</span> :- 
-     <span class="pl-compound pl-level-0"><span class="pl-functor">ensure_evaled</span>(<span class="pl-args"><span class="pl-atom">'%Undefined%'</span>, <span class="pl-avar">_74194074{vn = ..., cns = ...}</span>, <span class="pl-avar">_74194206{vn = ..., cns = ...}</span></span>)</span> , 
-     <span class="pl-compound pl-level-0"><span class="pl-functor">ensure_evaled</span>(<span class="pl-args"><span class="pl-atom">'%Undefined%'</span>, <span class="pl-avar">_74194102{vn = ..., cns = ...}</span>, <span class="pl-avar">_74194248{vn = ..., cns = ...}</span></span>)</span> , 
-     <span class="pl-compound pl-level-0"><span class="pl-functor">ensure_evaled</span>(<span class="pl-args"><span class="pl-atom">'%Undefined%'</span>, <span class="pl-avar">_74194130{vn = ..., cns = ...}</span>, <span class="pl-avar">_74194290{vn = ..., cns = ...}</span></span>)</span> , 
-     <span class="pl-compound pl-level-0"><span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">0</span></span>)</span> <span class="pl-infix">=</span> <span class="pl-avar">_74194248{vn = ..., cns = ...}</span></span> , 
-     <span class="pl-compound pl-level-0"><span class="pl-functor">me</span>(<span class="pl-args"><span class="pl-atom">db_size</span>, <span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">0</span></span>)</span>, <span class="pl-avar">_74194344{$_interdb}</span></span>)</span> , 
-     <span class="pl-compound pl-level-0"><span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">1</span></span>)</span> <span class="pl-infix">=</span> <span class="pl-avar">_74194290{vn = ..., cns = ...}</span></span> , 
-     <span class="pl-compound pl-level-0"><span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">2</span></span>)</span> <span class="pl-infix">=</span> <span class="pl-avar">_74194344{$_interdb}</span></span> , 
+   <span class="pl-atom">mc</span>( <span class="pl-atom">emp_prob_subsmp</span>, 
+     <span class="pl-var">_pattern161</span>, <span class="pl-var">_db157</span>, <span class="pl-var">_subsize29</span>, 
+     <span class="pl-var">RetVal1275</span>) :- 
+     <span class="pl-compound pl-level-0"><span class="pl-functor">ensure_evaled</span>(<span class="pl-args"><span class="pl-atom">'%Undefined%'</span>, <span class="pl-avar">_123335004{vn = ..., cns = ...}</span>, <span class="pl-avar">_123335136{vn = ..., cns = ...}</span></span>)</span> , 
+     <span class="pl-compound pl-level-0"><span class="pl-functor">ensure_evaled</span>(<span class="pl-args"><span class="pl-atom">'%Undefined%'</span>, <span class="pl-avar">_123335032{vn = ..., cns = ...}</span>, <span class="pl-avar">_123335178{vn = ..., cns = ...}</span></span>)</span> , 
+     <span class="pl-compound pl-level-0"><span class="pl-functor">ensure_evaled</span>(<span class="pl-args"><span class="pl-atom">'%Undefined%'</span>, <span class="pl-avar">_123335060{vn = ..., cns = ...}</span>, <span class="pl-avar">_123335220{vn = ..., cns = ...}</span></span>)</span> , 
+     <span class="pl-compound pl-level-0"><span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">0</span></span>)</span> <span class="pl-infix">=</span> <span class="pl-avar">_123335178{vn = ..., cns = ...}</span></span> , 
+     <span class="pl-compound pl-level-0"><span class="pl-functor">me</span>(<span class="pl-args"><span class="pl-atom">db_size</span>, <span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">0</span></span>)</span>, <span class="pl-avar">_123335274{$_interdb}</span></span>)</span> , 
+     <span class="pl-compound pl-level-0"><span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">1</span></span>)</span> <span class="pl-infix">=</span> <span class="pl-avar">_123335220{vn = ..., cns = ...}</span></span> , 
+     <span class="pl-compound pl-level-0"><span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">2</span></span>)</span> <span class="pl-infix">=</span> <span class="pl-avar">_123335274{$_interdb}</span></span> , 
      <span class="pl-compound pl-level-0"><span class="pl-functor">s</span>(<span class="pl-args"><span class="pl-atom">&lt;</span>, <span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">1</span></span>)</span>, <span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">2</span></span>)</span>, <span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">3</span></span>)</span></span>)</span> , 
-     _74194410{$P1_CODE_427} =  
+     _123335340{$P1_CODE_807} =  
           
        <span class="pl-atom">as_p1</span>( <span class="pl-atom">'%Undefined%'</span>, 
-         <span class="pl-list"><span class="pl-functor"> [ </span><span class="pl-args"><span class="pl-atom">-&gt;</span>, <span class="pl-atom">'%Undefined%'</span></span>]</span>, <span class="pl-anon">_</span>, <span class="pl-var">P1_CODE_RESULT_427</span>, 
+         <span class="pl-list"><span class="pl-functor"> [ </span><span class="pl-args"><span class="pl-atom">-&gt;</span>, <span class="pl-atom">'%Undefined%'</span></span>]</span>, <span class="pl-anon">_</span>, <span class="pl-var">P1_CODE_RESULT_807</span>, 
          [ <span class="pl-atom">'let*'</span>, 
            [ [ <span class="pl-var">E</span>, 
                [ <span class="pl-atom">'println!'</span>, 
@@ -228,52 +145,20 @@ top_call :-
              [ <span class="pl-string">"pattern"</span>, <span class="pl-var">K</span>, <span class="pl-string">"empirical probability: "</span>, <span class="pl-var">L</span>], 
              <span class="pl-var">M</span>) , 
            <span class="pl-compound pl-level-0"><span class="pl-functor">println_impl</span>(<span class="pl-args"><span class="pl-var">M</span>, <span class="pl-var">F</span></span>)</span> , 
-           <span class="pl-compound pl-level-0"><span class="pl-var">P1_CODE_RESULT_427</span><span class="pl-infix">=</span><span class="pl-var">_emp_rslt</span></span>)) , 
-     _74194826{$P1_CODE_428} =  
+           <span class="pl-compound pl-level-0"><span class="pl-var">P1_CODE_RESULT_807</span><span class="pl-infix">=</span><span class="pl-var">_emp_rslt</span></span>)) , 
+     _123335756{$P1_CODE_808} =  
           
        <span class="pl-atom">as_p1</span>( <span class="pl-atom">'%Undefined%'</span>, 
-         <span class="pl-list"><span class="pl-functor"> [ </span><span class="pl-args"><span class="pl-atom">-&gt;</span>, <span class="pl-atom">'%Undefined%'</span></span>]</span>, <span class="pl-atom">'%Undefined%'</span>, <span class="pl-var">P1_CODE_RESULT_428</span>, 
+         <span class="pl-list"><span class="pl-functor"> [ </span><span class="pl-args"><span class="pl-atom">-&gt;</span>, <span class="pl-atom">'%Undefined%'</span></span>]</span>, <span class="pl-atom">'%Undefined%'</span>, <span class="pl-var">P1_CODE_RESULT_808</span>, 
          <span class="pl-list"><span class="pl-functor"> [ </span><span class="pl-args"><span class="pl-atom">'emp-prob'</span>, <span class="pl-var">_pattern</span>|<span class="pl-ellipsis">...</span></span>]</span>, 
          ( <span class="pl-compound pl-level-0"><span class="pl-var">N</span><span class="pl-infix">=</span><span class="pl-var">_pattern</span></span>  ,
            <span class="pl-compound pl-level-0"><span class="pl-var">O</span><span class="pl-infix">=</span><span class="pl-var">_db</span></span> , 
-           <span class="pl-compound pl-level-0"><span class="pl-functor">me</span>(<span class="pl-args"><span class="pl-atom">'emp-prob'</span>, <span class="pl-var">N</span>, <span class="pl-var">O</span>, <span class="pl-var">P1_CODE_RESULT_428</span></span>)</span>)) , 
-     <span class="pl-compound pl-level-0"><span class="pl-functor">s</span>(<span class="pl-args"><span class="pl-atom">if</span>, <span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">3</span></span>)</span>, <span class="pl-avar">_74194410{$P1_CODE_427}</span>, <span class="pl-avar">_74194826{$P1_CODE_428}</span>, <span class="pl-avar">_74194158{vn = ..., cns = ...}</span></span>)</span></span>) ).
+           <span class="pl-compound pl-level-0"><span class="pl-functor">me</span>(<span class="pl-args"><span class="pl-atom">'emp-prob'</span>, <span class="pl-var">N</span>, <span class="pl-var">O</span>, <span class="pl-var">P1_CODE_RESULT_808</span></span>)</span>)) , 
+     <span class="pl-atom">s</span>( <span class="pl-atom">if</span>, 
+       <span class="pl-var">D</span>, <span class="pl-avar">_123335340{$P1_CODE_807}</span>, <span class="pl-avar">_123335756{$P1_CODE_808}</span>, 
+       _123335088{vn = ..., cns = ...})</span>) ).
 
 
-
-
-( <span class="pl-atom">==&gt;</span><span class="pl-functor"> ( </span><span class="pl-ellipsis clickprev fold"></span><span class="pl-args">
-   <span class="pl-atom">top_call_16</span>:- <span class="pl-atom">do_metta_runtime</span>( <span class="pl-var">A</span>, 
-                                                ( <span class="pl-compound pl-level-0"><span class="pl-var">B</span><span class="pl-infix">=</span><span class="pl-anon">_</span></span>  ,
-                                                  <span class="pl-compound pl-level-0"><span class="pl-functor">s</span>(<span class="pl-args"><span class="pl-atom">'Inheritance'</span>, <span class="pl-var">B</span>, <span class="pl-atom">human</span>, <span class="pl-var">C</span></span>)</span> , 
-                                                  <span class="pl-compound pl-level-0"><span class="pl-functor">get_value</span>(<span class="pl-args"><span class="pl-atom">'&amp;kb'</span>, <span class="pl-var">D</span></span>)</span> , 
-                                                  <span class="pl-compound pl-level-0"><span class="pl-functor">me</span>(<span class="pl-args"><span class="pl-atom">emp_prob_subsmp</span>, <span class="pl-var">C</span>, <span class="pl-var">D</span>, <span class="pl-int">10</span>, <span class="pl-var">A</span></span>)</span>))</span>) ).
-
-
-
-
-<span class="pl-compound pl-level-0"><span class="pl-prefix">==&gt;</span>(<span class="pl-compound"><span class="pl-atom">top_call</span><span class="pl-infix">:-</span><span class="pl-compound"><span class="pl-functor">time</span>(<span class="pl-args"><span class="pl-ellipsis">...</span></span>)</span></span>)</span>.
-
-
-
-
-<span class="pl-atom">top_call_16</span>:- <span class="pl-atom">do_metta_runtime</span><span class="pl-functor">( <span class="pl-var">ExecRes</span>, </span>
-                                             ( <span class="pl-compound pl-level-0"><span class="pl-var">A</span><span class="pl-infix">=</span><span class="pl-anon">_</span></span>  ,
-                                               <span class="pl-compound pl-level-0"><span class="pl-functor">s</span>(<span class="pl-args"><span class="pl-atom">'Inheritance'</span>, <span class="pl-var">A</span>, <span class="pl-atom">human</span>, <span class="pl-var">B</span></span>)</span> , 
-                                               <span class="pl-compound pl-level-0"><span class="pl-functor">get_value</span>(<span class="pl-args"><span class="pl-atom">'&amp;kb'</span>, <span class="pl-var">C</span></span>)</span> , 
-                                               <span class="pl-compound pl-level-0"><span class="pl-functor">me</span>(<span class="pl-args"><span class="pl-atom">emp_prob_subsmp</span>, <span class="pl-var">B</span>, <span class="pl-var">C</span>, <span class="pl-int">10</span>, <span class="pl-var">ExecRes</span></span>)</span>)).
-
-
-
-
-top_call :-
-    time(top_call_16).
-
-
-==>arg_type_n(==,2,1,var).
-==>arg_type_n(==,2,2,var).
-==>arg_type_n('size-atom',1,1,non_eval('Expression')).
-==>arg_type_n('index-atom',2,1,non_eval('Expression')).
 %  ; !(subsample-py &kb 10)
 %  ; !(copy-db (new-space) ((Inheritance Human JOb) (Inheritance Nati Bonny)))
 %  ; !(generet-random-subsample &kb 5)
@@ -309,18 +194,18 @@ top_call :-
 
 ( <span class="pl-atom">==&gt;</span><span class="pl-functor"> ( </span><span class="pl-ellipsis clickprev fold"></span><span class="pl-args">
    <span class="pl-atom">mc</span>( <span class="pl-atom">emp_prob_helper</span>, 
-     <span class="pl-var">_pattern109</span>,  <span class="pl-var">_db117</span>, <span class="pl-var">_n_resample9</span>, <span class="pl-var">_subsize33</span>, <span class="pl-var">RetVal843</span>) :- 
-     <span class="pl-compound pl-level-0"><span class="pl-functor">ensure_evaled</span>(<span class="pl-args"><span class="pl-atom">'%Undefined%'</span>, <span class="pl-avar">_82486404{vn = ..., cns = ...}</span>, <span class="pl-avar">_82486564{vn = ..., cns = ...}</span></span>)</span> , 
-     <span class="pl-compound pl-level-0"><span class="pl-functor">ensure_evaled</span>(<span class="pl-args"><span class="pl-atom">'%Undefined%'</span>, <span class="pl-avar">_82486432{vn = ..., cns = ...}</span>, <span class="pl-avar">_82486606{vn = ..., cns = ...}</span></span>)</span> , 
-     <span class="pl-compound pl-level-0"><span class="pl-functor">ensure_evaled</span>(<span class="pl-args"><span class="pl-atom">'%Undefined%'</span>, <span class="pl-avar">_82486460{vn = ..., cns = ...}</span>, <span class="pl-avar">_82486648{vn = ..., cns = ...}</span></span>)</span> , 
-     <span class="pl-compound pl-level-0"><span class="pl-functor">ensure_evaled</span>(<span class="pl-args"><span class="pl-atom">'%Undefined%'</span>, <span class="pl-avar">_82486488{vn = ..., cns = ...}</span>, <span class="pl-avar">_82486690{vn = ..., cns = ...}</span></span>)</span> , 
-     <span class="pl-compound pl-level-0"><span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">0</span></span>)</span> <span class="pl-infix">=</span> <span class="pl-avar">_82486648{vn = ..., cns = ...}</span></span> , 
+     <span class="pl-var">_pattern165</span>,  <span class="pl-var">_db161</span>, <span class="pl-var">_n_resample9</span>, <span class="pl-var">_subsize33</span>, <span class="pl-var">RetVal1279</span>) :- 
+     <span class="pl-compound pl-level-0"><span class="pl-functor">ensure_evaled</span>(<span class="pl-args"><span class="pl-atom">'%Undefined%'</span>, <span class="pl-avar">_124123600{vn = ..., cns = ...}</span>, <span class="pl-avar">_124123760{vn = ..., cns = ...}</span></span>)</span> , 
+     <span class="pl-compound pl-level-0"><span class="pl-functor">ensure_evaled</span>(<span class="pl-args"><span class="pl-atom">'%Undefined%'</span>, <span class="pl-avar">_124123628{vn = ..., cns = ...}</span>, <span class="pl-avar">_124123802{vn = ..., cns = ...}</span></span>)</span> , 
+     <span class="pl-compound pl-level-0"><span class="pl-functor">ensure_evaled</span>(<span class="pl-args"><span class="pl-atom">'%Undefined%'</span>, <span class="pl-avar">_124123656{vn = ..., cns = ...}</span>, <span class="pl-avar">_124123844{vn = ..., cns = ...}</span></span>)</span> , 
+     <span class="pl-compound pl-level-0"><span class="pl-functor">ensure_evaled</span>(<span class="pl-args"><span class="pl-atom">'%Undefined%'</span>, <span class="pl-avar">_124123684{vn = ..., cns = ...}</span>, <span class="pl-avar">_124123886{vn = ..., cns = ...}</span></span>)</span> , 
+     <span class="pl-compound pl-level-0"><span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">0</span></span>)</span> <span class="pl-infix">=</span> <span class="pl-avar">_124123844{vn = ..., cns = ...}</span></span> , 
      <span class="pl-compound pl-level-0"><span class="pl-functor">s</span>(<span class="pl-args"><span class="pl-atom">==</span>, <span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">0</span></span>)</span>, <span class="pl-int">0</span>, <span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">1</span></span>)</span></span>)</span> , 
      <span class="pl-compound pl-level-0">[]<span class="pl-infix">=~</span>[]</span> , 
-     _82486770{$P1_CODE_435} =  
+     _124123966{$P1_CODE_815} =  
           
        <span class="pl-atom">as_p1</span>( <span class="pl-atom">'%Undefined%'</span>, 
-         <span class="pl-list"><span class="pl-functor"> [ </span><span class="pl-args"><span class="pl-atom">-&gt;</span>, <span class="pl-atom">'%Undefined%'</span></span>]</span>, <span class="pl-atom">'Expression'</span>, <span class="pl-var">P1_CODE_RESULT_435</span>, 
+         <span class="pl-list"><span class="pl-functor"> [ </span><span class="pl-args"><span class="pl-atom">-&gt;</span>, <span class="pl-atom">'%Undefined%'</span></span>]</span>, <span class="pl-atom">'Expression'</span>, <span class="pl-var">P1_CODE_RESULT_815</span>, 
          [ <span class="pl-atom">'let*'</span>, 
            [ [ <span class="pl-var">_head_emp</span>, 
                <span class="pl-list"><span class="pl-functor"> [ </span><span class="pl-args"><span class="pl-atom">emp_prob_subsmp</span>, <span class="pl-var">_pattern</span>|<span class="pl-ellipsis">...</span></span>]</span>], 
@@ -341,8 +226,8 @@ top_call :-
            <span class="pl-compound pl-level-0"><span class="pl-functor">me</span>(<span class="pl-args"><span class="pl-atom">emp_prob_helper</span>, <span class="pl-var">F</span>, <span class="pl-var">G</span>, <span class="pl-var">I</span>, <span class="pl-var">J</span>, <span class="pl-var">_tail_emp</span></span>)</span> , 
            <span class="pl-compound pl-level-0"><span class="pl-var">K</span><span class="pl-infix">=</span><span class="pl-var">_head_emp</span></span> , 
            <span class="pl-compound pl-level-0"><span class="pl-var">L</span><span class="pl-infix">=</span><span class="pl-var">_tail_emp</span></span> , 
-           <span class="pl-compound pl-level-0"><span class="pl-functor">s</span>(<span class="pl-args"><span class="pl-atom">'cons-atom'</span>, <span class="pl-var">K</span>, <span class="pl-var">L</span>, <span class="pl-var">P1_CODE_RESULT_435</span></span>)</span>)) , 
-     <span class="pl-compound pl-level-0"><span class="pl-functor">s</span>(<span class="pl-args"><span class="pl-atom">if</span>, <span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">1</span></span>)</span>, [], <span class="pl-avar">_82486770{$P1_CODE_435}</span>, <span class="pl-avar">_82486516{vn = ..., cns = ...}</span></span>)</span></span>) ).
+           <span class="pl-compound pl-level-0"><span class="pl-functor">s</span>(<span class="pl-args"><span class="pl-atom">'cons-atom'</span>, <span class="pl-var">K</span>, <span class="pl-var">L</span>, <span class="pl-var">P1_CODE_RESULT_815</span></span>)</span>)) , 
+     <span class="pl-compound pl-level-0"><span class="pl-functor">s</span>(<span class="pl-args"><span class="pl-atom">if</span>, <span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">1</span></span>)</span>, [], <span class="pl-avar">_124123966{$P1_CODE_815}</span>, <span class="pl-avar">_124123712{vn = ..., cns = ...}</span></span>)</span></span>) ).
 
 
 %  ;; =============================================================================
@@ -379,20 +264,20 @@ top_call :-
 
 ( <span class="pl-atom">==&gt;</span><span class="pl-functor"> ( </span><span class="pl-ellipsis clickprev fold"></span><span class="pl-args">
    <span class="pl-atom">mc</span>( <span class="pl-atom">emp_prob_bs</span>, 
-     <span class="pl-var">_pattern113</span>,  <span class="pl-var">_db121</span>, <span class="pl-var">_n_resample13</span>, <span class="pl-var">_subsize37</span>, <span class="pl-var">RetVal847</span>) :- 
-     <span class="pl-compound pl-level-0"><span class="pl-functor">ensure_evaled</span>(<span class="pl-args"><span class="pl-atom">'%Undefined%'</span>, <span class="pl-avar">_83115786{vn = ..., cns = ...}</span>, <span class="pl-avar">_83115946{vn = ..., cns = ...}</span></span>)</span> , 
-     <span class="pl-compound pl-level-0"><span class="pl-functor">ensure_evaled</span>(<span class="pl-args"><span class="pl-atom">'%Undefined%'</span>, <span class="pl-avar">_83115814{vn = ..., cns = ...}</span>, <span class="pl-avar">_83115988{vn = ..., cns = ...}</span></span>)</span> , 
-     <span class="pl-compound pl-level-0"><span class="pl-functor">ensure_evaled</span>(<span class="pl-args"><span class="pl-atom">'%Undefined%'</span>, <span class="pl-avar">_83115842{vn = ..., cns = ...}</span>, <span class="pl-avar">_83116030{vn = ..., cns = ...}</span></span>)</span> , 
-     <span class="pl-compound pl-level-0"><span class="pl-functor">ensure_evaled</span>(<span class="pl-args"><span class="pl-atom">'%Undefined%'</span>, <span class="pl-avar">_83115870{vn = ..., cns = ...}</span>, <span class="pl-avar">_83116072{vn = ..., cns = ...}</span></span>)</span> , 
-     <span class="pl-compound pl-level-0"><span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">0</span></span>)</span> <span class="pl-infix">=</span> <span class="pl-avar">_83115988{vn = ..., cns = ...}</span></span> , 
-     <span class="pl-compound pl-level-0"><span class="pl-functor">me</span>(<span class="pl-args"><span class="pl-atom">db_size</span>, <span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">0</span></span>)</span>, <span class="pl-avar">_83116126{$_interdb}</span></span>)</span> , 
-     <span class="pl-compound pl-level-0"><span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">1</span></span>)</span> <span class="pl-infix">=</span> <span class="pl-avar">_83116072{vn = ..., cns = ...}</span></span> , 
-     <span class="pl-compound pl-level-0"><span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">2</span></span>)</span> <span class="pl-infix">=</span> <span class="pl-avar">_83116126{$_interdb}</span></span> , 
+     <span class="pl-var">_pattern169</span>,  <span class="pl-var">_db165</span>, <span class="pl-var">_n_resample13</span>, <span class="pl-var">_subsize37</span>, <span class="pl-var">RetVal1283</span>) :- 
+     <span class="pl-compound pl-level-0"><span class="pl-functor">ensure_evaled</span>(<span class="pl-args"><span class="pl-atom">'%Undefined%'</span>, <span class="pl-avar">_124711174{vn = ..., cns = ...}</span>, <span class="pl-avar">_124711334{vn = ..., cns = ...}</span></span>)</span> , 
+     <span class="pl-compound pl-level-0"><span class="pl-functor">ensure_evaled</span>(<span class="pl-args"><span class="pl-atom">'%Undefined%'</span>, <span class="pl-avar">_124711202{vn = ..., cns = ...}</span>, <span class="pl-avar">_124711376{vn = ..., cns = ...}</span></span>)</span> , 
+     <span class="pl-compound pl-level-0"><span class="pl-functor">ensure_evaled</span>(<span class="pl-args"><span class="pl-atom">'%Undefined%'</span>, <span class="pl-avar">_124711230{vn = ..., cns = ...}</span>, <span class="pl-avar">_124711418{vn = ..., cns = ...}</span></span>)</span> , 
+     <span class="pl-compound pl-level-0"><span class="pl-functor">ensure_evaled</span>(<span class="pl-args"><span class="pl-atom">'%Undefined%'</span>, <span class="pl-avar">_124711258{vn = ..., cns = ...}</span>, <span class="pl-avar">_124711460{vn = ..., cns = ...}</span></span>)</span> , 
+     <span class="pl-compound pl-level-0"><span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">0</span></span>)</span> <span class="pl-infix">=</span> <span class="pl-avar">_124711376{vn = ..., cns = ...}</span></span> , 
+     <span class="pl-compound pl-level-0"><span class="pl-functor">me</span>(<span class="pl-args"><span class="pl-atom">db_size</span>, <span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">0</span></span>)</span>, <span class="pl-avar">_124711514{$_interdb}</span></span>)</span> , 
+     <span class="pl-compound pl-level-0"><span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">1</span></span>)</span> <span class="pl-infix">=</span> <span class="pl-avar">_124711460{vn = ..., cns = ...}</span></span> , 
+     <span class="pl-compound pl-level-0"><span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">2</span></span>)</span> <span class="pl-infix">=</span> <span class="pl-avar">_124711514{$_interdb}</span></span> , 
      <span class="pl-compound pl-level-0"><span class="pl-functor">s</span>(<span class="pl-args"><span class="pl-atom">&lt;</span>, <span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">1</span></span>)</span>, <span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">2</span></span>)</span>, <span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">3</span></span>)</span></span>)</span> , 
-     _83116192{$P1_CODE_439} =  
+     _124711580{$P1_CODE_819} =  
           
        <span class="pl-atom">as_p1</span>( <span class="pl-atom">'%Undefined%'</span>, 
-         <span class="pl-list"><span class="pl-functor"> [ </span><span class="pl-args"><span class="pl-atom">-&gt;</span>, <span class="pl-atom">'%Undefined%'</span></span>]</span>, <span class="pl-atom">'%Undefined%'</span>, <span class="pl-var">P1_CODE_RESULT_439</span>, 
+         <span class="pl-list"><span class="pl-functor"> [ </span><span class="pl-args"><span class="pl-atom">-&gt;</span>, <span class="pl-atom">'%Undefined%'</span></span>]</span>, <span class="pl-atom">'%Undefined%'</span>, <span class="pl-var">P1_CODE_RESULT_819</span>, 
          [ <span class="pl-atom">'let*'</span>, 
            [ [ <span class="pl-var">_intervar</span>, 
                [ <span class="pl-atom">emp_prob_helper</span>, <span class="pl-var">_pattern</span>, <span class="pl-var">_db</span>, 
@@ -404,16 +289,18 @@ top_call :-
            <span class="pl-compound pl-level-0"><span class="pl-var">H</span><span class="pl-infix">=</span><span class="pl-var">_subsize</span></span> , 
            <span class="pl-compound pl-level-0"><span class="pl-functor">me</span>(<span class="pl-args"><span class="pl-atom">emp_prob_helper</span>, <span class="pl-var">E</span>, <span class="pl-var">F</span>, <span class="pl-var">G</span>, <span class="pl-var">H</span>, <span class="pl-var">_intervar</span></span>)</span> , 
            <span class="pl-compound pl-level-0"><span class="pl-var">I</span><span class="pl-infix">=</span><span class="pl-var">_intervar</span></span> , 
-           <span class="pl-compound pl-level-0"><span class="pl-functor">me</span>(<span class="pl-args"><span class="pl-atom">'avrg-tuple'</span>, <span class="pl-var">I</span>, <span class="pl-var">P1_CODE_RESULT_439</span></span>)</span>)) , 
-     _83116426{$P1_CODE_440} =  
+           <span class="pl-compound pl-level-0"><span class="pl-functor">me</span>(<span class="pl-args"><span class="pl-atom">'avrg-tuple'</span>, <span class="pl-var">I</span>, <span class="pl-var">P1_CODE_RESULT_819</span></span>)</span>)) , 
+     _124711814{$P1_CODE_820} =  
           
        <span class="pl-atom">as_p1</span>( <span class="pl-atom">'%Undefined%'</span>, 
-         <span class="pl-list"><span class="pl-functor"> [ </span><span class="pl-args"><span class="pl-atom">-&gt;</span>, <span class="pl-atom">'%Undefined%'</span></span>]</span>, <span class="pl-atom">'%Undefined%'</span>, <span class="pl-var">P1_CODE_RESULT_440</span>, 
+         <span class="pl-list"><span class="pl-functor"> [ </span><span class="pl-args"><span class="pl-atom">-&gt;</span>, <span class="pl-atom">'%Undefined%'</span></span>]</span>, <span class="pl-atom">'%Undefined%'</span>, <span class="pl-var">P1_CODE_RESULT_820</span>, 
          <span class="pl-list"><span class="pl-functor"> [ </span><span class="pl-args"><span class="pl-atom">'emp-prob'</span>, <span class="pl-var">_pattern</span>|<span class="pl-ellipsis">...</span></span>]</span>, 
          ( <span class="pl-compound pl-level-0"><span class="pl-var">J</span><span class="pl-infix">=</span><span class="pl-var">_pattern</span></span>  ,
            <span class="pl-compound pl-level-0"><span class="pl-var">K</span><span class="pl-infix">=</span><span class="pl-var">_db</span></span> , 
-           <span class="pl-compound pl-level-0"><span class="pl-functor">me</span>(<span class="pl-args"><span class="pl-atom">'emp-prob'</span>, <span class="pl-var">J</span>, <span class="pl-var">K</span>, <span class="pl-var">P1_CODE_RESULT_440</span></span>)</span>)) , 
-     <span class="pl-compound pl-level-0"><span class="pl-functor">s</span>(<span class="pl-args"><span class="pl-atom">if</span>, <span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">3</span></span>)</span>, <span class="pl-avar">_83116192{$P1_CODE_439}</span>, <span class="pl-avar">_83116426{$P1_CODE_440}</span>, <span class="pl-avar">_83115898{vn = ..., cns = ...}</span></span>)</span></span>) ).
+           <span class="pl-compound pl-level-0"><span class="pl-functor">me</span>(<span class="pl-args"><span class="pl-atom">'emp-prob'</span>, <span class="pl-var">J</span>, <span class="pl-var">K</span>, <span class="pl-var">P1_CODE_RESULT_820</span></span>)</span>)) , 
+     <span class="pl-atom">s</span>( <span class="pl-atom">if</span>, 
+       <span class="pl-var">D</span>, <span class="pl-avar">_124711580{$P1_CODE_819}</span>, <span class="pl-avar">_124711814{$P1_CODE_820}</span>, 
+       _124711286{vn = ..., cns = ...})</span>) ).
 
 
 %  ;; =============================================================================
@@ -448,17 +335,18 @@ top_call :-
 
 
 ( <span class="pl-atom">==&gt;</span><span class="pl-functor"> ( </span><span class="pl-ellipsis clickprev fold"></span><span class="pl-args">
-   <span class="pl-compound pl-level-0"><span class="pl-functor">mc</span>(<span class="pl-args"><span class="pl-atom">'emp-prob-pbs'</span>, <span class="pl-var">_pattern117</span>, <span class="pl-var">_db125</span>, <span class="pl-var">_db_ratio13</span>, <span class="pl-var">RetVal851</span></span>)</span> :- 
-     <span class="pl-compound pl-level-0"><span class="pl-functor">ensure_evaled</span>(<span class="pl-args"><span class="pl-atom">'%Undefined%'</span>, <span class="pl-avar">_83714352{vn = ..., cns = ...}</span>, <span class="pl-avar">_83714484{vn = ..., cns = ...}</span></span>)</span> , 
-     <span class="pl-compound pl-level-0"><span class="pl-functor">ensure_evaled</span>(<span class="pl-args"><span class="pl-atom">'%Undefined%'</span>, <span class="pl-avar">_83714380{vn = ..., cns = ...}</span>, <span class="pl-avar">_83714526{vn = ..., cns = ...}</span></span>)</span> , 
-     <span class="pl-compound pl-level-0"><span class="pl-functor">ensure_evaled</span>(<span class="pl-args"><span class="pl-atom">'%Undefined%'</span>, <span class="pl-avar">_83714408{vn = ..., cns = ...}</span>, <span class="pl-avar">_83714568{vn = ..., cns = ...}</span></span>)</span> , 
-     <span class="pl-compound pl-level-0"><span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">0</span></span>)</span> <span class="pl-infix">=</span> <span class="pl-avar">_83714484{vn = ..., cns = ...}</span></span> , 
+   <span class="pl-atom">mc</span>( <span class="pl-atom">'emp-prob-pbs'</span>, 
+     <span class="pl-var">_pattern173</span>,  <span class="pl-var">_db169</span>, <span class="pl-var">_db_ratio13</span>, <span class="pl-var">RetVal1287</span>) :- 
+     <span class="pl-compound pl-level-0"><span class="pl-functor">ensure_evaled</span>(<span class="pl-args"><span class="pl-atom">'%Undefined%'</span>, <span class="pl-avar">_125300796{vn = ..., cns = ...}</span>, <span class="pl-avar">_125300928{vn = ..., cns = ...}</span></span>)</span> , 
+     <span class="pl-compound pl-level-0"><span class="pl-functor">ensure_evaled</span>(<span class="pl-args"><span class="pl-atom">'%Undefined%'</span>, <span class="pl-avar">_125300824{vn = ..., cns = ...}</span>, <span class="pl-avar">_125300970{vn = ..., cns = ...}</span></span>)</span> , 
+     <span class="pl-compound pl-level-0"><span class="pl-functor">ensure_evaled</span>(<span class="pl-args"><span class="pl-atom">'%Undefined%'</span>, <span class="pl-avar">_125300852{vn = ..., cns = ...}</span>, <span class="pl-avar">_125301012{vn = ..., cns = ...}</span></span>)</span> , 
+     <span class="pl-compound pl-level-0"><span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">0</span></span>)</span> <span class="pl-infix">=</span> <span class="pl-avar">_125300928{vn = ..., cns = ...}</span></span> , 
      <span class="pl-compound pl-level-0"><span class="pl-functor">me</span>(<span class="pl-args"><span class="pl-atom">n_conjuncts</span>, <span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">0</span></span>)</span>, <span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">1</span></span>)</span></span>)</span> , 
      <span class="pl-compound pl-level-0"><span class="pl-functor">s</span>(<span class="pl-args"><span class="pl-atom">&lt;</span>, <span class="pl-int">1</span>, <span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">1</span></span>)</span>, <span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">2</span></span>)</span></span>)</span> , 
-     _83714650{$P1_CODE_447} =  
+     _125301094{$P1_CODE_827} =  
           
        <span class="pl-atom">as_p1</span>( <span class="pl-atom">'%Undefined%'</span>, 
-         <span class="pl-list"><span class="pl-functor"> [ </span><span class="pl-args"><span class="pl-atom">-&gt;</span>, <span class="pl-atom">'%Undefined%'</span></span>]</span>, <span class="pl-atom">'%Undefined%'</span>, <span class="pl-var">P1_CODE_RESULT_447</span>, 
+         <span class="pl-list"><span class="pl-functor"> [ </span><span class="pl-args"><span class="pl-atom">-&gt;</span>, <span class="pl-atom">'%Undefined%'</span></span>]</span>, <span class="pl-atom">'%Undefined%'</span>, <span class="pl-var">P1_CODE_RESULT_827</span>, 
          [ <span class="pl-atom">let</span>, 
            <span class="pl-list"><span class="pl-functor"> [ </span><span class="pl-args"><span class="pl-var">_emin</span>, <span class="pl-var">_emax</span></span>]</span>, 
            <span class="pl-list"><span class="pl-functor"> [ </span><span class="pl-args"><span class="pl-atom">ji_prob_est_interval</span>, <span class="pl-var">_pattern</span>|<span class="pl-ellipsis">...</span></span>]</span>, 
@@ -473,16 +361,18 @@ top_call :-
            <span class="pl-compound pl-level-0"><span class="pl-var">I</span><span class="pl-infix">=</span><span class="pl-var">_db</span></span> , 
            <span class="pl-compound pl-level-0"><span class="pl-var">J</span><span class="pl-infix">=</span><span class="pl-var">_emax</span></span> , 
            <span class="pl-compound pl-level-0"><span class="pl-var">K</span><span class="pl-infix">=</span><span class="pl-var">_db_ratio</span></span> , 
-           <span class="pl-compound pl-level-0"><span class="pl-functor">s</span>(<span class="pl-args"><span class="pl-atom">'emp-prob-pbs'</span>, <span class="pl-var">H</span>, <span class="pl-var">I</span>, <span class="pl-var">J</span>, <span class="pl-var">K</span>, <span class="pl-var">P1_CODE_RESULT_447</span></span>)</span>)) , 
-     _83714962{$P1_CODE_448} =  
+           <span class="pl-compound pl-level-0"><span class="pl-functor">s</span>(<span class="pl-args"><span class="pl-atom">'emp-prob-pbs'</span>, <span class="pl-var">H</span>, <span class="pl-var">I</span>, <span class="pl-var">J</span>, <span class="pl-var">K</span>, <span class="pl-var">P1_CODE_RESULT_827</span></span>)</span>)) , 
+     _125301406{$P1_CODE_828} =  
           
        <span class="pl-atom">as_p1</span>( <span class="pl-atom">'%Undefined%'</span>, 
-         <span class="pl-list"><span class="pl-functor"> [ </span><span class="pl-args"><span class="pl-atom">-&gt;</span>, <span class="pl-atom">'%Undefined%'</span></span>]</span>, <span class="pl-atom">'%Undefined%'</span>, <span class="pl-var">P1_CODE_RESULT_448</span>, 
+         <span class="pl-list"><span class="pl-functor"> [ </span><span class="pl-args"><span class="pl-atom">-&gt;</span>, <span class="pl-atom">'%Undefined%'</span></span>]</span>, <span class="pl-atom">'%Undefined%'</span>, <span class="pl-var">P1_CODE_RESULT_828</span>, 
          <span class="pl-list"><span class="pl-functor"> [ </span><span class="pl-args"><span class="pl-atom">'emp-prob'</span>, <span class="pl-var">_pattern</span>|<span class="pl-ellipsis">...</span></span>]</span>, 
          ( <span class="pl-compound pl-level-0"><span class="pl-var">L</span><span class="pl-infix">=</span><span class="pl-var">_pattern</span></span>  ,
            <span class="pl-compound pl-level-0"><span class="pl-var">M</span><span class="pl-infix">=</span><span class="pl-var">_db</span></span> , 
-           <span class="pl-compound pl-level-0"><span class="pl-functor">me</span>(<span class="pl-args"><span class="pl-atom">'emp-prob'</span>, <span class="pl-var">L</span>, <span class="pl-var">M</span>, <span class="pl-var">P1_CODE_RESULT_448</span></span>)</span>)) , 
-     <span class="pl-compound pl-level-0"><span class="pl-functor">s</span>(<span class="pl-args"><span class="pl-atom">if</span>, <span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">2</span></span>)</span>, <span class="pl-avar">_83714650{$P1_CODE_447}</span>, <span class="pl-avar">_83714962{$P1_CODE_448}</span>, <span class="pl-avar">_83714436{vn = ..., cns = ...}</span></span>)</span></span>) ).
+           <span class="pl-compound pl-level-0"><span class="pl-functor">me</span>(<span class="pl-args"><span class="pl-atom">'emp-prob'</span>, <span class="pl-var">L</span>, <span class="pl-var">M</span>, <span class="pl-var">P1_CODE_RESULT_828</span></span>)</span>)) , 
+     <span class="pl-atom">s</span>( <span class="pl-atom">if</span>, 
+       <span class="pl-var">C</span>, <span class="pl-avar">_125301094{$P1_CODE_827}</span>, <span class="pl-avar">_125301406{$P1_CODE_828}</span>, 
+       _125300880{vn = ..., cns = ...})</span>) ).
 
 
 %  ;; =============================================================================
@@ -510,76 +400,139 @@ top_call :-
   (= (emp-prob-pbs $pattern $db $prob_estimate $db_ratio)  
     (let* 
       ( ($support_estimate (prob_to_support $pattern $db $prob_estimate)) 
+        (() (println! (prob to support is $support_estimate))) 
         ($db_size_unorm (db_size $db)) 
-        ($db_size (* $db_size_unorm $db_ratio))) 
+        (() (println! (db isze is $db_size_unorm))) 
+        ($db_size (* $db_size_unorm $db_ratio)) 
+        (() (println! (db-size with db ratio is $db_size)))) 
       (if 
         (< $db_size $support_estimate) 
         (let* 
-          ( ($subsize (subsmp-size $pattern $db_size $support_estimate)) 
+          ( (() (println! ("herrrrrrrrrrrrrrr1111111111" ',pattern' $pattern db-size $db_size and support $support_estimate))) 
+            ($subsize (subsmp-size $pattern $db_size $support_estimate)) 
+            (() (println! (subsmp-size--- $subsize))) 
             (10 10) 
-            ($emp_prob (emp_prob_bs $pattern $db 10 $subsize))) $emp_prob) 
+            ($emp_prob (emp_prob_bs $pattern $db 10 $subsize)) 
+            (() (println! (emp prob bs is $emp_prob)))) $emp_prob) 
         (let* 
-          ( ($real_prob (emp-prob $pattern $db))) $real_prob))))
+          ( (() (println! "herrrrrrrrrrrrrrr")) 
+            ($real_prob (emp-prob $pattern $db)) 
+            (() (println! (emp prob is $real_prob)))) $real_prob))))
 */
 
 
 ( <span class="pl-atom">==&gt;</span><span class="pl-functor"> ( </span><span class="pl-ellipsis clickprev fold"></span><span class="pl-args">
    <span class="pl-atom">mc</span>( <span class="pl-atom">'emp-prob-pbs'</span>, 
-     <span class="pl-var">_pattern121</span>,  <span class="pl-var">_db129</span>, <span class="pl-var">_prob_estimate9</span>, <span class="pl-var">_db_ratio17</span>, <span class="pl-var">RetVal855</span>) :- 
-     <span class="pl-compound pl-level-0"><span class="pl-functor">ensure_evaled</span>(<span class="pl-args"><span class="pl-atom">'%Undefined%'</span>, <span class="pl-avar">_84361696{vn = ..., cns = ...}</span>, <span class="pl-avar">_84361856{vn = ..., cns = ...}</span></span>)</span> , 
-     <span class="pl-compound pl-level-0"><span class="pl-functor">ensure_evaled</span>(<span class="pl-args"><span class="pl-atom">'%Undefined%'</span>, <span class="pl-avar">_84361724{vn = ..., cns = ...}</span>, <span class="pl-avar">_84361898{vn = ..., cns = ...}</span></span>)</span> , 
-     <span class="pl-compound pl-level-0"><span class="pl-functor">ensure_evaled</span>(<span class="pl-args"><span class="pl-atom">'%Undefined%'</span>, <span class="pl-avar">_84361752{vn = ..., cns = ...}</span>, <span class="pl-avar">_84361940{vn = ..., cns = ...}</span></span>)</span> , 
-     <span class="pl-compound pl-level-0"><span class="pl-functor">ensure_evaled</span>(<span class="pl-args"><span class="pl-atom">'%Undefined%'</span>, <span class="pl-avar">_84361780{vn = ..., cns = ...}</span>, <span class="pl-avar">_84361982{vn = ..., cns = ...}</span></span>)</span> , 
-     <span class="pl-compound pl-level-0"><span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">0</span></span>)</span> <span class="pl-infix">=</span> <span class="pl-avar">_84361856{vn = ..., cns = ...}</span></span> , 
-     <span class="pl-compound pl-level-0"><span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">1</span></span>)</span> <span class="pl-infix">=</span> <span class="pl-avar">_84361898{vn = ..., cns = ...}</span></span> , 
-     <span class="pl-compound pl-level-0"><span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">2</span></span>)</span> <span class="pl-infix">=</span> <span class="pl-avar">_84361940{vn = ..., cns = ...}</span></span> , 
-     <span class="pl-compound pl-level-0"><span class="pl-functor">me</span>(<span class="pl-args"><span class="pl-atom">prob_to_support</span>, <span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">0</span></span>)</span>, <span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">1</span></span>)</span>, <span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">2</span></span>)</span>, <span class="pl-avar">_84362064{$_support_estimate}</span></span>)</span> , 
-     <span class="pl-compound pl-level-0"><span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">3</span></span>)</span> <span class="pl-infix">=</span> <span class="pl-avar">_84361898{vn = ..., cns = ...}</span></span> , 
-     <span class="pl-compound pl-level-0"><span class="pl-functor">me</span>(<span class="pl-args"><span class="pl-atom">db_size</span>, <span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">3</span></span>)</span>, <span class="pl-avar">_84362104{$_db_size_unorm}</span></span>)</span> , 
-     <span class="pl-compound pl-level-0"><span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">4</span></span>)</span> <span class="pl-infix">=</span> <span class="pl-avar">_84362104{$_db_size_unorm}</span></span> , 
-     <span class="pl-compound pl-level-0"><span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">5</span></span>)</span> <span class="pl-infix">=</span> <span class="pl-avar">_84361982{vn = ..., cns = ...}</span></span> , 
-     <span class="pl-compound pl-level-0"><span class="pl-functor">s</span>(<span class="pl-args"><span class="pl-atom">*</span>, <span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">4</span></span>)</span>, <span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">5</span></span>)</span>, <span class="pl-avar">_84362158{$_db_size}</span></span>)</span> , 
-     <span class="pl-compound pl-level-0"><span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">6</span></span>)</span> <span class="pl-infix">=</span> <span class="pl-avar">_84362158{$_db_size}</span></span> , 
-     <span class="pl-compound pl-level-0"><span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">7</span></span>)</span> <span class="pl-infix">=</span> <span class="pl-avar">_84362064{$_support_estimate}</span></span> , 
-     <span class="pl-compound pl-level-0"><span class="pl-functor">s</span>(<span class="pl-args"><span class="pl-atom">&lt;</span>, <span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">6</span></span>)</span>, <span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">7</span></span>)</span>, <span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">8</span></span>)</span></span>)</span> , 
-     _84362224{$P1_CODE_455} =  
+     <span class="pl-var">_pattern177</span>,  <span class="pl-var">_db173</span>, <span class="pl-var">_prob_estimate9</span>, <span class="pl-var">_db_ratio17</span>, <span class="pl-var">RetVal1291</span>) :- 
+     <span class="pl-compound pl-level-0"><span class="pl-functor">ensure_evaled</span>(<span class="pl-args"><span class="pl-atom">'%Undefined%'</span>, <span class="pl-avar">_126017536{vn = ..., cns = ...}</span>, <span class="pl-avar">_126017696{vn = ..., cns = ...}</span></span>)</span> , 
+     <span class="pl-compound pl-level-0"><span class="pl-functor">ensure_evaled</span>(<span class="pl-args"><span class="pl-atom">'%Undefined%'</span>, <span class="pl-avar">_126017564{vn = ..., cns = ...}</span>, <span class="pl-avar">_126017738{vn = ..., cns = ...}</span></span>)</span> , 
+     <span class="pl-compound pl-level-0"><span class="pl-functor">ensure_evaled</span>(<span class="pl-args"><span class="pl-atom">'%Undefined%'</span>, <span class="pl-avar">_126017592{vn = ..., cns = ...}</span>, <span class="pl-avar">_126017780{vn = ..., cns = ...}</span></span>)</span> , 
+     <span class="pl-compound pl-level-0"><span class="pl-functor">ensure_evaled</span>(<span class="pl-args"><span class="pl-atom">'%Undefined%'</span>, <span class="pl-avar">_126017620{vn = ..., cns = ...}</span>, <span class="pl-avar">_126017822{vn = ..., cns = ...}</span></span>)</span> , 
+     <span class="pl-compound pl-level-0"><span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">0</span></span>)</span> <span class="pl-infix">=</span> <span class="pl-avar">_126017696{vn = ..., cns = ...}</span></span> , 
+     <span class="pl-compound pl-level-0"><span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">1</span></span>)</span> <span class="pl-infix">=</span> <span class="pl-avar">_126017738{vn = ..., cns = ...}</span></span> , 
+     <span class="pl-compound pl-level-0"><span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">2</span></span>)</span> <span class="pl-infix">=</span> <span class="pl-avar">_126017780{vn = ..., cns = ...}</span></span> , 
+     <span class="pl-compound pl-level-0"><span class="pl-functor">me</span>(<span class="pl-args"><span class="pl-atom">prob_to_support</span>, <span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">0</span></span>)</span>, <span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">1</span></span>)</span>, <span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">2</span></span>)</span>, <span class="pl-avar">_126017904{$_support_estimate}</span></span>)</span> , 
+     <span class="pl-compound pl-level-0"><span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">3</span></span>)</span> <span class="pl-infix">=</span> <span class="pl-avar">_126017904{$_support_estimate}</span></span> , 
+     <span class="pl-compound pl-level-0"><span class="pl-functor">s</span>(<span class="pl-args"><span class="pl-atom">prob</span>, <span class="pl-atom">to</span>, <span class="pl-atom">support</span>, <span class="pl-atom">is</span>, <span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">3</span></span>)</span>, <span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">4</span></span>)</span></span>)</span> , 
+     <span class="pl-compound pl-level-0"><span class="pl-functor">println_impl</span>(<span class="pl-args"><span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">4</span></span>)</span>, <span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">5</span></span>)</span></span>)</span> , 
+     <span class="pl-compound pl-level-0"><span class="pl-functor">unify_with_occurs_check</span>(<span class="pl-args"><span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">5</span></span>)</span>, []</span>)</span> , 
+     <span class="pl-compound pl-level-0"><span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">6</span></span>)</span> <span class="pl-infix">=</span> <span class="pl-avar">_126017738{vn = ..., cns = ...}</span></span> , 
+     <span class="pl-compound pl-level-0"><span class="pl-functor">me</span>(<span class="pl-args"><span class="pl-atom">db_size</span>, <span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">6</span></span>)</span>, <span class="pl-avar">_126018000{$_db_size_unorm}</span></span>)</span> , 
+     <span class="pl-compound pl-level-0"><span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">7</span></span>)</span> <span class="pl-infix">=</span> <span class="pl-avar">_126018000{$_db_size_unorm}</span></span> , 
+     <span class="pl-compound pl-level-0"><span class="pl-functor">s</span>(<span class="pl-args"><span class="pl-atom">db</span>, <span class="pl-atom">isze</span>, <span class="pl-atom">is</span>, <span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">7</span></span>)</span>, <span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">8</span></span>)</span></span>)</span> , 
+     <span class="pl-compound pl-level-0"><span class="pl-functor">println_impl</span>(<span class="pl-args"><span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">8</span></span>)</span>, <span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">9</span></span>)</span></span>)</span> , 
+     <span class="pl-compound pl-level-0"><span class="pl-functor">unify_with_occurs_check</span>(<span class="pl-args"><span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">9</span></span>)</span>, []</span>)</span> , 
+     <span class="pl-compound pl-level-0"><span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">10</span></span>)</span> <span class="pl-infix">=</span> <span class="pl-avar">_126018000{$_db_size_unorm}</span></span> , 
+     <span class="pl-compound pl-level-0"><span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">11</span></span>)</span> <span class="pl-infix">=</span> <span class="pl-avar">_126017822{vn = ..., cns = ...}</span></span> , 
+     <span class="pl-compound pl-level-0"><span class="pl-functor">s</span>(<span class="pl-args"><span class="pl-atom">*</span>, <span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">10</span></span>)</span>, <span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">11</span></span>)</span>, <span class="pl-avar">_126018108{$_db_size}</span></span>)</span> , 
+     <span class="pl-compound pl-level-0"><span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">12</span></span>)</span> <span class="pl-infix">=</span> <span class="pl-avar">_126018108{$_db_size}</span></span> , 
+     <span class="pl-compound pl-level-0"><span class="pl-functor">s</span>(<span class="pl-args"><span class="pl-atom">'db-size'</span>, <span class="pl-atom">with</span>, <span class="pl-atom">db</span>, <span class="pl-atom">ratio</span>, <span class="pl-atom">is</span>, <span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">12</span></span>)</span>, <span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">13</span></span>)</span></span>)</span> , 
+     <span class="pl-compound pl-level-0"><span class="pl-functor">println_impl</span>(<span class="pl-args"><span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">13</span></span>)</span>, <span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">14</span></span>)</span></span>)</span> , 
+     <span class="pl-compound pl-level-0"><span class="pl-functor">unify_with_occurs_check</span>(<span class="pl-args"><span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">14</span></span>)</span>, []</span>)</span> , 
+     <span class="pl-compound pl-level-0"><span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">15</span></span>)</span> <span class="pl-infix">=</span> <span class="pl-avar">_126018108{$_db_size}</span></span> , 
+     <span class="pl-compound pl-level-0"><span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">16</span></span>)</span> <span class="pl-infix">=</span> <span class="pl-avar">_126017904{$_support_estimate}</span></span> , 
+     <span class="pl-compound pl-level-0"><span class="pl-functor">s</span>(<span class="pl-args"><span class="pl-atom">&lt;</span>, <span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">15</span></span>)</span>, <span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">16</span></span>)</span>, <span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">17</span></span>)</span></span>)</span> , 
+     _126018232{$P1_CODE_835} =  
           
        <span class="pl-atom">as_p1</span>( <span class="pl-atom">'%Undefined%'</span>, 
-         <span class="pl-list"><span class="pl-functor"> [ </span><span class="pl-args"><span class="pl-atom">-&gt;</span>, <span class="pl-atom">'%Undefined%'</span></span>]</span>, <span class="pl-anon">_</span>, <span class="pl-var">P1_CODE_RESULT_455</span>, 
+         <span class="pl-list"><span class="pl-functor"> [ </span><span class="pl-args"><span class="pl-atom">-&gt;</span>, <span class="pl-atom">'%Undefined%'</span></span>]</span>, <span class="pl-anon">_</span>, <span class="pl-var">P1_CODE_RESULT_835</span>, 
          [ <span class="pl-atom">'let*'</span>, 
-           [ [ <span class="pl-var">_subsize</span>, 
+           [ [ [], 
+               [ <span class="pl-atom">'println!'</span>, 
+                 [ <span class="pl-string">"herrrrrrrrrrrrrrr1111111111"</span>, <span class="pl-atom">',pattern'</span>, <span class="pl-var">_pattern</span>, <span class="pl-atom">'db-size'</span>, 
+                   <span class="pl-var">_db_size</span>, <span class="pl-atom">and</span>, <span class="pl-atom">support</span>, 
+                   <span class="pl-var">_support_estimate</span>]]], 
+             [ <span class="pl-var">_subsize</span>, 
                <span class="pl-list"><span class="pl-functor"> [ </span><span class="pl-args"><span class="pl-atom">'subsmp-size'</span>, <span class="pl-var">_pattern</span>|<span class="pl-ellipsis">...</span></span>]</span>], 
+             [ [], 
+               [ <span class="pl-atom">'println!'</span>, 
+                 <span class="pl-list"><span class="pl-functor"> [ </span><span class="pl-args"><span class="pl-atom">'subsmp-size---'</span>, <span class="pl-var">_subsize</span></span>]</span>]], 
              <span class="pl-list"><span class="pl-functor"> [ </span><span class="pl-args"><span class="pl-int">10</span>, <span class="pl-int">10</span></span>]</span>, 
              [ <span class="pl-var">_emp_prob</span>, 
                [ <span class="pl-atom">emp_prob_bs</span>, <span class="pl-var">_pattern</span>, <span class="pl-var">_db</span>, <span class="pl-int">10</span>, 
-                 <span class="pl-var">_subsize</span>]]], 
+                 <span class="pl-var">_subsize</span>]], 
+             [ [], 
+               [ <span class="pl-atom">'println!'</span>, 
+                 [ <span class="pl-atom">emp</span>, <span class="pl-atom">prob</span>, <span class="pl-atom">bs</span>, <span class="pl-atom">is</span>, <span class="pl-var">_emp_prob</span>]]]], 
            <span class="pl-var">_emp_prob</span>], 
-         ( <span class="pl-compound pl-level-0"><span class="pl-var">J</span><span class="pl-infix">=</span><span class="pl-var">_pattern</span></span>  ,
-           <span class="pl-compound pl-level-0"><span class="pl-var">K</span><span class="pl-infix">=</span><span class="pl-var">_db_size</span></span> , 
-           <span class="pl-compound pl-level-0"><span class="pl-var">L</span><span class="pl-infix">=</span><span class="pl-var">_support_estimate</span></span> , 
-           <span class="pl-compound pl-level-0"><span class="pl-functor">me</span>(<span class="pl-args"><span class="pl-atom">'subsmp-size'</span>, <span class="pl-var">J</span>, <span class="pl-var">K</span>, <span class="pl-var">L</span>, <span class="pl-var">_subsize</span></span>)</span> , 
-           <span class="pl-compound pl-level-0"><span class="pl-var">M</span><span class="pl-infix">=</span><span class="pl-var">_pattern</span></span> , 
-           <span class="pl-compound pl-level-0"><span class="pl-var">N</span><span class="pl-infix">=</span><span class="pl-var">_db</span></span> , 
-           <span class="pl-compound pl-level-0"><span class="pl-var">O</span><span class="pl-infix">=</span><span class="pl-int">10</span></span> , 
-           <span class="pl-compound pl-level-0"><span class="pl-var">P</span><span class="pl-infix">=</span><span class="pl-var">_subsize</span></span> , 
-           <span class="pl-compound pl-level-0"><span class="pl-functor">me</span>(<span class="pl-args"><span class="pl-atom">emp_prob_bs</span>, <span class="pl-var">M</span>, <span class="pl-var">N</span>, <span class="pl-var">O</span>, <span class="pl-var">P</span>, <span class="pl-var">_emp_prob</span></span>)</span> , 
-           <span class="pl-compound pl-level-0"><span class="pl-var">P1_CODE_RESULT_455</span><span class="pl-infix">=</span><span class="pl-var">_emp_prob</span></span>)) , 
-     _84362554{$P1_CODE_456} =  
+         ( <span class="pl-compound pl-level-0"><span class="pl-var">S</span><span class="pl-infix">=</span><span class="pl-var">_pattern</span></span>  ,
+           <span class="pl-compound pl-level-0"><span class="pl-var">T</span><span class="pl-infix">=</span><span class="pl-var">_db_size</span></span> , 
+           <span class="pl-compound pl-level-0"><span class="pl-var">U</span><span class="pl-infix">=</span><span class="pl-var">_support_estimate</span></span> , 
+           <span class="pl-atom">u_assign</span>( <span class="pl-int">14</span>, 
+             [ <span class="pl-string">"herrrrrrrrrrrrrrr1111111111"</span>, <span class="pl-atom">',pattern'</span>, <span class="pl-var">S</span>, <span class="pl-atom">'db-size'</span>, 
+               <span class="pl-var">T</span>, <span class="pl-atom">and</span>, <span class="pl-atom">support</span>, <span class="pl-var">U</span>], 
+             <span class="pl-var">V</span>) , 
+           <span class="pl-compound pl-level-0"><span class="pl-functor">println_impl</span>(<span class="pl-args"><span class="pl-var">V</span>, <span class="pl-var">W</span></span>)</span> , 
+           <span class="pl-compound pl-level-0"><span class="pl-functor">unify_with_occurs_check</span>(<span class="pl-args"><span class="pl-var">W</span>, []</span>)</span> , 
+           <span class="pl-compound pl-level-0"><span class="pl-var">X</span><span class="pl-infix">=</span><span class="pl-var">_pattern</span></span> , 
+           <span class="pl-compound pl-level-0"><span class="pl-var">Y</span><span class="pl-infix">=</span><span class="pl-var">_db_size</span></span> , 
+           <span class="pl-compound pl-level-0"><span class="pl-var">Z</span><span class="pl-infix">=</span><span class="pl-var">_support_estimate</span></span> , 
+           <span class="pl-compound pl-level-0"><span class="pl-functor">me</span>(<span class="pl-args"><span class="pl-atom">'subsmp-size'</span>, <span class="pl-var">X</span>, <span class="pl-var">Y</span>, <span class="pl-var">Z</span>, <span class="pl-var">_subsize</span></span>)</span> , 
+           <span class="pl-compound pl-level-0"><span class="pl-var">A1</span><span class="pl-infix">=</span><span class="pl-var">_subsize</span></span> , 
+           <span class="pl-compound pl-level-0"><span class="pl-functor">s</span>(<span class="pl-args"><span class="pl-atom">'subsmp-size---'</span>, <span class="pl-var">A1</span>, <span class="pl-var">B1</span></span>)</span> , 
+           <span class="pl-compound pl-level-0"><span class="pl-functor">println_impl</span>(<span class="pl-args"><span class="pl-var">B1</span>, <span class="pl-var">C1</span></span>)</span> , 
+           <span class="pl-compound pl-level-0"><span class="pl-functor">unify_with_occurs_check</span>(<span class="pl-args"><span class="pl-var">C1</span>, []</span>)</span> , 
+           <span class="pl-compound pl-level-0"><span class="pl-var">D1</span><span class="pl-infix">=</span><span class="pl-var">_pattern</span></span> , 
+           <span class="pl-compound pl-level-0"><span class="pl-var">E1</span><span class="pl-infix">=</span><span class="pl-var">_db</span></span> , 
+           <span class="pl-compound pl-level-0"><span class="pl-var">F1</span><span class="pl-infix">=</span><span class="pl-int">10</span></span> , 
+           <span class="pl-compound pl-level-0"><span class="pl-var">G1</span><span class="pl-infix">=</span><span class="pl-var">_subsize</span></span> , 
+           <span class="pl-compound pl-level-0"><span class="pl-functor">me</span>(<span class="pl-args"><span class="pl-atom">emp_prob_bs</span>, <span class="pl-var">D1</span>, <span class="pl-var">E1</span>, <span class="pl-var">F1</span>, <span class="pl-var">G1</span>, <span class="pl-var">_emp_prob</span></span>)</span> , 
+           <span class="pl-compound pl-level-0"><span class="pl-var">H1</span><span class="pl-infix">=</span><span class="pl-var">_emp_prob</span></span> , 
+           <span class="pl-compound pl-level-0"><span class="pl-functor">s</span>(<span class="pl-args"><span class="pl-atom">emp</span>, <span class="pl-atom">prob</span>, <span class="pl-atom">bs</span>, <span class="pl-atom">is</span>, <span class="pl-var">H1</span>, <span class="pl-var">I1</span></span>)</span> , 
+           <span class="pl-compound pl-level-0"><span class="pl-functor">println_impl</span>(<span class="pl-args"><span class="pl-var">I1</span>, <span class="pl-var">J1</span></span>)</span> , 
+           <span class="pl-compound pl-level-0"><span class="pl-functor">unify_with_occurs_check</span>(<span class="pl-args"><span class="pl-var">J1</span>, []</span>)</span> , 
+           <span class="pl-compound pl-level-0"><span class="pl-var">P1_CODE_RESULT_835</span><span class="pl-infix">=</span><span class="pl-var">_emp_prob</span></span>)) , 
+     _126018970{$P1_CODE_836} =  
           
        <span class="pl-atom">as_p1</span>( <span class="pl-atom">'%Undefined%'</span>, 
-         <span class="pl-list"><span class="pl-functor"> [ </span><span class="pl-args"><span class="pl-atom">-&gt;</span>, <span class="pl-atom">'%Undefined%'</span></span>]</span>, <span class="pl-anon">_</span>, <span class="pl-var">P1_CODE_RESULT_456</span>, 
+         <span class="pl-list"><span class="pl-functor"> [ </span><span class="pl-args"><span class="pl-atom">-&gt;</span>, <span class="pl-atom">'%Undefined%'</span></span>]</span>, <span class="pl-anon">_</span>, <span class="pl-var">P1_CODE_RESULT_836</span>, 
          [ <span class="pl-atom">'let*'</span>, 
-           [ [ <span class="pl-var">_real_prob</span>, 
-               <span class="pl-list"><span class="pl-functor"> [ </span><span class="pl-args"><span class="pl-atom">'emp-prob'</span>, <span class="pl-var">_pattern</span>|<span class="pl-ellipsis">...</span></span>]</span>]], 
+           [ [ [ [ [ [ 
+               [], 
+               [ <span class="pl-atom">'println!'</span>, 
+                 <span class="pl-string">"herrrrrrrrrrrrrrr"</span>]], 
+             [ <span class="pl-var">_real_prob</span>, 
+               <span class="pl-list"><span class="pl-functor"> [ </span><span class="pl-args"><span class="pl-atom">'emp-prob'</span>, <span class="pl-var">_pattern</span>|<span class="pl-ellipsis">...</span></span>]</span>], 
+             [ [], 
+               [ <span class="pl-atom">'println!'</span>, 
+                 <span class="pl-list"><span class="pl-functor"> [ </span><span class="pl-args"><span class="pl-atom">emp</span>, <span class="pl-atom">prob</span>|<span class="pl-ellipsis">...</span></span>]</span>]]], 
            <span class="pl-var">_real_prob</span>], 
-         ( <span class="pl-compound pl-level-0"><span class="pl-var">Q</span><span class="pl-infix">=</span><span class="pl-var">_pattern</span></span>  ,
-           <span class="pl-compound pl-level-0"><span class="pl-var">R</span><span class="pl-infix">=</span><span class="pl-var">_db</span></span> , 
-           <span class="pl-compound pl-level-0"><span class="pl-functor">me</span>(<span class="pl-args"><span class="pl-atom">'emp-prob'</span>, <span class="pl-var">Q</span>, <span class="pl-var">R</span>, <span class="pl-var">_real_prob</span></span>)</span> , 
-           <span class="pl-compound pl-level-0"><span class="pl-var">P1_CODE_RESULT_456</span><span class="pl-infix">=</span><span class="pl-var">_real_prob</span></span>)) , 
-     <span class="pl-compound pl-level-0"><span class="pl-functor">s</span>(<span class="pl-args"><span class="pl-atom">if</span>, <span class="pl-compound"><span class="pl-functor">'$VAR'</span>(<span class="pl-args"><span class="pl-int">8</span></span>)</span>, <span class="pl-avar">_84362224{$P1_CODE_455}</span>, <span class="pl-avar">_84362554{$P1_CODE_456}</span>, <span class="pl-avar">_84361808{vn = ..., cns = ...}</span></span>)</span></span>) ).
+         ( <span class="pl-compound pl-level-0"><span class="pl-functor">println_impl</span>(<span class="pl-args"><span class="pl-string">"herrrrrrrrrrrrrrr"</span>, <span class="pl-var">K1</span></span>)</span>  ,
+           <span class="pl-compound pl-level-0"><span class="pl-functor">unify_with_occurs_check</span>(<span class="pl-args"><span class="pl-var">K1</span>, []</span>)</span> , 
+           <span class="pl-compound pl-level-0"><span class="pl-var">L1</span><span class="pl-infix">=</span><span class="pl-var">_pattern</span></span> , 
+           <span class="pl-compound pl-level-0"><span class="pl-var">M1</span><span class="pl-infix">=</span><span class="pl-var">_db</span></span> , 
+           <span class="pl-compound pl-level-0"><span class="pl-functor">me</span>(<span class="pl-args"><span class="pl-atom">'emp-prob'</span>, <span class="pl-var">L1</span>, <span class="pl-var">M1</span>, <span class="pl-var">_real_prob</span></span>)</span> , 
+           <span class="pl-compound pl-level-0"><span class="pl-var">N1</span><span class="pl-infix">=</span><span class="pl-var">_real_prob</span></span> , 
+           <span class="pl-compound pl-level-0"><span class="pl-functor">s</span>(<span class="pl-args"><span class="pl-atom">emp</span>, <span class="pl-atom">prob</span>, <span class="pl-atom">is</span>, <span class="pl-var">N1</span>, <span class="pl-var">O1</span></span>)</span> , 
+           <span class="pl-compound pl-level-0"><span class="pl-functor">println_impl</span>(<span class="pl-args"><span class="pl-var">O1</span>, <span class="pl-var">P1</span></span>)</span> , 
+           <span class="pl-compound pl-level-0"><span class="pl-functor">unify_with_occurs_check</span>(<span class="pl-args"><span class="pl-var">P1</span>, []</span>)</span> , 
+           <span class="pl-compound pl-level-0"><span class="pl-var">P1_CODE_RESULT_836</span><span class="pl-infix">=</span><span class="pl-var">_real_prob</span></span>)) , 
+     <span class="pl-atom">s</span>( <span class="pl-atom">if</span>, 
+       <span class="pl-var">R</span>, <span class="pl-avar">_126018232{$P1_CODE_835}</span>, <span class="pl-avar">_126018970{$P1_CODE_836}</span>, 
+       _126017648{vn = ..., cns = ...})</span>) ).
 
 
-%% Finished generating /home/eyobderese/iCog-repo/hyperon-miner/experiments/surprisingness/metta_log/emp-prob.metta at 2025-10-03T12:05:06+03:00
+%% Finished generating /home/eyobderese/iCog-repo/hyperon-miner/experiments/surprisingness/metta_log/emp-prob.metta at 2025-10-18T23:17:36+03:00
 
 :- normal_IO.
 :- initialization(transpiled_main, program).
