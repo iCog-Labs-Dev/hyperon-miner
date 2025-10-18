@@ -583,7 +583,7 @@
 ;; Function: do_emp_tv
 ;; -----------------------------------------------------------------------------
 ;; Purpose:
-;;   Calculates the empirical truth value for a given pattern in a database.
+;;   Calculates the empirical truth value for a given pattern in a database.emp-tv
 ;;   It processes the database to obtain a sequence of atoms, estimates the joint truth value (JTV),
 ;;   and then uses the support estimate calculator to compute the final empirical truth value.
 ;;
