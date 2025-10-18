@@ -239,21 +239,13 @@
         )
         (if (< $db-size $support-estimate)
             (let* ( 
-                (() (println! ("herrrrrrrrrrrrrrr1111111111",pattern $pattern db-size $db-size and support $support-estimate)))
                 ($subsize (subsmp-size $pattern $db-size $support-estimate))
-                (() (println! (subsmp-size--- $subsize)))
                 ($n-resample 10)
                 ($emp-prob (emp_prob_bs $pattern $db $n-resample $subsize))
-                (() (println! (emp prob bs is $emp-prob)))
             )   
                 $emp-prob
             )
             (let* (
-                (() (println! "herrrrrrrrrrrrrrr"))
-             ($real-prob (emp-prob $pattern $db))
-                (() (println! (emp prob is $real-prob)))
-
-             
              ) 
              $real-prob)
         )
