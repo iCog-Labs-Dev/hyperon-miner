@@ -84,9 +84,13 @@
 
 (= (avrg_tv $tv) (
     let* (
+        (() (println! "======= Average Truth Value Calculation ======="))
         ($tv_list (mk_distribution_list $tv))
+        (() (println! "Extracted TV List: " $tv_list))
         ($size (tuple-count $tv_list))
+        (() (println! "Number of TV elements: " $size))
         ($mean (let $sum (mean_accumulater $tv_list 0) (// $sum $size)))
+        (() (println! "Calculated Mean: " $mean))
         ($re_variance (let $var_sum  (var_accumulater $tv_list 0 $mean) (// $var_sum $size)))
         ($finalAnswer (mk_stv $mean $re_variance))
     )
