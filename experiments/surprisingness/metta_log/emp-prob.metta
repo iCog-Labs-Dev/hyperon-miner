@@ -1,7 +1,3 @@
-!(import! &self ../../utils/metta_log/common-util)
-!(import! &self ../../utils/metta_log/bs-utils)
-!(import! &self ../../truth-values/metta_log/emp-tv)
-!(import! &kb ../../data/ugly_man_sodaDrinker)
 
 ; ;;types
 ; (: emp-prob (-> Pattern SpaceType Number))
@@ -105,7 +101,6 @@
     ))
 )
 
-!(emp_prob_subsmp (Inheritance $x human) &kb 10)
 ; !(subsample-py &kb 10)
 ; !(copy-db (new-space) ((Inheritance Human JOb) (Inheritance Nati Bonny)))
 ; !(generet-random-subsample &kb 5)
@@ -203,7 +198,6 @@
 (= (emp-prob-pbs $pattern $db $db_ratio)
     (if (< 1 (n_conjuncts $pattern))
         (let ($emin $emax) (ji_prob_est_interval $pattern $db $db_ratio)
-
             (emp-prob-pbs $pattern $db $emax $db_ratio)
         )
     (emp-prob $pattern $db)
@@ -236,30 +230,29 @@
 
 (= (emp-prob-pbs $pattern $db $prob-estimate $db-ratio)
     (let* ( 
-        
         ($support-estimate (prob_to_support $pattern $db $prob-estimate))
-        
-             ($db-size-unorm (db_size $db))
-            ($db-size (* $db-size-unorm $db-ratio))
-            
-            )
-            
-
+        (() (println! (prob to support is $support-estimate)))
+        ($db-size-unorm (db_size $db))
+        (() (println! (db isze is $db-size-unorm)))
+        ($db-size (* $db-size-unorm $db-ratio))
+        (() (println! (db-size with db ratio is $db-size)))
+        )
         (if (< $db-size $support-estimate)
             (let* ( 
-                
+                (() (println! ("herrrrrrrrrrrrrrr1111111111",pattern $pattern db-size $db-size and support $support-estimate)))
                 ($subsize (subsmp-size $pattern $db-size $support-estimate))
-                
-                    ($n-resample 10)
-                    ($emp-prob (emp_prob_bs $pattern $db $n-resample $subsize))
-                    
-                    )
-                    
+                (() (println! (subsmp-size--- $subsize)))
+                ($n-resample 10)
+                ($emp-prob (emp_prob_bs $pattern $db $n-resample $subsize))
+                (() (println! (emp prob bs is $emp-prob)))
+            )   
                 $emp-prob
             )
             (let* (
+                (() (println! "herrrrrrrrrrrrrrr"))
              ($real-prob (emp-prob $pattern $db))
-             
+                (() (println! (emp prob is $real-prob)))
+
              
              ) 
              $real-prob)
