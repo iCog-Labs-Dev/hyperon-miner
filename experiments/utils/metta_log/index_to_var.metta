@@ -16,19 +16,50 @@
         )
         (make_var1 $num))
 )
-
-
+(= (convert $x)
+    (let* (
+        ($index (eval (fromNum $x)))
+        )
+    $index)
+)
+(= (get-conjunct $cnj) (
+  unify ($ncnj $ptrn) $cnj (let $result (get-conjunct $ptrn) (cons-atom $ncnj $result) ) ($cnj)
+))
+; !(get-conjunct (Inheritance Z var1))
+; !(get-conjunct (S (S Z)))
+; !(intersection-atom (get-conjunct (S (S Z))) (S Z))
+; !(intersection-atom (B C S S S Z) (S Z))
+; !(intersection-atom (A S S Z) (S Z))
+(= (checker $x)
+    (let $flat (get-conjunct $x) (== (unique-atom $flat) (S Z)))
+)
 (= (replacev $pattern)
-    (map-atom $pattern $x (if (== (get-type $x) Nat) (generate $x) (if (and (not (== (get-type $x) Nat)) (== (get-metatype $x) Expression)) (replacev $x) $x))) ;
+    (map-atom $pattern $x (if (== (get-metatype $x) Expression) (if (checker $x) (generate $x) (replacev $x)) (if (== (get-type $x) Nat) (generate $x) $x)))
 )
 (= (num2deb $pattern)
-    (map-atom $pattern $x (if (== (get-type $x) Number) (fromNum $x) (if (and (not (== (get-type $x) Number)) (== (get-metatype $x) Expression)) (num2deb $x) $x)))
+    (map-atom $pattern $x  (if (== (get-metatype $x) Expression) (num2deb $x) (if (== (get-type $x) Number) (fromNum $x) $x)))
 )
+; (= (num2deb $pattern)
+;     (map-atom $pattern $x (if (== (get-type $x) Number) (fromNum $x) (if (and (not (== (get-type $x) Number)) (== (get-metatype $x) Expression)) (num2deb $x) $x)))
+; )
+
+; (= (num2deb $pattern)
+;     (let*
+;         (
+;             (car)
+;         )
+;     )
+; )
 
 (= (replace $pattern)
     (let* (
+        (() (println! $pattern))
         (($numpat $index $list) (var2num $pattern 0 ()))
+        (() (println! ($numpat , $index , $list)))
+        ; ($res (var2num $pattern 0 ()))
+        ; ($numpat (car-atom $res))
         ($deb  (num2deb $numpat)) 
+        (() (println! $deb))
     ) 
     $deb
     )
