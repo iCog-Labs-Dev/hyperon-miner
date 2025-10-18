@@ -19,27 +19,11 @@
 .ansi38-013099040 { color: #0D6328; }
 .ansi38-013099040 { color: #0D6328; }
 .ansi38-013099040 { color: #0D6328; }
-.ansi38-013099040 { color: #0D6328; }
-.ansi38-013099040 { color: #0D6328; }
-.ansi38-013099040 { color: #0D6328; }
-.ansi38-013099040 { color: #0D6328; }
-.ansi38-013099040 { color: #0D6328; }
-.ansi38-013099040 { color: #0D6328; }
-.ansi38-013099040 { color: #0D6328; }
-.ansi38-013099040 { color: #0D6328; }
-.ansi38-013099040 { color: #0D6328; }
-.ansi38-013099040 { color: #0D6328; }
-.ansi38-013099040 { color: #0D6328; }
-.ansi38-013099040 { color: #0D6328; }
-.ansi38-013099040 { color: #0D6328; }
-.ansi38-013099040 { color: #0D6328; }
-.ansi38-013099040 { color: #0D6328; }
-.ansi38-013099040 { color: #0D6328; }
 </style>
 </head>
 <body class="body_foreground body_background" style="font-size: normal;" >
 <pre class="ansi2html-content">
-Script started on 2025-10-18 23:14:19+03:00 [TERM="xterm-256color" TTY="/dev/pts/5" COLUMNS="219" LINES="17"]
+Script started on 2025-10-18 23:40:12+03:00 [TERM="xterm-256color" TTY="/dev/pts/5" COLUMNS="219" LINES="17"]
 bash: warning: setlocale: LC_ALL: cannot change locale (en_US.utf8)
 <span class="ansi38-013099040">!(import! &self ../../utils/metta_log/common-util)
 
@@ -47,18 +31,6 @@ bash: warning: setlocale: LC_ALL: cannot change locale (en_US.utf8)
 [stream_error /home/eyobderese/iCog-repo/hyperon-miner/experiments/utils/metta_log/common-util.metta:505:44:19037 [syntax_error [unexpected_char )] "Unexpected end character: ')'"]]
 
 <span class="ansi1 ansi31">ERROR: [Thread main] Unknown message: stream_error('/home/eyobderese/iCog-repo/hyperon-miner/experiments/utils/metta_log/common-util.metta':505:44:19037,syntax_error(unexpected_char(')'),"Unexpected end character: ')'"))
-</span>
-Deterministic: <span class="ansi33">()
-</span><span class="ansi38-013099040">!(import! &self ../../utils/metta_log/partition-metta)
-
-</span>
-Deterministic: <span class="ansi33">()
-</span><span class="ansi38-013099040">!(import! &self ../../utils/metta_log/binomialMetta)
-
-</span>
-Deterministic: <span class="ansi33">()
-</span><span class="ansi38-013099040">!(import! &self ../../utils/metta_log/surp-utils)
-
 </span>
 Deterministic: <span class="ansi33">()
 </span><span class="ansi38-013099040">!(import! &self ../../utils/metta_log/beta-dist)
@@ -73,18 +45,6 @@ Deterministic: <span class="ansi33">()
 <span class="ansi1 ansi31">ERROR: [Thread main] Unknown message: stream_error('/home/eyobderese/iCog-repo/hyperon-miner/experiments/utils/metta_log/beta-dist.metta':82:11:1987,syntax_error(unexpected_char(')'),"Unexpected end character: ')'"))
 </span>
 Deterministic: <span class="ansi33">()
-</span><span class="ansi38-013099040">!(import! &self ../../utils/metta_log/index_to_var)
-
-</span>
-Deterministic: <span class="ansi33">()
-</span><span class="ansi38-013099040">!(import! &self ../../utils/metta_log/blk-abstractness)
-
-</span>
-Deterministic: <span class="ansi33">()
-</span><span class="ansi38-013099040">!(import! &self ../../utils/metta_log/eq-prob)
-
-</span>
-Deterministic: <span class="ansi33">()
 </span><span class="ansi38-013099040">!(import! &self ../../utils/metta_log/constants)
 
 </span>
@@ -93,152 +53,20 @@ Deterministic: <span class="ansi33">()
 
 </span>
 Deterministic: <span class="ansi33">()
-</span><span class="ansi38-013099040">!(import! &self ../../truth-values/metta_log/est-tv)
-
-</span><span class="ansi38-013099040">!(import! &self ../../utils/metta_log/common-util)
-
-</span>
-[stream_error /home/eyobderese/iCog-repo/hyperon-miner/experiments/utils/metta_log/common-util.metta:505:44:19037 [syntax_error [unexpected_char )] "Unexpected end character: ')'"]]
-
-<span class="ansi1 ansi31">ERROR: [Thread main] Unknown message: stream_error('/home/eyobderese/iCog-repo/hyperon-miner/experiments/utils/metta_log/common-util.metta':505:44:19037,syntax_error(unexpected_char(')'),"Unexpected end character: ')'"))
-</span>
-Deterministic: <span class="ansi33">()
-</span><span class="ansi38-013099040">!(import! &self ../../utils/metta_log/bs-utils)
-
-</span><span class="ansi38-013099040">!(import! &self ../emp-tv-bs)
+</span><span class="ansi38-013099040">!(import! &self ../../utils/metta_log/jsd-helper)
 
 </span>
 Deterministic: <span class="ansi33">()
-</span>
-R(2): <span class="ansi33">()
-</span><span class="ansi38-013099040">!(import! &self ../../truth-values/metta_log/emp-tv)
+</span><span class="ansi38-013099040">!(import! &self ./jsd)
 
 </span>
 Deterministic: <span class="ansi33">()
-</span><span class="ansi38-013099040">!(import! &kb ../../data/ugly_man_sodaDrinker)
+</span><span class="ansi38-013099040">!(do-jsd (STV 0.8 0.111111) (STV 0.1 0.5555555555555556))
 
-</span>
-Deterministic: <span class="ansi33">()
-</span>
-R(2): <span class="ansi33">()
-</span><span class="ansi38-013099040">!(import! &self ../../utils/metta_log/bs-utils)
+</span>=========== JSD SURP ==========
 
-</span><span class="ansi38-013099040">!(import! &self ../emp-tv-bs)
-
-</span>
-Deterministic: <span class="ansi33">()
-</span>
-R(2): <span class="ansi33">()
-</span><span class="ansi38-013099040">!(import! &self ../../truth-values/metta_log/emp-tv)
-
-</span>
-Deterministic: <span class="ansi33">()
-</span><span class="ansi38-013099040">!(import! &kb ../../data/ugly_man_sodaDrinker)
-
-</span>
-Deterministic: <span class="ansi33">()
-</span><span class="ansi38-013099040">!(import! &self ./emp-prob)
-
-</span>
-Deterministic: <span class="ansi33">()
-</span><span class="ansi38-013099040">!(import! &self ./isurp)
-
-</span>
-Deterministic: <span class="ansi33">()
-</span><span class="ansi38-013099040">!(isurp (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker)) &kb False 1)
-
-</span>((Inheritance $x man))
-(((Inheritance $x ugly)) ((Inheritance $x sodaDrinker)))
-True
-((Inheritance $x ugly))
-(((Inheritance $x sodaDrinker)))
-True
-((Inheritance $x sodaDrinker))
-()
-True
-(head ((Inheritance $x ugly)) pivot ((Inheritance $x man)) var $x)
-(can-unify called with ((Inheritance $x ugly)) ((Inheritance $x man)))
-(is-blk-abs False)
-(head ((Inheritance $x sodaDrinker)) pivot ((Inheritance $x man)) var $x)
-(can-unify called with ((Inheritance $x sodaDrinker)) ((Inheritance $x man)))
-(is-blk-abs False)
-(can-unify called with ((Inheritance $x sodaDrinker)) ((Inheritance $x man)))
-(can-unify called with ((Inheritance $x ugly)) ((Inheritance $x man)))
-(can-unify called with ((Inheritance $x sodaDrinker)) ((Inheritance $x man)))
-(can-unify called with ((Inheritance $x ugly)) ((Inheritance $x man)))
-(head ((Inheritance $x sodaDrinker)) pivot ((Inheritance $x ugly)) var $x)
-(can-unify called with ((Inheritance $x sodaDrinker)) ((Inheritance $x ugly)))
-(is-blk-abs False)
-(can-unify called with ((Inheritance $x sodaDrinker)) ((Inheritance $x ugly)))
-(can-unify called with ((Inheritance $x sodaDrinker)) ((Inheritance $x ugly)))
-(can-unify called with ((Inheritance $x man)) ((Inheritance $x ugly)))
-(can-unify called with ((Inheritance $x ugly)) ((Inheritance $x sodaDrinker)))
-(can-unify called with ((Inheritance $x man)) ((Inheritance $x sodaDrinker)))
-((Inheritance $x man) (Inheritance $x ugly))
-(((Inheritance $x sodaDrinker)))
-True
-((Inheritance $x sodaDrinker))
-()
-True
-(head ((Inheritance $x sodaDrinker)) pivot ((Inheritance $x man) (Inheritance $x ugly)) var $x)
-(can-unify called with ((Inheritance $x sodaDrinker)) ((Inheritance $x ugly)))
-(can-unify called with ((Inheritance $x sodaDrinker)) ((Inheritance $x man)))
-(is-blk-abs False)
-(can-unify called with ((Inheritance $x sodaDrinker)) ((Inheritance $x ugly)))
-(can-unify called with ((Inheritance $x sodaDrinker)) ((Inheritance $x man)))
-(can-unify called with ((Inheritance $x sodaDrinker)) ((Inheritance $x ugly)))
-(can-unify called with ((Inheritance $x sodaDrinker)) ((Inheritance $x man)))
-(can-unify called with ((Inheritance $x man)) ((Inheritance $x sodaDrinker)))
-((Inheritance $x man) (Inheritance $x sodaDrinker))
-(((Inheritance $x ugly)))
-True
-((Inheritance $x ugly))
-()
-True
-(head ((Inheritance $x ugly)) pivot ((Inheritance $x man) (Inheritance $x sodaDrinker)) var $x)
-(can-unify called with ((Inheritance $x ugly)) ((Inheritance $x sodaDrinker)))
-(can-unify called with ((Inheritance $x ugly)) ((Inheritance $x man)))
-(is-blk-abs False)
-(can-unify called with ((Inheritance $x ugly)) ((Inheritance $x sodaDrinker)))
-(can-unify called with ((Inheritance $x ugly)) ((Inheritance $x man)))
-(can-unify called with ((Inheritance $x ugly)) ((Inheritance $x sodaDrinker)))
-(can-unify called with ((Inheritance $x ugly)) ((Inheritance $x man)))
-(can-unify called with ((Inheritance $x man)) ((Inheritance $x ugly)))
-((Inheritance $x man))
-(((Inheritance $x ugly) (Inheritance $x sodaDrinker)))
-True
-((Inheritance $x ugly) (Inheritance $x sodaDrinker))
-()
-True
-(head ((Inheritance $x ugly) (Inheritance $x sodaDrinker)) pivot ((Inheritance $x man)) var $x)
-(can-unify called with ((Inheritance $x ugly)) ((Inheritance $x man)))
-(is-blk-abs False)
-(can-unify called with ((Inheritance $x ugly)) ((Inheritance $x man)))
-(can-unify called with ((Inheritance $x ugly)) ((Inheritance $x man)))
-(can-unify called with ((Inheritance $x man)) ((Inheritance $x sodaDrinker)))
-(can-unify called with ((Inheritance $x man)) ((Inheritance $x ugly)))
-(emin 1.2860082304526748e-06 and emax 7.716049382716049e-05)
-(prob to support is 16.666666666666668)
-(db isze is 60)
-(db-size with db ratio is 60)
-herrrrrrrrrrrrrrr
-(emp prob is 2.3148148148148147e-05)
-(emp-prob-pbs 2.3148148148148147e-05)
-(distance $146303672)
-(max-prob 7.716049382716049e-05)
-
-Deterministic: <span class="ansi33">0.0
+N(1): <span class="ansi33">0.0
 </span>[()]
-[()]
-[()]
-[()]
-[()]
-[()]
-[()]
-[()]
-[()]
-[()]
-[()]
 [()]
 [()]
 [()]
@@ -246,7 +74,7 @@ Deterministic: <span class="ansi33">0.0
 [()]
 [0.0]
 
-Script done on 2025-10-18 23:17:55+03:00 [COMMAND_EXIT_CODE="1"]
+Script done on 2025-10-18 23:41:49+03:00 [COMMAND_EXIT_CODE="1"]
 
 </pre>
 </body>

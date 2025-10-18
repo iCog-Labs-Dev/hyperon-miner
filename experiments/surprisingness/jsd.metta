@@ -32,7 +32,7 @@
 
 ;; Jensen-Shannon Divergence (JSD) function
 ;; Converts C++ jsd function to MeTTa
-(=(do-jsd $l_tv $r_tv)(
+(= (do-jsd $l_tv $r_tv)(
     let* (
         (() (println! "=========== JSD SURP =========="))
         ($bins 10)                                     ;; static int bins = 100
