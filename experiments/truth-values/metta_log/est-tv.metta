@@ -161,19 +161,19 @@
 ;;     approximation formula.
 ;; =============================================================================
 
-(=(eq-prob $db $db_size $original $copy $i $count $var $prob) (
-    if (> $count 1) (
-    let* (
-        ($tail (cdr-atom $copy))
-        ($compJ (car-atom $tail))
-        ($most_spec  (let $result (inner_temp $db $original $compJ $i $var) (max $result) ))
-        ($M_xj (if (<= $most_spec 0) $db_size $most_spec))
-        ($inverse_M_xj (// 1 $M_xj))
-        ($prob_j (* $prob $inverse_M_xj))  ;; from general formula
-        ($dummy (eq-prob $db $db_size $original $tail (+ $i 1) (- $count 1) $var $prob_j))) 
-         $dummy)
-           $prob
-    ))
+; (=(eq-prob $db $db_size $original $copy $i $count $var $prob) (
+;     if (> $count 1) (
+;     let* (
+;         ($tail (cdr-atom $copy))
+;         ($compJ (car-atom $tail))
+;         ($most_spec  (let $result (inner_temp $db $original $compJ $i $var) (max $result) ))
+;         ($M_xj (if (<= $most_spec 0) $db_size $most_spec))
+;         ($inverse_M_xj (// 1 $M_xj))
+;         ($prob_j (* $prob $inverse_M_xj))  ;; from general formula
+;         ($dummy (eq-prob $db $db_size $original $tail (+ $i 1) (- $count 1) $var $prob_j))) 
+;          $dummy)
+;            $prob
+;     ))
 
 
 
@@ -236,12 +236,12 @@
  (   if (== $partitions ()) () (
          let* (
              
-             (($head $tail) (decons-atom $partitions))
+                (($head $tail) (decons-atom $partitions))
                 ($prod_etv (pro_prob_without_joint $db $head))
                 (($rp $rc) (decons-atom $prod_etv))
             ;    ($rp_est (prob-with-joint $db $db_size (remove-parenthesis $head) (joint-variables-init $pattern (remove-parenthesis $head)) 1))
-               ($rp_est (eq-prob (remove-parenthesis $head)  $pattern $db))
-              (($strength $confidence) ((* $rp $rp_est) (* 1e-1 (car-atom $rc))))
+                ($rp_est (eq-prob (remove-parenthesis $head) $pattern $db))
+                (($strength $confidence) ((* $rp $rp_est) (* 1e-1 (car-atom $rc))))
                ($dummy (ji-est-tv $db $db_size $pattern $tail))
                ) 
               (cons-atom (STV $strength $confidence)  $dummy) 
@@ -267,7 +267,7 @@
 ;;     all partitioned estimations of the pattern.
 ;; =============================================================================
 
-(=(do-ji-tv-est $db $pattern) (
+(= (do-ji-tv-est $db $pattern) (
     let $prtns (generet-partition-without-pattern $pattern)  
           ( let* (
             (() (println! "======= Truth Value Estimation ======="))
