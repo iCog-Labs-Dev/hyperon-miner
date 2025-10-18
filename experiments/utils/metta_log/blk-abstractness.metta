@@ -39,15 +39,14 @@
 
 ; Check if variable exists in the entire pattern
 (= (is-var-exist $exp $var) (
-   let $_ (println! (is-var-exist called with exp $exp var $var))
-   (if (== $exp ())
+   if (== $exp ())
        False
        (let $is_var_in_exp (var-exist-exp (car-atom $exp) $var) 
             (if $is_var_in_exp 
                 True
                 (is-var-exist (cdr-atom $exp) $var)))
     )
-    )
+    
 
 )
 
