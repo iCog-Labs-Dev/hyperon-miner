@@ -129,13 +129,3 @@
 (= (partitions $original) (partitions (powerset $original) $original))
 ;!(partitions ((Inheritance $x man) (Inheritance $x sodaDrinker) (Inheritance $x ugly)))
 
-(= (say-hello $x)
-   (concat "Hello, " $x))
-;; This function calls a helper
-(= (greet $name)
-   (say-hello $name))
-
-;; Helper is defined *after* the main function
-
-
-!(greet "Alice")
