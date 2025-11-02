@@ -164,9 +164,9 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
 ; Returns:
 ;   - A numeric value representing the surprisingness score, optionally normalized and capped at 1.0.
  
-(= (isurp-old $pattern $db $normalize) (
-    let* (
-        (() (println! "==== isurp-old surprisingness ====="))
+(= (isurp-old_ $pattern $db $normalize) 
+(let* (
+        (true  (println! "==== isurp-old surprisingness ====="))
         ($total_count (total_counts $pattern $db))
         ($pattern_prob (prob $pattern $db $total_count))
         ($partitions (generet-partition-without-pattern $pattern))
@@ -181,7 +181,14 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
 
 
 
-
+(= (isurp-old $pattern $db $normalize)   
+   (let* (
+          (true  (println! "==== isurp-old surprisingness =====")) 
+           ($total_count (total_counts $pattern $db) )
+           ($pattern_prob (prob $pattern $db $total_count))
+           ($partitions (partitions $pattern))
+           )
+                    (var is $partitions)))
 
 
 

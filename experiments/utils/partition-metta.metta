@@ -1,34 +1,34 @@
 ;;Checks if **all elements** of $lst are in $used
-(=(all-in $lst $used)
-(let $inter (intersection-atom $lst $used) (if (== (size-atom $inter) (size-atom $lst)) True False))
+; (=(all-in $lst $used)
+; (let $inter (intersection-atom $lst $used) (eval (if (== (size-atom $inter) (size-atom $lst)) True False)))
 
-)
+; )
 
 
-Generates all subsets (the powerset) of a given list
+; Generates all subsets (the powerset) of a given list
 ;; Example:  (powerset (a b)) → (() (b) (a) (a b))
 
-(= (powerset $lst)
-   (if (== $lst ())
-       (())                              ; only subset of empty list
-       (let* (
-          (($head $tail) (decons-atom $lst))
-          ($ps-tail   (powerset $tail)) ; subsets of tail
-          ($with-head (map-atom $ps-tail $s (cons-atom $head $s))) ; prepend head to each
-         )
-         (union-atom $ps-tail $with-head) ; union of both halves
-       )
-   )
-)
+; (= (powerset $lst)
+;    (if (== $lst ())
+;        (())                              ; only subset of empty list
+;        (let* (
+;           (($head $tail) (decons-atom $lst))
+;           ($ps-tail   (powerset $tail)) ; subsets of tail
+;           ($with-head (map-atom $ps-tail $s (cons-atom $head $s))) ; prepend head to each
+;          )
+;          (union-atom $ps-tail $with-head) ; union of both halves
+;        )
+;    )
+; )
 
 ;;Checks if **any element** of $lst is in $used
-(=(any-in $lst $used)(let $inter (intersection-atom $lst $used) (if (== (size-atom $inter) 0) False True)))
+; (=(any-in $lst $used)(let $inter (intersection-atom $lst $used) (eval (if (== (size-atom $inter) 0) False True))))
 
 
-;the subset can't be an empty set or the orginal set itself
-(= (valid-subset $subset $original)
-   (and (not (== $subset ()))
-        (not (== $subset $original))))  
+; ;the subset can't be an empty set or the orginal set itself
+; (= (valid-subset $subset $original)
+;    (and (not (== $subset ()))
+;         (not (== $subset $original))))  
 
 =========================================================================================
 ;;This function explores all combinations of valid, 
@@ -38,32 +38,32 @@ Generates all subsets (the powerset) of a given list
 ;;Each partition is complete (checked by all-in in partitions-helper).
 
 ; Collect partitions by trying each valid subset
-(= (partitions-collect $subsets $original $current $used)
-   (if (== $subsets ())
-       ()
-       (let ($subset $rest) (decons-atom $subsets)   
-         (if (and (valid-subset $subset $original)
-                  (not (any-in $subset $used)))     ;; ((a b) ( c))
-             (let* (
-                    ($first (partitions-helper $subsets $original (cons-atom $subset $current) (union-atom $used $subset)))
-                      ($second (partitions-collect $rest $original $current $used)))
-                        (union-atom $first $second))
-             (partitions-collect $rest $original $current $used)))))
+; (= (partitions-collect $subsets $original $current $used)
+;    (if (== $subsets ())
+;        ()
+;        (let ($subset $rest) (decons-atom $subsets)   
+;         (eval (if (and (valid-subset $subset $original)
+;                   (not (any-in $subset $used)))     ;; ((a b) ( c))
+;               (let* (
+;                     ($first (partitions-helper $subsets $original (cons-atom $subset $current) (union-atom $used $subset)))
+;                       ($second (partitions-collect $rest $original $current $used)))
+;                         (union-atom $first $second))
+;              (partitions-collect $rest $original $current $used))))))
 
  ; Recursive helper
-(= (partitions-helper $subsets $original $current $used)
-   (if (all-in $original $used)
-       ($current)
-       (partitions-collect (cdr-atom $subsets) $original $current $used))
+; (= (partitions-helper $subsets $original $current $used)
+;    (if (all-in $original $used)
+;        ($current)
+;        (partitions-collect (cdr-atom $subsets) $original $current $used))
        
 
        
-       )
+;        )
 
 
 ; Main: Generate all partitions
-(= (partitions $subsets $original)
-   (partitions-collect $subsets $original () ()))
+; (= (partitions $subsets $original)
+;    (partitions-collect $subsets $original () ()))
 
 
 ;; ==============================================================================
@@ -109,8 +109,8 @@ Generates all subsets (the powerset) of a given list
 ;;   Used in probability estimation, pattern decomposition, or symbolic reasoning
 ;;   tasks where exhaustive enumeration of all disjoint covers is required.
 ;; ==============================================================================
-(:partitions (-> list_of_patterns partitions))
+; (:partitions (-> list_of_patterns partitions))
 
 
-(=(partitions $original) (partitions (powerset $original) $original))
+; (=(partitions $original) (partitions (powerset $original) $original))
 ;!(partitions ((Inheritance $x man) (Inheritance $x sodaDrinker) (Inheritance $x ugly)))

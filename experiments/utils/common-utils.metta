@@ -10,16 +10,16 @@
 ;;;;;;;;;; functions related to Conjunction ;;;;;;;;;;;;
 
 ;; Extracts conjuncts from a conjunctive expression,
-(= (get-conjuncts $cnj) (
-  unify (, $ncnj $ptrn) $cnj (let $result (get-conjuncts $ncnj) (cons-atom $ptrn $result) ) ($cnj)
-))
+; (= (get-conjuncts $cnj) (
+;   unify (, $ncnj $ptrn) $cnj (let $result (get-conjuncts $ncnj) (cons-atom $ptrn $result) ) ($cnj)
+; ))
 
 
 
 ;;Determines the number of conjunctive clauses in a pattern.
 (=(n_conjuncts_new $pattern) (
    let ($head $tail) (decons-atom $pattern) (
-    if (== $head ,) (tuple-count $tail) 1)
+    if (== $head ,) (eval (tuple-count $tail)) 1)
 ))
 
 ;; =============================================================================
@@ -264,7 +264,6 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
         (let* (
                 ($head (car-atom $pattern)) 
                 ($tail (cdr-atom $pattern))) 
-
             (if (== (get-metatype $head) Expression)
                 (get-variables $tail
                     (get-variables $head $acc)) 
@@ -315,7 +314,7 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
 
 (=(reverse-list ()) ())
 (=(reverse-list $subparts)(
-      let ($head $tail) (decons-atom $subparts) (push-back $head (reverse-list $tail))
+      let ($head $tail) (decons-atom $subparts) (eval (push-back $head (reverse-list $tail)))
 ))
 
 
@@ -573,7 +572,7 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
 ;;         i. Adds the expression itself to results
 ;;         ii. Recursively processes both its contents and the tail
 ;;      c. For atomic heads, just processes the tail
-(= (get-clouses $pattern)(let $clouses (_get-clouses $pattern) (cons-atom , $clouses)))
+(= (get-clouses $pattern)(let $clouses (eval (_get-clouses $pattern)) (cons-atom , $clouses)))
 (= (_get-clouses $pattern)(
     if (== () $pattern) () (
         let* (
@@ -720,8 +719,8 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
 
 ;; This is very slow, use the grounded python function instead
 
-;    (: tuple-count (-> Any Number))
-   (= (tuple-count $atom) (size-atom $atom))
+;(: tuple-count (-> Any Number))
+(= (tuple-count $atom) (size-atom $atom))
 
 ;; Tuple count grounded python function
 ; (import! &self  helper)
@@ -923,8 +922,7 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
 )
 
  ;Check if atom is member of list or not
-(= (is-member $y $list) (== (intersection-atom ($y) $list) ($y)))
-
+;(= (is-member $y $list) (== (intersection-atom ($y) $list) ($y)))
 
  ;check if atom is variable or not
 
