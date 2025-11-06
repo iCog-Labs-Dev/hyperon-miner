@@ -5,7 +5,6 @@
 )
 
 
-Generates all subsets (the powerset) of a given list
 ;; Example:  (powerset (a b)) → (() (b) (a) (a b))
 
 (= (powerset $lst)
@@ -30,7 +29,7 @@ Generates all subsets (the powerset) of a given list
    (and (not (== $subset ()))
         (not (== $subset $original))))  
 
-=========================================================================================
+; =========================================================================================
 ;;This function explores all combinations of valid, 
 ;;disjoint subsets that together cover the original list exactly once. It ensures:
 ;;No repetition.
