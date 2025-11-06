@@ -1,37 +1,8 @@
 
-!(import! &self  emp-tv-bs)
 
 
-;; =============================================================================
-;; Function: subsample-py
-;; -----------------------------------------------------------------------------
-;; Purpose:
-;;   Creates a random subsample from a database by selecting a specified number
-;;   of atoms and placing them in a new space.
-;;
-;; Inputs:
-;;   - `$db`: The source database/space to subsample
-;;   - `$subsize`: The number of atoms to include in the subsample
-;;
-;; Output:
-;;   - A new space containing the randomly selected atoms
-;;
-;; =============================================================================
-(= (subsample-py $db $subsize)
-    (let* (
-         
-            ($db-content (collapse (get-atoms $db)))
 
-            ($random-selected (generet_random_subsample $db-content $subsize))
 
-            ($space (copy-db (new-space) $random-selected))
-
-            
-            )
-
-        $space
-    )
-)
 
 ;; avrg-tv-py
 ;; Computes the arithmetic mean of a sequence of numerical values.
@@ -119,4 +90,5 @@
        )
    )
 )
+
 

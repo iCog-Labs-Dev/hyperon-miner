@@ -54,10 +54,8 @@
 (= (emp-prob $pattern $db)
     (let*
         ( 
-            
-            ( $ucount   (universe-count $pattern $db))     
-            ( $sup  (sup-num $db $pattern))
-            
+            ( $ucount  (universe-count $pattern $db))     
+            ( $sup  (sup-num $db $pattern))   
         ) 
         (// $sup  $ucount)      
 ))

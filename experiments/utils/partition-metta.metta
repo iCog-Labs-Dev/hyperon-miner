@@ -127,5 +127,6 @@
 
 
 (= (partitions $original) (partitions (powerset $original) $original))
-;!(partitions ((Inheritance $x man) (Inheritance $x sodaDrinker) (Inheritance $x ugly)))
 
+; !(partitions ((Inheritance $x man) (Inheritance $x sodaDrinker) (Inheritance $x ugly)))
+!(powerset (a b))

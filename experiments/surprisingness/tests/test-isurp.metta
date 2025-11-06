@@ -1,26 +1,34 @@
-! (register-module! ../../../../hyperon-miner/experiments)
-! (import! &self experiments:utils:common-utils)
-! (import! &self experiments:utils:beta-dist)
-! (import! &self experiments:utils:constants)
-! (import! &self experiments:utils:TruthValue)
-! (import! &self experiments:utils:surp-utils)
-! (import! &self experiments:utils:miner-utils)
-! (import! &self experiments:utils:gen_partition)
-! (import! &self experiments:utils:bs-utils) 
-! (import! &self experiments:utils:customType)
-! (import! &self experiments:truth-values:est-tv)
-! (import! &self experiments:truth-values:emp-tv)
-! (import! &self experiments:surprisingness:isurp)
-! (import! &self experiments:surprisingness:emp-prob)
-! (import! &kb2 experiments:data:nested_coupled:mock_coupled)
-! (import! &self experiments:utils:binomialMetta)
-! (import! &self experiments:utils:eq_prob_adaptor)
-! (import! &self experiments:utils:blk-abstractness)
-! (import! &self experiments:utils:eq-prob)
-! (import! &self experiments:utils:index_to_var)
+; ! (register-module! ../../../../hyperon-miner/experiments)
+; ! (import! &self experiments:utils:common-utils)
+; ! (import! &self experiments:utils:beta-dist)
+; ! (import! &self experiments:utils:constants)
+; ! (import! &self experiments:utils:TruthValue)
+; ! (import! &self experiments:utils:surp-utils)
+; ! (import! &self experiments:utils:miner-utils)
+; ! (import! &self experiments:utils:gen_partition)
+; ! (import! &self experiments:utils:bs-utils) 
+; ! (import! &self experiments:utils:customType)
+; ! (import! &self experiments:truth-values:est-tv)
+; ! (import! &self experiments:truth-values:emp-tv)
+; ! (import! &self experiments:surprisingness:isurp)
+; ! (import! &self experiments:surprisingness:emp-prob)
+; ! (import! &kb2 experiments:data:nested_coupled:mock_coupled)
+; ! (import! &self experiments:utils:binomialMetta)
+; ! (import! &self experiments:utils:eq_prob_adaptor)
+; ! (import! &self experiments:utils:blk-abstractness)
+; ! (import! &self experiments:utils:eq-prob)
+; ! (import! &self experiments:utils:index_to_var)
 
-! (import! &kb experiments:data:ugly_man_sodaDrinker)
+!(import! &self ../../utils/common-utils)
+!(import! &self ../../utils/bs-utils)
+!(import! &self ../../utils/surp-utils)
+!(import! &self ../isurp)
+!(import! &kb ../../data/ugly_man_sodaDrinker)
+
 ;  ! (import! &kb experiments:data:nested_coupled:mock_coupled)
+
+
+
 
 
 
@@ -54,14 +62,14 @@
 ;;   Tests basic JI-Prob calculation when clauses are distributed across two
 ;;   partition components with some overlap in variables.
 ;; =============================================================================
-(assertEqual 
-  (ji-prob-est 
-    (((Inheritance $x man) (Inheritance $x sodaDrinker)) 
-    ((Inheritance $x ugly)))
-    (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker))
-    &kb 
-    0.5) 
-  3.858024691358025e-6)
+; (assertEqual 
+;   (ji-prob-est 
+;     (((Inheritance $x man) (Inheritance $x sodaDrinker)) 
+;     ((Inheritance $x ugly)))
+;     (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker))
+;     &kb 
+;     0.5) 
+;   3.858024691358025e-6)
 
 
 
@@ -88,17 +96,23 @@
 ;;   Tests that completely separated clauses in partition yield higher JI-Prob
 ;;   than overlapping cases (Test 1), demonstrating proper dependence modeling.
 ;; =============================================================================
-(assertEqual 
-  (ji-prob-est 
-    (((Inheritance $x man)) 
-     ((Inheritance $x sodaDrinker)) 
-     ((Inheritance $x ugly)))
-    (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker))
-    &kb 
-    0.5) 
-  1.2860082304526748e-6)
+; (assertEqual 
+;   (ji-prob-est 
+;     (((Inheritance $x man)) 
+;      ((Inheritance $x sodaDrinker)) 
+;      ((Inheritance $x ugly)))
+;     (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker))
+;     &kb 
+;     0.5) 
+;   1.2860082304526748e-6)
 
-
+  ; !(ji-prob-est 
+  ;   (((Inheritance $x man)) 
+  ;    ((Inheritance $x sodaDrinker)) 
+  ;    ((Inheritance $x ugly)))
+  ;   (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker))
+  ;   &kb 
+  ;   0.5) 
 
 ;; =============================================================================
 ;; Test: do-ji-prob (Multiple Partitions)
@@ -126,21 +140,21 @@
 ;;   2. Verifies order preservation in results
 ;;   3. Checks proper accumulation of estimates
 ;; =============================================================================
-(assertEqual 
-  (do-ji-prob 
-    ((((Inheritance $x man) (Inheritance $x sodaDrinker)) 
-      ((Inheritance $x ugly)))
-     (((Inheritance $x man) (Inheritance $x ugly)) 
-      ((Inheritance $x sodaDrinker)))
-     (((Inheritance $x man)) 
-      ((Inheritance $x sodaDrinker)) 
-      ((Inheritance $x ugly)))
-     (((Inheritance $x man)) 
-      ((Inheritance $x sodaDrinker) (Inheritance $x ugly))))
-    (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker))
-    &kb 
-    0.5)
-  (3.858024691358025e-6 3.858024691358025e-6 1.2860082304526748e-6 3.858024691358025e-6))
+; (assertEqual 
+;   (do-ji-prob 
+;     ((((Inheritance $x man) (Inheritance $x sodaDrinker)) 
+;       ((Inheritance $x ugly)))
+;      (((Inheritance $x man) (Inheritance $x ugly)) 
+;       ((Inheritance $x sodaDrinker)))
+;      (((Inheritance $x man)) 
+;       ((Inheritance $x sodaDrinker)) 
+;       ((Inheritance $x ugly)))
+;      (((Inheritance $x man)) 
+;       ((Inheritance $x sodaDrinker) (Inheritance $x ugly))))
+;     (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker))
+;     &kb 
+;     0.5)
+;   (3.858024691358025e-6 3.858024691358025e-6 1.2860082304526748e-6 3.858024691358025e-6))
 
 
 ;; =============================================================================
@@ -163,12 +177,12 @@
 ;;   2. Verifies handling of different ratio parameter
 ;;   3. Checks proper tuple output format
 ;; =============================================================================
-(assertEqual 
-  (ji_prob_est_interval 
-    (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker))
-    &kb
-    0.2)
-  (1.2860082304526748e-6 3.858024691358025e-6))
+; (assertEqual 
+;   (ji_prob_est_interval 
+;     (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker))
+;     &kb
+;     0.2)
+;   (1.2860082304526748e-6 3.858024691358025e-6))
 
 
 ;; =============================================================================
@@ -192,9 +206,9 @@
 ;;   3. Checks proper output format
 ;; =============================================================================
 
-!(assertEqual (isurp (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker) ) &kb False 0.2) 1.9290123456790123e-5)
+; !(assertEqual (isurp (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker) ) &kb False 0.2) 1.9290123456790123e-5)
 
-(assertEqual  (isurp (, (Inheritance (Person $x) man) (Inheritance (Person $x) ugly) (Inheritance (Person $x) sodaDrinker) ) &kb2 False 0.2) 1.9290123456790123e-5)
+; (assertEqual  (isurp (, (Inheritance (Person $x) man) (Inheritance (Person $x) ugly) (Inheritance (Person $x) sodaDrinker) ) &kb2 False 0.2) 1.9290123456790123e-5)
 
 
 

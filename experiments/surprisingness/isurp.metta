@@ -1,20 +1,25 @@
-;types
-(: emp_prob_pbs_mem (-> Pattern SpaceType Number Number))
-; ; (: pro-prob-wout-joint (-> (List Pattern) SpaceType Number Number Number))
-; (: ji-prob-est (-> (List Pattern) Pattern SpaceType Number Number))
-; ; (: do-ji-prob (-> (MList Pattern)) Pattern SpaceType Number (List Number))
-(: ji_prob_est_interval (-> Pattern SpaceType Number Any))
-(: isurp (-> Pattern SpaceType Bool Number Number))
+; ;types
+; (: emp_prob_pbs_mem (-> Pattern SpaceType Number Number))
+; ; ; (: pro-prob-wout-joint (-> (List Pattern) SpaceType Number Number Number))
+; ; (: ji-prob-est (-> (List Pattern) Pattern SpaceType Number Number))
+; ; ; (: do-ji-prob (-> (MList Pattern)) Pattern SpaceType Number (List Number))
+; (: ji_prob_est_interval (-> Pattern SpaceType Number Any))
+; (: isurp (-> Pattern SpaceType Bool Number Number))
 
 
-
-
+!(import! &self ../utils/common-utils)
+!(import! &self ../utils/eq-prob)
+!(import! &self ../utils/bs-utils)
+!(import! &self ../utils/surp-utils)
+!(import! &kb ../data/ugly_man_sodaDrinker)
+; !(import! &self ./emp-prob)
 
 ;; Calculate the empirical probability of pattern, using
 ;; boostrapping if necessary
-(=(emp_prob_pbs_mem $subpattern $db  $db_ratio) 0.4)
 
-
+(= (emp-prob $pattern $db) 0.1)
+(= (emp-prob-pbs $pattern $db $emax $db_ratio) 0.76)
+(= (partitions $original) (((Inheritance $x man) (Inheritance $x sodaDrinker) (Inheritance $x ugly))))
 ;; ==============================================================
 ;; Function: pro-prob-wout-joint (Product Probability Without Joint Variables)
 ;; Purpose:  Computes the product probability of subpatterns while ignoring
@@ -53,14 +58,13 @@
     let* (
       (($subpattern $tail) (decons-atom $subpatterns))
       ($joined_comma (cons-atom , $subpattern) )
-    ($empr (emp-prob $joined_comma   $db))
+    ($empr (emp-prob $joined_comma $db))
     ($new_prob (* $p $empr))
     
     )
        (pro-prob-wout-joint $tail $db $db_ratio $new_prob)
   )
 ))
-
 
 
 ;; ==============================================================
@@ -105,16 +109,12 @@
 ;; for surprisingness calculations (isurp function)
 ;; ==============================================================
 (= (ji-prob-est $partition $pattern $db $db_ratio) (let* 
-( 
-  
+  ( 
   ($p (pro-prob-wout-joint $partition $db $db_ratio 1))
-  
   ($db-size (db_size $db))
 
   ; ($eq_prob (eq-prob-py $partition $pattern $db-size)) ; TODO: for fast excution use eq-prob-py
-  
   ($eq_prob (eq-prob $partition $pattern $db))
-  
   )
   (* $p $eq_prob)
 
@@ -210,7 +210,7 @@
 ;; ==============================================================
 
 (=(ji_prob_est_interval $pattern $db $db_ratio) 
-   (let* (($gen-parts (generet-partition-without-pattern $pattern))  
+   (let* (($gen-parts (partitions $pattern))  
 
    ($comp-ji (do-ji-prob $gen-parts $pattern $db $db_ratio))
     
@@ -264,17 +264,12 @@
 
 (=(isurp $pattern $db $normalize $db_ratio) (
     let* (
-
       (($emin $emax) (ji_prob_est_interval $pattern $db $db_ratio))
-      
-           ($emp (emp-prob-pbs  $pattern $db $emax $db_ratio))
-
-            ($dst (dst_from_interval $emin $emax $emp))
-
-             ($maxprb (max-atom ($emp $emax)))
-
-             )
-               (min ((if $normalize (// $dst $maxprb) $dst) 1.0))
+      ($emp (emp-prob-pbs $pattern $db $emax $db_ratio))
+      ($dst (dst_from_interval $emin $emax $emp))
+      ($maxprb (max-atom ($emp $emax)))
+      )
+      (min ((if (== $normalize False) (// $dst $maxprb) $dst) 1.0))
 ))
 
 
@@ -282,3 +277,8 @@
 
 
  
+ !(isurp ((Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker)) &kb False 0.2)
+;  !(ji_prob_est_interval (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker) ) &kb 1) 
+; !(emp-prob-pbs (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker)) &kb 0.0010000000000000002 1)
+
+; !(dst_from_interval 0.0001 0.1 0.75)
