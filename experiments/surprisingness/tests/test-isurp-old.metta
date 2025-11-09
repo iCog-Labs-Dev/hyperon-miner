@@ -1,32 +1,32 @@
-;! (register-module! ../../../../hyperon-miner/experiments)
-! (import! &self ../../utils/common-utils)
-! (import! &self  ../../utils/binomialMetta)
-;! (import! &self  ../../utils/beta-dist)
+! (register-module! ../../../../hyperon-miner/experiments)
+! (import! &self experiments:utils:common-utils)
+! (import! &self experiments:utils:binomialMetta)
+! (import! &self experiments:utils:beta-dist)
 
-! (import! &self  ../../utils/constants)
-! (import! &self  ../../utils/TruthValue)
-! (import! &self  ../../utils/surp-utils)
-! (import! &self  ../../utils/miner-utils)
-;! (import! &self  ../../utils/gen_partition)
-! (import! &self  ../../utils/partition )
-! (import! &self  ../../utils/customType)
-! (import! &self ../../truth-values/est-tv)
-! (import! &self ../isurp-old)
+! (import! &self experiments:utils:constants)
+! (import! &self experiments:utils:TruthValue)
+! (import! &self experiments:utils:surp-utils)
+; (import! &self experiments:utils:miner-utils)
+; ! (import! &self experiments:utils:gen_partition)
+!(import! &self experiments:utils:partition-metta)
+;! (import! &self experiments:utils:customType)
+! (import! &self experiments:truth-values:est-tv)
+! (import! &self experiments:surprisingness:isurp-old)
 
-! (import! &self ../../data/ugly_man_sodaDrinker)
-;  ! (import! &dbc experiments:data:nested_coupled:mock_coupled)
-;  ! (import! &dbn experiments:data:nested_coupled:true_nested)
-
-
+ ! (import! &db experiments:data:ugly_man_sodaDrinker)
+ ! (import! &dbc experiments:data:nested_coupled:mock_coupled)
+ ! (import! &dbn experiments:data:nested_coupled:true_nested)
 
 
 
-; ! (add-reduct &self (= (get-space) (new-space)))
 
-; ! (add-atom (get-space) (Inheritance A B))
-; ! (add-atom (get-space) (Inheritance B C))
-; ! (add-atom (get-space) (Inheritance D E))
-; ! (add-atom (get-space) (Inheritance E F))
+
+! (add-reduct &self (= (get-space) (new-space)))
+
+! (add-atom (get-space) (Inheritance A B))
+! (add-atom (get-space) (Inheritance B C))
+! (add-atom (get-space) (Inheritance D E))
+! (add-atom (get-space) (Inheritance E F))
 
 
 ;;;;;;;;;;;
@@ -35,8 +35,9 @@
 ; !(assertEqual (isurp-old (, $x $y) (get-space)  False) 1)
 
 
-; (assertEqual (isurp-old (, (Inheritance $x man) (Inheritance $x ugly)
-;    (Inheritance $x sodaDrinker)) &db False) 0.00014607068574401343)
+(assertEqual (isurp-old (, (Inheritance $x man)
+   (Inheritance $x ugly)
+   (Inheritance $x sodaDrinker)) &db False) 0.00014607068574401343)
 
 
 ;; =============================================================================
@@ -57,15 +58,16 @@
 ;;   0.999707773232028
 ;;
 ;; =============================================================================
-; (assertEqual (isurp-old (, (Inheritance $x man)
-;    (Inheritance $x ugly)
-;    (Inheritance $x sodaDrinker)) &db True) 0.999707773232028)
+(assertEqual (isurp-old (, (Inheritance $x man)
+   (Inheritance $x ugly)
+   (Inheritance $x sodaDrinker)) &db True) 0.999707773232028)
 
+!(isurp-old (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker)) &db True)
 
-; ;test with coupled patterns
-; (assertEqual (isurp-old (, (Inheritance (Person $x) man)
-;    (Inheritance (Person $x) ugly)
-;    (Inheritance (Person $x) sodaDrinker)) &dbc True) 0.999707773232028)
+;test with coupled patterns
+(assertEqual (isurp-old (, (Inheritance (Person $x) man)
+   (Inheritance (Person $x) ugly)
+   (Inheritance (Person $x) sodaDrinker)) &dbc True) 0.999707773232028)
 
 
 
@@ -84,14 +86,4 @@
 
 ;==============
 
-!(add-atom &db (atom) )
-!(remove-atom &db (atom))
-
-; !(let (Inheritance $x $y) (get-atoms &self) (eval (superpose (
-;        (add-atom &db (Inheritance $x $y)) (remove-atom &self (Inheritance $x $y) )
-; ))))
-
-;!(isurp-old (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker)) &db False)
-
-!(map-atom (1 2 3) $x (+ $x 1))
 

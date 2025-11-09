@@ -22,6 +22,12 @@ def parseToExpression(metta, strings):
     atom = metta.parse_all(strings)
     return atom
 
+
+
+
+
+
+
 def calculate_binomial(metta, n_expr, k_expr):
     # Try to get integers from the expressions directly
     try:
@@ -54,6 +60,12 @@ def binomial_coefficient_reg(metta: MeTTa):
     return {
         r"binomial": binomial_atom
     }
+    
+
+
+
+
+
     
 
 def custom_add(metta, a, b):
