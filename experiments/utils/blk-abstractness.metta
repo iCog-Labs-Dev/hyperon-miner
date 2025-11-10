@@ -58,6 +58,9 @@
 ; Get all variables from a pattern
 ; Check if two patterns can be unified after treating var as constant
 
+(= (can-unify $l_body $r_body) True)
+(= (validate-unification $left-body $right-body) True)
+
 
 ; Main unification function for atom bodies
 (= (can-unify $l_body $r_body)
