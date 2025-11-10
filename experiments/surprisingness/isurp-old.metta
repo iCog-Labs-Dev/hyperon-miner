@@ -176,7 +176,7 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
         ; (($emin $emax) (min-max $results))
         ($dst (dst_from_interval $emin $emax $pattern_prob))
     ) 
-         (min ((if $normalize (// $dst (max $emax $pattern_prob)) $dst) 1.0))       
+         (min-of-two ((if $normalize (// $dst (max-of-two $emax $pattern_prob)) $dst) 1.0))       
 ) )
 
 

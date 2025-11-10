@@ -20,6 +20,32 @@
    )
 )
 
+;; ===========================================================================
+;; FUNCTION: powerset-without-empity
+;;
+;; DESCRIPTION:
+;;   Generates all non-empty subsets of the given list.
+;;
+;; PARAMETERS:
+;;   • $list — A list of elements to compute the subsets from.
+;;
+;; RETURNS:
+;;   A flat list of lists, each representing a non-empty subset of $list.
+;;
+;; EXAMPLE:
+;;   (powerset-without-empity '(a b c))
+;;   ⇒ ((a) (b) (c) (a b) (a c) (b c) (a b c))
+;; ===========================================================================
+
+(= (powerset-without-empity $list)
+  (let $subset (powerset $list) (collapse
+        (subtraction
+            (superpose $subset)
+            (superpose (()))
+        )
+    ))
+)
+
 ;;Checks if **any element** of $lst is in $used
 (=(any-in $lst $used)(let $inter (intersection-atom $lst $used) (if (== (size-atom $inter) 0) False True)))
 
@@ -111,5 +137,31 @@
 (:partitions (-> list_of_patterns partitions))
 
 
-(=(partitions $original) (partitions (powerset $original) $original))
+(= (partitions $original)
+   (let $first-element (car-atom $original)
+     (if (== $first-element ,)
+         (partitions (powerset (cdr-atom $original))
+                      (cdr-atom $original))
+         (partitions (powerset $original)
+                     $original)
+      )
+   )
+)
+; (=(partitions $original) (partitions (powerset $original) $original))
+
+
 ;!(partitions ((Inheritance $x man) (Inheritance $x sodaDrinker) (Inheritance $x ugly)))
+
+
+(= (partitions-with-pattern $original)
+   (let $first-element (car-atom $original)
+     (if (== $first-element ,)
+         (let* (
+            ($tail (cdr-atom $original))
+            ($part-1 (partitions (powerset $tail) $tail))
+            ) 
+            (cons-atom ($tail) $part-1)
+         )
+         (let $part-2 (partitions (powerset $original)
+                     $original) (cons-atom ($original) $part-2))))
+)

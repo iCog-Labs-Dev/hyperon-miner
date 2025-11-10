@@ -1,5 +1,5 @@
 ;connected-subpatterns-with-var
-
+(= (is-blk-more-abstract $head $pivot $var) True)
 ;argumets: $paratition (the target patition which is a list of blocks)
 ;$var the variable we are concerned with
 
@@ -447,7 +447,7 @@
         ()
         (let* (
             ($var (car-atom $vars1))
-            ($remaining (cdr-atom $vars1))
+            (($remaining) (cdr-atom $vars1))
             ($rest-intersection (intersection-vars $remaining $vars2))
         )
         (if (is-membership $var $vars2)

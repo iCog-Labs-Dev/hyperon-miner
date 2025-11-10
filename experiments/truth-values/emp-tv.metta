@@ -5,31 +5,6 @@
  ;; Type ;;
  ;;;;;;;;;;
 
-; (: TruthValue Type)
-; (: EMPTV (-> Number Number TruthValue))
-
-(: count_to_confidence (-> Number Number))
-(: emp-tv (-> Pattern SpaceType TruthValue))
-(: prob_to_support (-> Pattern SpaceType Number Number))
-(: support_estimate_calculator (-> Pattern SpaceType Number Number TruthValue))
-(: emp_tv_pbs (-> Pattern SpaceType Number Number TruthValue))
-(: sup (-> Pattern SpaceType Number))
-(: ji_tv_est (-> Pattern SpaceType TruthValue))
-(: categorize_subsize (-> Number Number Number))
-(: copy-db (-> SpaceType Expression SpaceType))
-(: add_n_atoms_to_db (-> SpaceType Number SpaceType))
-(: copy-and-add-atom (-> SpaceType Number SpaceType))
-(: duplicate-and-expand-space (-> SpaceType Number SpaceType))
-(: copy-db-by-size (-> SpaceType Expression Number Number SpaceType))
-(: subsample (-> SpaceType Number SpaceType))
-(: do_emp_tv (-> Pattern SpaceType Number TruthValue))
-(: gen-random (-> Number Number))
-(: gen-random-subsample (-> SpaceType Number SpaceType SpaceType))
-(: emp-tv-subsmp (-> Pattern SpaceType Number TruthValue))
-(: emp-tv-bs-helper (-> Pattern SpaceType Number Number (List TruthValue)))
-(: subsmp-size (-> Pattern Number Number Number))
-(: emp-tv-bs (-> Pattern SpaceType Number Number Number TruthValue))
-(: emp-tv-bs (-> Pattern SpaceType Number Number TruthValue))
 
  ;; =============================================================================
 ;; Type: TruthValue
@@ -168,10 +143,14 @@
 ;;   - An empirical truth value (e.g., confidence and mode), adjusted via bootstrapping
 ;; =============================================================================
 (= (support_estimate_calculator $pattern $db $prob_estimate $db_ratio)
+  (let* (
+    ($support_estimate (prob_to_support $pattern $db $prob_estimate))
+    ($database_size (* (db_size $db) $db_ratio))
+  )
+    (emp_tv_pbs $pattern $db $prob_estimate $db_ratio $database_size $support_estimate)
+  )
+)
 
-    (let* ( ($support_estimate (prob_to_support $pattern $db $prob_estimate))
-            ($database_size (* (db_size $db) $db_ratio)))
-        (emp_tv_pbs $pattern $db $prob_estimate $db_ratio $database_size $support_estimate)))
 
 
 
@@ -230,33 +209,7 @@
 )
 
 
-;; =============================================================================
-;; Function: copy-db
-;; -----------------------------------------------------------------------------
-;; Purpose:
-;;   Create a copy of a given database by duplicating its contents into a new instance.
-;;
-;; Parameters:
-;;   - $db: The database to be copied (destination for the copied data).
-;;   - $old-db-content: The content of the original database that needs to be duplicated.
-;;
-;; Internal Calculation:
-;;   1. If the $old-db-content is empty, return the original database as is.
-;;   2. Otherwise, add the first element of the content (car-atom) to the new database using `add-reduct`.
-;;   3. Recursively process the rest of the content (cdr-atom) to continue copying the remaining data.
-;;   
-;; Returns:
-;;   - A new database instance containing all the data from the original database.
-;; =============================================================================
-(= (copy-db $db $old-db-content)
-    (if (== $old-db-content ()) $db
-        (let* (
-                (($head $tail) (decons-atom $old-db-content))
-                ($_ (add-atom $db $head) )
-            )
-        (copy-db $db $tail)
-    )
-))
+
 
 ;; =============================================================================
 ;; Function: add_n_atoms_to_db
@@ -528,7 +481,7 @@
             ($power (// 1 $nc))
             ($res (pow-math $base $power)) 
     )
-        (max $res (min $min-size $db-size))
+        (max-of-two $res (min-of-two $min-size $db-size))
     )
 )
 

@@ -4,20 +4,20 @@
 
 ;predicate to check if a given expression is a pattern or not
 
-(=(checkPat $x) (let $type (get-metatype $x) (if (not (== $type Expression)) False (and  ( > (size-atom $x) 1) (let $head (car-atom $x) (== (get-metatype $head) Symbol))) ) ))
+(= (checkPat $x) (let $type (get-metatype $x) (if (not (== $type Expression)) False (and  ( > (size-atom $x) 1) (let $head (car-atom $x) (== (get-metatype $head) Symbol))) ) ))
 
 
 ;;;;;;;;;; functions related to Conjunction ;;;;;;;;;;;;
 
-;; Extracts conjuncts from a conjunctive expression,
-(= (get-conjuncts $cnj) (
-  unify (, $ncnj $ptrn) $cnj (let $result (get-conjuncts $ncnj) (cons-atom $ptrn $result) ) ($cnj)
-))
+; ;; Extracts conjuncts from a conjunctive expression,
+; (= (get-conjuncts $cnj) (
+;   unify (, $ncnj $ptrn) $cnj (let $result (get-conjuncts $ncnj) (cons-atom $ptrn $result) ) ($cnj)
+; ))
 
 
 
 ;;Determines the number of conjunctive clauses in a pattern.
-(=(n_conjuncts_new $pattern) (
+(= (n_conjuncts_new $pattern) (
    let ($head $tail) (decons-atom $pattern) (
     if (== $head ,) (tuple-count $tail) 1)
 ))
@@ -623,7 +623,7 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
             ($dummy (find_min_helper $tail (if (< $head $min) $head $min)))) 
             $dummy  )))
 
-(=(min $list) (find_min_helper $list (car-atom $list)))
+(=(min-of-list $list) (find_min_helper $list (car-atom $list)))
 
 ;; =============================================================================
 ;; Function: get-cnj-clauses
@@ -669,7 +669,7 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
 ;; How it works:
 ;;   1. Applies both `min` and `max` to the same list
 ;;   2. Returns results as a tuple (2-element list)
-(=(min-max $list) ((min $list) (max $list)))
+(=(min-max $list) ((min-of-list $list) (max-of-list $list)))
 
 (=(var-appers $var ()) ())
 (=(var-appers $var $blk) (
@@ -876,7 +876,7 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
 ; (: db_size (-> SpaceType  Number))
 (= (db_size $db)
      (tuple-count (collapse (get-atoms $db)))
-    
+  
 )
 
  ;;abs accepts a number and returns an absolute value of a number
@@ -919,11 +919,8 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
 
 (= (universe-count $pattern $db)
     (pow-math (db_size $db) (n_conjuncts $pattern))
-
 )
 
- ;Check if atom is member of list or not
-(= (is-member $y $list) (== (intersection-atom ($y) $list) ($y)))
 
 
  ;check if atom is variable or not
