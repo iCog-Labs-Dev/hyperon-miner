@@ -1,8 +1,5 @@
 ;types
 (: emp_prob_pbs_mem (-> Pattern SpaceType Number Number))
-; ; (: pro-prob-wout-joint (-> (List Pattern) SpaceType Number Number Number))
-; (: ji-prob-est (-> (List Pattern) Pattern SpaceType Number Number))
-; ; (: do-ji-prob (-> (MList Pattern)) Pattern SpaceType Number (List Number))
 (: ji_prob_est_interval (-> Pattern SpaceType Number Any))
 (: isurp (-> Pattern SpaceType Bool Number Number))
 
