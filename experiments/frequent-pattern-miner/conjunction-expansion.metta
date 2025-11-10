@@ -20,8 +20,7 @@
  ;  *
  ;  */
 
-; ! (register-module! ../../experiments)
-; ! (import! &self experiments:utils:common-utils)
+
 ! (import! &self conj-exp)
 ! (import! &self freq-pat)
 
@@ -118,7 +117,7 @@
 )))))
 
  
- ==============  alpha convert  =======================
+;; ==============  alpha convert  =======================
 
 (= (alpha_convert  $pattern_vars $cnjtion_vars)
     (extract_values (consolidate_keys (address_conflict $pattern_vars $cnjtion_vars)))
@@ -196,8 +195,7 @@
     )
 )
 
- ================= alpha convert end ================================
-
+;; ================= alpha convert end ================================
 
 (= (expand_conjunction_rec $cnjtion $apat $db $ms)
     (let $npat (expand_conjunction_connect $cnjtion $apat (get_variable_for_pattern $cnjtion) (get_variable_for_pattern $apat))
@@ -208,7 +206,6 @@
 
 (= (expand_conjunction_connect $cnjtion $pattern $cv $pv)
     (let $list (replace_pattern $cnjtion $pattern (combine_lists $cv $pv))
-        ; (remove_alpha_similar $list)
         $list
     )
 )
@@ -226,14 +223,15 @@
 )
 
 (= (checker $db $pattern $ms) 
-   (let* (
-   ( () (println! (pattern $pattern)))
-   ($flat (flatten $pattern))
-   ) 
-   (if (sup-eval $db $flat $ms)
-        $pattern
-        ()
-    ))
+    (let*
+    (
+        ($conjuncts (get-conjuncts $pattern))
+        ($flat (cons-atom , $conjuncts))
+        ($result (sup-eval $db $flat $ms))
+        ($final (if $result $pattern ()))
+    )
+   $final
+    )
 )
 
 
@@ -260,7 +258,13 @@
 (= (remove_conjuncts_with_redundant_clauses $conjunction) 
     (let* (
         ($conjuncts (get-conjuncts $conjunction))
-        ($unique_conjuncts (unique-atom $conjuncts))
+        (() (println! $conjuncts))
+        ($uselessrem (remove_useless_clauses $conjuncts))
+        (() (println! $uselessrem))
+        ($debconj (replace $uselessrem))
+        (() (println! $debconj))
+        ($unique_conjuncts (unique-atom $debconj))
+        (() (println! $unique_conjuncts))
         )
     (if (== (size-atom $conjuncts) (size-atom $unique_conjuncts))
         $conjunction
@@ -268,6 +272,9 @@
     )
     )
 )
+
+;; =========================================================================
+
 
 
 (= ( expand_conjunction_disconnect $cnjtion $pattern ) (
@@ -305,34 +312,41 @@
 
 ; returns:
 ; a superpose of conjunctions that satisfy the minimum support and are not redundant.
-;(: do-conjunct SpaceType SpaceType Pattern Number Nat Atom)
+;(: do-conjunct space space conj_pattern Number debruijin-index Atom)
+
 (= (do-conjunct $db $cndb $coming_conj  $ms Z)
+    (if (== $coming_conj ())
+        ()
     (let* (
-        (() (println! "==== Build conjunction with depth 0 ===="))
+        (() (println! ("==== Build conjunction with depth 0 ====" $coming_conj)))
         ($conjunct (replacev $coming_conj))
-        ($matches (match $cndb (CandidatePattern $pattern) (replacev $pattern)))
+        ($matches (match $cndb (CandidatePattern $pattern $cnt) (replacev $pattern)))
         ($listconj (expand_conjunction $conjunct $matches $db $ms 2 False))
-        ($debconj (replace $listconj))
-        ($fitlered (remove_conjuncts_with_redundant_clauses $debconj))
+        (() (println! ("====list_conj" $listconj)))
+        ($fitlered (remove_conjuncts_with_redundant_clauses $listconj))
+        (() (println! ("==== Filtered conjunctions ====" $fitlered)))
+        ($final (replace $fitlered))
+
     )
-    $fitlered
-    )
+    $final
+    ))
 )
 
 (= (do-conjunct $db $cndb $coming_conj $ms (S $K))
+    (if (== $coming_conj ())
+        ()
     (let* (
-        (() (println! "==== Build conjunction with depth greater than 0 ====="))
+        (() (println! ("==== Build conjunction with depth greater than 0 =====" $coming_conj)))
         ($conjunct (replacev $coming_conj))
-        ($matches (match $cndb (CandidatePattern $pattern) (replacev $pattern)))
+        ($matches (match $cndb (CandidatePattern $pattern $cnt) (replacev $pattern)))
         ($listconj (expand_conjunction $conjunct $matches $db $ms 2 False))
-        ($debconj (replace $listconj))
-        ($fitlered (remove_conjuncts_with_redundant_clauses $debconj))
-        ($varconj (replacev $fitlered))
-        ($conj (do-conjunct $db $cndb $varconj $ms $K))
+        ($fitlered (remove_conjuncts_with_redundant_clauses $listconj))
+        ($conj (do-conjunct $db $cndb $fitlered $ms $K))
     )
     $conj
-    )
+    ))
 )
+
 
 
 --------------------------------------------
@@ -343,8 +357,7 @@
 ;; 2: sort the conjunctions with a custom sorting function and get only the unique conjunctions from the sorte results
 ;; 3: create a flattened conjunction  using cons-atom with the sorted conjunctions and ,.
 ;; 4: add the results to the knowledge base with their support
-;(: formatter (-> SpaceType SpaceType Atom ))
-
+;(: formatter (-> space space Atom ))
 
 (= (formatter $conjspace $dbspace) 
     (let* (
@@ -355,18 +368,24 @@
         ($sup (sup-num $dbspace $var))
         ($final (supportOf $var $sup))
     )
-  $final
+    $final
 )
 )
+
 
 -----------------------------------------------
 ;; conjunct 
 -----------------------------------------------
 ;; function to extract candidate patterns and call do-conjunct 
-;(: conjunct (-> SpaceType SpaceType SpaceType Number Number Atom))
-(= (conjunct $dbspace $cndpspace $conjspace $minsup $depth )   
-      (let $pattern (match $cndpspace (CandidatePattern $Cpattern) $Cpattern)
-                   (let $conj  (do-conjunct $dbspace $cndpspace  $pattern $minsup (fromNumber $depth)) 
-                             (if (== $conj ()) () (add-atom $conjspace  $conj)))))   
+;(: conjunct (-> space space space Number Number Atom))
 
-   
+(= (conjunct $dbspace $cndpspace $conjspace $minsup $depth )   
+     (match $cndpspace (CandidatePattern $pattern $cnt)
+                   (let* (
+                        (() (println! ("==== Conjuntion expansion started" $pattern)))
+                        ($conj  (do-conjunct $dbspace $cndpspace  $pattern $minsup (fromNumber $depth)))
+                        ($reduct (if (== $conj ()) () (add-reduct $conjspace $conj)))
+                        )
+                        $reduct
+                    )
+        ))

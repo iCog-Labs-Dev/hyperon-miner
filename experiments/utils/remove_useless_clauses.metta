@@ -31,7 +31,7 @@
         
 (= (remove_Abstract_clauses $pattern)
     (let*(
-        ($unfolded (map-atom $pattern $clause (if (== (clause_others_check $clause $pattern) False) $clause ())))
+        ($unfolded (map-atom $pattern $clause (check_others $clause $pattern)))
         ($final (fold $unfolded ()))
         )
         $final
@@ -45,6 +45,11 @@
         $res
     )
 )
+
+(= (check_others $clause $pattern)
+    (let $res (clause_others_check $clause $pattern) (if (== $res False) $clause ()))
+)
+
 (= (is_more_abstract_for_each_var $clause $others)
     (let*
         (
@@ -186,20 +191,24 @@
 )
 
 (= (clause_others_check_for_subtree $clause $pattern)
-    (let*(
-        
-        ($others (eval (subtraction-atom $pattern ($clause))))
-        
+    (let*(   
+        ($others (eval (subtraction-atom $pattern ($clause))))  
         ($res (is_pat_in_otherpat $clause $others))
         
         )
-        $res
+        (is_pat_in_otherpat $clause $others)
     )
 )
 
+(= (check_res $clause $pattern)
+   (let $res (clause_others_check_for_subtree $clause $pattern) (if (== $res False) $clause ()))
+)
+
+
+
 (= (remove_redundant_subclause $pattern)
     (let*(
-        ($unfolded (map-atom $pattern $clause (if (== (clause_others_check_for_subtree $clause $pattern) False) $clause ())))
+        ($unfolded (map-atom $pattern $clause (check_res $clause $pattern)))
         ($final (fold $unfolded ()))
         )
         $final

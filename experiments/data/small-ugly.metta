@@ -8,7 +8,7 @@
 (Inheritance Abe ugly)
 (Inheritance Cason ugly)
 
-(Inheritance  woman)
+(Inheritance Lily  woman)
 (Inheritance Emily woman)
 (Inheritance Lucy woman)
 
@@ -19,5 +19,8 @@
 (Inheritance Allen human)
 (Inheritance Abe human)
 (Inheritance Cason human)
+(Inheritance Lily human)
+(Inheritance Emily human)
+(Inheritance Lucy human)
 
 
