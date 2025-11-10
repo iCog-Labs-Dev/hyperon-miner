@@ -16,15 +16,15 @@
 ( = (variable-extractor $head $tail $answer) 
     (
         if (== (get-metatype $head) Variable)
-            (variable-extractor (car-atom $tail) (cdr-atom $tail) ( union-atom $answer ($head) ) )
+            (variable-extractor (decons-atom $tail) ( union-atom $answer ($head) ) )
             (
                 if (== (get-metatype $head) Expression)
                     ( 
                         let* 
                             ( 
                                 ;;;;; get all variables from this expression as well as post expression variables
-                                ($var1 (variable-extractor (car-atom $head) (cdr-atom $head) () ) )
-                                ($var2 (variable-extractor (car-atom $tail) (cdr-atom $tail) () ) )
+                                ($var1 (variable-extractor (decons-atom $head) () ) )
+                                ($var2 (variable-extractor (decons-atom $tail) () ) )
                                 )
 
                             (   ;;;; merge all variables u have got so far
@@ -35,13 +35,14 @@
                             
                         
                     )
-                    ( variable-extractor (car-atom $tail) (cdr-atom $tail) $answer )          
+                    ( variable-extractor (decons-atom $tail) $answer )          
             )
     )
 )
 
-( = (get-variables $var) (variable-extractor (car-atom $var) (cdr-atom $var) () ) )
-;test !( get-variables (Inheritance $new ( $x $y ($again ( $3rd_expression ) ) ) (((text )))$other $r hi there $hi))
+( = (get-variables $var) (variable-extractor (decons-atom $var) () ) )
+;test 
+!( get-variables (Inheritance $new  $hi))
 
 
 
@@ -57,70 +58,37 @@
     )
 ) 
 
+
+; function name:- does-exist
 ;;;;; checks membership of something in a given set of things
 ;; input: 2-params
   ;; 1st:- $name
   ;; 2nd:- ($var1 $name $var2 $authorName)
 ;; output: True ;since $name is found in 2nd Parameter
-
-( = (does-exist $unknown $storage)
-    (
-        if (== $storage ())
-            False
-            (
-                let*
-                    (
-                        ($top (car-atom $storage))
-                        ($leftExpression (cdr-atom $storage))
-                    )
-                    
-                    (
-                        if (== $top $unknown)
-                            True
-                            (does-exist $unknown $leftExpression)
-                    )
-            )
-    )
-) 
+; method:- compare the atom against each element of the accumulator using alpha-equality
+( = (does-exist $x $acc) 
+    (let $ans (collapse (
+        let $curr (superpose $acc)
+            (if (=alpha $curr $x) True Empty)
+    )) (not (== $ans ())))
+)
+; !(does-exist 34 (3 34 34 4))
 
 ;;;;;; checker checks whether the combo given has at-least one element from set of variables of pattern 1, return (empty) if not
 ;; input: 3-params
   ;; 1st:- ($name $var1)
-  ;; 2nd:- ($name $var1)
-  ;; 3rd:- ($var1 $var2 $authorName)
-;; output: 1st parameter ;since $var1 is found in 3rd Parameter
+  ;; 2nd:- ($var1 $var2 $authorName)
+;; output: 1st parameter ;since $var1 is found in 2nd Parameter
 ;; we have superposed over the list of combinations so for invalid combos (empty) will close the branch which is made by superpose
 
-( = (checker $the_real_combo $combo $var1)
-    (
-        if (== $combo ())
-            (empty)
-            (
-                let*
-                    (
-                        ($headOfCombo (car-atom $combo))
-                        ($tailOfCombo (cdr-atom $combo))
-                    )
-                    (
-                        if (does-exist $headOfCombo $var1)  
-                            $the_real_combo
-                            (checker $the_real_combo $tailOfCombo $var1 )
-                    )
-            )
-         
-    )
+( = (checker $combo $var1)
+    (if (== () (collapse (let $equality (== (superpose $combo) (superpose $var1))
+        (if $equality True Empty)
+    ))) Empty $combo)
 )  
 
-;;;;; interface with the checker function 
-;; input: 2-params
-  ;; 1st:- ($name $var1)
-  ;; 2nd:- ($var1 $var2 $authorName)
-;; output: ($name $var1) ;by calling checker function above
 
-( = (purifier $current $var1) (checker $current $current $var1) ) 
-
-
-;;;; combination maker;;;;;
+;;;; combination maker ;;;;
 ;; input: 6-params
   ;; 1st:- ()
   ;; 2nd:- (($a 1 pat1) ($1 1 pat2) ($2 2 pat2) ($3 3 pat2)) ;; ($a 1 pat1) means $a whose index is 1 is from pattern1 ....
@@ -161,33 +129,39 @@
 
 
 ;;;;; variable formatter ;;;;;;;
-;; input: 3-params
-  ;; 1st:- () ;; storage for answer
-  ;; 2nd:- ($a $b) ;; vars to be formatted
-  ;; 3rd:- pat1 ;; where we get this vars from
-;; output: (($a 1 pat1) ($b 2 pat2)) 
-
-( = (formatter $accumulated $vars $index $patName)
-    (
-        if (== $vars ())
-            $accumulated
-            (
-                let*
-                    (
-                        ($top (((car-atom $vars) $index $patName )))
-                        ($tail (cdr-atom $vars))
-                    )
-                    (formatter (union-atom $accumulated $top) $tail (+ $index 1) $patName) 
-            )
-    )
+;; Formats a flat list of variables into indexed tuples tagged with pattern name.
+;; helper_:
+;;  - input: 3 params
+;;      1st: $current      ; a single variable (e.g. $a)
+;;      2nd: ($index $stored) ; a pair where $index is the next index to assign, $stored is accumulated result
+;;      3rd: $patName      ; pattern name to tag the variable with (e.g. pat1)
+;;  - output: a pair ((+ $index 1) $newStored)
+;;      where $newStored is $stored unioned with the formatted entry ($current $index $patName)
+;; formatter:
+;;  - input: 2 params
+;;      1st: $vars    ; list of variables to format (e.g. ($a $b))
+;;      2nd: $patName ; pattern name to attach to each formatted variable
+;;  - behavior: folds over $vars starting index 1, producing a list of tuples of the form ($var <index> <patName>)
+;;  - output example: (($a 1 pat1) ($b 2 pat1))
+( = (helper_ $current ($index $stored) $patName)
+    ( let $formattedCurrent (($current $index $patName)) ((+ $index 1) (union-atom $stored $formattedCurrent)))
 )
+
+( = (formatter $vars $patName)
+    (let ($_ $ans) (foldl-atom $vars (1 ()) $acc $current (helper_ $current $acc $patName)) $ans )
+)
+; !(formatter ($1 $2 $3) pat1)
+
+
+
+; !(help!)
 
 ;;;;; all-variable-combination --the main function ;;;;;;;;;;
 ;; input: 2-params
   ;; 1st:- ($a $b)
   ;; 2nd:- ($1 $2) 
 ;; the output will follow the following rules
-  ;; atleast 1 variable from pattern1 must appear in the combination
+  ;; at-least 1 variable from pattern1 must appear in the combination
   ;; the combination sizes should be equal to the size of pattern2's variable size
   ;; the order of variables should be maintained with respect to their pattern Name Type ;; i.e we can't say ($b $a) but we can say ($b $1)
 ;; output: (($2 $a) ($2 $b) ($1 $a) ($1 $b) ($b $1) ($b $2) ($a $b) ($a $1) ($a $2)) 
@@ -199,20 +173,38 @@
                 ($varsInPat1 (get-variables $pattern1))
                 ($varsInPat2 (get-variables $pattern2)) 
 
-                ($first (formatter () $varsInPat1 1 pat1))
-                ($second (formatter () $varsInPat2 1 pat2))
+                (($first $second) (collapse (superpose ((formatter $varsInPat1 pat1) (formatter $varsInPat2 pat2)) )))
+                
                 ($joiner (union-atom $first $second))
+
+                (() (println! (--- $joiner --- )))
                 
                 ($width (size-atom $varsInPat2)) 
                 ($unpurifiedAllCombinations (collapse (combiner () $joiner (generateDepth $width) 0 0 1)) )   
+                (() (println! (--- $unpurifiedAllCombinations --- )))
             )
             
-            ( let $var1Exist (collapse (purifier (superpose $unpurifiedAllCombinations) $varsInPat1)) $var1Exist )   
+            ( let $var1Exist (collapse (checker (superpose $unpurifiedAllCombinations) $varsInPat1)) $var1Exist )   
     )
 )
 
-;test by running this !(all-variable-combination (hi this is $a) (i am $1 years $2 $3 living in city) ) 
+;test by running this 
+; !(all-variable-combination (hi this is $a) (i am $1 years $2 $3 living in city) ) 
 
+
+;; 1st:- ($a $b)
+;; 2nd:- ($1 $2) 
+;; ;; ;; --> ;; (sup ($a $b $1)) , (sup ($a $b $2))
+;; ;; ;; --> ;; [$a , $a]
+;; ;; ;; --> ;; [$a , $b]
+;; ;; ;; --> ;; [$a , $2]
+
+;; ;; ;; --> ;; [$b , $a]
+;; ;; ;; --> ;; [$b , $b]
+;; ;; ;; --> ;; [$b , $2]
+
+;; ;; ;; --> ;; [$1 , $a]
+;; ;; ;; --> ;; [$1 , $b]
 
 
 

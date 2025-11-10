@@ -1,6 +1,6 @@
 ! (register-module! ../../../../hyperon-miner/experiments)
 
-! (import! &self experiments:frequent-pattern-miner:frequent-pattern-miner)
+! (import! &self experiments:frequent-pattern-miner:Updated-frequent-pattern-miner)
 ! (import! &self experiments:pattern-miner:pattern-miner)
 ! (import! &self experiments:utils:common-utils)
 
