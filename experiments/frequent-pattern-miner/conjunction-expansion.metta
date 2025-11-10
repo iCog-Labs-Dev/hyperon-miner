@@ -20,8 +20,7 @@
  ;  *
  ;  */
 
-; ! (register-module! ../../experiments)
-; ! (import! &self experiments:utils:common-utils)
+
 ! (import! &self conj-exp)
 ! (import! &self freq-pat)
 
@@ -118,7 +117,7 @@
 )))))
 
  
- ==============  alpha convert  =======================
+;; ==============  alpha convert  =======================
 
 (= (alpha_convert  $pattern_vars $cnjtion_vars)
     (extract_values (consolidate_keys (address_conflict $pattern_vars $cnjtion_vars)))
@@ -196,7 +195,7 @@
     )
 )
 
- ================= alpha convert end ================================
+;; ================= alpha convert end ================================
 
 (= (expand_conjunction_rec $cnjtion $apat $db $ms)
     (let $npat (expand_conjunction_connect $cnjtion $apat (get_variable_for_pattern $cnjtion) (get_variable_for_pattern $apat))
@@ -274,19 +273,7 @@
     )
 )
 
-============For running without remove_useless_Clauses=================
-; (= (remove_conjuncts_with_redundant_clauses $conjunction) 
-;     (let* (
-;         ($conjuncts (get-conjuncts $conjunction))
-;         ($unique_conjuncts (unique-atom $conjuncts))
-;         )
-;     (if (== (size-atom $conjuncts) (size-atom $unique_conjuncts))
-;         $conjunction
-;         ()
-;     )
-;     )
-; )
-=========================================================================
+;; =========================================================================
 
 
 
@@ -359,40 +346,8 @@
     $conj
     ))
 )
-================To Run without using remove_useless_clauses=========================
-; (= (do-conjunct $db $cndb $coming_conj  $ms Z)
-;     (if (== $coming_conj ()) ()
-;     (let* (
-;         (() (println! ("==== Build conjunction with depth 0 ====" $coming_conj)))
-;         ($conjunct (replacev $coming_conj))
-;         ($matches (match $cndb (CandidatePattern $pattern $cnt) (replacev $pattern)))
-;         ($listconj (expand_conjunction $conjunct $matches $db $ms 2 False))
-;         ; (() (println! ("====list_conj" $listconj)))
-;         ($debconj (replace $listconj))
-;         ($fitlered (remove_conjuncts_with_redundant_clauses $debconj))
-;         ; (() (println! ("==== Filtered conjunctions ====" $fitlered)))
-;     )
-;     $fitlered
-;     ))
-; )
 
-; (= (do-conjunct $db $cndb $coming_conj $ms (S $K))
-;     (if (== $coming_conj ())
-;         ()
-;     (let* (
-;         (() (println! ("==== Build conjunction with depth greater than 0 =====" $coming_conj)))
-;         ($conjunct (replacev $coming_conj))
-;         ($matches (match $cndb (CandidatePattern $pattern $cnt) (replacev $pattern)))
-;         ($listconj (expand_conjunction $conjunct $matches $db $ms 2 False))
-;         ($debconj (replace $listconj))
-;         ($fitlered (remove_conjuncts_with_redundant_clauses $debconj))
-;         ($varconj (replacev $fitlered))
-;         ($conj (do-conjunct $db $cndb $varconj $ms $K))
-;     )
-;     $conj
-;     ))
-; )
-===================================================================================
+
 
 --------------------------------------------
 ;;  formatter
