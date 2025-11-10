@@ -2,6 +2,14 @@
 ;; Common Utils ;;
 ;;;;;;;;;;;;;;;;;;
 
+
+;;(: migrateAtoms (-> %Undefined% %Undefined% Expression %Undefined%))
+(= (migrateAtoms $FromSpace $ToSpace $Pattern)
+   (match &self $Pattern ((add-atom $ToSpace $Pattern) 
+                          (remove-atom $FromSpace $Pattern))))
+
+
+
 ;predicate to check if a given expression is a pattern or not
 
 (=(checkPat $x) (let $type (get-metatype $x) (if (not (== $type Expression)) False (and  ( > (size-atom $x) 1) (let $head (car-atom $x) (== (get-metatype $head) Symbol))) ) ))
@@ -923,7 +931,7 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
 )
 
  ;Check if atom is member of list or not
-(= (is-member $y $list) (== (intersection-atom ($y) $list) ($y)))
+; (= (is-member $y $list) (== (intersection-atom ($y) $list) ($y)))
 
 
  ;check if atom is variable or not

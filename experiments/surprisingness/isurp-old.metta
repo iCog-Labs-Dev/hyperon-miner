@@ -20,7 +20,7 @@
 
 
 ; (: isurp-old_ (-> (List (List Pattern)) SpaceType Number (List Number)))
-(: isurp-old (-> Pattern SpaceType Bool Number))
+;(: isurp-old (-> Pattern SpaceType Bool Number))
 
 
 ;;;;;;;;;;;;;;;;;;;;
@@ -164,7 +164,7 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
 ; Returns:
 ;   - A numeric value representing the surprisingness score, optionally normalized and capped at 1.0.
  
-(= (isurp-old-petta $pattern $db $normalize)   
+(= (isurp-old $pattern $db $normalize)   
    (let* (
           (true  (println! "==== isurp-old surprisingness =====")) 
           ($total_count (total_counts $pattern $db) )
