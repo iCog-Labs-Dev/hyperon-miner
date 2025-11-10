@@ -132,4 +132,3 @@
    let $partions (partitions $original)  (exclude-item ($original) $partions)
 ))
 
-;!(partitions-wout-pattern ((Inheritance $x man) (Inheritance $x sodaDrinker) (Inheritance $x ugly)))
