@@ -12,21 +12,28 @@
 ;(: depth-handler (-> Pattern Atom))
 (= (depth-handler $p)
     (if (not (== (get-metatype $p) Expression))
-        $p
-        (let* (
-                ( ($link $x $y) $p)
-                ( $nx (depth-handler $x))
-                ( $ny (depth-handler $y)))
-        (superpose (
-                ($link $nx $w)
-                ($link $z $ny)
-                ($link $x $u)
-                ($link $k $y)
-                $d
-                ($link $g $o)
-                ($link $nx $ny))
-    )
-)))
+       $p
+        (case $p
+            (
+                (($type $x) ($type $x))
+                (($link $x $y) 
+                                (let* (
+                                    ( ($link $x $y) $p)
+                                    ( $nx (collapse (depth-handler $x)))
+                                    ( $ny (if (== $x $y) $nx (collapse (depth-handler $y))))
+                                )
+                                (superpose (
+                                        ($link (superpose $nx) $w)
+                                        ($link $z (superpose $ny))
+                                        ($link $x $u)
+                                        ($link $k $y)
+                                        $d
+                                        (if (== $x $y) ($link $g $g) ($link $g $o))
+                                        ($link (superpose $nx) (superpose $ny))
+                                    ))) 
+                )))
+                ))
+
 
 -------------------------------------------------------------------------------
 ; build-specialization
@@ -45,9 +52,11 @@
                     ( ($link $x1 $y1) (replacev ($link $x $y)))                            ; replacev is a function that replaces index with variables
                     ( ($subx $suby) (match $dbspace ($link $x1 $y1) ($x1 $y1)))            ; getting the substitution /valuation of the pattern
                     ($shabx (depth-handler $subx))                                    ;handle depth in the x node
-                    ($shaby (depth-handler $suby))                                    ; handle depth in the y node                               
+                    ($shaby (if (== $subx $suby) $shabx (depth-handler $suby)))                                    ; handle depth in the y node   
+                    (() (println! (shab-⍃ ($shabx $shaby))))                                                               
                     ($spec1 (replace (SpecializationOf ($link $shabx $y1) ($link $x $y)))) ;build the specialization and change the variables to indexs 
                     ($spec2 (replace (SpecializationOf ($link $x1 $shaby) ($link $x $y)))) ;build the specialization and change the variables to indexs
+                    ($spec3 (replace (SpecializationOf ($link $shabx $shaby) ($link $x $y)))) ;build the specialization and change the variables to indexs
                 )
             (
                 superpose (
@@ -55,6 +64,8 @@
                     (add-atom $specspace $spec1) ; add the new specialization
                     (remove-atom $specspace $spec2)
                     (add-atom $specspace $spec2)
+                    (remove-atom $specspace $spec3)
+                    (add-atom $specspace $spec3)
                 )
 
         )

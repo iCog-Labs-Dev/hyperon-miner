@@ -11,27 +11,27 @@
 
 (= (handle-nested-exp $p)
     (if (not (== (get-metatype $p) Expression))
-        $p
-        (let* (
-                (() (println! (Handling nested expression: $p)))
-                ( ($link $x $y) $p)
-                ( $nx (collapse (handle-nested-exp $x)))
-                ( $ny (collapse (handle-nested-exp $y)))
-            )
-        (superpose (
-                ($link (superpose $nx) $w)
-                ($link $z (superpose $ny))
-                ($link $x $u)
-                ($link $k $y)
-                $d
-                ($link $g $o)
-                ($link (superpose $nx) (superpose $ny))
-            )
-    )
-)
-
-)
-)
+       $p
+        (case $p
+            (
+                (($type $x) ($type $x))
+                (($link $x $y) 
+                                (let* (
+                                    ( ($link $x $y) $p)
+                                    ( $nx (collapse (handle-nested-exp $x)))
+                                    ( $ny (if (== $x $y) $nx (collapse (handle-nested-exp $y))))
+                                )
+                                (superpose (
+                                        ($link (superpose $nx) $w)
+                                        ($link $z (superpose $ny))
+                                        ($link $x $u)
+                                        ($link $k $y)
+                                        $d
+                                        (if (== $x $y) ($link $g $g) ($link $g $o))
+                                        ($link (superpose $nx) (superpose $ny))
+                                    ))) 
+                )))
+                ))
 
 
 (= (get-clauses-inner $cnj) (
@@ -331,14 +331,28 @@
 
 ------------------------------------------------------------------------------
 ;; system proof to handle depth
-(= (syn $kb $_ (: $prf (depth-handler $p $np)))
-    (let
-     $np (handle-nested-exp $p)
-    (if (== $np ())
-          (empty)
-             (: CPUHandleNestedExp (depth-handler $p $np))
-        )    
-    )
+(= (syn $kb $_ (: $prf (depth-handler $type $val $val2 $shab $res)))
+    (if (== $type X)
+        (let* (
+        ($shabx (handle-nested-exp $val)))
+        (: CPUHandleNestedExp (depth-handler $type $val $val2 $shab $shabx))
+        )
+        (if (== $type Y)
+            (if (== $val $val2)
+                (let* (
+                    ($shaby $shab)
+                    (() (println! ($shaby val y)))
+                    )
+                    (: CPUHandleNestedExp (depth-handler $type $val $val2 $shab $shaby))
+                )    
+                (let* (
+                ($shaby (handle-nested-exp $val)))
+                (: CPUHandleNestedExp (depth-handler $type $val $val2 $shab $shaby))   
+                )
+        )
+        (empty)
+    
+    ))
 )
 
 ------------------------------------------------------------------------------
