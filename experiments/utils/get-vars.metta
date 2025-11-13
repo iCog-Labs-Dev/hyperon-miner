@@ -69,4 +69,4 @@
 )
 
 
-!(get-var (,(Human $x tinsae) (Human $x $z) (Human $y man)))
+; !(get-var (,(Human $x tinsae) (Human $x $z) (Human $y man)))
