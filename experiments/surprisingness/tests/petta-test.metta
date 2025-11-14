@@ -5,7 +5,7 @@
 !(import! &self ../../utils/beta-dist)
 !(import! &self ../../utils/index_to_var)
 !(import! &self ../../utils/blk-abstractness)
-!(import! &self ../../utils/eq-prob)
+!(import! &self ../../utils/eq-prob-petta)
 !(import! &self ../../utils/constants)
 !(import! &self ../../utils/TruthValue)
 !(import! &self ../../truth-values/est-tv)
@@ -102,7 +102,7 @@
 
 
 ; !(is-blk-more-abstract ((Inheritance $x man)) ((Inheritance $x ugly)) $x)
-!(partitions-with-pattern ((Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker)))
+; !(partitions-with-pattern ((Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker)))
 !(===============>>>>========================)
 ; !(partitions ((Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker)))
 
@@ -110,3 +110,59 @@
 
 
 
+
+; !(eq-prob (((Inheritance $x man)) ((Inheritance $x ugly)) ((Inheritance $x sodaDrinker))) (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker)) &kb)
+
+
+
+;  !(sort-by-abstraction (((Human $x $y) (Human $x $z)) ((Human $x Chala)) ) $x)
+
+
+; (((Human $x $y) (Human Abebe $y))  ((Human $x Abeb)))
+
+; (filter-less-abstract $rest $pivot $var)
+
+; !(filter-more-abstract (((Human $x $y) (Human $x $z))) ((Human $x Chala)) $x)
+
+; !(is-blk-more-abstract ((Human $y $x)) ((Human Abebe Chala))  $x)
+
+; !(joint-variables (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker)) (((Inheritance $x man)) ((Inheritance $x ugly)) ((Inheritance $x sodaDrinker))))
+; !(get-var (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $y sodaDrinker)))
+; !(get-var (Inheritance $x ugly) )
+; !(get-variables-helper-loop ((Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker)))
+
+; !(joint-vars-helper  (((Inheritance $x man)) ((Inheritance $x ugly)) ((Inheritance $x sodaDrinker))) $x) 
+
+; !(let* (
+;    ($pattern (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker)))
+;    ($partition  (((Inheritance $x man)) ((Inheritance $x ugly)) ((Inheritance $x sodaDrinker))))
+;    ($invar (collapse (superpose ($x))))
+;    ($_ (println! ("pattenr is " $pattern)))
+;    ($_ (println! ("partition is " $partition)))
+;    ($_ (println! ("invar is " $invar)))
+;    )
+;    ()
+; )
+
+; !(get-var ((Pattern $x $y) (Pattern $z $z)))
+; !(get-variables-from-list ((Pattern $x $y) (Pattern $z Jon $m $z)))
+; !(get-variables-helper (Pattern $x $y $z))
+
+; !(union-atom ($x $y) ($y $z))
+; !(unique-atom ($x $y $x $z $y))
+; !(union-atom ($_5940 $_5946) ($_5958 $_5964 $_5958))
+
+; !(process-pattern ((Pattern $x $y) (Pattern $z $z)) $x)
+; !(checkPat ((Pattern $x $y) (Pattern $z $z)))
+
+
+
+; !(process-blocks (((Inheritance $x ugly) (Inheritance $x sodaDrinker)) ((Inheritance $x man))) $x &kb 1 1)
+
+; !(find-most-specialized-abstract (((Inheritance $x ugly) (Inheritance $x sodaDrinker)) ((Inheritance $x man))) ((Inheritance $x man)) $x  1)
+
+; !(eq-prob (((Inheritance $x ugly) (Inheritance $x sodaDrinker)) ((Inheritance $x man))) (, (Inheritance $x sodaDrinker) (Inheritance $x man)) &kb)
+
+; !(calculate-prob-for-vars ($x) (((Inheritance $x ugly) (Inheritance $x sodaDrinker)) ((Inheritance $x man))) &kb 1.0)
+; !(connected-subpatterns-with-var (((Inheritance $x ugly) (Inheritance $x sodaDrinker)) ((Inheritance $x man))) $x)
+; !(sort-by-abstraction (((Inheritance $x ugly) (Inheritance $x sodaDrinker)) ((Inheritance $x man))) $x)
