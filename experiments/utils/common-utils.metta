@@ -41,10 +41,10 @@
 ;;      returns them in reverse).  
 ;;   3. Rebuilds the flattened conjunction using `cons-atom`.  
 ;; =============================================================================
-(= (flatten $cnj) (
-  let $flatten (reverse-list (get-conjuncts $cnj))  
-  (cons-atom , $flatten)  
-))
+; (= (flatten $cnj) (
+;   let $flatten (reverse-list (get-conjuncts $cnj))  
+;   (cons-atom , $flatten)  
+; ))
 
 ;; =============================================================================
 ;; Function: get-clauses
@@ -1405,3 +1405,13 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
         )
     )
 )
+
+
+
+(= (concat-atom $list1 $list2)
+    (if (== $list1 ())
+        $list2
+        (let* (
+                ($head (car-atom $list1))
+                ($tail (concat-atom (cdr-atom $list1) $list2)))
+            (cons-atom $head $tail))))
