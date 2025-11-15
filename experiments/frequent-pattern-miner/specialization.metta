@@ -37,8 +37,9 @@
 (= (specialization $pattern $shallow_abstractions)
     (let* (
         ($spec (substitute $pattern $shallow_abstractions))
+        ($res (car-atom $spec))
     )
-    $spec
+    $res
     )
 )
 
