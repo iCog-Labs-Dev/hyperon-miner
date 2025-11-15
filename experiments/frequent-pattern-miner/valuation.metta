@@ -98,4 +98,16 @@
 ; !(get_value_at_index (Inheritane (Inheritance A B) $sodaDrinker) 4)
 ; !(get_variables_for_tree (Inheritane (Inheritance A B) $sodaDrinker) 5)
 
+(= (get_vals $list $index $vals)
+    (if (== $list ())
+        $vals
+        (let* (
+                ($head (car-atom $list))
+                ($tail (cdr-atom $list))
+                ($val (get_value_at_index $head $index))
+            )
+            (get_vals $tail $index (cons-atom $val $vals)))
+            )
+)
+
 
