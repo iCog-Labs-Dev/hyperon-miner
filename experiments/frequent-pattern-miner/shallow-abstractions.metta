@@ -1,8 +1,36 @@
 ; ! (register-module! ../../experiments)
 ; !(import! &self experiments:utils:common-utils)
 
+(= (shallow_abstractions ())
+    ()
+)
+
+(= (shallow_abstractions $valuations)
+    (let* (
+        ($head (car-atom $valuations))
+        ($tail (cdr-atom $valuations))
+        ($abstractions (get_abstractions $head))
+        ($abstractions_tail (shallow_abstractions $tail))
+    )
+        (cons-atom $abstractions $abstractions_tail)
+    )
+)
 
 
+(= (get_abstractions () )
+    ()
+)
+
+(= (get_abstractions $valuations)
+    (let* (
+            
+            ($vals (superpose $valuations))
+            ; ($abstraction (if (== (get-metatype $vals) Expression) exp $vals))
+            ($abstraction (if (== (get-metatype $vals) Expression) (get_abstraction $vals 0 ()) $vals))
+        )
+        $abstraction
+    )
+)
 
 (= (find_index () $vaL)
     ()
@@ -39,3 +67,9 @@
         (union-atom ($abstraction) $abstractions_tail)
     )
 )
+; !(let $abstractions (get_abstractions ((Inheritanc (Inheritance (Rel A $X) $Y) $Z) (Inheritanc (Inheritance (Rel A $X) $Y) $Z))) (car-atom $abstractions))
+
+
+; !(shallow_abstractions (((Inheritance Abe Abe) ugly sodaDrinker) (Lucy Emily Cason)))
+
+; !(find_index (cvh Abe) Abe)
