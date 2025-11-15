@@ -48,12 +48,54 @@
 )
 
 
+(= (get_value_at_index $pattern $index)
+    (let* (
+            (($val $_) (get_value_at_index_helper $pattern $index 0))
+        )
+        $val
+    )
+)
 
+(= (get_value_at_index_helper $pattern $target_index $current_index)
+    (if (== $pattern ())
+        (() $current_index)
+        (let* (
+                ($head (car-atom $pattern))
+                ($tail (cdr-atom $pattern))
+            )
+            ;; If this is the target index
 
+                ;; Otherwise, keep traversing
+                (if (== (get-metatype $head) Expression)
+                    (if (== $current_index $target_index)
+                        ($head $current_index)
+                    ;; Go inside the sub-expression
+                    (let* (
+                            (($val $next_index) (get_value_at_index_helper $head $target_index (+ $current_index 1)))
+                            
+                        )
+                        (if (== $val ())
+                            (get_value_at_index_helper $tail $target_index $next_index)
+                            ; (get_value_at_index_helper $tail $target_index (+ $current_index 1))
+                            ($val $next_index)
+                            ;; If not found inside, continue with tail
+                        )
+                    ))
+                    (if (== $current_index $target_index)
+                        ($head $current_index)
+                    ;; Normal atom, move on
+                    (get_value_at_index_helper $tail $target_index (+ $current_index 1)))
+                )
+        )
+    )
+)
+
+; !(get_value_at_index_helper (Inheritanc (Inheritance (Rel A $X) $Y) $Z) 8 0)
 ; !(get_variables_for_tree (Inheritanc (Inheritance $X $Y) (link $Y $Z)))
 
 
 
+; !(get_value_at_index (Inheritane (Inheritance A B) $sodaDrinker) 4)
 ; !(get_variables_for_tree (Inheritane (Inheritance A B) $sodaDrinker) 5)
 
 
