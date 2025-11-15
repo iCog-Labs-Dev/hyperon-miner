@@ -29,3 +29,17 @@
    )
 )
 
+;; wrapper: only the substituted tree
+; (= (substitute $pattern $sub)
+;    (car-atom (substitute $pattern $sub)))
+
+
+(= (specialization $pattern $shallow_abstractions)
+    (let* (
+        ($spec (substitute $pattern $shallow_abstractions))
+    )
+    $spec
+    )
+)
+
+; !(specialization (Inheritance $x $y) (superpose (((Inheritance (fromNumber 0) (fromNumber 1)) Cason) ((Inheritance (fromNumber 0) (fromNumber 1)) Emily) ((Inheritance (fromNumber 0) (fromNumber 1)) Lucy) (ugly Cason) (ugly Emily) (ugly Lucy) (sodaDrinker Cason) (sodaDrinker Emily) (sodaDrinker Lucy))))
