@@ -166,7 +166,8 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
 (= (concatTuple $xs $ys)
     (if (== $xs ())
         $ys
-        (let* ( (($head $tail) (decons-atom $xs))
+        (let* ( ($head (car-atom $xs))
+                ($tail (cdr-atom $xs))
                 ($tailNew (concatTuple $tail $ys)))
                  (cons-atom $head $tailNew))  ))
 
@@ -773,6 +774,11 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
 (= (sup-eval $db $pattern $ms)
     (let $sup (counter $db $pattern)
         (if (>= $sup $ms) True False)
+    )
+)
+(= (sup-eval-log $db $pattern $ms)
+    (let $sup (counter $db $pattern)
+        (if (=> $sup $ms) True False)
     )
 )
 
