@@ -39,13 +39,21 @@
     )
 )
 
+(= (get_variables_for_tree $pattern)
+    (let* (
+            (($vars $_) (get_variables_with_index $pattern 0))
+        )
+        (superpose $vars)
+    )
+)
 
 
 
 
+; !(get_variables_for_tree (Inheritanc (Inheritance $X $Y) (link $Y $Z)))
 
 
 
-
+; !(get_variables_for_tree (Inheritane (Inheritance A B) $sodaDrinker) 5)
 
 
