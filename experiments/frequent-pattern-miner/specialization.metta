@@ -4,7 +4,9 @@
        (() $sub) ;; base case: empty
        (let* (
                ($head (if (== (get-metatype $pattern) Variable) (car-atom ($pattern)) (car-atom $pattern)))
+               (() (println! (here in substitute $head)))
                ($tail (if (== (get-metatype $pattern) Variable) (cdr-atom ($pattern)) (cdr-atom $pattern)))
+               (() (println! (here in substitute $tail)))
 
                ;; process head
                (($newhead $after-head-subs)
@@ -37,7 +39,7 @@
 (= (specialization $pattern $shallow_abstractions)
     (let* (
         ($spec (substitute $pattern $shallow_abstractions))
-        ($res (car-atom $spec))
+        ($res (if (== (get-metatype $pattern) Variable) (let $head (car-atom $spec) (car-atom $head)) (car-atom $spec)))
     )
     $res
     )
