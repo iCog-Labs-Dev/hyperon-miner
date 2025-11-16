@@ -113,14 +113,15 @@
 
 (= (valuation $pattern $dbspace)
     (if (== (get-metatype $pattern) Variable)
-        (collapse (match $dbspace $pattern $pattern))
+        (collapse (unique (match $dbspace $pattern $pattern)))
         (let* (
             (($list_vars $index) (get_variables_for_tree $pattern))
             ($satisfy (collapse (match $dbspace $pattern $pattern)))
-            ($val (get_vals $satisfy $index ($list_vars)))
-            ; ($final (unique-atom $val))
+            ($val (get_vals $satisfy $index ()))
+            ($unique (unique-atom $val))
+            ($final (cons-atom $list_vars $unique))
             )
-            $val
+            $final
         )
     )
     
@@ -128,4 +129,4 @@
 ; !(get_variables_for_tree (Inheritance $Z sodaDrinker))
 
 
-; !(valuation $x &dbspace)
+; !(valuation (Inheritance $x $y) &dbspace)
