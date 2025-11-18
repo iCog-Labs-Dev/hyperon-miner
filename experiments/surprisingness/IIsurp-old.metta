@@ -566,8 +566,14 @@ $superCons
 
 )
 
+; (= (rmvEl $tar $list)
+; (collapse (let $el (superpose $list) (if (== $el $tar) (empty) $el)))
+
+
+; )
+
 (= (rmvEl $tar $list)
-(collapse (let $el (superpose $list) (if (== $el $tar) (empty) $el)))
+(collapse (let* (($el (superpose $list)) (($link $var $conc) $el) (($link2 $var2 $conc2) $tar)) (if (and (== $link $link2) (== $conc $conc2)) (empty) $el)))
 
 
 )
@@ -720,9 +726,12 @@ $superCons
 ; (=(max-factor $coherence) (pow-math 2.7 (* -1 $coherence )))
 ; (=(min-factor $coherence ) (pow-math $coherence 0.5))
 
-(=(max-factor $coherence) (* 0.3 $coherence))
-(=(min-factor $coherence ) (* 0.3 $coherence))
+; (=(max-factor $coherence) (* 0.3 $coherence))
+; (=(min-factor $coherence ) (* 0.3 $coherence))
 
+
+(=(max-factor $coherence) (* 0.03 (- 1 $coherence)))
+(=(min-factor $coherence ) (* 0.03 $coherence))
 
 
 

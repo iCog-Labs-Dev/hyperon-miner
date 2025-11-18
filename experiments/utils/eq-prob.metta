@@ -7,6 +7,9 @@
 ;The blocks inside the partiton that contain the target variable $var
 ;
 ;================================
+
+(=(checkPat $x) (let $type (get-metatype $x) (if (not (== $type Expression)) False (and  ( > (size-atom $x) 1) (let $head (car-atom $x) (== (get-metatype $head) Symbol))) ) ))
+
  (=(connected-subpatterns-with-var $partition $var)
 
 (let () (println! ("in con-sub-w-var")) (collapse (rmvPar (process-pattern (superpose $partition ) $var)))))
@@ -457,3 +460,10 @@
 
 
 
+; !(connected-subpatterns-with-var (((Inheritance $x $u)) ((Inheritance $x $y) (Inheritance $f $g))) $x)
+
+; !(get-var  (,(Inheritance $x $y) (Inheritance $f $g)) )
+
+
+
+; !(joint-variables (,(Inheritance $x $u) (Inheritance $x $y) (Inheritance $f $g))  (((Inheritance $x $u)) ((Inheritance $x $y) (Inheritance $f $g)))  )
