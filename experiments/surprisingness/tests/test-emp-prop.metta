@@ -18,14 +18,14 @@
 
 
 
-! (add-atom &space (Inheritance Abe human))
-! (add-atom &space (Inheritance Rio human))
-! (add-atom &space (Inheritance Bob human))
-! (add-atom &space (Inheritance Mike human))
-! (add-atom &space (Inheritance Mike Nil))
-! (add-atom &space (Inheritance Zac human))
-! (add-atom &space (Inheritance Zac human))
-! (add-atom &space (Parent Abe Nil ))
+!(add-atom &space (Inheritance Abe human))
+!(add-atom &space (Inheritance Rio human))
+!(add-atom &space (Inheritance Bob human))
+!(add-atom &space (Inheritance Mike human))
+!(add-atom &space (Inheritance Mike Nil))
+!(add-atom &space (Inheritance Zac human))
+!(add-atom &space (Inheritance Zac human))
+!(add-atom &space (Parent Abe Nil ))
 
 
 ;; =============================================================================
@@ -45,7 +45,7 @@
 ;; Verification:
 ;;   Tests correct handling of patterns with no matches in the space
 ;; =============================================================================
-(assertEqual 
+!(assertEqual 
   (emp-prob-pbs 
     (, (Inheritance $x $z) (Inheritance $x human)) 
     &space 
@@ -70,7 +70,7 @@
 ;; Verification:
 ;;   Tests basic probability calculation for single-atom patterns
 ;; =============================================================================
-(assertEqual 
+!(assertEqual 
   (emp-prob-pbs 
     (Inheritance $x human) 
     &space 
@@ -114,7 +114,7 @@
 ;; Verification:
 ;;   Tests accurate counting of pattern instances in the knowledge base
 ;; =============================================================================
-(assertEqual 
+!(assertEqual 
   (sup-num 
     &space 
     (Inheritance $x human)) 
@@ -193,14 +193,14 @@
 ;   2. Still accounts for full pattern complexity
 ;   3. Maintains same calculation structure as other ratio values
 ; =============================================================================
-(assertEqual
+!(assertEqual
   (subsmp-size 
     (, (Inheritance $x man)
        (Inheritance $x ugly) 
        (Inheritance $x sodaDrinker))
     64
     0.5)  ;; 50% database ratio parameter
-  149.7097081964987)
+  149.70709192116058)
 
 
 
