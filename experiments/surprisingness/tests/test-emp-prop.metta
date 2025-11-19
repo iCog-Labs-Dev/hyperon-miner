@@ -1,39 +1,31 @@
-
-
-
-! (register-module! ../../../../hyperon-miner/experiments)
-
-! (import! &kb experiments:data:ugly_man_sodaDrinker)
-; ! (import! &self experiments:rules:emp-prob)
-
-! (import! &self experiments:surprisingness:emp-prob)
-! (import! &self experiments:truth-values:emp-tv)
-! (import! &self experiments:truth-values:est-tv)
-! (import! &self experiments:surprisingness:isurp)
-! (import! &self experiments:utils:beta-dist)
-! (import! &self experiments:utils:bs-utils)
-! (import! &self experiments:utils:common-utils)
-! (import! &self experiments:utils:constants)
-! (import! &self experiments:utils:emp-tv-bs)
-! (import! &self experiments:utils:gen_partition)
-! (import! &self experiments:utils:surp-utils)
-! (import! &self experiments:utils:TruthValue)
-! (import! &self experiments:utils:miner-utils)
-! (import! &self experiments:utils:customType)
-! (import! &self experiments:utils:eq_prob_adaptor)
+!(import! &self ../../utils/common-utils)
+!(import! &self ../../utils/surp-utils/partition-metta)
+!(import! &self ../../utils/surp-utils/binomialMetta)
+!(import! &self ../../utils/surp-utils/surp-utils)
+!(import! &self ../../utils/surp-utils/beta-dist)
+!(import! &self ../../utils/surp-utils/blk-abstractness)
+!(import! &self ../../utils/surp-utils/eq-prob-petta)
+!(import! &self ../../utils/surp-utils/bs-utils)
+!(import! &self ../../utils/TruthValue)
+!(import! &self ../../utils/constants)
+!(import! &self ../../truth-values/emp-tv)
+!(import! &self ../../truth-values/est-tv)
+!(import! &self ../../utils/index_to_var)
+!(import! &kb ../../data/ugly_man_sodaDrinker)
+!(import! &self ../emp-prob)
+!(import! &self ../isurp)
 
 
 
 
-! (add-reduct &self (= (get-space) (new-space)))
-! (add-atom (get-space) (Inheritance Abe human))
-! (add-atom (get-space) (Inheritance Rio human))
-! (add-atom (get-space) (Inheritance Bob human))
-! (add-atom (get-space) (Inheritance Mike human))
-! (add-atom (get-space) (Inheritance Mike Nil))
-! (add-atom (get-space) (Inheritance Zac human))
-! (add-atom (get-space) (Inheritance Zac human))
-! (add-atom (get-space) (Parent Abe Nil ))
+! (add-atom &space (Inheritance Abe human))
+! (add-atom &space (Inheritance Rio human))
+! (add-atom &space (Inheritance Bob human))
+! (add-atom &space (Inheritance Mike human))
+! (add-atom &space (Inheritance Mike Nil))
+! (add-atom &space (Inheritance Zac human))
+! (add-atom &space (Inheritance Zac human))
+! (add-atom &space (Parent Abe Nil ))
 
 
 ;; =============================================================================
@@ -56,7 +48,7 @@
 (assertEqual 
   (emp-prob-pbs 
     (, (Inheritance $x $z) (Inheritance $x human)) 
-    (get-space) 
+    &space 
     0.5) 
   0.0)
 
@@ -81,7 +73,7 @@
 (assertEqual 
   (emp-prob-pbs 
     (Inheritance $x human) 
-    (get-space) 
+    &space 
     0.9 
     0.5)  
   0.75)
@@ -103,7 +95,7 @@
 ;;   Tests that subsampling returns a new space object with random selection
 ;;   Note: Exact contents vary due to randomness
 ;; =============================================================================
-(subsample-py (get-space) 4)
+(subsample-py &space 4)
 
 
 ;; =============================================================================
@@ -124,7 +116,7 @@
 ;; =============================================================================
 (assertEqual 
   (sup-num 
-    (get-space) 
+    &space 
     (Inheritance $x human)) 
   6)
 
