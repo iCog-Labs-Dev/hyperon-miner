@@ -1,16 +1,27 @@
-! (register-module! ../../../hyperon-miner/experiments)
-! (import! &self experiments:utils:common-utils)
-! (import! &self experiments:utils:beta-dist)
-! (import! &self experiments:utils:constants)
-! (import! &self experiments:utils:TruthValue)
-! (import! &self experiments:utils:surp-utils)
-! (import! &self experiments:utils:miner-utils)
-! (import! &self experiments:utils:gen_partition)
-! (import! &self experiments:truth-values:est-tv)
-! (import! &self experiments:truth-values:emp-tv)
-! (import! &kb experiments:data:ugly_man_sodaDrinker)
+; ! (register-module! ../../../hyperon-miner/experiments)
+; ! (import! &self experiments:utils:common-utils)
+; ! (import! &self experiments:utils:beta-dist)
+; ! (import! &self experiments:utils:constants)
+; ! (import! &self experiments:utils:TruthValue)
+; ! (import! &self experiments:utils:surp-utils)
+; ! (import! &self experiments:utils:miner-utils)
+; ! (import! &self experiments:utils:gen_partition)
+; ! (import! &self experiments:truth-values:est-tv)
+; ! (import! &self experiments:truth-values:emp-tv)
+; ! (import! &kb experiments:data:ugly_man_sodaDrinker)
 
-! (bind! square (py-atom numpy.square (-> Number Number)))
+; ! (bind! square (py-atom numpy.square (-> Number Number)))
+
+!(import! &self ../utils/common-utils)
+!(import! &self ../utils/beta-dist)
+!(import! &self ../utils/constants)
+!(import! &self ../utils/TruthValue)
+!(import! &self ../utils/surp-utils)
+!(import! &self ../utils/miner-utils)
+!(import! &self ../utils/gen_partition)
+!(import! &self ../truth-values/est-tv)
+!(import! &self ../truth-values/emp-tv)
+; !(import! &kb ../data/ugly_man_sodaDrinker)
 
 
 ; The slight diffrences in the expected variance from the classic miner vs what we are getting in the ported version most likely arises from the approximations we used for contants.
@@ -24,9 +35,6 @@
      ;expected mean of 0 and variance(confidence) of 0.1
 	; 	expect = createSimpleTruthValue(0, 0.1);
 
-
-
-
 (=(test_avrg_tv_1)(
     let* (
        ($tv_1  (STV 0 0.1))
@@ -37,7 +45,7 @@
     $result 
 ))
 
-(assertEqual (test_avrg_tv_1) (0 0.09999999999999999))
+!(assertEqual (test_avrg_tv_1) (0 0.09999999999999999))
 
 ;========================================================
 ;avrg_tv test case 2 from classic miner repo
