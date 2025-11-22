@@ -8,14 +8,16 @@
 !(import! &self ../../utils/eq-prob-petta)
 !(import! &self ../../utils/constants)
 !(import! &self ../../utils/TruthValue)
-!(import! &self ../../truth-values/est-tv)
 !(import! &self ../../utils/bs-utils)
-; !(import! &self ../../utils/jsd-helper)
+!(import! &self ../../utils/boost-pycall)
+!(import! &self ../../utils/jsd-helper)
 !(import! &self ../../truth-values/emp-tv)
+!(import! &self ../../truth-values/est-tv)
 !(import! &self ../../data/ugly_man_sodaDrinker)
 !(import! &self ../emp-prob)
 !(import! &self ../isurp)
-; !(import! &self ./jsd)
+!(import! &self ../jsd)
+
 
 
 (migrateAtoms (-> %Undefined% %Undefined% Expression %Undefined%))
@@ -62,7 +64,6 @@
 
 ; !(subsmp-size (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker)) 60 7.716049382716049e-05)
 
-; !(do-jsd  (STV 0.8 0.111111) (STV 0.1 0.5555555555555556))
 
 ; !(do-ji-prob ((((Inheritance $x man)) ((Inheritance $x ugly)) ((Inheritance $x sodaDrinker))) (((Inheritance $x man) (Inheritance $x ugly)) ((Inheritance $x sodaDrinker))) (((Inheritance $x man) (Inheritance $x sodaDrinker)) ((Inheritance $x ugly))) (((Inheritance $x man)) ((Inheritance $x ugly) (Inheritance $x sodaDrinker))))
 ;              (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker)) 
@@ -103,7 +104,7 @@
 
 ; !(is-blk-more-abstract ((Inheritance $x man)) ((Inheritance $x ugly)) $x)
 ; !(partitions-with-pattern ((Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker)))
-!(===============>>>>========================)
+
 ; !(partitions ((Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker)))
 
 
@@ -166,3 +167,11 @@
 ; !(calculate-prob-for-vars ($x) (((Inheritance $x ugly) (Inheritance $x sodaDrinker)) ((Inheritance $x man))) &kb 1.0)
 ; !(connected-subpatterns-with-var (((Inheritance $x ugly) (Inheritance $x sodaDrinker)) ((Inheritance $x man))) $x)
 ; !(sort-by-abstraction (((Inheritance $x ugly) (Inheritance $x sodaDrinker)) ((Inheritance $x man))) $x)
+
+ !(do-jsd (STV 0.8 0.5555555555555556) (STV 0.7968127490039841 0.5565410199556541) )
+; !(boost-math-cdf 801.0 204.9999999999999 0.9)
+
+; !(boost-math-cdf 801.0 204.9999999999999 0.6)
+; !(boost-math-cdf 801.0000000000001 201.0 0.8) ;0.5126063633241287
+
+
