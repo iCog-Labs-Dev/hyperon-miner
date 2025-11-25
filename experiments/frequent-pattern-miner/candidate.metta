@@ -82,6 +82,25 @@
    )
 )
 
+(= (candidate-pattern-miner $initpat $dbspace $minsup $cndpspace)
+        (let* (
+                ($candidates (miner $initpat $dbspace $minsup))
+                (() (println! (here in frequent-pattern-miner $candidates)))
+                ($indexed (replace $candidates))
+                (() (println! (here in frequent-pattern-miner indexed $indexed)))
+                ($rem (if (== $indexed ()) () (remove-atom $cndpspace $indexed)))
+                ($add (if (== $indexed ()) () (add-atom $cndpspace $indexed)))
+                ($next (has_nested_expression_with_respect_to $initpat $candidates))
+                (() (println! (here in frequent-pattern-miner next $next)))
+                ($rec (if $next (candidate-pattern-miner $candidates $dbspace $minsup $cndpspace) ()))
+            )
+            $rec
+        )
+)
+
+; !(candidate-pattern-miner $x &dbspace 4 &cndpspace)
+
+; !(match &cndpspace $pattern $pattern)
 
 
 ; !(has_nested_expression_with_respect_to $x (Inheritance $X $Y))
