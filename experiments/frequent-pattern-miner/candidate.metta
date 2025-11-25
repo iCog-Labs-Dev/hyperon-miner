@@ -18,6 +18,7 @@
 (= (miner $pattern $dbspace $minsup)
         (let*(
                 ($vals (collapse (valuation $pattern $dbspace)))
+                (() (println! (here in miner $vals)))
                 ($shallow_abstractions (unique (shallow_abstractions $vals () 0)))
                 ($specialized (specialization $pattern $shallow_abstractions))
                 ($candidates (candidatePattern $specialized $minsup $dbspace))

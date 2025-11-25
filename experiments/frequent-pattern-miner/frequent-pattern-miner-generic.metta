@@ -7,16 +7,6 @@
 ! (import! &self freq-pat)
 ! (import! &self conj-exp)
 
----------------------------------------------
-;; abstract-pattern
----------------------------------------------
-;; Gets Abstract Patterns with Minimum Support so that we can use them for the specialization.
-;; 1: Query the database to retrieve all link nodes (nodes that connect other nodes)
-;; 2: Take only the unique links from the queried links
-;; 3: Create an Abstract pattern using the links and variables
-;; 4: Calculate the support for the Abstract patterns and store the ones satisfy the minimum support in a space
-;(: abstract-pattern (-> space Number space Atoms))
-
 
 
 
