@@ -62,21 +62,22 @@
     )
 )
 
-(= (find_index () $vaL)
+(= (find_index () $val $index)
     ()
 )
 
-(= (find_index $list $vaL)
+(= (find_index $list $val $index)
     (let* (
             ($head (car-atom $list))
             ($tail (cdr-atom $list))
         )
-        (if (== $head $vaL)
-            Z
-            (S (find_index $tail $vaL))
+        (if (== $head $val)
+            (fromNumber $index)
+            (find_index $tail $val (+ $index 1))
         )
     )
 )
+
 
 (= (get_abstraction () $var_index $history)
     ()
