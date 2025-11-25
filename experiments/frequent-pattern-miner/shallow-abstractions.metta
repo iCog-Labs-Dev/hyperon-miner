@@ -35,18 +35,30 @@
 
 ; !(check_val ((cvh Abe) (bvh cgh)) bvh)
 
-(= (get_abstractions () )
+(= (get_abstractions () $history)
     ()
 )
 
-(= (get_abstractions $valuations)
+(= (get_abstractions $valuations $history $current_index)
     (let* (
             
             ($vals (superpose $valuations))
-            ; ($abstraction (if (== (get-metatype $vals) Expression) exp $vals))
-            ($abstraction (if (== (get-metatype $vals) Expression) (get_abstraction $vals 0 ()) $vals))
+            (($found $res) (check_val $history $vals))
+            (() (println! (here in get_abstractions $found $res)))
+            (($abstraction $next_index) (if $found 
+                                            ($res $current_index)
+                                            (if (== (get-metatype $vals) Expression) 
+                                            (let* (
+                                                (($link $nodes) (decons-atom $vals))
+                                                (($result $index) (get_abstraction $nodes $current_index () $current_index))
+                                                ) ((cons-atom $link $result) $index))
+                                            (if (== (get-metatype $vals) Variable)
+                                                ((fromNumber $current_index) (+ $current_index 1)) 
+                                                ($vals $current_index)
+                                        )))
+                                    )
         )
-        $abstraction
+        ($vals $abstraction $next_index)
     )
 )
 
