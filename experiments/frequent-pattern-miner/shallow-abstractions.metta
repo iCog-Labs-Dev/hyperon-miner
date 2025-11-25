@@ -18,7 +18,22 @@
     )
 )
 
+(= (check_val $history $val)
+    (if (== $history ())
+        (False $val)
+        (let* (
+                (($head $abstraction) (car-atom $history))
+                ($tail (cdr-atom $history))
+            )
+            (if (== $head $val)
+                (True $abstraction)
+                (check_val $tail $val)
+            )
+        )
+    )
+)
 
+; !(check_val ((cvh Abe) (bvh cgh)) bvh)
 
 (= (get_abstractions () )
     ()
