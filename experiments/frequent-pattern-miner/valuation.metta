@@ -23,6 +23,7 @@
 (= (get_variables_for_tree $pattern)
     (let* (
             (($vars $_) (get_variables_with_index $pattern 0 ()))
+            (() (println! (here in get_variables_for_tree $vars)))
         )
         (superpose $vars)
     )

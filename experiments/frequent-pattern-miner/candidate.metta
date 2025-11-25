@@ -62,7 +62,6 @@
                 ($candidates (miner $initpat $dbspace $minsup))
                 (() (println! (here in frequent-pattern-miner $candidates)))
                 ($indexed (replace $candidates))
-                ($rem (if (== $indexed ()) () (remove-atom $cndpspace $indexed)))
                 ($add (if (== $indexed ()) () (add-atom $cndpspace $indexed)))
                 ($next (has_nested_expression_with_respect_to $initpat $candidates))
                 ($rec (if $next (candidate-pattern-miner $candidates $dbspace $minsup $cndpspace) ()))

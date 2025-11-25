@@ -354,7 +354,7 @@
         )
         (let* (
             (() (println! "==== Formating  started ====="))
-            ($res (match $cndpspace $pattern $pattern))
+            ($res (unique (match $cndpspace $pattern $pattern)))
             ($var (replacev $res))
             ($sup (sup-num $dbspace $var))
             ($final (supportOf $var $sup))
@@ -374,7 +374,7 @@
 
 (= (conjunct $dbspace $cndpspace $conjspace $minsup $depth)   
                    (let* (
-                        ($pattern (match $cndpspace $patterns $patterns))
+                        ($pattern (unique (match $cndpspace $patterns $patterns)))
                         (() (println! ("==== Conjuntion expansion started" $pattern)))
                         ($conj  (do-conjunct $dbspace $cndpspace  $pattern $minsup (fromNumber $depth)))
                         ($reduct (if (== $conj ()) () (add-reduct $conjspace $conj)))
