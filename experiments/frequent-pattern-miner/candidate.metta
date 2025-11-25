@@ -52,4 +52,37 @@
 
 ; !(miner (Inheritance $x $y) &dbspace 4)
 
+(= (has_nested_expression_with_respect_to $parent $candidate)
+   (if (== $parent ())
+       False
+       (let* (
+              ($headP (if (== (get-metatype $parent) Variable) (car-atom ($parent)) (car-atom $parent)))
+              (() (println! ($headP)))
+              ($tailP (if (== (get-metatype $parent) Variable) (cdr-atom ($parent)) (cdr-atom $parent)))
+              ($headC (if (== (get-metatype $parent) Variable) (car-atom ($candidate)) (car-atom $candidate)))
+                  (() (println! ($headC)))
+              ($tailC (if (== (get-metatype $parent) Variable) (cdr-atom ($candidate)) (cdr-atom $candidate)))
+          )
 
+          (if (== (get-metatype $headP) Variable)
+              ;; Case 1: parent is a variable — check candidate
+              (if (== (get-metatype $headC) Expression)
+                  True
+                  False)
+              ;; Case 2: both are expressions — recurse
+              (if (and (== (get-metatype $headP) Expression)
+                       (== (get-metatype $headC) Expression))
+                  (or (has_nested_expression_with_respect_to $headP $headC)
+                      (has_nested_expression_with_respect_to $tailP $tailC))
+                  ;; Otherwise just compare subparts
+                  (has_nested_expression_with_respect_to $tailP $tailC)
+              )
+          )
+       )
+   )
+)
+
+
+
+; !(has_nested_expression_with_respect_to $x (Inheritance $X $Y))
+; !(has_nested_expression_with_respect_to (Inheritance (link $X $Z) $Y) (Inheritance (link (link2 $A $b) $Z) $Y))
