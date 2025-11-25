@@ -1,13 +1,9 @@
-;; substitute_for_tree always returns (newtree remaining-subs)
 (= (substitute $pattern $sub)
    (if (== $pattern ())
        (() $sub) ;; base case: empty
        (let* (
                ($head (if (== (get-metatype $pattern) Variable) (car-atom ($pattern)) (car-atom $pattern)))
-               (() (println! (here in substitute $head)))
                ($tail (if (== (get-metatype $pattern) Variable) (cdr-atom ($pattern)) (cdr-atom $pattern)))
-               (() (println! (here in substitute $tail)))
-
                ;; process head
                (($newhead $after-head-subs)
                   (if (== (get-metatype $head) Variable)
@@ -22,7 +18,6 @@
                   )
                )
 
-               ;; process tail using whatever is left after head
                (($newtail $remaining)
                   (substitute $tail $after-head-subs))
              )
@@ -30,11 +25,6 @@
        )
    )
 )
-
-;; wrapper: only the substituted tree
-; (= (substitute $pattern $sub)
-;    (car-atom (substitute $pattern $sub)))
-
 
 (= (specialization $pattern $shallow_abstractions)
     (let* (
@@ -44,5 +34,3 @@
     $res
     )
 )
-
-; !(specialization (Inheritance $x $y) (superpose (((Inheritance (fromNumber 0) (fromNumber 1)) Cason) ((Inheritance (fromNumber 0) (fromNumber 1)) Emily) ((Inheritance (fromNumber 0) (fromNumber 1)) Lucy) (ugly Cason) (ugly Emily) (ugly Lucy) (sodaDrinker Cason) (sodaDrinker Emily) (sodaDrinker Lucy))))
