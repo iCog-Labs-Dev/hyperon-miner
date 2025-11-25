@@ -79,30 +79,30 @@
 )
 
 
-(= (get_abstraction () $var_index $history)
-    ()
+(= (get_abstraction () $var_index $history $current_index)
+    (() $current_index)
 )
 
-(= (get_abstraction $valuation $var_index $history)
+(= (get_abstraction $valuation $var_index $history $current_index)
     (let* (
+            (() (println! (here in get_abstraction $var_index $history)))
             ($head (car-atom $valuation))
             ($tail (cdr-atom $valuation))
-            (($abstraction $new_history) (if (== $var_index 0)
-                                            ($head $history)
-                                            (if (== (intersection-atom ($head) $history) ())
-                                                ((fromNumber (- $var_index 1)) (union-atom $history ($head)))
-                                                ((find_index $history $head) $history)
-                                            )))
-            ($abstractions_tail (get_abstraction $tail (+ $var_index 1) $new_history))
+            (($abstraction $new_history $next_index) (if (== (intersection-atom ($head) $history) ())
+                                                        ((fromNumber $current_index) (union-atom $history ($head)) (+ $current_index 1))
+                                                        ((find_index $history $head $var_index) $history $current_index)
+                                                      ))
+            (($abstractions_tail $rest_index) (get_abstraction $tail $var_index $new_history $next_index))
         )
-        (union-atom ($abstraction) $abstractions_tail)
+        ((union-atom ($abstraction) $abstractions_tail) $rest_index)
     )
 )
 ; !(let $abstractions (get_abstractions ((Inheritanc (Inheritance (Rel A $X) $Y) $Z) (Inheritanc (Inheritance (Rel A $X) $Y) $Z))) (car-atom $abstractions))
 
 
-; !(shallow_abstractions (((Inheritance Abe Abe) ugly sodaDrinker) (Lucy Emily Cason)))
+; !(shallow_abstractions (((Inheritance Abe Abe) $x) ((Inheritance Abe Abe)  $y) (Lull $z)) () 0)
 
 ; !(find_index (cvh Abe) Abe)
+; !(get_abstraction (Abe Abe Abeb) 3 () 3)
 
 
