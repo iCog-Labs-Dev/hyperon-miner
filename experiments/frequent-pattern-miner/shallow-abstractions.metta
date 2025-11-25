@@ -1,20 +1,23 @@
 ; ! (register-module! ../../experiments)
 ; !(import! &self experiments:utils:common-utils)
 
-(= (shallow_abstractions ())
+(= (shallow_abstractions () $history $current_index)
     ()
 )
 
-(= (shallow_abstractions $valuations)
+(= (shallow_abstractions $valuations $history $current_index)
     (let* (
+        (() (println! (here in shallow_abstractions $valuations $history $current_index)))
         ($head (car-atom $valuations))
         ($tail (cdr-atom $valuations))
-        ($abstractions (get_abstractions $head))
-        ($abstractions_tail (shallow_abstractions $tail))
+        (($vals $abstractions $index) (get_abstractions $head $history $current_index))
+        ($newhistory (cons-atom ($vals $abstractions) $history))
+        ($abstractions_tail (shallow_abstractions $tail $newhistory $index))
     )
         (cons-atom $abstractions $abstractions_tail)
     )
 )
+
 
 
 (= (get_abstractions () )
@@ -73,3 +76,5 @@
 ; !(shallow_abstractions (((Inheritance Abe Abe) ugly sodaDrinker) (Lucy Emily Cason)))
 
 ; !(find_index (cvh Abe) Abe)
+
+
