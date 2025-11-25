@@ -28,4 +28,28 @@
         $add
 ))
 
+(= (miner () $dbspace $minsup)
+        ()
+)
+
+(= (miner $pattern $dbspace $minsup)
+        (let*(
+                ($vals (collapse (valuation $pattern $dbspace)))
+                (() (println! (here in miner $vals)))
+                ; ($shallow_abstractions (shallow_abstractions $vals))
+                ($shallow_abstractions (unique (shallow_abstractions $vals () 0)))
+                (() (println! (here in miner $shallow_abstractions)))
+                ($specialized (specialization $pattern $shallow_abstractions))
+                ; (() (println! (here in miner $specialized)))
+                ($candidates (candidatePattern $specialized $minsup $dbspace))
+                ; (() (println! (here in miner $candidates)))
+                (() (println! "==== Candidate Pattern ended ====="))
+        )
+        ; $specialized
+        $candidates
+        )
+)
+
+; !(miner (Inheritance $x $y) &dbspace 4)
+
 
