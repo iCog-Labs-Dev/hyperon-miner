@@ -1,47 +1,28 @@
-; ! (register-module! ../../experiments)
-; !(import! &self experiments:utils:common-utils)
-; !(import! &db experiments:data:small-ugly)
 
-; ! (bind! &dbspace (new-space))
-
-; ; ; ! (import! &self freq-pat)
-; ; ; ; ! (import! &self conj-exp)
-
-; !(let $x (get-atoms &db) (add-atom &dbspace $x))
-
-
-(= (get_variables_with_index $pattern $index)
-    (if (== $pattern ())
-        (() $index)
+(= (get_variables_with_index $queue $current_index $acc_vars)
+    (if (== $queue ())
+        ($acc_vars $current_index)
         (let* (
-                ($head (car-atom $pattern))
-                ($tail (cdr-atom $pattern))
+                ($front (car-atom $queue))
+                ($rest (cdr-atom $queue))
+                ($is_var (== (get-metatype $front) Variable))
+                ($new_acc (if $is_var (cons-atom ($front $current_index) $acc_vars) $acc_vars))
+                ($components (if (== (get-metatype $front) Expression)
+                                 $front
+                                 ()))
+                ($new_queue (union-atom $rest $components))
+                ($new_index (+ $current_index 1))
             )
-            (if (== (get-metatype $head) Expression)
-                (let* (
-                        (($vars_head $index_head) (get_variables_with_index $head (+ $index 1)))
-                        (($vars_tail $index_tail) (get_variables_with_index $tail $index_head))         
-                    )
-                    ((union-atom $vars_head $vars_tail) $index_tail)
-                )
-                (if (== (get-metatype $head) Variable)
-                    (let* (
-                            ($pair (($head $index)))
-                            ($next_index (+ $index 1))
-                            (($vars_tail $index_tail) (get_variables_with_index $tail $next_index))
-                        )
-                        ((union-atom $pair $vars_tail) $index_tail)
-                    )
-                    (get_variables_with_index $tail (+ $index 1))
-                )
-            )
+            (get_variables_with_index $new_queue $new_index $new_acc)
         )
     )
 )
 
+
 (= (get_variables_for_tree $pattern)
     (let* (
             (($vars $_) (get_variables_with_index $pattern 0))
+            (() (println! (here in get_variables_for_tree $vars)))
         )
         (superpose $vars)
     )
@@ -129,4 +110,4 @@
 ; !(get_variables_for_tree (Inheritance $Z sodaDrinker))
 
 
-; !(valuation (Inheritance $x $y) &dbspace)
+!(valuation (Inheritance $x $y) &dbspace)
