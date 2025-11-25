@@ -37,36 +37,27 @@
     )
 )
 
-(= (get_value_at_index_helper $pattern $target_index $current_index)
-    (if (== $pattern ())
+(= (get_value_at_index_helper $queue $target_index $current_index)
+    (if (== $queue ())
         (() $current_index)
         (let* (
-                ($head (car-atom $pattern))
-                ($tail (cdr-atom $pattern))
+                ($front (car-atom $queue))
+                ($rest (cdr-atom $queue))
             )
-            ;; If this is the target index
-
-                ;; Otherwise, keep traversing
-                (if (== (get-metatype $head) Expression)
-                    (if (== $current_index $target_index)
-                        ($head $current_index)
-                    ;; Go inside the sub-expression
-                    (let* (
-                            (($val $next_index) (get_value_at_index_helper $head $target_index (+ $current_index 1)))
-                            
-                        )
-                        (if (== $val ())
-                            (get_value_at_index_helper $tail $target_index $next_index)
-                            ; (get_value_at_index_helper $tail $target_index (+ $current_index 1))
-                            ($val $next_index)
-                            ;; If not found inside, continue with tail
-                        )
-                    ))
-                    (if (== $current_index $target_index)
-                        ($head $current_index)
-                    ;; Normal atom, move on
-                    (get_value_at_index_helper $tail $target_index (+ $current_index 1)))
+            (if (== $current_index $target_index)
+                ($front $current_index)
+                (let* (
+                        ($components (if (== (get-metatype $front) Expression)
+                                        $front
+                                         ()))
+                        ; (() (println! (here in get_value_at_index_helper $components)))
+                        ($new_queue (union-atom $rest $components))
+                        ; (() (println! (here in get_value_at_index_helper $new_queue)))
+                        ($new_index (+ $current_index 1))
+                    )
+                    (get_value_at_index_helper $new_queue $target_index $new_index)
                 )
+            )
         )
     )
 )
