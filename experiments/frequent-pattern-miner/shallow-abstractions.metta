@@ -1,5 +1,3 @@
-; ! (register-module! ../../experiments)
-; !(import! &self experiments:utils:common-utils)
 
 (= (shallow_abstractions () $history $current_index)
     ()
@@ -33,7 +31,6 @@
     )
 )
 
-; !(check_val ((cvh Abe) (bvh cgh)) bvh)
 
 (= (get_abstractions () $history)
     ()
@@ -44,7 +41,6 @@
             
             ($vals (superpose $valuations))
             (($found $res) (check_val $history $vals))
-            (() (println! (here in get_abstractions $found $res)))
             (($abstraction $next_index) (if $found 
                                             ($res $current_index)
                                             (if (== (get-metatype $vals) Expression) 
@@ -85,7 +81,6 @@
 
 (= (get_abstraction $valuation $var_index $history $current_index)
     (let* (
-            (() (println! (here in get_abstraction $var_index $history)))
             ($head (car-atom $valuation))
             ($tail (cdr-atom $valuation))
             (($abstraction $new_history $next_index) (if (== (intersection-atom ($head) $history) ())
@@ -97,12 +92,5 @@
         ((union-atom ($abstraction) $abstractions_tail) $rest_index)
     )
 )
-; !(let $abstractions (get_abstractions ((Inheritanc (Inheritance (Rel A $X) $Y) $Z) (Inheritanc (Inheritance (Rel A $X) $Y) $Z))) (car-atom $abstractions))
-
-
-; !(shallow_abstractions (((Inheritance Abe Abe) $x) ((Inheritance Abe Abe)  $y) (Lull $z)) () 0)
-
-; !(find_index (cvh Abe) Abe)
-; !(get_abstraction (Abe Abe Abeb) 3 () 3)
 
 
