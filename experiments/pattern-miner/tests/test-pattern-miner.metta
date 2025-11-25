@@ -1,6 +1,6 @@
 ! (register-module! ../../../../hyperon-miner/experiments)
 
-! (import! &self experiments:frequent-pattern-miner:frequent-pattern-miner)
+! (import! &self experiments:frequent-pattern-miner:frequent-pattern-miner-generic)
 ! (import! &self experiments:pattern-miner:pattern-miner)
 ! (import! &self experiments:utils:common-utils)
 
@@ -25,7 +25,7 @@
 ! (import! &self experiments:utils:jsd-helper)
 
 ! (import! &self experiments:utils:remove_useless_clauses)
-! (import! &self experiments:utils:index_to_var)
+; ! (import! &self experiments:utils:index_to_var)
 ! (import! &db experiments:data:small-ugly)
 
 
@@ -50,8 +50,8 @@
 ;; surprissingness mode none
 ;; minimum support 4
 
-; !(pattern-miner &res1 &db 4 0 none True) 
-; !(collapse (match &res1 $pattern $pattern))
+!(pattern-miner &res1 &db $x 4 0 none True) 
+!(collapse (match &res1 $pattern $pattern))
 ;; Expected result 
         ; ((supportOf (, (Inheritance $h10#3741032 $w01#3741033) (Inheritance Allen $w01#3741033)) 14)
         ; (supportOf (, (Inheritance $r56#3741034 $r45#3741035) (Inheritance Abe $r45#3741035)) 14)
@@ -76,8 +76,8 @@
 
 !(bind! &res2 (new-space))
 
- !(pattern-miner &res2 &db 4 1 none True) 
- !(collapse (match &res2 $pattern $pattern ))
+;  !(pattern-miner &res2 &db $x 4 1 none True) 
+;  !(collapse (match &res2 $pattern $pattern ))
 ;; Expected result
 ; ((supportOf (, (Inheritance $a88#3981498 human) (Inheritance $a88#3981498 man) (Inheritance $a88#3981498 ugly)) 3) 
 ; (supportOf (, (Inheritance $t39#3981499 human) (Inheritance $t39#3981499 man) (Inheritance $t39#3981499 sodaDrinker)) 3) 
@@ -97,7 +97,7 @@
 
 ; !(bind! &res3 (new-space))
 
-; !(pattern-miner &res3 &db 3 0 nisurp-old) 
+; !(pattern-miner &res3 &db $x 3 0 nisurp-old) 
 ; !(collapse (match &res3 $pattern $pattern ))
 ;; Expected result
 ; ((surprisingnessOf (, (Inheritance $r34#777329 human) (Inheritance $r34#777329 man)) 0.5357142857142857) 
@@ -120,7 +120,7 @@
 
 !(bind! &res4 (new-space))
 
-; !(pattern-miner &res4 &db 3 0 isurp-old) 
+; !(pattern-miner &res4 &db $x 3 0 isurp-old) 
 ; !(collapse (match &res4 $pattern $pattern ))
 ;; Expected result
 ; ((surprisingnessOf (, (Inheritance $g66#777005 human) (Inheritance $g66#777005 man)) 0.052982731554160126) 
@@ -143,7 +143,7 @@
 
 !(bind! &res5 (new-space))
 
-; !(pattern-miner &res5 &db 3 1 isurp-old) 
+; !(pattern-miner &res5 &db $x 3 1 isurp-old) 
 ; !(collapse (match &res5 $pattern $pattern ))
 ;; Expected result
 ; ((surprisingnessOf (, (Inheritance $t70#4271124 human) (Inheritance $t70#4271124 man) (Inheritance $t70#4271124 ugly)) 0.052982731554160126) 
@@ -162,7 +162,7 @@
 
 !(bind! &res6 (new-space))
 
-; !(pattern-miner &res6 &db 3 1 nisurp-old) 
+; !(pattern-miner &res6 &db $x 3 1 nisurp-old) 
 ; !(collapse (match &res6 $pattern $pattern ))
 ;; Expected result
 ; ((surprisingnessOf (, (Inheritance $p43#4271077 human) (Inheritance $p43#4271077 man) (Inheritance $p43#4271077 ugly)) 0.7142857142857143) 
@@ -182,7 +182,7 @@
 
 ; !(bind! &res7 (new-space))
 
-;  !(pattern-miner &res7 &db 3 1 jsd) 
+;  !(pattern-miner &res7 &db $x 3 1 jsd) 
 ;  !(collapse (match &res7 $pattern $pattern ))
 ;; Expected result 
 ;((surprisingnessOf (, (Inheritance $h99#9978924 human) (Inheritance $h99#9978924 sodaDrinker) (Inheritance $h99#9978924 ugly)) 0.8602770128397317) 

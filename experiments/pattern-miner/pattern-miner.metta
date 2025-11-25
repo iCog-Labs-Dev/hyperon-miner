@@ -59,11 +59,11 @@
 --------------------------------------------------------------
 ;; the main pattern mining pipeline for the functional approach 
 ;(: pattern-miner (-> $space space Number Number Atom Atom))
-(= (pattern-miner $kb $db $minsup $depth $surp-mode $conj_exp) ( 
+(= (pattern-miner $kb $db $initpat $minsup $depth $surp-mode $conj_exp) ( 
     let*
     (    (() (println! "==== Pattern Miner Started ====="))
-         ($dummy (collapse (let ($link $x $y) (get-atoms $db) (add-atom &dbspace ($link $x $y))) ))
-         ($frequent-pattern  (frequency-pattern-miner &dbspace &specspace &cndpspace &aptrnspace &conjspace $minsup $depth $conj_exp))
+         ($dummy (collapse (let $x (get-atoms $db) (add-atom &dbspace $x)) ))
+         ($frequent-pattern  (frequency-pattern-miner &dbspace $initpat &cndpspace &conjspace $minsup $depth $conj_exp))
          ($dummy3  (call-surprisingness $kb &dbspace $surp-mode $frequent-pattern))
           )  ()))
 
