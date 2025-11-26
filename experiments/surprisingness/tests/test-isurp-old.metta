@@ -25,7 +25,7 @@
 ;; Test: isurp-old with out normalization
 ;; -----------------------------------------------------------------------------
 
-!(test (isurp-old (, (Inheritance $x man) (Inheritance $x ugly)
+!(assertEqual (isurp-old (, (Inheritance $x man) (Inheritance $x ugly)
    (Inheritance $x sodaDrinker)) &db False) 0.00014607068574401354)
 
 
@@ -47,7 +47,7 @@
 ;;   0.999707773232028
 ;;
 ;; =============================================================================
-!(test (isurp-old (, (Inheritance $x man)
+!(assertEqual (isurp-old (, (Inheritance $x man)
    (Inheritance $x ugly)
    (Inheritance $x sodaDrinker)) &db True) 0.999707773232028)
 
@@ -60,7 +60,7 @@
 !(import! &self ../../data/nested_coupled/mock_coupled)
 !(migrateAtoms &self &dbc  (Inheritance $x $y))
 
-!(test (isurp-old (, (Inheritance (Person $x) man)
+!(assertEqual (isurp-old (, (Inheritance (Person $x) man)
    (Inheritance (Person $x) ugly)
    (Inheritance (Person $x) sodaDrinker)) &dbc True) 0.999707773232028)
 
@@ -72,7 +72,7 @@
 ;; import nested atoms
 !(import! &self ../../data/nested_coupled/true_nested)
 !(migrateAtoms &self &dbn  (Inheritance $x $y))
-!(test (isurp-old (, (Inheritance (And (And (Person $x) man) (Or human sodaDrinker)) (Or (And human man) (And human sodaDrinker)))
+!(assertEqual (isurp-old (, (Inheritance (And (And (Person $x) man) (Or human sodaDrinker)) (Or (And human man) (And human sodaDrinker)))
                            (Inheritance (And (And (Person $x)   man) (Or human sodaDrinker)) (Or (And human man) (And human ugly)))
                            (Inheritance (And (And human man)   (Or (Person $x) (Person Mike)))   (Or (And human man)   (And human sodaDrinker)))
                             (Inheritance (And (And (Person $x) man) (Or human ugly))        (Or (And human man) (And human sodaDrinker)))) &dbn True)
