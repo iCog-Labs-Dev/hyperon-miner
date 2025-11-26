@@ -23,12 +23,6 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y swi-prolog
 
-      # 3️⃣ Install Rust (required to build MORK)
-      - name: Set up Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          override: true
 
       # 4️⃣ Run setup.sh (clones PeTTa, sets paths, makes run.sh executable)
       - name: Run setup script
@@ -36,10 +30,7 @@ jobs:
           chmod +x setup.sh
           ./setup.sh
 
-      # 5️⃣ Build MORK (ensure libmork_ffi.so exists)
-      - name: Build MORK
-        working-directory: PeTTa/mork_ffi
-        run: cargo build --release
+  
 
       # 6️⃣ Run Python tests
       - name: Run PeTTa tests
