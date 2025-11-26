@@ -168,10 +168,20 @@
 ; !(connected-subpatterns-with-var (((Inheritance $x ugly) (Inheritance $x sodaDrinker)) ((Inheritance $x man))) $x)
 ; !(sort-by-abstraction (((Inheritance $x ugly) (Inheritance $x sodaDrinker)) ((Inheritance $x man))) $x)
 
- !(do-jsd (STV 0.8 0.5555555555555556) (STV 0.7968127490039841 0.5565410199556541) )
+;  !(do-jsd (STV 0.8 0.5555555555555556) (STV 0.7968127490039841 0.5565410199556541) )
 ; !(boost-math-cdf 801.0 204.9999999999999 0.9)
 
 ; !(boost-math-cdf 801.0 204.9999999999999 0.6)
 ; !(boost-math-cdf 801.0000000000001 201.0 0.8) ;0.5126063633241287
 
 
+
+
+ !(is-blk-syntax-more-abstract ((Human $x $y)) ((Human $x Abebe)) $x)
+
+; !(is-blk-syntax-more-abstract ((Human $x Abebe)) ((Human $x $y)) $x)
+
+
+; !(validate-unification ((Human @eyob $_6610)) ((Human @eyob Abebe)))
+
+; !(replace ((Human @eyob $_6610)) )
