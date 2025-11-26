@@ -2,6 +2,32 @@
 ;; Common Utils ;;
 ;;;;;;;;;;;;;;;;;;
 
+;;(: unify (-> Expression Expression Expression Expression %Undefined%))
+(= (unify $space $pattern $then $else)
+   (if (is-space $space)
+       (let $temp (cut)
+            (case (match $space $pattern $pattern)
+                  (($pattern $then)
+                   (Empty $else)))) (empty)))
+
+
+(= (unify $a $b $then $else)
+   (if (= $a $b)
+       (eval $then)
+       (eval $else)))
+
+(= (assertEqual $A $B)
+   (test $A $B))
+
+   
+   
+;;(: migrateAtoms (-> %Undefined% %Undefined% Expression %Undefined%))
+(= (migrateAtoms $FromSpace $ToSpace $Pattern)
+   (match &self $Pattern ((add-atom $ToSpace $Pattern) 
+                          (remove-atom $FromSpace $Pattern))))
+
+
+
 ;predicate to check if a given expression is a pattern or not
 
 (=(checkPat $x) (let $type (get-metatype $x) (if (not (== $type Expression)) False (and  ( > (size-atom $x) 1) (let $head (car-atom $x) (== (get-metatype $head) Symbol))) ) ))
@@ -10,8 +36,10 @@
 ;;;;;;;;;; functions related to Conjunction ;;;;;;;;;;;;
 
 ;; Extracts conjuncts from a conjunctive expression,
-(= (get-conjuncts $cnj) (
-  unify (, $ncnj $ptrn) $cnj (let $result (get-conjuncts $ncnj) (cons-atom $ptrn $result) ) ($cnj)
+ (= (get-conjuncts $cnj) (
+    if (=  (, $ncnj $ptrn) $cnj)
+   ( let $result (get-conjuncts $ncnj) (cons-atom $ptrn $result)) 
+    ($cnj)
 ))
 
 
@@ -19,7 +47,7 @@
 ;;Determines the number of conjunctive clauses in a pattern.
 (=(n_conjuncts_new $pattern) (
    let ($head $tail) (decons-atom $pattern) (
-    if (== $head ,) (tuple-count $tail) 1)
+    if (== $head ,) (eval (tuple-count $tail)) 1)
 ))
 
 ;; =============================================================================
@@ -41,8 +69,8 @@
 ;;      returns them in reverse).  
 ;;   3. Rebuilds the flattened conjunction using `cons-atom`.  
 ;; =============================================================================
-(= (flatten $cnj) (
-  let $flatten (reverse-list (get-conjuncts $cnj))  
+(= (flatten-inner $cnj) (
+  let $flatten (eval (reverse-list (get-conjuncts $cnj))  )
   (cons-atom , $flatten)  
 ))
 
@@ -232,7 +260,16 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
 ;;   3. Returns the result (empty list for no intersection).
 ;; =============================================================================
 
-(=(checkInter $x $acc) ((intersection-atom ($x) $acc)))
+;(=(checkInter $x $acc) ((intersection-atom ($x) $acc)))
+
+(=(checkInter $var $acc) 
+   (if (== $acc ())
+        False
+        (if (== $var (car-atom $acc))
+            True
+            (checkInter  (cdr-atom $acc) $var))
+    )
+)
 
 
 ;; =============================================================================
@@ -261,7 +298,7 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
 (= (get-variables $pattern $acc)
     (if (== $pattern ())
         $acc 
-        (let* (
+        (let* ( 
                 ($head (car-atom $pattern)) 
                 ($tail (cdr-atom $pattern))) 
 
@@ -269,7 +306,7 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
                 (get-variables $tail
                     (get-variables $head $acc)) 
                 (if (and (== (get-metatype $head) Variable)
-                         (== (checkInter $head $acc) (()))) 
+                         (== (checkInter $head $acc) false)) 
                     (get-variables $tail
                         (union-atom $acc ($head))) 
                     (get-variables $tail $acc)))))) 
@@ -483,16 +520,16 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
 ;;   3. Returns True if either pattern matches
 ; ==============================================================================
 ; (=(is-pattern $expr) False)
-(=(is-pattern $expr) (
-    collapse(
- or (unify $expr ($link $x $y) (
-       and (is-symbol $link) (
-        or (or (is-variable $x) (is-expression $x))
-             (or (is-variable $y) (is-expression $y)))) False)
-    (unify $expr ($link $x) 
-       (and (is-symbol $link) 
-        (or (is-variable $x) 
-            (is-expression $x))) False ) )))
+; (=(is-pattern $expr) (
+;     collapse(
+;  or (unify  ($link $x $y) $expr (
+;        and (is-symbol $link) (
+;         or (or (is-variable $x) (is-expression $x))
+;              (or (is-variable $y) (is-expression $y)))) False)
+;     (unify $expr ($link $x) 
+;        (and (is-symbol $link) 
+;         (or (is-variable $x) 
+;             (is-expression $x))) False ) )))
 
 ;; =============================================================================
 ;; Function: is-valid
@@ -721,11 +758,10 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
 ;; This is very slow, use the grounded python function instead
 
 ;    (: tuple-count (-> Any Number))
-   (= (tuple-count $atom) (size-atom $atom))
+(= (tuple-count $atom) (size-atom $atom))
 
-;; Tuple count grounded python function
-; (import! &self  helper)
-; ! (import! &self  helper)
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
  ; Function: sum
  ; Description: Calculates the sum of elements in a list.
@@ -734,11 +770,7 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
  ; Returns:
  ;   - The sum of the elements in the list as an integer.
 
-; (= (sum $list) (
-;         if (== $list ())
-;         0
-;         (+ (car-atom $list) (sum (cdr-atom $list)))
-;     ))
+
 (= (sum $list) (foldl-atom $list 0 $acc $x (+ $acc $x)))
 
  ; This function calculates the average of a tuple of numbers.
@@ -817,23 +849,7 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
 
  ;     for pattern type Nil will run both implmentation of  n_conjucts
 (= (n_conjuncts Nil) 0)
- ; (= (n_conjuncts $pattern)
- ;     (if (not (has-type lambda $pattern))
- ;         0
- ;         (if (or (has-type and $pattern) (has-type Present $pattern))
- ;             (get-arity (cdr-atom $pattern))
- ;             1)))
 
-; (= (n_conjuncts $pattern) (
-;         if (not (is-pattern-et $pattern))
-;         0
-; ( let* (($che ,) ($pro (has-type $che $pattern))) (if $pro
-;             (get-arity $pattern)
-;             1
-;         ))
-
-; )
-; )
 (= (n_conjuncts $pattern) (
         if (not (is-pattern-et $pattern))
         0
@@ -841,21 +857,7 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
             
         )
 
-;; Function: intilize
-;; 
-;; Description:
-;;   Initializes the given database by performing the following steps:
-;;     1. Retrieves all atoms from the database ($db) using get-atoms.
-;;     2. Collapses the retrieved atoms to form a simplified representation.
-;;     3. Counts the number of tuples present in the collapsed data.
-;;     4. Adds a new atom to self with the computed tuple count.
-;;
-;; Parameters:
-;;   $db - The database object containing the atoms to process.
-;;
-;; Returns:
-;;   The modified self with the new atom added, encapsulating the tuple count.
-(= (intilize $db) (add-atom &self (db-size $db (tuple-count (collapse (get-atoms $db))))))
+
 
 ;; Function: db_size
 ;;
@@ -923,7 +925,7 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
 )
 
  ;Check if atom is member of list or not
-(= (is-member $y $list) (== (intersection-atom ($y) $list) ($y)))
+; (= (is-member $y $list) (== (intersection-atom ($y) $list) ($y)))
 
 
  ;check if atom is variable or not
