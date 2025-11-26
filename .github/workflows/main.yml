@@ -2,9 +2,9 @@ name: miner-petta CI
 
 on:
   push:
-    branches: [ main ]
+    branches: petta-porting
   pull_request:
-    branches: [ main ]
+    branches: petta-porting
 
 jobs:
   test:
