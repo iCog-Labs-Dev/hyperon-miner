@@ -121,36 +121,6 @@
 )
 
 
-;; =============================================================================
-;; Function: support_estimate_calculator
-;; -----------------------------------------------------------------------------
-;; Purpose:
-;;   Estimate the support for a pattern in a scaled database and compute the
-;;   empirical truth value using bootstrapping techniques.
-;;
-;; Parameters:
-;;   - $pattern: The pattern for which the support estimate and truth value are calculated.
-;;   - $db: The database in which the pattern's support is evaluated.
-;;   - $prob_estimate: The estimated probability of the pattern's occurrence.
-;;   - $db_ratio: A scaling factor applied to the database size to reflect effective data contribution.
-;;
-;; Internal Calculation:
-;;   1. Compute support estimate using prob_to_support based on pattern, db, and prob_estimate.
-;;   2. Scale the database size by multiplying db_size with db_ratio.
-;;   3. Call emp_tv_pbs with calculated values to compute the empirical truth value.
-;;
-;; Returns:
-;;   - An empirical truth value (e.g., confidence and mode), adjusted via bootstrapping
-;; =============================================================================
-(= (support_estimate_calculator $pattern $db $prob_estimate $db_ratio)
-  (let* (
-    ($support_estimate (prob_to_support $pattern $db $prob_estimate))
-    ($database_size (* (db_size $db) $db_ratio))
-  )
-    (emp_tv_pbs $pattern $db $prob_estimate $db_ratio $database_size $support_estimate)
-  )
-)
-
 
 
 

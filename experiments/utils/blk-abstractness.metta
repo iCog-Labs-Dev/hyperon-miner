@@ -1,5 +1,4 @@
 ; unify function for petta
-(: unify (-> Expression Expression Expression Expression %Undefined%))
 
 (= (unify $space $pattern $then $else)
    (if (is-space $space)
@@ -15,7 +14,6 @@
 
 
 
-(: Constant (-> String $a))
 
 ; Function to replace a variable with @var throughout a pattern
 ; Usage: (erase $pattern $var)
@@ -71,9 +69,6 @@
 ; Get all variables from a pattern
 ; Check if two patterns can be unified after treating var as constant
 
-(= (can-unify $l_body $r_body) True)
-(= (validate-unification $left-body $right-body) True)
-
 
 ; Main unification function for atom bodies
 (= (can-unify $l_body $r_body)
@@ -115,7 +110,7 @@
 
 (= (validate-unification $left-body $right-body) 
    (let* ( ($indexed-right-body (replace $right-body)) 
-;    ($_ (println! (right body is $right-body validate called et the replaced is $indexed-right-body ) ))
+;    ($_ (println! (right body is $right-body validate called et the replaced is $indexed-right-body) ))
    ) 
         (let* (($for (can-unify $left-body $indexed-right-body)) 
         ; ($_ (println! (the bool of val_uni is $for ))) 
