@@ -1,11 +1,9 @@
-#!/bin/bash
+
 set -e
 
-# Clone PeTTa repository
 git clone https://github.com/patham9/PeTTa
 cd PeTTa || exit 1
 
-# Checkout latest commit on default branch
 git fetch origin
 git checkout "$(git rev-parse origin/HEAD)"
 
@@ -16,11 +14,10 @@ fi
 
 # Build absolute paths
 SCRIPT_DIR="$(pwd)/src/main.pl"
-#MORK_DIR="$(pwd)/mork_ffi/target/release/libmork_ffi.so"
+
 
 # Update paths inside run.sh
 sed -i "s|./src/main.pl|$SCRIPT_DIR|" run.sh
-#sed -i "s|./mork_ffi/target/release/libmork_ffi.so|$MORK_DIR|" run.sh
 
 # Make run.sh executable
 chmod +x run.sh

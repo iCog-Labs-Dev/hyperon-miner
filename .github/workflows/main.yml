@@ -13,26 +13,22 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      # 1️⃣ Checkout repository
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2️⃣ Install SWI-Prolog (required by PeTTa)
       - name: Install SWI-Prolog
         run: |
           sudo apt-get update
           sudo apt-get install -y swi-prolog
 
 
-      # 4️⃣ Run setup.sh (clones PeTTa, sets paths, makes run.sh executable)
+      #  Run setup.sh (clones PeTTa, sets paths, makes run.sh executable)
       - name: Run setup script
         run: |
           chmod +x setup.sh
           ./setup.sh
 
   
-
-      # 6️⃣ Run Python tests
       - name: Run PeTTa tests
         run: python3 scripts/run-tests.py
         env:
