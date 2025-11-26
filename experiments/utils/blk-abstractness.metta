@@ -110,9 +110,9 @@
 
 (= (validate-unification $left-body $right-body) 
    (let* ( ($indexed-right-body (replace $right-body)) 
-;    ($_ (println! (right body is $right-body validate called et the replaced is $indexed-right-body) ))
+;    ($_ (println! (right body is $right-body validate called et the replaced is $indexed-right-body ) ))
    ) 
-        (let* (($for (can-unify $left-body $indexed-right-body)) 
+        (let* (($for (can-unify-expr $left-body $indexed-right-body)) 
         ; ($_ (println! (the bool of val_uni is $for ))) 
         ) $for)
     )
@@ -134,15 +134,11 @@
            ; Convert var to constant (@eyob) in both patterns
            ($l_body (erase $l_pat $var))
            ($r_body (erase $r_pat $var))
-           
-           ; Try to unify the modified patterns
-           ($can_unify_result (can-unify $l_body $r_body))
-          
+                     
        )
-            (if $can_unify_result 
-                (validate-unification $l_body $r_body) 
-                False
-            )
+         
+        (validate-unification $l_body $r_body) 
+          
        )
     )
     )
@@ -229,7 +225,6 @@
     )
 
 )
-
 
 
 
