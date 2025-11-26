@@ -1,5 +1,4 @@
-!(register-module! ../../utils)
-!(import! &self utils:common-utils)
+!(import! &self ../common-utils)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;; Unit Tests for common-utils ;;;;;;;;
@@ -11,14 +10,14 @@
 ; --------------------------------
 ; `flatten` function should accept a nested conjunction and return a flattened conjunction
 ; Flattened conjunction
-!(assertEqual (flatten (, A B)) (, A B))
+!(assertEqual (flatten-inner (, A B)) (, A B))
 
 ; Partially Nested flattening
-!(assertEqual (flatten (, (, A B) C)) (, A B C))
+!(assertEqual (flatten-inner (, (, A B) C)) (, A B C))
 ; !(assertEqual (flatten (, A (, B C))) ((, A B C)))
 
 ; Nested flattening
-!(assertEqual (flatten (, (, (, A B) C) D)) (, A B C D))
+!(assertEqual (flatten-inner (, (, (, A B) C) D)) (, A B C D))
 
 
 
@@ -239,7 +238,7 @@
 !(assertEqual (are_all_variables_joint (?x ?y ?z) ((P $a $b) (Q $c) (R $d))) False)
 
 
-------------------------------------
+;------------------------------------
 ;;;; TEST FOR `tuple_to_list`
 ;------------------------------------
 !(assertEqual (tuple_to_list ()) Nil)
