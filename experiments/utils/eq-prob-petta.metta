@@ -1,6 +1,5 @@
 
 ;connected-subpatterns-with-var
-(= (is-blk-more-abstract $head $pivot $var) True)
 ;argumets: $paratition (the target patition which is a list of blocks)
 ;$var the variable we are concerned with
 
