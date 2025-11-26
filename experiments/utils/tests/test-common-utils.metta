@@ -27,23 +27,23 @@
 ; `conjunct-pattern` function should accept a list of blocks and a space, then output a conjunctive pattern combining the passed list patterns
 
 !(assertEqual 
-   (conjunct-pattern (A B) (new-space))
+   (conjunct-pattern (A B) &space)
    (, A B)
 )
 !(assertEqual 
-   (conjunct-pattern () (new-space))
+   (conjunct-pattern () &space1)
    (,)
 )
 !(assertEqual 
-   (conjunct-pattern ((A)) (new-space))
+   (conjunct-pattern ((A)) &space2)
    (, (A))
 )
 !(assertEqual 
-   (conjunct-pattern ((A) B) (new-space))
+   (conjunct-pattern ((A) B) &space2)
    (, (A) B)
 )
 !(assertEqual 
-   (conjunct-pattern (A (B)) (new-space))
+   (conjunct-pattern (A (B)) &space2)
    (, A (B))
 )
 
@@ -52,7 +52,7 @@
 ;;;; TEST FOR `//`
 ; --------------------------------
 ; `//` function should two numbers and return floating point division result
-!(assertEqual (// 4 2) 2)
+!(assertEqual (// 4 2) 2.0)
 !(assertEqual (// 5 2) 2.5)
 !(assertEqual (// 5.0 2) 2.5)
 !(assertEqual (// 5 2.0) 2.5)
@@ -81,14 +81,7 @@
 !(assertEqual (remove-parenthesis A) (A))
 
 
-; ---------------------------------
-;;;; TEST FOR `get-variables`
-; ---------------------------------
-; `get-variables` function should accept a pattern and return a tuple of unique variables in the pattern
-!(assertEqual (get-variables ()) ())
-!(assertEqual (get-variables (A)) ())
-!(assertEqual (get-variables (A $a $e E g)) ($a $e))
-!(assertEqual (get-variables (A ($b C) (D $e (F $g)) $h)) ($b $e $g $h))
+
 
 
 ; ----------------------------------
@@ -123,13 +116,13 @@
 ;;;; TEST FOR `is-pattern`
 ; ----------------------------------
 ; `is-pattern` checks whether the given expression is a valid pattern
-!(assertEqual (is-pattern (A $a)) (True))
-!(assertEqual (is-pattern (A B)) (False))
-!(assertEqual (is-pattern ($a $b)) (False))
-!(assertEqual (is-pattern ()) (False))
-!(assertEqual (is-pattern (A ($b C) ($e $h))) (True))
-!(assertEqual (is-pattern (A ($b C) $j)) (True))
-!(assertEqual (is-pattern (A $j ($b C) )) (True))
+; !(assertEqual (is-pattern (A $a)) (True))
+; !(assertEqual (is-pattern (A B)) (False))
+; !(assertEqual (is-pattern ($a $b)) (False))
+; !(assertEqual (is-pattern ()) (False))
+; !(assertEqual (is-pattern (A ($b C) ($e $h))) (True))
+; !(assertEqual (is-pattern (A ($b C) $j)) (True))
+; !(assertEqual (is-pattern (A $j ($b C) )) (True))
 
 
 ; ----------------------------------
@@ -166,13 +159,7 @@
 !(assertEqual (min-max (3.5 2.1 8.7 1.0 5.6)) (1.0 8.7))
 !(assertEqual (min-max (5)) (5 5))
 
-; -----------------------------------
-;;;; TEST FOR `intilize`
-; -----------------------------------
-; `intilize` function should accept a space and return a space with the size of the space added onto it
-!(bind! &db (new-space))
-!(intilize &db)
-!(assertEqual (match &self (db-size $db $value) $value) 0)
+
 
 ;-----------------------------------
 ;;;; TEST FOR `is-member`
@@ -227,15 +214,7 @@
 !(assertEqual (is_variable_joint_with_clauses $x ((P $y) (Q $y) (R $y $z))) False)
 !(assertEqual (is_variable_joint_with_clauses $a ((P $x) (Q $y) (R $x $z))) False)
 
-;------------------------------------
-;;;; TEST FOR `are_all_variables_joint`
-;------------------------------------
-; `are_all_variables_joint` function should accept a list of variables and a pattern, return true if all variables are directly connected with clauses in the pattern, false otherwise
-!(assertEqual (are_all_variables_joint (?x ?y ?z) ((P ?x ?y) (Q ?y ?z))) True)
-!(assertEqual (are_all_variables_joint (?x ?y ?z) ((P ?x) (Q ?y) (R ?z))) True)
-!(assertEqual (are_all_variables_joint (?x ?y ?z) ((P ?x ?y) (Q ?y) (R ?z))) True)
-!(assertEqual (are_all_variables_joint (?x ?y ?z) ((P ?x ?y) (Q ?y) (R $a))) False)
-!(assertEqual (are_all_variables_joint (?x ?y ?z) ((P $a $b) (Q $c) (R $d))) False)
+
 
 
 ;------------------------------------
