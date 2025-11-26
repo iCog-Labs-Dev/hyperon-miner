@@ -49,7 +49,7 @@
 ;;      returns them in reverse).  
 ;;   3. Rebuilds the flattened conjunction using `cons-atom`.  
 ;; =============================================================================
-(= (flatten $cnj) (
+(= (flatten_inner $cnj) (
   let $flatten (reverse-list (get-conjuncts $cnj))  
   (cons-atom , $flatten)  
 ))

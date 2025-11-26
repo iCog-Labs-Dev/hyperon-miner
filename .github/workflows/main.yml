@@ -2,30 +2,41 @@ name: miner-petta CI
 
 on:
   push:
-    branches:
-      - petta-porting
+    branches: [ main ]
   pull_request:
-    branches:
-      - petta-porting
+    branches: [ main ]
 
 jobs:
-  setup-and-test:
+  test:
     runs-on: ubuntu-latest
-    
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      
-      - name: Install SWI-Prolog
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y swi-prolog
-      
-      - name: Run Setup script
-        run: |
-          chmod +x setup.sh
-          ./setup.sh
 
-      - name: Run PeTTa test
-        run: |
-          python3 scripts/run-tests.py
+    steps:
+      # 1️⃣ Checkout repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 2️⃣ Install Rust (needed for MORK / mork_ffi)
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+
+      # 3️⃣ Install SWI-Prolog (required by PeTTa)
+      - name: Install SWI-Prolog
+        run: sudo apt-get update && sudo apt-get install -y swi-prolog
+
+      # 4️⃣ Make run.sh executable
+      - name: Prepare run.sh
+        run: chmod +x PeTTa/run.sh
+
+      # 5️⃣ Build MORK (needed for Petta)
+      - name: Build MORK
+        working-directory: PeTTa/mork_ffi
+        run: cargo build --release
+
+      # 6️⃣ Run Python tests
+      - name: Run Petta tests
+        run: python3 scripts/run-tests.py
+        env:
+          PATH: ${{ github.workspace }}/PeTTa:${{ env.PATH }}
