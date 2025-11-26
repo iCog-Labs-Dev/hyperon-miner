@@ -2,41 +2,48 @@ name: miner-petta CI
 
 on:
   push:
-    branches: petta-porting
+    branches:
+      - petta-porting
   pull_request:
-    branches: petta-porting
+    branches:
+      - petta-porting
 
 jobs:
-  test:
+  setup-and-test:
     runs-on: ubuntu-latest
-
+    
     steps:
       # 1️⃣ Checkout repository
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      # 2️⃣ Install Rust (needed for MORK / mork_ffi)
+      # 2️⃣ Install SWI-Prolog (required by PeTTa)
+      - name: Install SWI-Prolog
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y swi-prolog
+
+      # 3️⃣ Install Rust (required to build MORK)
       - name: Set up Rust
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
           override: true
 
-      # 3️⃣ Install SWI-Prolog (required by PeTTa)
-      - name: Install SWI-Prolog
-        run: sudo apt-get update && sudo apt-get install -y swi-prolog
+      # 4️⃣ Run setup.sh (clones PeTTa, sets paths, makes run.sh executable)
+      - name: Run setup script
+        run: |
+          chmod +x setup.sh
+          ./setup.sh
 
-      # 4️⃣ Make run.sh executable
-      - name: Prepare run.sh
-        run: chmod +x PeTTa/run.sh
-
-      # 5️⃣ Build MORK (needed for Petta)
+      # 5️⃣ Build MORK (ensure libmork_ffi.so exists)
       - name: Build MORK
         working-directory: PeTTa/mork_ffi
         run: cargo build --release
 
       # 6️⃣ Run Python tests
-      - name: Run Petta tests
+      - name: Run PeTTa tests
         run: python3 scripts/run-tests.py
         env:
+          # Add PeTTa to PATH so run.sh can be found
           PATH: ${{ github.workspace }}/PeTTa:${{ env.PATH }}
