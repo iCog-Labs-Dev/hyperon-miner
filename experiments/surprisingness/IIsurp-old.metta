@@ -245,27 +245,40 @@ $coh
   
   ($prob-bodies (collapse (get-conc-prob-for-sub (superpose $comb) $db $total_count))) 
 
-; ($subProbsmax (collapse (getcohfact_sub (superpose $prob-bodies)  max)))
-; ($Accumulatedcohformax (prob-accumulator $subProbsmax))
-; ($maxsubprob (* $comb-prob-main $Accumulatedcohformax))
+($subProbsmax (collapse (getcohfact_sub (superpose $prob-bodies)  max)))
+($Accumulatedcohformax (prob-accumulator $subProbsmax))
+($maxsubprob (* $comb-prob-main $Accumulatedcohformax))
 
-; ($subProbsmin (collapse (getcohfact_sub (superpose $prob-bodies)  min)))
-; ($Accumulatedcohformin (prob-accumulator $subProbsmin))
-; ($minsubprob (* $comb-prob-main $Accumulatedcohformin))
+($subProbsmin (collapse (getcohfact_sub (superpose $prob-bodies)  min)))
+($Accumulatedcohformin (prob-accumulator $subProbsmin))
+($minsubprob (* $comb-prob-main $Accumulatedcohformin))
  
 
 
 )
-$prob-bodies
+; $prob-bodies
 ; $comb-prob-main
 
-; ($maxsubprob $minsubprob)
+($maxsubprob $minsubprob)
 )
 
 
 )
 
+(=(dst_from_interval_lift $emin $emax $emp) (let* 
 
+(
+  ($lift (
+  if (< $emax $emp) (// $emp $emax) (if (< $emp $emin ) (//  $emp $emin) 1.0)
+))
+($ans (abs-math (- 1 $lift )))
+)
+
+$ans 
+
+)
+
+)
 
 
 ;the caller of this function should chekc if the return is -1, then not to include it in the final min-max interval
@@ -477,13 +490,14 @@ $superCons
   if (< $emax $emp) (- $emp $emax) (if (< $emp $emin ) (- $emin $emp) 0.0)
 ))
 
+(=(random_coherence) 0.5)
 
 (= (coherence $concept $db $link)
 (let* (
   ($ins (collapse (match $db ($link $any $concept) $any)))
   ($n (size-atom $ins))
 )
-(if (<= $n 1) (empty)
+(if (<= $n 1) (random_coherence)
 
   ; helper -> 0.5, 0.5
   (let* (($pairwise  (cart-helper-set 2 $ins ()))
@@ -623,6 +637,9 @@ $superCons
 
 )
 ; $sub-int
+; $sub-int 
+; $all-fn-sups
+; $interval-list
 ($retval-max $retval-min)
 ; (if (and (== $max-prob ()) (== $min-prob ())) () (union-atom $max-prob $min-prob))
 ; ($retval-max $retval-min)
@@ -811,7 +828,11 @@ $new_prob
         ($dst (dst_from_interval $emin $emax $pattern_prob))
     ) 
     ; (($pattern_prob ) $results)
+    
+
+
     $dst
+  ;  $subset-results
     ; $subset-results
     ; $pattern_prob
         ;  (min ((if $normalize (// $dst (max $emax $pattern_prob)) $dst) 1.0))       
