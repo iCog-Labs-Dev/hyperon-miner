@@ -6,6 +6,23 @@
 
 (=(checkPat $x) (let $type (get-metatype $x) (if (not (== $type Expression)) False (and  ( > (size-atom $x) 1) (let $head (car-atom $x) (== (get-metatype $head) Symbol))) ) ))
 
+;;lift
+(=(dst_from_interval_lift $emin $emax $emp) (let* 
+
+(
+  ($lift (
+  if (< $emax $emp) (// $emp $emax) (if (< $emp $emin ) (//  $emp $emin) 1.0)
+))
+($ans (abs-math (- 1 $lift )))
+($norm-ans (// $ans $emp))
+($capped-ans (min-atom (100.0  $norm-ans)))
+)
+
+$capped-ans
+
+)
+
+)
 
 ;;;;;;;;;; functions related to Conjunction ;;;;;;;;;;;;
 
