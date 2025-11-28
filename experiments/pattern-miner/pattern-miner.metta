@@ -44,7 +44,7 @@
 ;(: call-surprisingness (-> space space Atom pattern Atom))
 (= (call-surprisingness $kb $db $surp-mode $pattern)
   (case $surp-mode (
-     (none (add-atom-nodup $kb $pattern))
+     (none (add-atom $kb $pattern))
      (nisurp-old  (do-surp $kb $db isurp-old $pattern True))
      (isurp-old  (do-surp $kb $db isurp-old  $pattern False))
      (jsd (do-jsd-surp $kb $db $pattern))
@@ -59,11 +59,11 @@
 --------------------------------------------------------------
 ;; the main pattern mining pipeline for the functional approach 
 ;(: pattern-miner (-> $space space Number Number Atom Atom))
-(= (pattern-miner $kb $db $minsup $depth $surp-mode) ( 
+(= (pattern-miner $kb $db $minsup $depth $surp-mode $conj_exp) ( 
     let*
     (    (() (println! "==== Pattern Miner Started ====="))
          ($dummy (collapse (let ($link $x $y) (get-atoms $db) (add-atom &dbspace ($link $x $y))) ))
-         ($frequent-pattern  (frequency-pattern-miner  &dbspace &specspace &cndpspace &aptrnspace &conjspace $minsup $depth))
+         ($frequent-pattern  (frequency-pattern-miner &dbspace &specspace &cndpspace &aptrnspace &conjspace $minsup $depth $conj_exp))
          ($dummy3  (call-surprisingness $kb &dbspace $surp-mode $frequent-pattern))
           )  ()))
 

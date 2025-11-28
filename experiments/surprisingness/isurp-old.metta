@@ -1,12 +1,12 @@
 ;;types
-(: total_counts (-> Pattern SpaceType Number))
-; (: accumulator-x (-> (List Number) Number))
-; (: accumulator-x (-> (List Number) Number Number))
-(: n_conjuncts_new (-> Pattern Number))
-; (: compute-component-support (-> (List Pattern) SpaceType (List Number)))
-(: compute-component-support (-> Any SpaceType Any))
-(: ptrn-support (-> Pattern SpaceType Number))
-(: prob (-> Pattern SpaceType Number Number))
+; (: total_counts (-> Pattern SpaceType Number))
+; ; (: accumulator-x (-> (List Number) Number))
+; ; (: accumulator-x (-> (List Number) Number Number))
+; (: n_conjuncts_new (-> Pattern Number))
+; ; (: compute-component-support (-> (List Pattern) SpaceType (List Number)))
+; (: compute-component-support (-> Any SpaceType Any))
+; (: ptrn-support (-> Pattern SpaceType Number))
+; (: prob (-> Pattern SpaceType Number Number))
 ; (: add-pattern (-> (List Pattern) SpaceType Pattern))
 
 ; (: blk-prob (-> (List Pattern) SpaceType Number Number))
@@ -20,7 +20,7 @@
 
 
 ; (: isurp-old_ (-> (List (List Pattern)) SpaceType Number (List Number)))
-(: isurp-old (-> Pattern SpaceType Bool Number))
+;(: isurp-old (-> Pattern SpaceType Bool Number))
 
 
 ;;;;;;;;;;;;;;;;;;;;
@@ -164,20 +164,18 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
 ; Returns:
 ;   - A numeric value representing the surprisingness score, optionally normalized and capped at 1.0.
  
-(= (isurp-old $pattern $db $normalize) (
-    let* (
-        (() (println! "==== isurp-old surprisingness ====="))
-        ($total_count (total_counts $pattern $db))
-        ($pattern_prob (prob $pattern $db $total_count))
-        ($partitions (generet-partition-without-pattern $pattern))
-        ($results  (isurp-old_  $partitions $db $total_count))
-        ($emin (min-atom $results))
-        ($emax (max-atom $results))
-        ; (($emin $emax) (min-max $results))
-        ($dst (dst_from_interval $emin $emax $pattern_prob))
-    ) 
-         (min-of-two ((if $normalize (// $dst (max-of-two $emax $pattern_prob)) $dst) 1.0))       
-) )
+(= (isurp-old $pattern $db $normalize)   
+   (let* (
+          (true  (println! "==== isurp-old surprisingness =====")) 
+          ($total_count (total_counts $pattern $db) )
+          ($pattern_prob (prob $pattern $db $total_count))
+          ($partitions (partitions-wout-pattern (cdr-atom $pattern)))
+          ($results  (isurp-old_  $partitions $db $total_count))
+          (($emin $emax) (min-max $results))
+          ($dst (dst_from_interval $emin $emax $pattern_prob))
+           )
+             (min-of-two ((if (== True $normalize) (// $dst (max-of-two $emax $pattern_prob)) $dst) 1.0))       
+            ))
 
 
 

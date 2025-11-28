@@ -53,8 +53,8 @@
 
 
 !(init-params &kb &db  (min-sup) (db-ratio) )
-(frequent-miner &db &kb (num-of-conjuct))
-(match &kb (: $prf (hasSupport $pattern $sup)) (: $prf (hasSupport $pattern $sup)))
+!(frequent-miner &db &kb (num-of-conjuct) True)
+!(match &kb (: $prf (hasSupport $pattern $sup)) (: $prf (hasSupport $pattern $sup)))
 
 ; (: ((((((supportFormat ((((((((((((((((((conjunction-expand ((candidate (((minsupport (((support (((((specializationx
 ; ((((abstract-pattern CPUUnique) msT) CPU) CPUReplacevar)) CPUReplaceindex) CPUHandleValuation) CPUHandleNestedExp) CPUReplacevar))
@@ -95,8 +95,8 @@
 (= (num-of-conjuct2) 3)
 
 
-!(frequent-miner &db &kb (num-of-conjuct2))
-!(match &kb (: $prf (hasSupport $pattern $sup)) (: $prf (hasSupport $pattern $sup)))
+; !(frequent-miner &db &kb (num-of-conjuct2) True)
+; !(match &kb (: $prf (hasSupport $pattern $sup)) (: $prf (hasSupport $pattern $sup)))
 
 ; (: ((((((supportFormat ((((((((((((((((((conjunction-expand ((((((((((((((((((conjunction-expand ((candidate (((minsupport
 ; (((support (((((specializationy ((((abstract-pattern CPUUnique) msT) CPU) CPUReplacevar)) CPUReplaceindex) CPUHandleValuation)
