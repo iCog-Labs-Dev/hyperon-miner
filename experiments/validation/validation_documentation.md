@@ -218,3 +218,30 @@ remove_useless_clause is a critical component in the Hyperon Pattern Miner. It r
     2. Constant clauses are removed.
     3. Redundant subpatterns are removed.
 
+### 3.6 Validation of frequent pattern miner as a whole
+
+#### Background
+
+The frequent pattern miner is the main component of the pattern miner. It mines frequent patterns from the atomspace. Accurate mining of frequent patterns is essential for downstream calculations such as pattern ranking and surprisingness evaluation.
+
+#### Issues in Previous Implementation
+
+- Abstract patterns were discarded after specilized but in the classic miner implementation they are kept as mined patterns and get passed for the next steps.
+- patterns that have the same value for the nodes were being given different values in the specializations
+- patterns that have depth and the depth has nodes with the same value were not being mined correctly.
+
+#### Changes Introduced (Validation-driven Refinement)
+
+- kept the abstract patterns after specialization
+- fixed the issue of patterns that have the same value for the nodes
+- fixed the issue of patterns that have depth and the depth has nodes with the same value
+
+did the above for both the functional and chainer based implementations.
+#### Validation Outcome
+
+- Before fix: 
+    1. patterns like (Inheritance $x $y) were discarded after being specialized.
+    2. patterns like (Inheritance A A) and (Inheritance (link A A) (link A A))... were being given different values in the specializations.
+- After fix: With the new implementation, the above issues are fixed. and there are no patterns being missed.
+
+Due to the speed problem caused by this change it is kept as version two of pattern miner.

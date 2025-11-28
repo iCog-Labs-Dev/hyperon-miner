@@ -26,8 +26,8 @@
 
 
 ;; load rules , system-proofs and miner-utils ...
-!(import! &temp   experiments:miner:freq-miner-rules)
-!(import! &temp2   experiments:miner:surp-rules)
+!(import! &temp experiments:miner:freq-miner-rules)
+!(import! &temp2 experiments:miner:surp-rules)
 !(import! &self  experiments:miner:system-proofs)
 !(import! &self experiments:miner:miner-utils)
 !(import! &self experiments:miner:main)
@@ -52,9 +52,10 @@
 (= (db-ratio) 0.5)
 (= (num-of-conjuct) 2)
 (= (normalization) True)
+(= (conj_exp) True)
 
 
-(pattern-miner &dbspace &temp &temp2 (min-sup) (num-of-conjuct) (surp-mode) (db-ratio)  (normalization))
+(pattern-miner &dbspace &temp &temp2 (min-sup) (num-of-conjuct) (conj_exp) (surp-mode) (db-ratio)  (normalization))
 
 ;; Expected output 
 
@@ -81,7 +82,7 @@
 ; CPUCount) maxClauses) CPU) CPUSortConjunctions) CPUJoin) (hasSupport (, (Inheritance Z sodaDrinker) (Inheritance Z ugly)) 4))
 
 (= (surp-mode1 ) isurp-old)
-(pattern-miner &dbspace &temp &temp2 (min-sup) (num-of-conjuct) (surp-mode1) (db-ratio)  (normalization))
+(pattern-miner &dbspace &temp &temp2 (min-sup) (num-of-conjuct) (conj_exp) (surp-mode1) (db-ratio)  (normalization))
 
 ; (: ((((((((isurp-rule normalize) (((universal-count ((((minsupport ((((((supportFormat ((((((((((((((((((conjunction-expand ((candidate (((minsupport (((support (((((specializationx ((((abstract-pattern CPUUnique) msT) CPU) CPUReplacevar)) CPUReplaceindex) CPUHandleValuation) CPUHandleNestedExp) CPUReplacevar))
 ; CPUReplaceindex) CPUCounter)) msT) CPU)) CPUReplacevar)) CPUReplaceindex) CPUCount) maxClauses) CPUequals) ((candidate (((minsupport (((support (((((specializationx ((((abstract-pattern CPUUnique) msT) CPU) CPUReplacevar)) CPUReplaceindex) CPUHandleValuation) CPUHandleNestedExp) CPUReplacevar)) CPUReplaceindex)
@@ -131,7 +132,7 @@
 
 (= (min-sup2) 4)
 (= (num-of-conjuct2) 3)
-!(pattern-miner &dbspace &temp &temp2 (min-sup2) (num-of-conjuct2) (surp-mode) (db-ratio)  (normalization))
+!(pattern-miner &dbspace &temp &temp2 (min-sup2) (num-of-conjuct2) (conj_exp) (surp-mode) (db-ratio)  (normalization))
 ; (: ((((((supportFormat ((((((((((((((((((conjunction-expand ((((((((((((((((((conjunction-expand ((candidate (((minsupport (((support (((((specializationx 
 ; ((((abstract-pattern CPUUnique) msT) CPU) CPUReplacevar)) CPUReplaceindex) CPUHandleValuation) CPUHandleNestedExp) CPUReplacevar)) CPUReplaceindex) CPUCounter)) msT)
 ; CPU)) CPUReplacevar)) CPUReplaceindex) CPUCount) maxClauses) CPUequals) ((candidate (((minsupport (((support (((((specializationx ((((abstract-pattern CPUUnique) msT) CPU)
@@ -148,7 +149,7 @@
 (= (min-sup3) 4)
 (= (num-of-conjuct3) 3)
 (= (surp-mode3) isurp-old)
-(pattern-miner &dbspace &temp &temp2 (min-sup3) (num-of-conjuct3) (surp-mode3) (db-ratio)  (normalization))
+(pattern-miner &dbspace &temp &temp2 (min-sup3) (num-of-conjuct3) (conj_exp) (surp-mode3) (db-ratio)  (normalization))
 
 ; (: ((((((((isurp-rule normalize) (((universal-count ((((minsupport ((((((supportFormat ((((((((((((((((((conjunction-expand ((((((((((((((((((conjunction-expand 
 ; ((candidate (((minsupport (((support (((((specializationx ((((abstract-pattern CPUUnique) msT) CPU) CPUReplacevar)) CPUReplaceindex) CPUHandleValuation) CPUHandleNestedExp) CPUReplacevar))

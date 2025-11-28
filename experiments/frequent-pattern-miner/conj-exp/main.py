@@ -30,28 +30,33 @@ def generate_replacement_combinations(list1, list2):
     """Generate combinations by replacing elements in list2 with elements from list1"""
     result = []
     
-    # Try replacing each position in list2 with each element from list1
-    for element_from_list1 in list1:
-        for pos in range(len(list2)):
-            new_combo = list2.copy()
-            new_combo[pos] = element_from_list1
-            # Only add if no duplicates exist in the combination
-            if len(set(new_combo)) == len(new_combo):
+    # For each element in list1, generate all possible replacements
+    for element1 in list1:
+        # Generate all possible positions where we can place this element
+        for num_replacements in range(1, len(list2) + 1):
+            # Get all combinations of positions to replace
+            for positions in combinations(range(len(list2)), num_replacements):
+                new_combo = list2.copy()
+                for pos in positions:
+                    new_combo[pos] = element1
                 result.append(new_combo)
     
-    # Try combinations with multiple elements from list1
-    for r in range(2, min(len(list1) + 1, len(list2) + 1)):
-        for selected_elements in combinations(list1, r):
-            for positions in combinations(range(len(list2)), r):
-                for perm in itertools.permutations(selected_elements):
-                    new_combo = list2.copy()
-                    for pos, element in zip(positions, perm):
-                        new_combo[pos] = element
-                    # Only add if no duplicates exist in the combination
-                    if len(set(new_combo)) == len(new_combo):
+    # Generate combinations with multiple elements from list1
+    for num_from_list1 in range(2, min(len(list1) + 1, len(list2) + 1)):
+        for elements_from_list1 in combinations(list1, num_from_list1):
+            # For each combination of elements from list1
+            for num_positions in range(num_from_list1, len(list2) + 1):
+                # Get all ways to place these elements in list2
+                for positions in combinations(range(len(list2)), num_positions):
+                    # Generate all permutations of the selected elements
+                    for perm in itertools.permutations(elements_from_list1):
+                        new_combo = list2.copy()
+                        # Place the permuted elements in the selected positions
+                        for i, pos in enumerate(positions[:len(perm)]):
+                            new_combo[pos] = perm[i]
                         result.append(new_combo)
     
-    # Remove duplicates
+    # Remove duplicates while preserving order
     seen = set()
     unique_result = []
     for combo in result:
@@ -116,7 +121,7 @@ def cnj_exp(metta):
     return {r"combine_lists": combineLists, r"generateRandomVar": generateRandomVar}
 
 
-# Test the function
+# # Test the function
 # if __name__ == "__main__":
 #     # Test with your example
 #     pat1 = ["$a", "$b"]
@@ -321,137 +326,3 @@ def cnj_exp(metta):
 # # print(combine_lists(["a", "b"], ["c",         "d"]))
 # print(combine_lists(["a", "b"], ["d", "e "]))
 
-
-# from hyperon import *
-# from hyperon.ext import register_atoms
-# import random
-# import string
-# import time
-# from hyperon.atoms import OperationAtom, V
-# from hyperon.ext import register_atoms
-# import itertools
-# from itertools import combinations
-
-
-# def combine_lists_op(metta: MeTTa, var1, var2):
-#     input_str1 = str(var1)
-#     input_str2 = str(var2)
-
-#     list1 = parse_metta_structure(input_str1)
-#     list2 = parse_metta_structure(input_str2)
-
-#     combinations = generate_replacement_combinations(list1, list2)
-#     combined_pattern = " ".join(
-#         ["({})".format(" ".join(combo)) for combo in combinations]
-#     )
-
-#     combined_pattern_atoms = "(" + combined_pattern + ")"
-#     atoms = metta.parse_all(combined_pattern_atoms)
-#     return atoms
-
-
-# def generate_replacement_combinations(list1, list2):
-#     """Generate combinations by replacing elements in list2 with elements from list1"""
-#     result = []
-    
-#     # For each element in list1, generate all possible replacements
-#     for element1 in list1:
-#         # Generate all possible positions where we can place this element
-#         for num_replacements in range(1, len(list2) + 1):
-#             # Get all combinations of positions to replace
-#             for positions in combinations(range(len(list2)), num_replacements):
-#                 new_combo = list2.copy()
-#                 for pos in positions:
-#                     new_combo[pos] = element1
-#                 result.append(new_combo)
-    
-#     # Generate combinations with multiple elements from list1
-#     for num_from_list1 in range(2, min(len(list1) + 1, len(list2) + 1)):
-#         for elements_from_list1 in combinations(list1, num_from_list1):
-#             # For each combination of elements from list1
-#             for num_positions in range(num_from_list1, len(list2) + 1):
-#                 # Get all ways to place these elements in list2
-#                 for positions in combinations(range(len(list2)), num_positions):
-#                     # Generate all permutations of the selected elements
-#                     for perm in itertools.permutations(elements_from_list1):
-#                         new_combo = list2.copy()
-#                         # Place the permuted elements in the selected positions
-#                         for i, pos in enumerate(positions[:len(perm)]):
-#                             new_combo[pos] = perm[i]
-#                         result.append(new_combo)
-    
-#     # Remove duplicates while preserving order
-#     seen = set()
-#     unique_result = []
-#     for combo in result:
-#         combo_tuple = tuple(combo)
-#         if combo_tuple not in seen:
-#             seen.add(combo_tuple)
-#             unique_result.append(combo)
-    
-#     return unique_result
-
-
-# def parse_metta_structure(input_str):
-#     """Convert a string like ($A $B $C) into a flat list ['$A', '$B', '$C']"""
-#     elements = []
-#     current = ""
-#     in_word = False
-
-#     for char in input_str:
-#         if char == "(":
-#             continue
-#         elif char == ")":
-#             if in_word:
-#                 elements.append(current.strip())
-#                 current = ""
-#                 in_word = False
-#         elif char.isspace():
-#             if in_word:
-#                 elements.append(current.strip())
-#                 current = ""
-#                 in_word = False
-#         else:
-#             current += char
-#             in_word = True
-
-#     if in_word:
-#         elements.append(current.strip())
-
-#     return elements
-
-
-# def generate_random_string(length=1):
-#     return "".join(random.choices(string.ascii_uppercase + string.digits, k=length))
-
-
-# def generate_random_var():
-#     base_name = "R-" + generate_random_string() + str(int(time.time()))
-#     new_var = V(base_name)
-#     return [new_var]
-
-
-# @register_atoms(pass_metta=True)
-# def cnj_exp(metta):
-#     combineLists = OperationAtom(
-#         "combine_lists",
-#         lambda var1, var2: combine_lists_op(metta, var1, var2),
-#         ["Atom", "Atom", "Expression"],
-#         unwrap=False,
-#     )
-#     generateRandomVar = OperationAtom(
-#         "generateRandomVar", lambda: generate_random_var(), ["Expression"], unwrap=False
-#     )
-#     return {r"combine_lists": combineLists, r"generateRandomVar": generateRandomVar}
-
-
-# # Test the function
-# if __name__ == "__main__":
-#     # Test with your example
-#     pat1 = ["$a", "$b"]
-#     pat2 = ["$1", "$2", "$3"]
-    
-#     combinations = generate_replacement_combinations(pat1, pat2)
-#     print("Generated combinations:")
-#     for combo in combinations:
-#         print(combo)
