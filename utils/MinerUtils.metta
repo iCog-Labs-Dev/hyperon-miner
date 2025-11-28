@@ -110,8 +110,8 @@
           ($pp1p3 (prob (count (, $p1 $p3))))
           ($pp2p3 (prob (count (, $p2 $p3))))
           ;; probability estimate
-          ($maxP (max (* $pp1p2 $pp3) (max (* $pp1p3 $pp2) (max (* $pp2p3 $pp1) (* $pp1 (* $pp2 $pp3))))))
-          ($minP (min (* $pp1p2 $pp3) (min (* $pp1p3 $pp2) (min (* $pp2p3 $pp1) (* $pp1 (* $pp2 $pp3))))))
+          ($maxP (max-of-two (* $pp1p2 $pp3) (max-of-two (* $pp1p3 $pp2) (max-of-two (* $pp2p3 $pp1) (* $pp1 (* $pp2 $pp3))))))
+          ($minP (min-of-two (* $pp1p2 $pp3) (min-of-two (* $pp1p3 $pp2) (min-of-two (* $pp2p3 $pp1) (* $pp1 (* $pp2 $pp3))))))
           ($p (prob $cnt))) ;; empirical
           (// (max (- $p $maxP) (- $minP $p)) $p)))
       ($_ 0))))

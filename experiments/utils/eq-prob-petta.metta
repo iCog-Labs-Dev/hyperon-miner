@@ -1,5 +1,5 @@
+
 ;connected-subpatterns-with-var
-(= (is-blk-more-abstract $head $pivot $var) True)
 ;argumets: $paratition (the target patition which is a list of blocks)
 ;$var the variable we are concerned with
 
@@ -7,37 +7,155 @@
 ;The blocks inside the partiton that contain the target variable $var
 ;
 ;================================
- (=(connected-subpatterns-with-var $partition $var)
+;  (=(connected-subpatterns-with-var $partition $var)
+;     (collapse 
+;         (rmvPar (process-pattern (superpose $partition ) $var))))
 
-(let () (println! ("in con-sub-w-var")) (collapse (rmvPar (process-pattern (superpose $partition ) $var)))))
+(=(connected-subpatterns-with-var $partition $var)
+    (rmvPar (process-patterns-recursive $partition $var))
+)
 
-(= (checkInterSuper $var $el) (if (checkPat $el) (let $tail (cdr-atom $el) (checkInterSuper $var (superpose $tail)) ) (if (== $var $el) True (empty))) )  
-
-(=(process-pattern $pattern $var)
-    (let* (
-        ($is_pat (checkPat $pattern)))
-    
-        (if $is_pat
-            ; If it's a pattern, do the normal check
-            (let* (
-                ;($is_expression (== (get-metatype $pattern) Expression))
-                ; ($vars (cdr-atom $pattern))
-                ;($exp (if $is_exp $pattern (car-atom $pattern)))
-                ($exp (if (== (size-atom $pattern) 1) (car-atom $pattern) $pattern))
-                ($vars (cdr-atom $exp))
-                ; ($is_connected (checkIntersection $var $vars))
-                ($is_connected (checkInterSuper $var (superpose $vars)))
-            )
-                (if $is_connected
-                    $pattern
-                    (empty)
+; Recursively process all patterns in the partition
+(=(process-patterns-recursive $partition $var)
+    (if (== $partition ())
+        ()
+        (if (== (get-metatype $partition) Expression)
+            (let $head (car-atom $partition)
+                (let $tail (cdr-atom $partition)
+                    (let $head_result (process-pattern $head $var)
+                        (let $tail_result (process-patterns-recursive $tail $var)
+                            (if (== $head_result ())
+                                $tail_result
+                                (if (== $tail_result ())
+                                    (cons-atom $head_result ())
+                                    (cons-atom $head_result $tail_result)
+                                )
+                            )
+                        )
+                    )
                 )
             )
-            ;    (process-pattern (superpose $pattern) $var)
-            ;(collapse (process-pattern (superpose $pattern) $var)) ;activate this for checking inside the block, comment out if not              
-            (let $ch (collapse (process-pattern (superpose $pattern) $var)) (if (not (== $ch ())) $pattern (empty) )) ;activate this for returning the whole block, comment out if not
+            (let $result (process-pattern $partition $var)
+                (if (== $result ())
+                    ()
+                    (cons-atom $result ())
+                )
+            )
         )
-    ))
+    )
+)
+
+
+; (= (checkInterSuper $var $el) (if (checkPat $el) 
+;     (let $tail (cdr-atom $el) 
+;         (checkInterSuper $var (superpose $tail)) ) 
+;             (if (== $var $el) True (empty))) )  
+
+; (=(process-pattern $pattern $var)
+;     (let* (
+;         ($is_pat (checkPat $pattern)))
+    
+;         (if $is_pat
+;             ; If it's a pattern, do the normal check
+;             (let* (
+       
+;                 ($exp (if (== (size-atom $pattern) 1) (car-atom $pattern) $pattern))
+;                 ($vars (cdr-atom $exp))
+               
+;                 ($is_connected (checkInterSuper $var (superpose $vars)))
+;             )
+;                 (if $is_connected
+;                     $pattern
+;                     (empty)
+;                 )
+;             )
+;             (let $ch (collapse (process-pattern (superpose $pattern) $var)) (if (not (== $ch ())) $pattern (empty) )) ;activate this for returning the whole block, comment out if not
+;         )
+;     ))
+
+
+(=(process-pattern $pattern $var)
+    (let $is_pat (checkPat $pattern)
+        (if $is_pat
+            ; If it's a pattern, do the normal check
+            (let $exp (if (== (size-atom $pattern) 1) (car-atom $pattern) $pattern)
+                (let $vars (cdr-atom $exp)
+                    (let $is_connected (has-common-element $var $vars)
+                        (if $is_connected
+                            $pattern
+                            ()
+                        )
+                    )
+                )
+            )
+            ; Not a pattern, check recursively through the structure
+            (let $result (check-pattern-recursive $pattern $var)
+                (if $result
+                    $pattern
+                    ()
+                )
+            )
+        )
+    )
+)
+
+; Check if two lists have any common element
+(=(has-common-element $list1 $list2)
+    (if (== $list1 ())
+        False
+        (if (== (get-metatype $list1) Expression)
+            (let $head (car-atom $list1)
+                (let $tail (cdr-atom $list1)
+                    (if (element-in-list $head $list2)
+                        True
+                        (has-common-element $tail $list2)
+                    )
+                )
+            )
+            (element-in-list $list1 $list2)
+        )
+    )
+)
+
+; Check if an element exists in a list
+(=(element-in-list $elem $list)
+    (if (== $list ())
+        False
+        (if (== (get-metatype $list) Expression)
+            (let $head (car-atom $list)
+                (let $tail (cdr-atom $list)
+                    (if (== $elem $head)
+                        True
+                        (element-in-list $elem $tail)
+                    )
+                )
+            )
+            (== $elem $list)
+        )
+    )
+)
+
+; Recursively check if any element in the pattern connects with var
+(=(check-pattern-recursive $pattern $var)
+    (if (== $pattern ())
+        False
+        (if (== (get-metatype $pattern) Expression)
+            (let $head (car-atom $pattern)
+                (let $tail (cdr-atom $pattern)
+                    (let $head_check (process-pattern $head $var)
+                        (if (not (== $head_check ()))
+                            True
+                            (check-pattern-recursive $tail $var)
+                        )
+                    )
+                )
+            )
+            False
+        )
+    )
+)
+
+
 
 (=(rmvPar $x) 
     (if (== $x ()) 
@@ -65,9 +183,7 @@
     
 )))
 
-(= (find-component-with-var $components $var)
-    (collapse (extract (superpose $components) $var))
-)
+
 
 
 
@@ -261,10 +377,8 @@
         $p
         (let* (
             ($top (car-atom $vars) )
-            
             ($var-partition (connected-subpatterns-with-var $partition $top))
             ($sorted-partition (sort-by-abstraction $var-partition $top))
-            
             ($new-p (process-blocks $sorted-partition $top $db $p 1))
             
         )
@@ -295,7 +409,6 @@
             $p
             (let* (
                 ($j-blk (index-atom $sorted-partition $j))
-                
                 ($i (find-most-specialized-abstract $sorted-partition $j-blk $var (- $j 1)))
                 
                 ($c (if (>= $i 0)
@@ -374,23 +487,53 @@
 ;;   (get-var '((Pattern $x $y) (Pattern $z Jon))) → ($x $y $z)
 
 
+; (=(get-var $conjunct) 
+;     (let $lst (collapse 
+;         (let $a (car-atom $conjunct) 
+;             (if (not (== $a ,)) 
+;                 (let $firtype (get-metatype $a) 
+;                     (if (== $firtype Expression) 
+;                         (get-variables-helper (superpose $conjunct) ) 
+;                         (get-variables-helper $conjunct )
+;                     )
+;                 ) 
+;                 (let $b (cdr-atom $conjunct) 
+;                     (get-variables-helper (superpose $b))
+;                 )
+;             )
+;         )) 
+;         (get-variables-step $lst ())
+;     ) 
+; )
+
 (=(get-var $conjunct) 
-    (let $lst (collapse 
+    (let $lst
         (let $a (car-atom $conjunct) 
-            (if (not (== $a ,)) 
-                (let $firtype (get-metatype $a) 
-                    (if (== $firtype Expression) 
-                        (get-variables-helper (superpose $conjunct) ) 
-                        (get-variables-helper $conjunct )
+            (if (not (== $a ,))  
+                (get-variables-from-list $conjunct)    
+                (get-variables-from-list (cdr-atom $conjunct) )
+            )
+        )
+        (get-variables-step $lst)
+    ) 
+)
+
+; Helper function to recursively process list elements
+(=(get-variables-from-list $lst)
+    (if (== $lst ())
+        ()
+        (let $head (car-atom $lst)
+            (let $tail-result (get-variables-from-list (cdr-atom $lst))
+                (let $result (get-variables-helper $head)
+                    (if (== $result ())
+                        (get-variables-from-list $tail)
+                        (cons-atom $result $tail-result)
                     )
-                ) 
-                (let $b (cdr-atom $conjunct) 
-                    (get-variables-helper (superpose $b))
                 )
             )
-        )) 
-        (get-variables-step $lst ())
-    ) 
+        )
+          
+    )
 )
 
 (=(ret-vars $x) 
@@ -398,7 +541,7 @@
         (if $invar (get-variables-helper $x ) 
             (if (== ( get-metatype $x ) Variable) 
                 $x 
-                (empty)
+                ()
             )
         )
     )
@@ -406,22 +549,36 @@
 
 
 
-(=(get-variables-helper $pattern) 
-    (let $a (cdr-atom $pattern) 
-        (ret-vars (superpose $a))
+(=(get-variables-helper $pattern)
+    (if (== $pattern ()) 
+        ()
+        (let $var1 (ret-vars (car-atom $pattern)) 
+            (let $tail (get-variables-helper (cdr-atom $pattern)) 
+                (if (== $var1 ()) 
+                    $tail 
+                    (cons-atom $var1 $tail))
+            )     
     )
+)
 )
 
 
 
-(=(get-variables-step $lst $acc) 
-    (if  (== $lst ()) 
-        $acc 
-        (let* (
-            (($head $tail) (decons-atom $lst))) 
-        (if (== ((intersection-atom ($head) $acc)) (())) 
-            (get-variables-step $tail (cons-atom $head $acc)) 
-            (get-variables-step $tail $acc))
+
+(=(get-variables-step $lst)
+    (if (== $lst ())
+        ()
+        (let $flatten (flatten-and-union $lst) (unique-atom $flatten))
+    )
+)
+
+(=(flatten-and-union $lst)
+    (if (== $lst ())
+        ()
+        (let $head (car-atom $lst)
+            (let $tail (cdr-atom $lst)
+                (let $union-tail (flatten-and-union $tail) (union-atom $head $union-tail))
+            )
         )
     )
 )
@@ -455,33 +612,96 @@
 ;;   Result: ($x) - because it appear in both blocks
 ;; =============================================================================
 ; (: joint-variables (-> Expression Expression Expression))
-(=(joint-vars-helper $partition $uniqueVars) 
-        (collapse (retJointvar $partition (superpose $uniqueVars)))
-)
-
-(=(retJointvar $partition $var) 
-    (let $retPats (collapse (retJointPat (superpose $partition) $var)) 
-    (if (> (size-atom $retPats) 1)  $var (empty)))
-)
-
-
-
-(=(retJointPat $block $var)  
-    (let $blo (collapse (retjointSubPat (superpose $block) $var)) 
-    (if (> (size-atom $blo) 0) $block (empty) )) 
-)
-
-
-
-(=(retjointSubPat $subpat $var) 
-    (let* (
-            ($tail (cdr-atom $subpat)) 
-            ($JoinedVars (collapse (checkSubInter (superpose $tail) $var)) )) 
-        (if (== (size-atom $JoinedVars) 0) 
-            (empty) 
-            $subpat
+(= (joint-vars-helper $partition $uniqueVars)
+   (if (== $uniqueVars ())
+       ()
+       (let* ( 
+          ($joint-var-head (retJointvar $partition (car-atom $uniqueVars)))
+          ($joint-vars-tail (joint-vars-helper $partition (cdr-atom $uniqueVars)))
         )
-    )
+        (cons-atom 
+           $joint-var-head 
+           $joint-vars-tail)
+       )
+   )
+)
+
+(= (retJointvar-helper $partition $var)
+   (if (== $partition ())
+       ()
+       (let* (
+              ($jointvar-head (retJointPat (car-atom $partition) $var))
+              ($jointvar-tail (retJointvar-helper (cdr-atom $partition) $var))
+            )
+         (cons-atom
+             $jointvar-head
+             $jointvar-tail)
+       )
+   )
+)
+
+
+(= (retJointvar $partition $var) 
+   (let $retPats (retJointvar-helper $partition $var)
+       (if (> (size-atom $retPats) 1)  
+           $var 
+           ()
+       )
+   )
+)
+
+
+
+(= (retJointPat-helper $block $var)
+   (if (== $block ())
+       ()
+       (let* (
+              ($jointpat-head (retjointSubPat (car-atom $block) $var))
+              ($jointpat-tail (retJointPat-helper (cdr-atom $block) $var))
+            )
+         (cons-atom
+             $jointpat-head
+             $jointpat-tail)
+       )
+   )
+)
+
+
+(= (retJointPat $block $var)  
+   (let $blo (retJointPat-helper $block $var)
+       (if (> (size-atom $blo) 0) 
+           $block 
+           ()
+       )
+   )
+)
+
+
+(= (retjointSubPat-helper $tail $var)
+   (if (== $tail ())
+       ()
+       (let* (
+              ($subpat-head (checkSubInter (car-atom $tail) $var))
+              ($subpat-tail (retjointSubPat-helper (cdr-atom $tail) $var))
+            )
+         (cons-atom
+             $subpat-head
+             $subpat-tail)
+       )
+   )
+)
+
+
+(= (retjointSubPat $subpat $var) 
+   (let* (
+           ($tail (cdr-atom $subpat)) 
+           ($JoinedVars (retjointSubPat-helper $tail $var))
+         ) 
+       (if (== (size-atom $JoinedVars) 0) 
+           () 
+           $subpat
+       )
+   )
 )
 
 
@@ -490,7 +710,7 @@
         (if $invar (retjointSubPat $part $var) 
             (if (and (== (get-metatype $part) Variable) (== $var $part)) 
                 $part 
-                (empty)
+                ()
             ) 
         )
     )
@@ -531,7 +751,6 @@
         (if (is-membership $var $vars2)
             (cons-atom $var $rest-intersection)
             $rest-intersection))))
-
 
 
 

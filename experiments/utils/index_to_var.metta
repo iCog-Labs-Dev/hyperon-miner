@@ -10,17 +10,39 @@
 
 (= (make_var1 $x) (let $v (py-call (format-args "$var{}" ($x))) (py-call (parse (parse (repr $v))))))
 
-(= (generate $x)
+(= (generate $x $space)
     (let* (
+        (true (println! (in generate $space)))
         ($num (eval (debruijn2num $x)))
+        (true (println! (in dev $num)))
+        ($result   (eval (unify $space ($num $var)  $var (make_var1 $num))) )
+        (true (println! (in res $result)))
+        ($result2   (eval (unify $space ($num $var)  yes No)) )
+        (true (println! (in res $result2)))
+        ($dummy (eval (add-atom-nodup $space ($num $result))))
         )
-        (make_var1 $num))
+       $result
+        )
 )
 
+($num $var)
 
-(= (replacev $pattern)
-    (map-atom $pattern $x (if (== (get-type $x) Nat) (generate $x) (if (and (not (== (get-type $x) Nat)) (== (get-metatype $x) Expression)) (replacev $x) $x))) ;
+(= (replacev $pattern $space)
+    (map-atom $pattern $x (if (== (get-type $x) Nat) (generate $x $space) 
+                              (if (and (not (== (get-type $x) Nat)) 
+                               (== (get-metatype $x) Expression)) (replacev $x $space) $x))) ;
 )
+
+; (= (replacev-helper $x) (
+;     if (== (get-type $x) Nat) (generate $x) 
+;                                (if (and (not (== (get-type $x) Nat)) 
+;                                (== (get-metatype $x) Expression)) (replacev $x) $x)
+; ))
+
+; (= (replacev $pattern) 
+;     ( replacev-helper (superpose $pattern)
+; ))
+
 (= (num2deb $pattern)
     (map-atom $pattern $x (if (== (get-type $x) Number) (fromNum $x) (if (and (not (== (get-type $x) Number)) (== (get-metatype $x) Expression)) (num2deb $x) $x)))
 )
@@ -40,7 +62,12 @@
 )
 
 (= (check $list $var)
-   (if (== (intersection-atom $list $var) ()) False True)
+   (if (== $list ())
+        False
+        (if (== $var (car-atom $list))
+            True
+            (check  (cdr-atom $list) $var))
+    )
 )
 
 (= (find_index () $var $index)
@@ -87,4 +114,3 @@
         ((cons-atom $res_head $res_tail) $final_index $final_list)
         )   
 )
-
