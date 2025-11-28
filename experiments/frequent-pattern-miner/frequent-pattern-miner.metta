@@ -14,24 +14,20 @@
 ;; 2: Take only the unique links from the queried links
 ;; 3: Create an Abstract pattern using the links and variables
 ;; 4: Calculate the support for the Abstract patterns and store the ones satisfy the minimum support in a space
-;(: abstract-pattern (-> SpaceType Number SpaceType Atoms))
-; (= (abstract-pattern $dbspace $minsup $aptrnspace)        
-;  (let $linkunique (unique (match $dbspace ($link $x $y) $link))
-;                        ( let True (sup-eval $dbspace ($linkunique $z $t) $minsup)
-;                          (add-atom $aptrnspace (AbstractPattern ($linkunique Z (S Z)))))))
+;(: abstract-pattern (-> space Number space Atoms))
 
-
-(= (abstract-pattern $dbspace $minsup $aptrnspace)
+(= (abstract-pattern $dbspace $minsup $aptrnspace $cndpspace)
             (let* (
                     ($linkunique (unique (match $dbspace ($link $x $y) $link)))
                     ($result (sup-num $dbspace ($linkunique $z $t)))
-                    ($rem (if (>= $result $minsup) (remove-atom $aptrnspace (AbstractPattern ($linkunique Z (S Z)))) ()))
-                    ($add (if (>= $result $minsup) (add-atom $aptrnspace (AbstractPattern ($linkunique Z (S Z)))) ()))
+                    ($add1 (if (>= $result $minsup) (remove-atom $aptrnspace (AbstractPattern ($linkunique Z (S Z)))) ()))
+                    ($rem1 (if (>= $result $minsup) (add-atom $aptrnspace (AbstractPattern ($linkunique Z (S Z)))) ()))
+                    ($add2 (if (>= $result $minsup) (remove-atom $cndpspace (CandidatePattern ($linkunique Z (S Z)) $result)) ()))
+                    ($rem2 (if (>= $result $minsup) (add-atom $cndpspace (CandidatePattern ($linkunique Z (S Z)) $result)) ()))
                 )
-               ($add $rem)
+               ($add1 $rem1 $add2 $rem2)
 )
 )
-
 
 
 
@@ -45,16 +41,19 @@
 ;; 3: get all candidate patterns from the specialized patterns and store them in a space
 ;; 4: expand the conjunctions of the candidate patterns and store them in a space with their support
 ;; 5: format the patterns and add them to the knowledge base with their support
-
-;(: frequency-pattern-miner (-> SpaceType SpaceType SpaceType SpaceType SpaceType Number Number Atoms))
-(= (frequency-pattern-miner $dbspace $specspace $cndpspace $aptrnspace $conjspace $minsup $depth)
+;(: frequency-pattern-miner (-> space space space space space Number Number Atoms))
+(= (frequency-pattern-miner $dbspace $specspace $cndpspace $aptrnspace $conjspace $minsup $depth $cnj_exp)
    (let*(
            (() (println! "==== Frequent miner started ====="))
-           ($abs (collapse (abstract-pattern $dbspace $minsup $aptrnspace))) ; prevent patterns that dont have a support from being speciallized
+           ($abs (collapse (abstract-pattern $dbspace $minsup $aptrnspace $cndpspace))) ; prevent patterns that dont have a support from being speciallized
            ($var  (collapse (match $aptrnspace (AbstractPattern $pattern) (build-specialization $pattern $dbspace $specspace)))) ; specializa abstract patterns
            ($temp2  (collapse (candidatePattern $dbspace $specspace $minsup $cndpspace))); get candidate patterns
-            ($temp3  (collapse (conjunct $dbspace $cndpspace $conjspace $minsup $depth ))) ; store candidate patterns
-            ($temp4    (formatter $conjspace $dbspace))      
-        )  $temp4)
+            ($temp3  (if $cnj_exp (collapse (conjunct $dbspace $cndpspace $conjspace $minsup $depth)) $temp2)) ; store candidate patterns
+            ($temp4  (if $cnj_exp (formatter $conjspace $dbspace) (match $cndpspace (CandidatePattern $pattern $cnt) (supportOf $pattern $cnt))))      
+        )  
+        $temp4
+        )
 )
+
+
 

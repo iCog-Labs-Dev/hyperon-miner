@@ -1,20 +1,19 @@
 ! (register-module! ../../../hyperon-miner)
-; ! (import! &db hyperon-miner:experiments:data:sample-data)
-; ! (import! &db hyperon-miner:experiments:data:ugly_man_sodaDrinker)
 ! (import! &db hyperon-miner:experiments:data:small-ugly)
 ! (import! &self hyperon-miner:experiments:frequent-pattern-miner:build-specialization)
 ! (import! &self hyperon-miner:experiments:frequent-pattern-miner:candidate-patterns)
 ! (import! &self hyperon-miner:experiments:frequent-pattern-miner:conjunction-expansion)
 ! (import! &self hyperon-miner:experiments:utils:common-utils)
-; ! (import! &self hyperon-miner:experiments:utils:variable-combinations)
+
+
 ! (bind! &kb (new-space))
 ! (bind! &dbspace (new-space))
+! (bind! &testspace (new-space))
 ! (bind! &specspace (new-space))
 ! (bind! &cndpspace (new-space))
 ! (bind! &aptrnspace (new-space))
 ! (bind! &conjspace (new-space))
-; ! (import! &self freq-pat)
-; ! (import! &self conj-exp)
+
 
 !(let ($link $x $y) (get-atoms &db) (add-atom &dbspace ($link $x $y)))
 
@@ -32,7 +31,7 @@
     ;         3:Create an Abstract pattern using the links and variables
     ;         4:Calculate the support for the Abstract patterns and store the ones satisfy the minimum support in a space
 
-(= (abstract-pattern $dbspace $minsup $aptrnspace)
+(= (abstract-pattern $dbspace $minsup $aptrnspace $cndpspace)
             (let* (
                     ($linkunique (unique (match $dbspace ($link $x $y) $link)))
                     ($result (sup-eval $dbspace ($linkunique $z $t) $minsup))
@@ -41,6 +40,8 @@
                 (superpose (
                         (remove-atom $aptrnspace (AbstractPattern ($linkunique Z (S Z))))
                         (add-atom $aptrnspace (AbstractPattern ($linkunique Z (S Z))))
+                        (remove-atom $cndpspace (CandidatePattern ($linkunique Z (S Z))))
+                        (add-atom $cndpspace (CandidatePattern ($linkunique Z (S Z))))
                     ))
             empty
         )
@@ -70,34 +71,7 @@
 
 
 
-; (= (do-conjunct $db $cndb $conjunct $ms Z)
-;     (let* (
-;         (() (println! (here $conjunct)))
-;         ($matches (match $cndb (CandidatePattern $pattern) (replacev $pattern)))
-;         ($listconj (expand_conjunction $conjunct $matches $db $ms 2 False))
-;         (() (println! ("Conjuncts: " $listconj)))
-;         ($debconj (replace $listconj))
-;         ($fitlered (remove_conjuncts_with_redundant_clauses $debconj))
-;     )
-;     $fitlered
-;     )
-; )
 
-; (= (do-conjunct $db $cndb $conjunct $ms (S $K))
-;     (let* (
-;         (() (println! (here1 $conjunct)))
-;         ($matches (match $cndb (CandidatePattern $pattern) (replacev $pattern)))
-;         ($listconj (expand_conjunction $conjunct $matches $db $ms 2 False))
-;         (() (println! ("Conjuncts2: " $listconj)))
-;         ($debconj (replace $listconj))
-;         ($fitlered (remove_conjuncts_with_redundant_clauses $debconj))
-;         ($varconj (replacev $fitlered))
-;         (() (println! ("Conjuncts: " $varconj)))
-;         ($conj (do-conjunct $db $cndb $varconj $ms $K))
-;     )
-;     $conj
-;     )
-; )
 
 ; function name: formatter
                     ; function to format the patterns and add them to the knowledge base with their support.
@@ -113,15 +87,6 @@
                         ; 3: create a flattened conjunction  using cons-atom with the sorted conjunctions and ,.
                         ; 4: add the results to the knowledge base with their support
 
-; (= (formatter $kb $conjspace $dbspace) 
-;     (let* (
-;         ($sorted (unique (match $conjspace $pattern (sort_conj $pattern))))
-;         ($res (cons-atom , $sorted))
-        
-;     )
-;     (add-atom $kb (supportOf $res (sup-num $dbspace (replacev $res))))
-; )
-; )
 
 
 
@@ -148,7 +113,7 @@
 
 (= (frequency-pattern-miner $kb $dbspace $specspace $cndpspace $aptrnspace $conjspace $minsup $depth)
     (superpose (
-            (abstract-pattern $dbspace $minsup $aptrnspace) ; prevent patterns that dont have a support from being speciallized
+            (abstract-pattern $dbspace $minsup $aptrnspace $cndpspace) ; prevent patterns that dont have a support from being speciallized
             (match $aptrnspace (AbstractPattern $pattern) (build-specialization $pattern $dbspace $specspace)) ; specializa abstract patterns
             (candidatePattern $dbspace $specspace $minsup $cndpspace); get candidate patterns
             (match $cndpspace (CandidatePattern $pattern) (let $conj (do-conjunct $dbspace $cndpspace $pattern $minsup (fromNumber $depth)) (if (== $conj ()) () (add-atom $conjspace $conj)))) ; store candidate patterns
@@ -159,12 +124,3 @@
 
 
 
-;  ! (abstract-pattern &dbspace 2 &aptrnspace)
-;  ! (match &aptrnspace (AbstractPattern $pattern) $pattern)
-
-
-! (frequency-pattern-miner &kb &dbspace &specspace &cndpspace &aptrnspace &conjspace 3 1)
-; !(match &conjspace $pattern $pattern)
-; ! (match &db (, (, (Inheritance $x man) (Inheritance $x ugly)) (Inheritance $x sodaDrinker)) (, (, (Inheritance $x man) (Inheritance $x ugly)) (Inheritance $x sodaDrinker)))
-; !(checker &db (, (, (Inheritance $x man) (Inheritance $x ugly)) (Inheritance $x sodaDrinker)) 2)
-; !(match &cndpspace (CandidatePattern $pattern) (do-conjunct &dbspace &cndpspace (replacev $pattern) 2 (fromNumber 0)))

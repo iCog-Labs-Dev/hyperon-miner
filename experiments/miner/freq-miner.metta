@@ -1,4 +1,3 @@
-
 -----------------------------------------------------------------
 ;; abstract patterns 
 -----------------------------------------------------------------
@@ -99,12 +98,12 @@
 ;; frequent-miner
 --------------------------------------------------
 ;; pipeline for the frequent patter mining 
-(= (frequent-miner $db $kb $number-of-conjuct) 
+(= (frequent-miner $db $kb $number-of-conjuct True) 
 ( 
      let*  ( 
         (() (println! "==== Frequent Miner Started =====") )
          ($re (collapse (abstract (fromNumber 5) $kb)))
-         ($res (collapse (specialization (fromNumber 5) $kb)))
+         ($res (collapse (specialization (fromNumber 7) $kb)))
          ($resu (collapse (support_ (fromNumber 3) $kb)))
          ($atom (: candidate (-> (minsup $ptrn $cnt) (-> (replace_variables $ptrn) (candidatePattern $ptrn $cnt)))))
          ($add (add-atom $kb $atom))
@@ -115,17 +114,20 @@
       ) ()
 )
 )
-
-
-
-
-
-
-
-
-
-
-
+(= (frequent-miner $db $kb $number-of-conjuct False) 
+( 
+     let*  ( 
+        (() (println! "==== Frequent Miner Started =====") )
+         ($re (collapse (abstract (fromNumber 5) $kb)))
+         ($res (collapse (specialization (fromNumber 7) $kb)))
+         ($resu (collapse (support_ (fromNumber 3) $kb)))
+         ($atom (: candidate (-> (minsup $ptrn $cnt) (-> (replace_variables $ptrn) (candidatePattern $ptrn $cnt)))))
+         ($add (add-atom $kb $atom))
+         ($result (collapse (candidate (fromNumber 5) $kb)))
+         ($rem (remove-atom $kb $atom))
+      ) ()
+)
+)
 
 
 
