@@ -169,11 +169,10 @@
       )
    )
 )
-; (=(partitions $original) (partitions (powerset $original) $original))
 
-
-;!(partitions ((Inheritance $x man) (Inheritance $x sodaDrinker) (Inheritance $x ugly)))
-
+(= (partitions-wout-pattern $original) (
+   let $partions (partitions $original)  (exclude-item ($original) $partions)
+))
 
 (= (partitions-with-pattern $original)
    (let $first-element (car-atom $original)

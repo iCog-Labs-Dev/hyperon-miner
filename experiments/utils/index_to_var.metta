@@ -2,17 +2,13 @@
 (: Z Nat)
 (: S (-> Nat Nat))
 
-
 (= (debruijn2num Z) 0)
 
 (= (debruijn2num (S $k)) (+ 1 (debruijn2num $k)))
 
 (= (fromNum $n) (if (<= $n 0) Z (S (fromNum (- $n 1)))))
 
-(= (make_var1 $x) (let $v  (make-var "var" $x)  $v))
-
-
-
+(= (make_var1 $x) (let $v (py-call (format-args "$var{}" ($x))) (py-call (parse (parse (repr $v))))))
 
 (= (generate $x $space)
     (let* (
@@ -88,8 +84,15 @@
     )
 )
 
-(= (var2num-helper $head $index $list $is_expr $is_var $check  )  (if $is_expr
-                                           (var2num $head $index $list) ; Recursive call for sub-expression
+(= (var2num $pattern $index $list) 
+        (let* (
+            ($head (car-atom $pattern))
+            ($tail (cdr-atom $pattern))    
+            ($is_var (==  (get-metatype $head) Variable))
+            ($is_expr (==  (get-metatype $head) Expression))
+            ($check (check $list ($head)))
+            ($processed_head_and_index (eval (if $is_expr
+                                        (var2num $head $index $list) ; Recursive call for sub-expression
                                         (if $is_var
                                             (if $check
                                                 ((find_index $list $head 0) $index $list) ; Return existing index, current index, and list
@@ -98,21 +101,9 @@
                                               )
                                             ($head $index $list) ; Not a var or expr, return head, current index, and list
                                         )
-                                    ))
+                                    )))
 
-(= (var2num $pattern $index $list) 
-        (let* (
-            ($head (car-atom $pattern))
-            ($tail (cdr-atom $pattern))    
-            ($is_var (==  (get-metatype $head) Variable))
-            ($is_expr (==  (get-metatype $head) Expression))
-            (true (println! (expr $is_expr $head)))
-            ($check (check $list $head))
-            (true (println! (ck $check $list)))
-            ($processed_head_and_index  (var2num-helper $head $index $list $is_expr $is_var $check  ) )
-         ;   (($res_head0 $new_index0 $new_list0) $processed_head_and_index)
-            (true (println! (==== $processed_head_and_index)))
-       ;     ($here ($index (+ $index 1) (union-atom $list ($head))) )
+            ($here ($index (+ $index 1) (union-atom $list ($head))) )
             (($res_head $new_index $new_list) (if  (== False $processed_head_and_index) 
                                                    ($index (+ $index 1) (union-atom $list ($head)))  $processed_head_and_index))
             

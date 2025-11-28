@@ -14,7 +14,7 @@
 ;; boostrapping if necessary
 
 
-;; ==============================================================
+;; ==============================================================s
 ;; Function: pro-prob-wout-joint (Product Probability Without Joint Variables)
 ;; Purpose:  Computes the product probability of subpatterns while ignoring
 ;;           dependencies between joint variables (treats components as independent)
@@ -209,7 +209,7 @@
 ;; ==============================================================
 
 (=(ji_prob_est_interval $pattern $db $db_ratio) 
-   (let* (($gen-parts (partitions $pattern))  
+   (let* (($gen-parts (partitions-wout-pattern $pattern))  
    ($comp-ji (do-ji-prob $gen-parts $pattern $db $db_ratio))
   ($emin (min-atom $comp-ji))
   ($emax (max-atom $comp-ji))

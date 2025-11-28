@@ -1,19 +1,3 @@
-; unify function for petta
-
-(= (unify $space $pattern $then $else)
-   (if (is-space $space)
-       (let $temp (cut)
-            (case (match $space $pattern $pattern)
-                  (($pattern $then)
-                   (Empty $else)))) (empty)))
-
-(= (unify $a $b $then $else)
-   (if (= $a $b)
-       (eval $then)
-       (eval $else)))
-
-
-
 
 ; Function to replace a variable with @var throughout a pattern
 ; Usage: (erase $pattern $var)
