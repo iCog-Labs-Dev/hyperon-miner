@@ -37,13 +37,35 @@
 ;;   ⇒ ((a) (b) (c) (a b) (a c) (b c) (a b c))
 ;; ===========================================================================
 
-(= (powerset-without-empity $list)
-  (let $subset (powerset $list) (collapse
-        (subtraction
-            (superpose $subset)
-            (superpose (()))
+(= (powerset-without-empty $list)
+  (if (== $list ())
+      ()
+      (let $head (car-atom $list)
+        (let $tail (cdr-atom $list)
+          (let $tail-powerset (powerset-without-empty $tail)
+            (if (== $tail-powerset ())
+                (cons-atom (cons-atom $head ()) ())
+                (combine-powersets $head $tail-powerset $tail-powerset)
+            )
+          )
         )
-    ))
+      )
+  )
+)
+
+(= (combine-powersets $elem $remaining $original)
+  (if (== $remaining ())
+      $original
+      (let $first (car-atom $remaining)
+        (let $rest (cdr-atom $remaining)
+          (let $new-subset (cons-atom $elem $first)
+            (cons-atom $new-subset 
+              (combine-powersets $elem $rest $original)
+            )
+          )
+        )
+      )
+  )
 )
 
 ;;Checks if **any element** of $lst is in $used
