@@ -1,11 +1,17 @@
-! (register-module! ../../../../hyperon-miner/experiments)
-! (import! &self experiments:surprisingness:jsd)
-! (import! &self experiments:utils:common-utils)
-! (import! &self experiments:utils:jsd-helper)
-! (import! &self experiments:utils:beta-dist)
-! (import! &self experiments:utils:TruthValue)
-! (import! &self experiments:utils:customType)
-! (import! &self experiments:utils:constants)
+!(import! &self ../jsd)
+!(import! &self ../../utils/common-utils)
+!(import! &self ../../utils/jsd-helper)
+!(import! &self ../../utils/beta-dist)
+!(import! &self ../../utils/TruthValue)
+!(import! &self ../../utils/constants)
+!(import! &self ../../utils/boost-petta)
+
+
+
+
+
+
+
 
 
 ;; =============================================================================
