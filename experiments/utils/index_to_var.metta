@@ -10,10 +10,49 @@
 
 (= (make_var) $x)
 
+(= (find_val $history $val)
+    (if (== $history ())
+        ()
+        (let* (
+                (true (println! (here in find_val history $history val $val)))
+                (($head $value) (car-atom $history))
+                (true (println! (here in find_val head $head value $value)))
+                ($tail (cdr-atom $history))
+            )
+            (if (== $head $val)
+                $value
+                (find_val $tail $val)
+            )
+        )
+    )
+)
 
 
-
-
+(= (deb2var () $history)
+    (() $history)
+)
+(= (deb2var $pattern $history)
+    (let* (
+        ($head (car-atom $pattern))
+        ($tail (cdr-atom $pattern))
+        ($history_val (find_val $history $head))
+        ($newhead  (if (== (get-type $head) Nat) 
+                        (if (== $history_val ())
+                          (let $newvar (make_var) ($newvar (union-atom (($head $newvar)) $history)))
+                          ($history_val $history)
+                        ) 
+                        (if (and (not (== (get-type $head) Nat)) (== (get-metatype $head) Expression))
+                          (deb2var $head $history)
+                          ($head $history)
+                        )
+                    ))
+        (($var $new_history) $newhead)
+        ($newtail (deb2var $tail $new_history))
+        (($rest $final_history) $newtail)
+    )
+        ((cons-atom $var $rest) $final_history)
+    )
+)
 ; !(replacev (Inheritance Z Z))
 ; !(replacev ((Inheritance Z (S Z)) (Inheritance (S Z) (S (S Z)))))
 
