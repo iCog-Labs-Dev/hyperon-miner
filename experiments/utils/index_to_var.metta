@@ -8,6 +8,7 @@
 
 (= (fromNum $n) (if (<= $n 0) Z (S (fromNum (- $n 1)))))
 
+(= (make_var) $x)
 
 
 
