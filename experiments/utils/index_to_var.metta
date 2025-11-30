@@ -27,7 +27,15 @@
     )
 )
 
-
+(= (replacev $pattern)
+    (let* (
+       ($result (eval (deb2var $pattern ())))
+       (true (println! (here in replace $result)))
+       (($varpat $list) $result)
+       )
+       $varpat
+    )
+)
 (= (deb2var () $history)
     (() $history)
 )
