@@ -75,6 +75,8 @@ print_ascii_art("Parallel Test Runner")
 allowed_tests = {
     "test-isurp-old.metta",
     "test-common-utils.metta"
+    "test-isurp.metta",
+    "test-jsd.metta",
 }
 
 # Collect tests inside ../

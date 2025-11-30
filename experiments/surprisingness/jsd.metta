@@ -1,5 +1,5 @@
 ;types
-(: do-jsd (-> TruthValue TruthValue Number))
+; (: do-jsd (-> TruthValue TruthValue Number))
 
 ;; =============================================================================
 ;; Function: do-jsd
@@ -34,7 +34,7 @@
 ;; Converts C++ jsd function to MeTTa
 (=(do-jsd $l_tv $r_tv)(
     let* (
-        (() (println! "=========== JSD SURP =========="))
+        ($_ (println! "=========== JSD SURP =========="))
         ($bins 10)                                     ;; static int bins = 100
         ($l_bd (mk_distribution_jsd $l_tv))                 ;; BetaDistribution l_bd(l_tv)
         ($r_bd (mk_distribution_jsd $r_tv))                     ;; BetaDistribution r_bd(r_tv)

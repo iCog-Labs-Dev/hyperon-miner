@@ -1,5 +1,5 @@
 ;;Checks if **all elements** of $lst are in $used
-(= (all-in $lst $used)
+(=(all-in $lst $used)
 (let $inter (intersection-atom $lst $used) (if (== (size-atom $inter) (size-atom $lst)) True False))
 
 )
@@ -20,60 +20,92 @@
    )
 )
 
+;; ===========================================================================
+;; FUNCTION: powerset-without-empity
+;;
+;; DESCRIPTION:
+;;   Generates all non-empty subsets of the given list.
+;;
+;; PARAMETERS:
+;;   • $list — A list of elements to compute the subsets from.
+;;
+;; RETURNS:
+;;   A flat list of lists, each representing a non-empty subset of $list.
+;;
+;; EXAMPLE:
+;;   (powerset-without-empity '(a b c))
+;;   ⇒ ((a) (b) (c) (a b) (a c) (b c) (a b c))
+;; ===========================================================================
+
+(= (powerset-without-empty $list)
+  (if (== $list ())
+      ()
+      (let $head (car-atom $list)
+        (let $tail (cdr-atom $list)
+          (let $tail-powerset (powerset-without-empty $tail)
+            (if (== $tail-powerset ())
+                (cons-atom (cons-atom $head ()) ())
+                (combine-powersets $head $tail-powerset $tail-powerset)
+            )
+          )
+        )
+      )
+  )
+)
+
+(= (combine-powersets $elem $remaining $original)
+  (if (== $remaining ())
+      $original
+      (let $first (car-atom $remaining)
+        (let $rest (cdr-atom $remaining)
+          (let $new-subset (cons-atom $elem $first)
+            (cons-atom $new-subset 
+              (combine-powersets $elem $rest $original)
+            )
+          )
+        )
+      )
+  )
+)
+
 ;;Checks if **any element** of $lst is in $used
-(= (any-in $lst $used)(let $inter (intersection-atom $lst $used) (if (== (size-atom $inter) 0) False True)))
+(=(any-in $lst $used)(let $inter (intersection-atom $lst $used) (if (== (size-atom $inter) 0) False True)))
 
 
 ;the subset can't be an empty set or the orginal set itself
 (= (valid-subset $subset $original)
    (and (not (== $subset ()))
-       (not  (or (== $subset $original)  (== $subset ( $original))))))
+        (not (== $subset $original))))  
 
+; =========================================================================================
 ;;This function explores all combinations of valid, 
 ;;disjoint subsets that together cover the original list exactly once. It ensures:
 ;;No repetition.
 ;;No subset is empty or equal to the full set.
 ;;Each partition is complete (checked by all-in in partitions-helper).
- ; Recursive helper
 
-
-; (= (partitions-helper $subsets $original $current $used)
-;    (if (all-in $original $used)
-;        ($current)
-;        (partitions-collect (cdr-atom $subsets) $original $current $used))
-;        )
-; ; Collect partitions by trying each valid subset
-; (= (partitions-collect $subsets $original $current $used)
-;    (if (== $subsets ())
-;        ()
-;        (let ($subset $rest) (decons-atom $subsets)   
-;          (if (and (valid-subset $subset $original)
-;                   (not (any-in $subset $used)))     ;; ((a b) ( c))
-;              (let* (
-;                      ($head (cons-atom $subset $current))
-;                      ($union (union-atom $used $subset))
-;                      ($first (partitions-helper $subsets $original $head $union))
-;                      ($second (partitions-collect $rest $original $current $used)))
-;                      (union-atom $first $second))
-;              (partitions-collect $rest $original $current $used)))))
-
+; Collect partitions by trying each valid subset
 (= (partitions-collect $subsets $original $current $used)
+   (if (== $subsets ())
+       ()
+       (let ($subset $rest) (decons-atom $subsets)   
+         (if (and (valid-subset $subset $original)
+                  (not (any-in $subset $used)))     ;; ((a b) ( c))
+             (let* (
+                    ($first (partitions-helper $subsets $original (cons-atom $subset $current) (union-atom $used $subset)))
+                      ($second (partitions-collect $rest $original $current $used)))
+                        (union-atom $first $second))
+             (partitions-collect $rest $original $current $used)))))
+
+ ; Recursive helper
+(= (partitions-helper $subsets $original $current $used)
    (if (all-in $original $used)
-       ($current) ;; Base case: all original elements are used
-       (if (== $subsets ())
-           ()
-           (let ($subset $rest) (decons-atom $subsets)
-             (if (and (valid-subset $subset $original)
-                      (not (any-in $subset $used))) ;; try including this subset
-                 (let* (
-                        ($head (cons-atom $subset $current))
-                        ($union (union-atom $used $subset))
-                        ($first (partitions-collect $subsets $original $head $union)) ;; recurse with head
-                        ($second (partitions-collect $rest $original $current $used))) ;; recurse without head
-                   (union-atom $first $second))
-                 (partitions-collect $rest $original $current $used))))))
+       ($current)
+       (partitions-collect (cdr-atom $subsets) $original $current $used))
+       
 
-
+       
+       )
 
 
 ; Main: Generate all partitions
@@ -124,11 +156,33 @@
 ;;   Used in probability estimation, pattern decomposition, or symbolic reasoning
 ;;   tasks where exhaustive enumeration of all disjoint covers is required.
 ;; ==============================================================================
+(:partitions (-> list_of_patterns partitions))
 
 
-(= (partitions $original) (partitions (powerset $original) $original))
+(= (partitions $original)
+   (let $first-element (car-atom $original)
+     (if (== $first-element ,)
+         (partitions (powerset (cdr-atom $original))
+                      (cdr-atom $original))
+         (partitions (powerset $original)
+                     $original)
+      )
+   )
+)
 
 (= (partitions-wout-pattern $original) (
    let $partions (partitions $original)  (exclude-item ($original) $partions)
 ))
 
+(= (partitions-with-pattern $original)
+   (let $first-element (car-atom $original)
+     (if (== $first-element ,)
+         (let* (
+            ($tail (cdr-atom $original))
+            ($part-1 (partitions (powerset $tail) $tail))
+            ) 
+            (cons-atom ($tail) $part-1)
+         )
+         (let $part-2 (partitions (powerset $original)
+                     $original) (cons-atom ($original) $part-2))))
+)
