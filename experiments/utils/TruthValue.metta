@@ -25,7 +25,7 @@
 
 (=(confidence->count $conf) (
     let* (
-       ( $cf (min $conf 0.9999998))
+       ( $cf (min-of-two $conf 0.9999998))
        ( $count (// (* (default_k) $cf) (- 1.0 $cf)))
 
     )

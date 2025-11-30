@@ -1410,3 +1410,13 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
         )
     )
 )
+
+
+
+(= (concat-atom $list1 $list2)
+    (if (== $list1 ())
+        $list2
+        (let* (
+                ($head (car-atom $list1))
+                ($tail (concat-atom (cdr-atom $list1) $list2)))
+            (cons-atom $head $tail))))
