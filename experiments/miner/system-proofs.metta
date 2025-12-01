@@ -44,22 +44,22 @@
      ($_ False))))
 
 ;; define system proofs 
-------------------------------------------------------------------
+;------------------------------------------------------------------
 ;; System proof for ⍃
 ;; if conclusion equals (⍃ $X $Y), then return (: CPU (⍃ $X $Y)) 
 ;; if $x and $Y are fully grounded and (< $X $Y)
-------------------------------------------------------------------
+;------------------------------------------------------------------
 (= (syn $kb $_ (: $prf (⍃ $X $Y))) 
     (if (and (and (is-number $X) (is-number $Y)) (<= $X $Y))
           (: CPU (⍃ $X $Y))
              (empty)))
 
 
-----------------------------------------------------------------------------
+;----------------------------------------------------------------------------
 ;; system proof  to calculate the emp-tv for the given pattern. 
 ;; The database is queried here because, when it was placed in the premises, 
 ;; it caused infinite results in CPUEMP.
-----------------------------------------------------------------------------
+;----------------------------------------------------------------------------
 (= (syn $kb $_ (: $prf (emp-cpu $ptrn  $emp ))) 
     (let* (($dbb (match $kb (db-ref $db) $db))
             ($pattern   (remove-hashtag $ptrn)))
@@ -67,11 +67,11 @@
     (: CPUEMP (emp-cpu $ptrn  (emp-tv $pattern $dbb))) ) 
 )
 
------------------------------------------------------------------------------
+;-----------------------------------------------------------------------------
 ;; system proof  to calculate the est-tv for the given pattern. 
 ;; The database is queried here because, when it was placed in the premises, 
 ;; it caused infinite results in CPUEST.
------------------------------------------------------------------------------
+;-----------------------------------------------------------------------------
 (= (syn $kb $_ (: $prf (est-cpu  $ptrn $emp $est))) 
     (let* (($dbb (match $kb (db-ref $db) $db))
            ($pattern (remove-hashtag $ptrn)))
@@ -84,7 +84,7 @@
        (: JSDCPU (jsd-cpu $emp $est $surp-val))))
 
 
------------------------------------------------------------------------------
+;-----------------------------------------------------------------------------
 ;; emperical probability of a pattern 
 (= (syn $kb $_ (: $prf (prob-cpu  $pattern $ucount $prob))) 
     (let $dbb (match $kb (db-ref $db) $db)
@@ -92,7 +92,7 @@
     ) 
 )
 
------------------------------------------------------------------------------
+;-----------------------------------------------------------------------------
 ;; emperical probability of a pattern for isurp
 (= (syn $kb $_ (: $prf (prob-cpu  $pattern $db-ratio $emax $prob))) 
     (let $dbb (match $kb (db-ref $db) $db)
@@ -100,13 +100,13 @@
     ) 
 )
 
------------------------------------------------------------------------------
+;-----------------------------------------------------------------------------
 ;; system proof to calculate the partitions for the given pattern.
 (= (syn $kb $_ (: $prf (partition-cpu  $pattern $partitions))) 
-    (let* (
-         ($cleaned-pattern (remove-hashtag $pattern))
-        ($partitions (generet-partition-without-pattern $cleaned-pattern)))
-    (: CPUPARTN (partition-cpu  $pattern $partitions)) ) 
+    (let 
+    
+        $partitions-result  (partitions-wout-pattern (cdr-atom $pattern))
+         (: CPUPARTN (partition-cpu  $pattern $partitions-result)) ) 
 )
 
 
@@ -124,7 +124,7 @@
 
 
 
-----------------------------------------------------------------------------
+;----------------------------------------------------------------------------
 ;; min max estimation of the pattern for isurp old
 (= (syn $kb $_ (: $prf (est-prob-cpu  $pattern $partitions $ucount $emin-emax))) 
     (let* (($dbb (match $kb (db-ref $db) $db))
@@ -133,7 +133,7 @@
 )
 
 
-----------------------------------------------------------------------------
+;----------------------------------------------------------------------------
 ;; min max estimation of the pattern for isurp 
 (= (syn $kb $_ (: $prf (ji-prob-est-cpu  $pattern $partitions  $db_ratio $emin-emax))) 
     (let* (($dbb (match $kb (db-ref $db) $db))
@@ -143,7 +143,7 @@
 )
 
 
--------------------------------------------------------------------------
+;-------------------------------------------------------------------------
 ;; calculates the distance between the estimate value and emperical value
 (= (syn $kb $_ (: $prf (dst-cpu $x $y $dst))) 
     (let $dst (- $x $y)
@@ -151,7 +151,7 @@
 )
 
 
-------------------------------------------------------------------------
+;------------------------------------------------------------------------
 ;; calculates the all possible same number of conjuct pattern 
 (= (syn $kb $_ (: $prf (universal-cpu $pattern $db-size $ucount))) (
     let $number-of-conjuct (n_conjuncts_new $pattern) 
@@ -159,41 +159,41 @@
 ))
 
 
--------------------------------------------------------------------------
+;-------------------------------------------------------------------------
 ;; create the minimum relation 
 (= (syn $kb $_ (: $prf (minimum $x $y $z)))
          (let $min (min $x $y)
                (: MINIMUMCPU  (minimum $x $y $min))))
 
 
--------------------------------------------------------------------------
+;-------------------------------------------------------------------------
 ;; create the maximum relation 
 (= (syn $kb $_ (: $prf (maximum $x $y $z)))
          (let $max (max $x $y)
                (: MAXIMUMCPU  (maximum $x $y $max))))
 
--------------------------------------------------------------------------
+;-------------------------------------------------------------------------
 ;; division relation 
 (= (syn $kb $_ (: $prf (divide $x $y $z)))
          (let $div (// $x $y)
                (: DIVIDECPU (divide $x $y $div))))
 
-------------------------------------------------------------------------
+;------------------------------------------------------------------------
 ;;equality checker relation 
 (= (syn $kb $_ (: $prf (equals $X $Y))) 
     (if (and (and (is-number $X) (is-number $Y)) (== $X $Y))
           (: CPUequals (equals $X $Y))
              (empty)))
 
----------------------------------------------------------------------
+;---------------------------------------------------------------------
 (= (syn $kb $_ (: $prf (⍄ $X $Y))) 
     (if (and (and (is-number $X) (is-number $Y)) (> $X $Y))
           (: CPU (⍄ $X $Y))
              (empty))) 
 
-==============================================================================
+;==============================================================================
 ;;frequent pattern miner system proofs
-==============================================================================
+;==============================================================================
 
 ;; system proof to get the unique links from the database
 (= (syn $kb $_ (: $prf (uniqueLink $pattern $cnt))) 
@@ -208,7 +208,7 @@
              ))
     )
 
----------------------------------------------------------------------------
+;---------------------------------------------------------------------------
 ;; system proof to replace variables with debruijn index
 (= (syn $kb $_ (: $prf (replace_variables $ptrn)))
     (let* (
@@ -221,7 +221,7 @@
     )
 )
 
------------------------------------------------------------------------------
+;-----------------------------------------------------------------------------
 ;; system proof to count support
 (= (syn $kb $_ (: $prf (sup_count $ptrn $count)))
     (let* (
@@ -235,7 +235,7 @@
     )
 )
 
------------------------------------------------------------------------------
+;-----------------------------------------------------------------------------
 ;;system proof to replace debruijn index with variables
 (= (syn $kb $_ (: $prf (replace_index $ptrn $res)))
     (let* (
@@ -248,7 +248,7 @@
     )
 )
 
------------------------------------------------------------------------------
+;-----------------------------------------------------------------------------
 ;;system proof to replace debruijn index with variables
 (= (syn $kb $_ (: $prf (sort_conjunctions $ptrn $res)))
     (let* (
@@ -261,7 +261,7 @@
     )
 )
 
------------------------------------------------------------------------------
+;-----------------------------------------------------------------------------
 ;; system proof to get variables of a pattern
 (= (syn $kb $_ (: $prf (get_variables $ptrn $vars)))
     (let* (
@@ -274,7 +274,7 @@
     )
 )
 
------------------------------------------------------------------------------
+;-----------------------------------------------------------------------------
 ;; system proof to combine variable of two patterns
 (= (syn $kb $_ (: $prf (combine_variables $vars1 $vars2 $comb)))
     (let* (
@@ -287,7 +287,7 @@
     )
 )
 
------------------------------------------------------------------------------
+;-----------------------------------------------------------------------------
 ;; system proof to substitute variables in a pattern by another variables
 (= (syn $kb $_ (: $prf (substitute_variables $pattern $vars $subpattern)))
     (let* (
@@ -300,7 +300,7 @@
     )
 )
 
------------------------------------------------------------------------------
+;-----------------------------------------------------------------------------
 ;;system proof to count the number of clauses in a pattern
 (= (syn $kb $_ (: $prf (clause_count $ptrn $cnt)))
     (let* (
@@ -315,7 +315,7 @@
     )
 )
 
------------------------------------------------------------------------------
+;-----------------------------------------------------------------------------
 ;; system proof to clean conjunction with redundant clauses
 (= (syn $kb $_ (: $prf (conjunction_clean $conjunction)))
     (let* (
@@ -329,7 +329,7 @@
     )
 )
 
-------------------------------------------------------------------------------
+;;------------------------------------------------------------------------------
 ;; system proof to handle depth
 (= (syn $kb $_ (: $prf (depth-handler $type $val $val2 $shab $res)))
     (if (== $type X)
@@ -355,7 +355,7 @@
     ))
 )
 
-------------------------------------------------------------------------------
+;;------------------------------------------------------------------------------
 ;; system proof to get valuation set of a pattern
 (= (syn $kb $_ (: $prf (valuation $type ($link $x $y) $val)))
     (let* (
@@ -379,27 +379,27 @@
     )
 )     
 
-------------------------------------------------------------------------------
+;;------------------------------------------------------------------------------
 (= (syn $kb $_ (: $prf (is-conj $p))) 
     (if (conj? $p)
         (: CPUConjprf (is-conj $p))
         (empty)))
 
 
-------------------------------------------------------------------------------
+;;------------------------------------------------------------------------------
 (= (syn $kb $_ (: $prf  (flatten-cpu $nptrn $fptrn))) (
     let $flatten (flatten $nptrn) (: FLATCPU (flatten-cpu $nptrn $flatten))
 ))
 
-------------------------------------------------------------------------------
+;;------------------------------------------------------------------------------
 (= (syn $kb $_ (: $prf  (join-cpu $nptrn $jptrn))) (
     let $joined (cons-atom , $nptrn) (: CPUJoin (join-cpu $nptrn $joined))
 ))
     
         
-==============================================================================
+;==============================================================================
 ;; chainner 
-==============================================================================
+;==============================================================================
 ;; Base case
 (= (syn $kb $_ (: $prf $ccln)) (match $kb (: $prf $ccln) (: $prf $ccln)))
 
@@ -407,7 +407,7 @@
 (= (syn $kb (S $k) (: ($prfabs $prfarg) $ccln))
    (let* (
      ((: $prfabs (-> $prms $ccln)) (syn $kb $k (: $prfabs (-> $prms $ccln))))
-          (() (println! (Next prims : $prms)))
+         ; (true (println! (Next prims : $prms)))
           ((: $prfarg $prms) (syn $kb $k (: $prfarg $prms)))
           )
      (: ($prfabs $prfarg) $ccln)))
@@ -422,18 +422,18 @@
 ;; Iterative step
 (= (isyn $kb $depth (S $k) $query)
    (let* (
-      (() (println! (have called)))
+      (true (println! (have called)))
       ($cres (collapse (syn $kb $depth $query)))
-          (() (println! (cres: $cres)))
+          (true (println! (cres: $cres)))
           ($dummy (add-atoms-nodup $kb $cres))
           )
      (isyn $kb $depth $k (superpose $cres))))
 
 (= (collapser $kb $depth  $query)
    (let* (
-      (() (println! (have called)))
+      (true (println! (have called)))
       ($cres (collapse (syn $kb $depth $query)))
-      (() (println! (cres: $cres)))
+      (true (println! (cres: $cres)))
           )
      $cres))
 
