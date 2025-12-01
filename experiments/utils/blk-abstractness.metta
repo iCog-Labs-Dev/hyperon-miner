@@ -1,9 +1,4 @@
 
-
-
-
-(: Constant (-> String $a))
-
 ; Function to replace a variable with @var throughout a pattern
 ; Usage: (erase $pattern $var)
 ; Example: (erase ((Man $x Eyob) (Student $x Newyork)) $x)
@@ -23,8 +18,6 @@
       ;  ($is_pat (checkPat $exp))
        (($link $tail) (decons-atom $exp))
        ($updated-tail (handle_tail $tail $var $replacement () ))
- 
-       
        ($ans (union-atom ($link) $updated-tail)) 
    )
    $ans ))
@@ -60,35 +53,36 @@
 
 
 ; Main unification function for atom bodies
-(= (can-unify $l_body $r_body)
-   (if (== (size-atom $l_body) (size-atom $r_body))
-       (let* (
-           ($left_empty (== (size-atom $l_body) 0))
-           ($right_empty (== (size-atom $r_body) 0))
-       )
-       (if (and $left_empty $right_empty)
-           True
-           (if (or $left_empty $right_empty)
-               False
-               (let* (
-                   ($l_head (car-atom $l_body))
-                   ($l_tail (cdr-atom $l_body))
-                   ($r_head (car-atom $r_body))
-                   ($r_tail (cdr-atom $r_body))
-                   (($head_unify) (can-unify-expr $l_head $r_head))
+; (= (can-unify $l_body $r_body)
+;    (if (== (size-atom $l_body) (size-atom $r_body))
+;        (let* (
+;            ($left_empty (== (size-atom $l_body) 0))
+;            ($right_empty (== (size-atom $r_body) 0))
+;        )
+;        (if (and $left_empty $right_empty)
+;            True
+;            (if (or $left_empty $right_empty)
+;                False
+;                (let* (
+;                    ($l_head (car-atom $l_body))
+;                    ($l_tail (cdr-atom $l_body))
+;                    ($r_head (car-atom $r_body))
+;                    ($r_tail (cdr-atom $r_body))
+;                    (($head_unify) (can-unify-expr $l_head $r_head))
           
-               )
-               (if $head_unify
-                   (can-unify $l_tail $r_tail)
-                   False)))))
-       False))
+;                )
+;                (if $head_unify
+;                    (can-unify $l_tail $r_tail)
+;                    False)))))
+;        False))
 
 
 
  (= (can-unify-expr $body1 $body2) 
-   ( collapse (
+   (let $out ( collapse (
         unify $body1 $body2 True False
     ))
+    (car-atom $out))
  
  )
 
@@ -98,12 +92,15 @@
 
 
 (= (validate-unification $left-body $right-body) 
-   (let* ( ($indexed-right-body (replace $right-body)) 
-;    ($_ (println! (right body is $right-body validate called et the replaced is $indexed-right-body ) ))
+   (let* 
+   (
+     ($indexed-right-body (replace $right-body)) 
    ) 
-        (let* (($for (can-unify $left-body $indexed-right-body)) 
-        ; ($_ (println! (the bool of val_uni is $for ))) 
-        ) $for)
+    (let* 
+    (
+        ($for (can-unify-expr $left-body $indexed-right-body)) 
+        ) $for
+    )
     )
 )
 ; Main function: check if l_pat is more abstract than r_pat with respect to var
@@ -123,15 +120,11 @@
            ; Convert var to constant (@eyob) in both patterns
            ($l_body (erase $l_pat $var))
            ($r_body (erase $r_pat $var))
-           
-           ; Try to unify the modified patterns
-           ($can_unify_result (can-unify $l_body $r_body))
-          
+                     
        )
-            (if $can_unify_result 
-                (validate-unification $l_body $r_body) 
-                False
-            )
+         
+        (validate-unification $l_body $r_body) 
+          
        )
     )
     )
@@ -148,8 +141,10 @@
 
 (= (is-blk-more-abstract $l_blk $r_blk $var) 
    (let* (
-            ($rps (powerset-without-empity $r_blk))  
-            ($l_partitions (partition $l_blk))  
+
+            ($rps (powerset-without-empty $r_blk))  
+            ($l_partitions (partitions $l_blk)) 
+
          
         )
          (check-partitions $l_partitions $rps $var)
@@ -183,7 +178,6 @@
              False))))  ; One block failed, return False
 
 
-(: is-membership (-> $a Expression Bool))
 (= (is-membership $elem $list) (
     if (== $list ())
     False
@@ -195,7 +189,6 @@
 
     )
 ))
-(: merge-list (-> Expression Expression Expression))
 (= (merge-list $list1 $list2)  (unique-list (union-atom  $list1 $list2)))
 ; (: unique-list (-> Expression Expression))
 (= (unique-list $list)
@@ -218,7 +211,6 @@
     )
 
 )
-
 
 
 

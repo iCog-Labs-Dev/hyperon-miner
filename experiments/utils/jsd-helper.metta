@@ -1,4 +1,3 @@
-! (import! &self boost)
 
 
 ;; Create Beta Distribution from TruthValue (mean, confidence)

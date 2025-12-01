@@ -1,7 +1,10 @@
-;types
-(: emp_prob_pbs_mem (-> Pattern SpaceType Number Number))
-(: ji_prob_est_interval (-> Pattern SpaceType Number Any))
-(: isurp (-> Pattern SpaceType Bool Number Number))
+; ;types
+; (: emp_prob_pbs_mem (-> Pattern SpaceType Number Number))
+; ; ; (: pro-prob-wout-joint (-> (List Pattern) SpaceType Number Number Number))
+; ; (: ji-prob-est (-> (List Pattern) Pattern SpaceType Number Number))
+; ; ; (: do-ji-prob (-> (MList Pattern)) Pattern SpaceType Number (List Number))
+; (: ji_prob_est_interval (-> Pattern SpaceType Number Any))
+; (: isurp (-> Pattern SpaceType Bool Number Number))
 
 
 
@@ -9,10 +12,9 @@
 
 ;; Calculate the empirical probability of pattern, using
 ;; boostrapping if necessary
-(=(emp_prob_pbs_mem $subpattern $db  $db_ratio) 0.4)
 
 
-;; ==============================================================
+;; ==============================================================s
 ;; Function: pro-prob-wout-joint (Product Probability Without Joint Variables)
 ;; Purpose:  Computes the product probability of subpatterns while ignoring
 ;;           dependencies between joint variables (treats components as independent)
@@ -207,11 +209,8 @@
 ;; ==============================================================
 
 (=(ji_prob_est_interval $pattern $db $db_ratio) 
-   (let* (($gen-parts (generet-partition-without-pattern $pattern))  
-
+   (let* (($gen-parts (partitions-wout-pattern $pattern))  
    ($comp-ji (do-ji-prob $gen-parts $pattern $db $db_ratio))
-    
-  ;  ($emin $emax) (min-max $comp-ji)
   ($emin (min-atom $comp-ji))
   ($emax (max-atom $comp-ji))
 
@@ -264,14 +263,14 @@
 
       (($emin $emax) (ji_prob_est_interval $pattern $db $db_ratio))
       
-           ($emp (emp-prob-pbs  $pattern $db $emax $db_ratio))
+           ($emp (emp-prob-pbs $pattern $db $emax $db_ratio))
 
             ($dst (dst_from_interval $emin $emax $emp))
 
              ($maxprb (max-atom ($emp $emax)))
 
              )
-               (min ((if $normalize (// $dst $maxprb) $dst) 1.0))
+               (min-atom ((if $normalize (// $dst $maxprb) $dst) 1.0))
 ))
 
 
