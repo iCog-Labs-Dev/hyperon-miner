@@ -918,8 +918,6 @@ $odd_ratio
 (
   ($cor (< $or 1))
   (($ans $label ) (if  $cor ((// 1 $or ) neg) ($or pos) ))
-  
-  
   )
   ($ans $label )
 
