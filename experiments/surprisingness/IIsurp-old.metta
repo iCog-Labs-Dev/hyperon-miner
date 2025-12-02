@@ -839,3 +839,92 @@ $new_prob
 ) )
 
 ; !(coherence human &db Inheritance)
+
+
+
+(= (odd-ratio $pattern $db) 
+
+(let* (
+
+  ($ins (collapse (match ($link $per $conc) $per)))
+  ($unique-ins (unique-atom $ins))
+
+  ($pat-wout-comma (cdr-atom $pattern))
+  ($emp-sup (collapse (match $db $pattern $pattern)))
+  ($subs (powerset $pat-wout-comma))
+  ($subs-wout-pat (subtraction-atom $subs (() $pattern)))
+  ($odd-ratios (collapse (sub-handler (superpose $subs-wout-pat) $pat-wout-comma $emp-sup $db $unique-ins) ))
+
+  ($min-ratio (min-atom $odd-ratios))
+  ($max-ratio (max-atom $odd-ratios))
+
+  ($factor-min (handle_odds $min-ratio ))
+  ($factor-max (handle_odds $max-ratio))
+
+  ($maxFactor (car-atom $factor-min) (car-atom $factor-max))
+  
+  )
+  $maxFactor
+  
+  )
+
+)
+
+(=(sub-handler $sub-pat $conjunct $emp-sup $db $unique-ins )
+(let* (
+  ($full-pat (cons-atom , $sub-pat))
+  ($conjunct-wout-sub (subtraction-atom $conjunct $sub-pat))
+  ($sub-above (collapse (match $db $conjunct-wout-sub $conjunct-wout-sub) ))
+  ($filt-sub-above (filter-conjuncts $sub-above ))
+
+  ($sup-rest-wout-sub (subtraction-atom $filt-sub-above $emp-sup))
+  ($sup-rest-wout-sub-size (size-atom $sup-rest-wout-sub))
+  
+
+
+  ($sub-support (collapse (match $db $full-pat $full-pat)))
+  ($filtered-sup (filter-conjuncts $sub-support))
+
+  (($sub-or-rest ) (collapse (union-atom $filtered-sup $filt-sub-above )))
+
+  ; ($sub-inter-emp (intersection-atom ($filtered-sup $emp-sup)))
+  ; ($sub-wout-rest (subtraction-atom ($filtered-sup $sub-inter-emp)))
+
+  ($sub-wout-rest (subtraction-atom ($filtered-sup $emp-sup)))
+
+  ($not-sub-or-rest (subtraction-atom $unique-ins $sub-or-rest))
+
+  ($size-inter (size-atom $sub-inter-emp))
+  ($emp-size (size-atom $emp-sup))
+  ($sub-size (size-atom $filtered-sup))
+  ($sub-wout-rest-size (size-atom $sub-wout-rest))
+  ($conjunct-wout-size (size-atom $filt-sub-above))
+  ($not-sub-or-rest-size (size-atom $not-sub-or-rest))
+  
+
+
+  ($odds-of-sub-w-rest (// $emp-size $sup-rest-wout-sub-size ) )
+  ($odds-of-sub-wout-rest (// $sub-wout-rest-size $not-sub-or-rest-size) )
+
+  ($odd_ratio (// $odds-of-sub-w-rest $odds-of-sub-wout-rest ))
+))
+
+$odd_ratio
+)
+
+
+(=(handle_odds $or) (let* 
+
+(
+  ($cor (< $or 1))
+  (($ans $label ) (if  $cor ((// 1 $or ) neg) ($or pos) ))
+  
+  
+  )
+  ($ans $label )
+
+
+
+) )
+
+
