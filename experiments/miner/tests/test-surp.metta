@@ -1,36 +1,34 @@
 
 ;; import utils 
 !(import! &self ../../utils/common-utils)
-!(import! &self ../../utils/binomialMetta)
-;!(import! &self ../../utils/beta-dist)
-!(import! &self ../../utils/constants)
+!(import! &self ../../utils/surp-utils/partition-metta)
+!(import! &self ../../utils/surp-utils/binomialMetta)
+!(import! &self ../../utils/surp-utils/surp-utils)
+!(import! &self ../../utils/surp-utils/beta-dist)
+!(import! &self ../../utils/surp-utils/blk-abstractness)
+!(import! &self ../../utils/surp-utils/eq-prob-petta)
+!(import! &self ../../utils/surp-utils/bs-utils)
+!(import! &self ../../utils/surp-utils/jsd-helper)
 !(import! &self ../../utils/TruthValue)
-!(import! &self ../../utils/surp-utils)
-!(import! &self  ../../utils/partition-metta )
-;!(import! &self ../../utils/emp-tv-bs)
-;!(import! &self ../../utils/bs-utils)
-;!(import! &self ../../utils/util-jsd)
-;!(import! &self ../../utils/eq_prob_adaptor)
-;!(import! &self ../../utils/customType)
-;!(import! &self ../../utils/blk-abstractness)
-;!(import! &self ../../utils/eq-prob)
-;!(import! &self ../../utils/index_to_var)
+!(import! &self ../../utils/constants)
 
-;; import truth value computing components
-;!(import! &self ../../truth-values/est-tv)
-;!(import! &self ../../truth-values/emp-tv)
-;!(import! &self ../.../utils/jsd-helper)
+; import truth value computing components
+!(import! &self ../../truth-values/emp-tv)
+!(import! &self ../../truth-values/est-tv)
+!(import! &self ../../utils/index_to_var)
 
-;; import surprisingness scoring functions 
-;!(import! &self ../../surprisingness/isurp)
-;!(import! &self ../../surprisingness/emp-prob)
-;!(import! &self ../../surprisingness/jsd)
+
+; import surprisingness scoring functions 
+!(import! &self ../../surprisingness/emp-prob)
+!(import! &self ../../surprisingness/isurp)
+!(import! &self ../../surprisingness/jsd)
+
 
 ;; load the db space 
 !(import! &self ../../data/ugly_man_sodaDrinker)
 !(migrateAtoms &self &db  (Inheritance $x $y))
 
-;!(import! &self experiments:frequent-pattern-miner/use-python)
+
 
 
 ;; load rules , system-proofs and miner-utils ...
@@ -39,16 +37,6 @@
 
 !(import! &self  ../system-proofs)
 !(import! &self ../miner-utils)
-
-!(get-atoms &kb3)
-
-;;create new space for kb
-
-
-
-
-;;copy atoms from temp space to kb to remove unnecessary atoms from the space
-;!(let $atoms  (get-atoms &temp) (add-atom (superpose (&kb &kb1 &kb2 &kb3 &kb4)) $atoms) )
 
 
 
@@ -88,11 +76,12 @@
 (=(db-ratio) 0.5)
 (= (normalization) False)
 
- !(init-params &kb &db (min-sup) (surp-mode) (db-ratio) (normalization))
-
+!(init-params &kb &db (min-sup) (surp-mode) (db-ratio) (normalization))
 
 
 !(println! ("========== isurp-old test without  normalization ==============="))
+
+
 
 !(assertEqual (syn &kb (fromNumber 19) (: $prf  (Isurp $pattern $surp))) 
    ;; Expected reslt  
@@ -129,44 +118,57 @@
 
 
 ; ------------------------------------------------------------------------------------
-; ; isurp with normalization 
-; ; define hyper parameters -> 1
-; (=(min-sup3) 6)
-; (=(surp-mode3 ) isurp)
-; (=(db-ratio3) 0.5)
-; (= (normalization3) True)
+; isurp with normalization 
+; define hyper parameters -> 1
+(=(min-sup3) 6)
+(=(surp-mode3 ) isurp)
+(=(db-ratio3) 0.5)
+(=(normalization3) True)
 
-; !(init-params &kb3 &db (min-sup3) (surp-mode3) (db-ratio3) (normalization3))
+;import rules
+!(import! &self   ../surp-rules)
+!(migrateAtoms &self &kb3 (: $prabst $primis))
 
-; !(println! ("========== isurp test with normalization =============="))
+!(init-params &kb3 &db (min-sup3) (surp-mode3) (db-ratio3) (normalization3))
 
-; !(let $result (call_replace (syn &kb3 (fromNumber 19) (: $prf (Isurp $prattern  $surp)))) (assertEqual $result 
-; ;;Expected result 
-;   (: ((((((((isurp-rule normalize) (((universal-count ((((minsupport FACT4) CPUReplaceindex) msT) CPU)) dbsize) CPUUNIVERSAL))
-;    ((((emp-prob-rule surpMode) (((((est-prob-rule surpMode) ((((minsupport FACT4) CPUReplaceindex) msT) CPU)) (partitions CPUPARTN))
-;     dbr) CPUESTPROB)) dbr) CPUPROB)) (((((est-prob-rule surpMode) ((((minsupport FACT4) CPUReplaceindex) msT) CPU)) 
-;     (partitions CPUPARTN)) dbr) CPUESTPROB)) ((dst-from-interval CPU) CPUDST)) MAXIMUMCPU) DIVIDECPU) MINIMUMCPU)
-;      (Isurp (, (Inheritance Z man) (Inheritance Z ugly) (Inheritance Z sodaDrinker)) 0.8333333333333334))))
+!(println! ("========== isurp test with normalization =============="))
+
+!(assertEqual (syn &kb3 (fromNumber 19) (: $prf (Isurp $prattern  $surp))) 
+             ;; Expecged result 
+              (: ((((((((isurp-rule normalize) (((universal-count (((minsupport FACT4) msT) CPU)) dbsize) 
+               CPUUNIVERSAL)) ((((emp-prob-rule surpMode) (((((est-prob-rule surpMode) (((minsupport FACT4) msT) CPU)) (partitions-rule CPUPARTN)) dbr) CPUESTPROB)) dbr) CPUPROB))
+                (((((est-prob-rule surpMode) (((minsupport FACT4) msT) CPU)) (partitions-rule CPUPARTN)) dbr) CPUESTPROB)) ((dst-from-interval CPU) CPUDST)) MAXIMUMCPU) DIVIDECPU) MINIMUMCPU)
+                (Isurp (, (Inheritance $_60714 man) (Inheritance $_60714 ugly) (Inheritance $_60714 sodaDrinker)) 0.8333333333333334)) )
+
 
 
 
 ;------------------------------------------------------------------------------------
 ; Jsd surprisingness 
 ; define hyper parameters -> 4
-; (=(min-sup4) 6)
-; (=(surp-mode4 ) jsd)
-; (=(db-ratio4) 0.5)
-; (= (normalization4) True)
+(=(min-sup4) 6)
+(=(surp-mode4 ) jsd)
+(=(db-ratio4) 0.5)
+(= (normalization4) True)
 
-; ! (import! &db-sm experiments:data:small-ugly)
+;!(import! &db-sm experiments:data:small-ugly)
+!(import! &self   ../../data/small-ugly)
+!(migrateAtoms &self &db-sm (Inheritance $prabst $primis))
+
+;; import rules 
+!(import! &self   ../surp-rules)
+!(migrateAtoms &self &kb4 (: $prabst $primis))
+
+!(init-params &kb4 &db-sm (min-sup4) (surp-mode4) (db-ratio4) (normalization4))
+
+!(println! ("========== JSD Test =============="))
+
+(let $result (call_replace (syn &kb4 (fromNumber 19) (: $prf (jsd-surp $pattern $surp))))  
+(assertEqual $result (: ((((jsd-tv ((((minsupport FACT4) CPUReplaceindex) msT) CPU)) ((emp-rule ((((minsupport FACT4) CPUReplaceindex) msT) CPU)) CPUEMP))
+ (((est-rule ((((minsupport FACT4) CPUReplaceindex) msT) CPU)) ((emp-rule ((((minsupport FACT4) CPUReplaceindex) msT) CPU)) CPUEMP)) CPUEST)) JSDCPU)
+  (jsd-surp (, (Inheritance Z man) (Inheritance Z ugly) (Inheritance Z sodaDrinker)) 0.8608962449888359))) )
 
 
-; !(init-params &kb4 &db-sm (min-sup4) (surp-mode4) (db-ratio4) (normalization4))
 
-; !(println! ("========== JSD Test =============="))
 
-; !(let $result (call_replace (syn &kb4 (fromNumber 19) (: $prf (jsd-surp $pattern $surp))))  
-; (assertEqual $result (: ((((jsd-tv ((((minsupport FACT4) CPUReplaceindex) msT) CPU)) ((emp-rule ((((minsupport FACT4) CPUReplaceindex) msT) CPU)) CPUEMP))
-;  (((est-rule ((((minsupport FACT4) CPUReplaceindex) msT) CPU)) ((emp-rule ((((minsupport FACT4) CPUReplaceindex) msT) CPU)) CPUEMP)) CPUEST)) JSDCPU)
-;   (jsd-surp (, (Inheritance Z man) (Inheritance Z ugly) (Inheritance Z sodaDrinker)) 0.8608962449888359))) )
 

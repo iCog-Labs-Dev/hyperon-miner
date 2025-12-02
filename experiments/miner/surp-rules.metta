@@ -1,13 +1,6 @@
 ;; Rules 
 ;-----------------------------------------------------------------
 ;; Rule to check if a pattern meets the minimum support threshold.
-; (: minsupport 
-;     (-> (hasSupport $nptrn $cnt)
-;         (-> (replace_index $nptrn $ptrn)
-;            (-> (ms-threshold $ms)
-;                  (-> (⍃ $ms $cnt)
-;                         (minsup $ptrn))))))
-
 (: minsupport 
     (-> (hasSupport $nptrn $cnt)
            (-> (ms-threshold $ms)
@@ -15,13 +8,7 @@
                         (minsup $nptrn)))))
 
 
-;------------------------------------------------------------
-;; Rule to calculate the empirical truth value of a pattern.
-;;(: emp-rule 
-;;         (-> (minsup $ptrn) 
-;;               (-> (db-ref $db) 
-;;                      (-> (emp-cpu $ptrn $db $emp) 
-;;                               (emp-val $ptrn (emp-tv (flatten $ptrn) $db))))))
+
 
 ;; Rule to calculate the empirical truth value of a pattern.
 ;;-----------------------------------------------------------------------
