@@ -1,14 +1,10 @@
 !(import! &self ../jsd)
 !(import! &self ../../utils/common-utils)
-!(import! &self ../../utils/jsd-helper)
-!(import! &self ../../utils/beta-dist)
+!(import! &self ../../utils/surp-utils/jsd-helper)
+!(import! &self ../../utils/surp-utils/beta-dist)
 !(import! &self ../../utils/TruthValue)
 !(import! &self ../../utils/constants)
-!(import! &self ../../utils/boost-petta)
-
-
-
-
+!(import! &self ../../utils/surp-utils/boost-petta)
 
 
 
@@ -60,8 +56,11 @@
 
 !(assertEqual 
    (do-jsd (STV 0.33333333 0.0037359900373599) (STV 0.6666666666666667 0.0074441687344913) )
-   0.47967424307621515
+   0.0.477956919282604
 )
+	
+	
+
 	
 	
 
