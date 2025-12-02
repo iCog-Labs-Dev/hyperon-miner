@@ -1,10 +1,12 @@
-!(import! &self ../jsd)
+!(import! &self ../../utils/constants)
 !(import! &self ../../utils/common-utils)
-!(import! &self ../../utils/surp-utils/jsd-helper)
 !(import! &self ../../utils/surp-utils/beta-dist)
 !(import! &self ../../utils/TruthValue)
-!(import! &self ../../utils/constants)
 !(import! &self ../../utils/surp-utils/boost-petta)
+!(import! &self ../../utils/surp-utils/jsd-helper)
+!(import! &self ../jsd)
+
+
 
 
 
@@ -45,16 +47,16 @@
 ;; =============================================================================
 ;; Test 2: do-jsd (Basic JSD Calculation) 
 ;; -----------------------------------------------------------------------------
-(assertEqual 
-	(do-jsd (STV 0.8 0.5555555555555556) (STV 0.7968127490039841 0.5565410199556541) 
-	0.08473344631078218)
+!(assertEqual 
+	(do-jsd (STV 0.8 0.5555555555555556) (STV 0.7968127490039841 0.5565410199556541) )
+	0.08473344631078218
 )
 
 ;; =============================================================================
 ;; Test 3: do-jsd (Basic JSD Calculation) 
 ;; -----------------------------------------------------------------------------
 
-!(assertEqual 
+(assertEqual 
    (do-jsd (STV 0.33333333 0.0037359900373599) (STV 0.6666666666666667 0.0074441687344913) )
    0.477956919282604
 )
