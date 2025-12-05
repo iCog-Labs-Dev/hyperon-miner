@@ -205,12 +205,12 @@ This document provides an overview of several Metta functions used for calculati
 - **Output:**  
   - A random integer in the specified range.
 
-### `get-element`
+### `get-element-by-index`
 - **Description:**  
   Retrieves an element from a list based on its index.
 - **Inputs:**  
-  - `$index`: The position of the element in the list.  
   - `$list`: The list from which to retrieve the element.
+  - `$index`: The position of the element in the list.  
 - **Output:**  
   - The element at the given index.
 
@@ -259,7 +259,7 @@ This document provides an overview of several Metta functions used for calculati
 - **Output:**  
   - A numerical value representing the chosen subsample size, ensuring it is not below a minimum threshold and does not exceed the database size.
 
-### `mk-stv`
+### `mk_stv`
 - **Description:**  
   Constructs a statistical truth value based on the mean and variance of empirical truth values.
 - **Inputs:**  

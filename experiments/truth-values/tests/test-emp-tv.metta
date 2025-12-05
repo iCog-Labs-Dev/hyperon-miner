@@ -42,7 +42,7 @@
 ;; Verifies counting of matching patterns in the knowledge base
 ;; Expected: 60 instances of (Inheritance $x $y)
 ;; =============================================================================
-!(assertEqual (sup (Inheritance $x $y) (get-space)) 60)
+!(assertEqual (sup-num (get-space) (Inheritance $x $y)) 60)
 
 ; ;; =============================================================================
 ; ;; Test: List Element Access
@@ -50,7 +50,8 @@
 ; ;; Verifies zero-based indexing of knowledge base elements  
 ; ;; Expected: Third element is (Inheritance Bob human)
 ; ;; =============================================================================
-!(assertEqual (get-element-by-Index  ((Inheritance Abe human) 
+
+!(assertEqual (get-element-by-Index ((Inheritance Abe human)
                              (Inheritance Rio human)
                              (Inheritance Bob human)
                              (Inheritance Mike human)
@@ -85,7 +86,7 @@
 ; ;; Test: Simple Truth Value Construction  
 ; ;; -----------------------------------------------------------------------------
 ; ;; Verifies EMPTV struct creation from raw values
-; ;; Expected: (EMPTV 0 0.00012498)
+; ;; Expected: (0 0.00012498)
 ; ;; =============================================================================
 !(assertEqual (mk_stv 1.7689693569125715 1.0178393379503528)
               (0 0.0001249843769528809))

@@ -241,22 +241,14 @@
 ;;   - $old-db-content: The content of the original database that needs to be duplicated.
 ;;
 ;; Internal Calculation:
-;;   1. If the $old-db-content is empty, return the original database as is.
-;;   2. Otherwise, add the first element of the content (car-atom) to the new database using `add-reduct`.
-;;   3. Recursively process the rest of the content (cdr-atom) to continue copying the remaining data.
+;;   1. by leveraging add-reducts function , add all the old-content to the given db.
 ;;   
 ;; Returns:
 ;;   - A new database instance containing all the data from the original database.
 ;; =============================================================================
 (= (copy-db $db $old-db-content)
-    (if (== $old-db-content ()) $db
-        (let* (
-                (($head $tail) (decons-atom $old-db-content))
-                ($_ (add-atom $db $head) )
-            )
-        (copy-db $db $tail)
-    )
-))
+    ( let $_ (collapse (add-reducts $db $old-db-content)) $db)  
+)
 
 ;; =============================================================================
 ;; Function: add_n_atoms_to_db
@@ -277,10 +269,11 @@
 ;;   - The database with the specified number of atoms added.
 ;; =============================================================================
 (= (add_n_atoms_to_db $db $n)
-    (if (<= $n 0) $db
-        (let* ( ($_ (add-atom $db Pattern))
-            )
-        (add_n_atoms_to_db $db (- $n 1))
+    (if (<= $n 0) 
+        $db
+        (   
+            let $_ (add-atom $db Pattern)
+                (add_n_atoms_to_db $db (- $n 1))
     )
 ))
 
@@ -557,7 +550,7 @@
 ;;   1. If the subsample size is less than the database size, the function performs resampling:
 ;;      - Calls `emp-tv-bs-helper` to generate multiple empirical truth values (one for each resample).
 ;;      - Averages the resampled empirical truth values using `avrg-tv-py`.
-;;      - Calls `mk-stv` to create a simple truth value from the mean and variance of the empirical truth values.
+;;      - Calls `mk_stv` to create a simple truth value from the mean and variance of the empirical truth values.
 ;;   2. If the subsample size is greater than or equal to the database size, it directly calculates the empirical truth value using `emp-tv`.
 ;;
 ;; Returns:
@@ -568,9 +561,8 @@
     (if (< $subsize (db_size $db))
         (let* (
                 ($esstvs (emp-tv-bs-helper $pattern $db $n-resample $subsize))
-                ((EMPTV $mean $variance) (avrg-tv-py $esstvs))
-                ($mk_stv_val (mk_stv $mean $variance))
-                ($finalAnswer (cons-atom EMPTV $mk_stv_val))
+                ($avrg_value (avrg_tv $esstvs))
+                ($finalAnswer (cons-atom EMPTV $avrg_value))
             )
             $finalAnswer
         ) ; Return average of the empirical truth values
@@ -617,6 +609,7 @@
         ($support_estimate (prob_to_support $pattern $db $prob_estimate))
         ($db-size (* (db_size $db) $db_ratio))
         ($subsize (subsmp-size $pattern $db-size $support_estimate))
+        ;;($n-resample (let $x (py-input "how many re-samples do you want:- " ) $x))
         ($n-resample 10)
         )
         (if (> $support_estimate $db-size)
