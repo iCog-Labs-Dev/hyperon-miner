@@ -1,24 +1,29 @@
-! (register-module! ../../../../hyperon-miner/experiments)
-! (import! &self experiments:utils:gen_partition)
-! (import! &self experiments:utils:common-utils)
-! (import! &self experiments:utils:blk-abstractness)
-! (import! &self experiments:utils:eq-prob)
-! (import! &self experiments:utils:index_to_var)
-! (import! &self experiments:utils:surp-utils)
-! (import! &self experiments:surprisingness:isurp)
-! (import! &self experiments:surprisingness:emp-prob)
-! (import! &self experiments:truth-values:emp-tv)
-! (import! &db experiments:data:ugly_man_sodaDrinker)
-! (import! &self experiments:utils:beta-dist)
-! (import! &self experiments:utils:constants)
-! (import! &self experiments:utils:TruthValue)
-! (import! &self experiments:utils:miner-utils)
-! (import! &self experiments:utils:customType)
-! (import! &self experiments:utils:gen_partition)
-! (import! &self experiments:truth-values:est-tv)
+!(import! &self ../../utils/common-utils)
+!(import! &self ../../utils/constants)
+!(import! &self ../../utils/TruthValue)
+!(import! &self ../../utils/surp-utils/partition-metta)
+!(import! &self ../../utils/surp-utils/binomialMetta)
+!(import! &self ../../utils/surp-utils/beta-dist)
+!(import! &self ../../utils/surp-utils/surp-utils)
+!(import! &self ../../utils/surp-utils/blk-abstractness)
+!(import! &self ../../utils/surp-utils/eq-prob-petta)
+!(import! &self ../../utils/surp-utils/bs-utils)
+!(import! &self ../../truth-values/emp-tv)
+!(import! &self ../../truth-values/est-tv)
+!(import! &self ../../utils/index_to_var)
+!(import! &self ../../data/ugly_man_sodaDrinker)
+!(import! &self ../../surprisingness/emp-prob)
+!(import! &self ../../surprisingness/isurp)
 
 
 
+(migrateAtoms (-> %Undefined% %Undefined% Expression %Undefined%))
+(= (migrateAtoms $FromSpace $ToSpace $Pattern)
+   (collapse (match &self $Pattern  (collapse ((add-atom &kb $Pattern) 
+                          (remove-atom &self $Pattern))))))
+
+!(migrateAtoms &self &kb (Inheritance $a $b))
+!(===================================)
 
 
 ;; =============================================================================
@@ -56,7 +61,7 @@
 ;;   2. Validates stability of small probability values
 ;;   3. Ensures correct mapping from partitions to output list
 ;; =============================================================================
-(assertEqual (ji-est-tv &db 60 (,(Inheritance $x ugly) (Inheritance $x man) (Inheritance $x sodaDrinker)) 
+!(assertEqual (ji-est-tv &kb 60 (,(Inheritance $x ugly) (Inheritance $x man) (Inheritance $x sodaDrinker)) 
    (
      (((Inheritance $x man)) ((Inheritance $x sodaDrinker) (Inheritance $x ugly))) 
      (((Inheritance $x man) (Inheritance $x ugly)) ((Inheritance $x sodaDrinker))) 
@@ -89,8 +94,8 @@
 ;;   2. Verifies output in tuple format (min, max probability)
 ;;   3. Validates magnitude consistency with joint-inclusive cases
 ;; =============================================================================
-(assertEqual 
- (pro_prob_without_joint &db (((Inheritance $x man)) ((Inheritance $x sodaDrinker) (Inheritance $x ugly))))
+!(assertEqual 
+ (pro_prob_without_joint &kb (((Inheritance $x man)) ((Inheritance $x sodaDrinker) (Inheritance $x ugly))))
  (0 0.001979229795046239))
 
 
@@ -116,7 +121,7 @@
 ;;   2. Verifies minimal variable extraction for shared sub-clauses
 ;;   3. Ensures proper output format (variable list)
 ;; =============================================================================
-(assertEqual 
+!(assertEqual 
    (joint-variables (,(Inheritance $x ugly) (Inheritance $x man) (Inheritance $x sodaDrinker)) 
                     (((Inheritance $x man)) ((Inheritance $x sodaDrinker) (Inheritance $x ugly))))
    ($x))
@@ -144,7 +149,4 @@
 ;;   2. Validates consistent probability estimation with ratio scaling
 ;;   3. Checks compatibility with corresponding `pro_prob_without_joint` case
 ;; =============================================================================
-!(assertEqual (prob-with-joint &db 60 (((Inheritance $x man)) ((Inheritance $x sodaDrinker) (Inheritance $x ugly))) ($x) 1) 0.016666666666666666)
-
-
-
+!(assertEqual (prob-with-joint &kb 60 (((Inheritance $x man)) ((Inheritance $x sodaDrinker) (Inheritance $x ugly))) ($x) 1) 0.016666666666666666)

@@ -2,6 +2,15 @@
 ;; Common Utils ;;
 ;;;;;;;;;;;;;;;;;;
 
+;; move from beta-dist 
+(=(min-of-two $num1 $num2)(
+    if (< $num1 $num2) $num1 $num2
+))
+
+(=(max-of-two $num1 $num2)(
+    if (> $num1 $num2) $num1 $num2
+))
+
 ;;(: unify (-> Expression Expression Expression Expression %Undefined%))
 (= (unify $space $pattern $then $else)
    (if (is-space $space)
