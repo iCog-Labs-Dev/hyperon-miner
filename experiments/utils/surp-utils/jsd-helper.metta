@@ -49,7 +49,6 @@
     (py-call (boost_petta.boost_math_cdf $alpha $beta $x))
 )
 
-!(boost-math-cdf 2.0 5.0 0.5)  
 
 ;; Compute KLD between two CDFs (assumes both lists are same size)
 (=(kld $l_cdf $r_cdf)(
@@ -121,3 +120,7 @@
     / (+ $a $b) 2.0
 ))
 
+
+
+
+!(boost-math-cdf 2.0 5.0 0.5)  
