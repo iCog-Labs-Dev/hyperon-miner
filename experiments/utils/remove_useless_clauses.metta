@@ -16,8 +16,23 @@
 )
 
 (= (filter_in_others $var $others)
-    ((map-atom $others $x (if (== (get-metatype $x) Variable) (if (== $x $var) Pass $x) (if (== (get-metatype $x) Expression) (filter_in_others $var $x) $x)) ) $others)
-)
+   (if (== $others ())                                 ; empty list → return empty
+       ()
+       (let* (
+
+            ($head (car-atom $others)  )                 ; first element
+            ($tail (cdr-atom $others) )                  ; rest of the list
+            ($filtered-head (if (== (get-metatype $head) Expression)
+                                (filter_in_others $var $head) ; recurse inside expression
+                                (if (== (get-metatype $head) Variable)
+                                    (if (== $head $var) 
+                                        Pass   ; drop $var, keep others
+                                        $head)
+                                    $head
+                                        )))                    ; atom that is neither → keep
+            ($filtered-tail (filter_in_others $var $tail))
+       ) 
+        (cons-atom $filtered-head $filtered-tail))))
 
 (= (filter_foreach_var $var $others)
     (let* (
