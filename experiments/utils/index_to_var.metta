@@ -14,9 +14,7 @@
     (if (== $history ())
         ()
         (let* (
-                (true (println! (here in find_val history $history val $val)))
                 (($head $value) (car-atom $history))
-                (true (println! (here in find_val head $head value $value)))
                 ($tail (cdr-atom $history))
             )
             (if (== $head $val)
@@ -30,7 +28,6 @@
 (= (replacev $pattern)
     (let* (
        ($result (eval (deb2var $pattern ())))
-       (true (println! (here in replace $result)))
        (($varpat $list) $result)
        )
        $varpat
@@ -61,8 +58,6 @@
         ((cons-atom $var $rest) $final_history)
     )
 )
-; !(replacev (Inheritance Z Z))
-; !(replacev ((Inheritance Z (S Z)) (Inheritance (S Z) (S (S Z)))))
 
 (= (num2deb $pattern)
     (map-atom $pattern $x (if (== (get-type $x) Number) (fromNum $x) (if (and (not (== (get-type $x) Number)) (== (get-metatype $x) Expression)) (num2deb $x) $x)))
@@ -72,7 +67,6 @@
 (= (replace $pattern)
     (let* (
        ($result (eval (var2num $pattern 0 ())))
-       (true (println! (here in replace $result)))
        (($numpat $index $list) $result)
        ($deb (num2deb $numpat))
        )
@@ -134,5 +128,3 @@
         ((cons-atom $res_head $res_tail) $final_index $final_list)
         )   
 )
-
-; !(replace ((Inheritance $x $y) (Inheritance $y $z)))
