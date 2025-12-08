@@ -100,7 +100,9 @@
 )
 (= (clause_others_check $clause $pattern)
     (let*(
-        ($others (eval (subtraction-atom $pattern ($clause))))
+        (true (println! (here in clause_others_check $clause $pattern)))
+        ($others (eval (subtractions $pattern ($clause))))
+        (true (println! (here after subtraction $others)))
         ($res (is_more_abstract_for_each_var $clause $others))
         )
         $res
