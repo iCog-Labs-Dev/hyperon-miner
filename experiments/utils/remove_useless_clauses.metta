@@ -34,17 +34,28 @@
        ) 
         (cons-atom $filtered-head $filtered-tail))))
 
+(= (filter_foreach_var $var ())
+    ()
+)
+
 (= (filter_foreach_var $var $others)
     (let* (
-        ($other (superpose $others))
-        (($filtered $pat) (eval (filter_in_others $var $other)))
-        ($changed (call_replace ($filtered $pat)))
+        ; ($other (superpose $others))
+        ($head (car-atom $others))
+        ($tail (cdr-atom $others))
+        (($filtered $pat) ((eval (filter_in_others $var $head)) $head))
+        (true (println! (here in filter_foreach_var $var $filtered)))
+        ($changed (replace ($filtered $pat)))
+        (true (println! (here after replace $changed)))
+        ; ($changed (call_replace ($filtered $pat)))
         ($uniq (unique-atom $changed))
         ($ov (if (== (size-atom $uniq) (size-atom ($filtered $pat))) $pat ()))
+        ($rest (filter_foreach_var $var $tail))
     )
-    $ov
+    (cons-atom $ov $rest)
     )
 )
+
 
 (= (fold $unfiltered $acc)
     (if (== $unfiltered ())
