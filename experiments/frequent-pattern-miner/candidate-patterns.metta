@@ -1,12 +1,4 @@
 
-; ! (import! &self freq-pat)
-!(import! &self ../utils/index_to_var)
-!(import! &self ../data/small-ugly)
-; !(import! &self ../data/sample-data)
-!(import! &self ../utils/common-utils)
-!(import! &self ./build-specialization)
-
-!(migrateAtoms &self &dbspace (Inheritance $x $y))
 ; ---------------------------------
 ;; candidatePattern
 ; ---------------------------------
@@ -39,20 +31,15 @@
 ;         )
 ; )))
 
-(= (candidatePattern  $dbspace $spezspace $minsup $cndpspace)
+(= (candidatePattern $dbspace $spezspace $minsup $cndpspace)
     (match $spezspace (SpecializationOf $specialized $pattern)
         (let* ( 
-                (true (println! "==== Candidate Pattern started ====="))
-                ( $specializedvar (replacev $specialized))
+                (true (println! ("==== Candidate Pattern started =====", $specialized)))
+                ($specializedvar (replacev $specialized))
                 ($result (sup-num $dbspace $specializedvar))
                 (true (println! (here in candidatePattern $result)))
                 ($rem (if  (>= $result $minsup) (remove-atom $cndpspace (CandidatePattern $specialized $result)) ())  )             
                 ($add (if (>= $result $minsup) (add-atom $cndpspace (CandidatePattern $specialized $result)) ()))
             ) 
-        ; ($add $rem)
         $add
 )))
-
-!(build-specialization (Inheritance Z (S Z)) &dbspace &spezspace)
-!(candidatePattern &dbspace &spezspace 2 &cndpspace)
-!(match &cndpspace (CandidatePattern $x $y) (CandidatePattern $x $y))

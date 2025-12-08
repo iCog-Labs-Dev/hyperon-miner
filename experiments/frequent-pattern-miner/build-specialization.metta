@@ -1,12 +1,4 @@
 
-;! (import! &self freq-pat)
-!(import! &self ../utils/index_to_var)
-; !(import! &self ../data/small-ugly)
-!(import! &self ../data/sample-data)
-!(import! &self ../utils/common-utils)
-
-!(migrateAtoms &self &dbspace (Inheritance $x $y))
-; !(match &dbspace $x $x)
 ; ---------------------------------------
 ;; depth-handler
 ; ---------------------------------------
@@ -53,8 +45,9 @@
 (= (build-specialization ($link $x $y) $dbspace $specspace) 
             (let*
                 (  
-                    (true (println! "==== Build specialization started ====="))
+                    (true (println! ("==== Build specialization started =====", ($link $x $y))))
                     (($link $x1 $y1) (replacev ($link $x $y)))                            ; replacev is a function that replaces index with variables
+                    (true (println! (here in build-specialization ($link $x1 $y1))))
                     (($subx $suby) (match $dbspace ($link $x1 $y1) ($x1 $y1)))            ; getting the substitution /valuation of the pattern
                     ($shabx (depth-handler $subx))                                    ;handle depth in the x node
                     ($shaby (if (== $subx $suby) $shabx (depth-handler $suby)))                                    ; handle depth in the y node   
@@ -79,6 +72,6 @@
 )
 
 
-!(build-specialization (Inheritance Z (S Z)) &dbspace &specspace)
+; !(build-specialization (Inheritance Z (S Z)) &dbspace &specspace)
 
-!(match &specspace (SpecializationOf $x $y) (SpecializationOf $x $y))
+; !(match &specspace (SpecializationOf $x $y) (SpecializationOf $x $y))
