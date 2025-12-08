@@ -71,9 +71,28 @@
     )
 )
         
+(= (remove_Abstract_clauses_helper () $patternog)
+    ()
+)
+        
+(= (remove_Abstract_clauses_helper $pattern $patternog)
+    (let*(
+        ($head (car-atom $pattern))
+        ($tail (cdr-atom $pattern))
+        ($checked_clause (check_others $head $patternog))
+        (true (println! (here after check $checked_clause)))
+        ($rest (remove_Abstract_clauses_helper $tail $patternog))
+        ($final (cons-atom $checked_clause $rest))
+        (true (println! (here after map $final)))
+        )
+        $final
+    )
+)
 (= (remove_Abstract_clauses $pattern)
     (let*(
-        ($unfolded (map-atom $pattern $clause (check_others $clause $pattern)))
+        (true (println! (here in remove_Abstract_clauses $pattern)))
+        ($unfolded (remove_Abstract_clauses_helper $pattern $pattern))
+        (true (println! (here after map $unfolded)))
         ($final (fold $unfolded ()))
         )
         $final
