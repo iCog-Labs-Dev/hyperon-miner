@@ -1,11 +1,15 @@
 
-! (register-module! ../../../hyperon-miner)
-! (import! &self hyperon-miner:experiments:utils:common-utils)
-! (import! &self hyperon-miner:experiments:frequent-pattern-miner:freq-pat)
-! (import! &self hyperon-miner:experiments:utils:index_to_var)
-! (import! &self hyperon-miner:experiments:utils:blk-abstractness)
-! (import! &self hyperon-miner:experiments:utils:gen_partition)
+; ! (register-module! ../../../hyperon-miner)
+; ! (import! &self hyperon-miner:experiments:utils:common-utils)
+; ! (import! &self hyperon-miner:experiments:frequent-pattern-miner:freq-pat)
+; ! (import! &self hyperon-miner:experiments:utils:index_to_var)
+; ! (import! &self hyperon-miner:experiments:utils:blk-abstractness)
+; ! (import! &self hyperon-miner:experiments:utils:gen_partition)
 
+!(import! &self ../../common-utils)
+!(import! &self ../../index_to_var)
+!(import! &self ../../blk-abstractness)
+!(import! &self ../../partition-metta)
 
 ; (= (can-unify-ground $ground1 $ground2)
 ;     (if (== $ground1 $ground2)

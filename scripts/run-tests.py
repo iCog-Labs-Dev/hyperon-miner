@@ -74,7 +74,9 @@ print_ascii_art("Parallel Test Runner")
 # Whitelist
 allowed_tests = {
     "test-isurp-old.metta",
-    "test-common-utils.metta"
+    "test-common-utils.metta",
+    "test-isurp.metta",
+    "test-surp.metta", 
 }
 
 # Collect tests inside ../

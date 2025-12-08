@@ -1,5 +1,5 @@
 ;connected-subpatterns-with-var
-
+(= (is-blk-more-abstract $head $pivot $var) True)
 ;argumets: $paratition (the target patition which is a list of blocks)
 ;$var the variable we are concerned with
 
@@ -39,7 +39,20 @@
         )
     ))
 
-(=(rmvPar $x) (if (== $x ()) (empty) (let $fuc (checkPat $x) (if $fuc $x  (if (== (size-atom $x) 1) $x $x))))) 
+(=(rmvPar $x) 
+    (if (== $x ()) 
+        (empty) 
+        (let $fuc (checkPat $x) 
+            (if $fuc 
+                $x  
+                (if (== (size-atom $x) 1) 
+                    $x 
+                    $x
+                )
+            )
+        )
+    )
+) 
 
 
 
@@ -361,22 +374,57 @@
 ;;   (get-var '((Pattern $x $y) (Pattern $z Jon))) → ($x $y $z)
 
 
-(=(get-var $conjunct) (let $lst (collapse (let $a (car-atom $conjunct) (if (not (== $a ,)) (let $firtype (get-metatype $a) 
+(=(get-var $conjunct) 
+    (let $lst (collapse 
+        (let $a (car-atom $conjunct) 
+            (if (not (== $a ,)) 
+                (let $firtype (get-metatype $a) 
+                    (if (== $firtype Expression) 
+                        (get-variables-helper (superpose $conjunct) ) 
+                        (get-variables-helper $conjunct )
+                    )
+                ) 
+                (let $b (cdr-atom $conjunct) 
+                    (get-variables-helper (superpose $b))
+                )
+            )
+        )) 
+        (get-variables-step $lst ())
+    ) 
+)
 
-(if (== $firtype Expression) (get-variables-helper (superpose $conjunct) ) (get-variables-helper $conjunct ))) 
+(=(ret-vars $x) 
+    (let $invar (checkPat $x ) 
+        (if $invar (get-variables-helper $x ) 
+            (if (== ( get-metatype $x ) Variable) 
+                $x 
+                (empty)
+            )
+        )
+    )
+)
 
 
-(let $b (cdr-atom $conjunct) (get-variables-helper (superpose $b)))))) (get-variables-step $lst ())) )
 
-(=(ret-vars $x) (let $invar (checkPat $x ) (if $invar (get-variables-helper $x ) (if (== ( get-metatype $x ) Variable) $x (empty)))))
-
-
-
-(=(get-variables-helper $pattern) (let $a (cdr-atom $pattern) (ret-vars (superpose $a))))
-
+(=(get-variables-helper $pattern) 
+    (let $a (cdr-atom $pattern) 
+        (ret-vars (superpose $a))
+    )
+)
 
 
-(=(get-variables-step $lst $acc) (if  (== $lst ()) $acc (let* ((($head $tail) (decons-atom $lst))) (if (== ((intersection-atom ($head) $acc)) (())) (get-variables-step $tail (cons-atom $head $acc)) (get-variables-step $tail $acc))) ))
+
+(=(get-variables-step $lst $acc) 
+    (if  (== $lst ()) 
+        $acc 
+        (let* (
+            (($head $tail) (decons-atom $lst))) 
+        (if (== ((intersection-atom ($head) $acc)) (())) 
+            (get-variables-step $tail (cons-atom $head $acc)) 
+            (get-variables-step $tail $acc))
+        )
+    )
+)
 
 
 
@@ -407,23 +455,53 @@
 ;;   Result: ($x) - because it appear in both blocks
 ;; =============================================================================
 ; (: joint-variables (-> Expression Expression Expression))
-(=(joint-vars-helper $partition $uniqueVars) (collapse (retJointvar $partition (superpose $uniqueVars))))
+(=(joint-vars-helper $partition $uniqueVars) 
+        (collapse (retJointvar $partition (superpose $uniqueVars)))
+)
 
-(=(retJointvar $partition $var) (let $retPats (collapse (retJointPat (superpose $partition) $var)) (if (> (size-atom $retPats) 1)  $var (empty))))
-
-
-
-(=(retJointPat $block $var)  (let $blo (collapse (retjointSubPat (superpose $block) $var)) (if (> (size-atom $blo) 0) $block (empty) )) )
-
-
-
-(=(retjointSubPat $subpat $var) (let* (($tail (cdr-atom $subpat)) ($JoinedVars (collapse (checkSubInter (superpose $tail) $var)) )) (if (== (size-atom $JoinedVars) 0) (empty) $subpat)))
+(=(retJointvar $partition $var) 
+    (let $retPats (collapse (retJointPat (superpose $partition) $var)) 
+    (if (> (size-atom $retPats) 1)  $var (empty)))
+)
 
 
-(=(checkSubInter $part $var) (let $invar (checkPat $part) (if $invar (retjointSubPat $part $var) (if (and (== (get-metatype $part) Variable) (== $var $part)) $part (empty)) )))
+
+(=(retJointPat $block $var)  
+    (let $blo (collapse (retjointSubPat (superpose $block) $var)) 
+    (if (> (size-atom $blo) 0) $block (empty) )) 
+)
+
+
+
+(=(retjointSubPat $subpat $var) 
+    (let* (
+            ($tail (cdr-atom $subpat)) 
+            ($JoinedVars (collapse (checkSubInter (superpose $tail) $var)) )) 
+        (if (== (size-atom $JoinedVars) 0) 
+            (empty) 
+            $subpat
+        )
+    )
+)
+
+
+(=(checkSubInter $part $var) 
+    (let $invar (checkPat $part) 
+        (if $invar (retjointSubPat $part $var) 
+            (if (and (== (get-metatype $part) Variable) (== $var $part)) 
+                $part 
+                (empty)
+            ) 
+        )
+    )
+)
 
 ;we could pass the origninal conjunct pattern and the partiton if we want,then get-variables retrunds a list of unique variables in the list
-(=(joint-variables  $pattern $partition) (let $invar (get-var $pattern) (joint-vars-helper $partition $invar)))
+(=(joint-variables  $pattern $partition) 
+    (let $invar (get-var $pattern) 
+        (joint-vars-helper $partition $invar)
+    )
+)
 
 
 
@@ -447,7 +525,7 @@
         ()
         (let* (
             ($var (car-atom $vars1))
-            ($remaining (cdr-atom $vars1))
+            (($remaining) (cdr-atom $vars1))
             ($rest-intersection (intersection-vars $remaining $vars2))
         )
         (if (is-membership $var $vars2)

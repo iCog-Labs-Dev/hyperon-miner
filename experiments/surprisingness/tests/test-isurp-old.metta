@@ -1,9 +1,11 @@
 !(import! &self ../../utils/common-utils)
-!(import! &self  ../../utils/binomialMetta)
-!(import! &self  ../../utils/constants)
+!(import! &self  ../../utils/surp-utils/binomialMetta)
+!(import! &self  ../../utils/surp-utils/surp-utils)
+!(import! &self  ../../utils/surp-utils/partition-metta )
 !(import! &self  ../../utils/TruthValue)
-!(import! &self  ../../utils/surp-utils)
-!(import! &self  ../../utils/partition-metta )
+!(import! &self  ../../utils/constants)
+
+
 ;! (import! &self  ../../utils/customType)
 !(import! &self ../../truth-values/est-tv)
 !(import! &self ../isurp-old)
