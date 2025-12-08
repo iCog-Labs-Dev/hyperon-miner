@@ -3,7 +3,6 @@
         ()
         (let* (
                 ($head1 (car-atom $list1))
-                (true (println! (here in subtraction $head1 $list2)))
                 ($tail1 (cdr-atom $list1))
                 ($rest (subtractions $tail1 $list2))
                 )
@@ -175,7 +174,7 @@
 (= (is_more_abstract_for_var $var $others)
     (let* (
         ($filtered (filter_foreach_var $var $others))
-        ($isMoreAbstract (if (== (eval (unique-atom $filtered)) (())) False True))
+        ($isMoreAbstract (if (== (eval (unique-atom $filtered)) ()) False True))
     )
     ($isMoreAbstract $filtered $var)
     )

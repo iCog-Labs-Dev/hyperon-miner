@@ -1,13 +1,9 @@
-! (register-module! ../../experiments)
-! (import! &self experiments:utils:remove_useless_clauses)
-! (import! &self experiments:frequent-pattern-miner:conjunction-expansion)
-! (import! &self experiments:frequent-pattern-miner:use-python)
-! (import! &self experiments:utils:common-utils)
-! (import! &self experiments:frequent-pattern-miner:freq-pat)
-! (import! &self experiments:utils:index_to_var)
-! (import! &self experiments:utils:blk-abstractness)
-! (import! &self experiments:utils:gen_partition)
-
+!(import! &self ../utils/index_to_var)
+!(import! &self ../utils/common-utils)
+!(import! &self ../utils/blk-abstractness)
+!(import! &self ../utils/partition-metta)
+!(import! &self ../frequent-pattern-miner/conjunction-expansion)
+!(import! &self ../utils/remove_useless_clauses)
 
 
 
@@ -56,7 +52,7 @@
 
 !(assertEqual (remove_useless_clauses ((Inheritance $x ugly) (Inheritance Allen $y) (Inheritance $x $y))) ((Inheritance $x ugly) (Inheritance Allen $y)))
 
-==================================================================================================================================
+; ==================================================================================================================================
 
 ; void MinerUTest:: test_remove_useless_clauses_3()
 ; {
@@ -85,7 +81,7 @@
 
 !(assertEqual (remove_useless_clauses ((Inheritance $x $y) (Inheritance $y $z) (Inheritance $z $w))) ((Inheritance $x $y) (Inheritance $y $z) (Inheritance $z $w)))
 
-==================================================================================================================================
+; ==================================================================================================================================
 
 ; void MinerUTest::test_is_more_abstract_foreach_var()
 ; {
