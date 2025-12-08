@@ -1,4 +1,20 @@
 
+(= (subtractions $list1 $list2)
+    (if (== $list1 ())
+        ()
+        (let* (
+                ($head1 (car-atom $list1))
+                (true (println! (here in subtraction $head1 $list2)))
+                ($tail1 (cdr-atom $list1))
+                ($rest (subtractions $tail1 $list2))
+                )
+            (if (does_exist $head1 $list2)
+                $rest
+                (cons-atom $head1 $rest))
+        )
+    )
+)
+
 (= (filter_in_others $var $others)
     ((map-atom $others $x (if (== (get-metatype $x) Variable) (if (== $x $var) Pass $x) (if (== (get-metatype $x) Expression) (filter_in_others $var $x) $x)) ) $others)
 )
