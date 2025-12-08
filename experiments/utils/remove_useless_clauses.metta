@@ -194,11 +194,32 @@
 ; =========================================================================================
 
 (= (constant_clause_check $clause)
-    (let $vars (get_variable_for_pattern $clause) (if (== $vars ()) () $clause))
+     (let*(
+        (true (println! (here in check $clause)))
+        ($vars (get_variables_for_tree $clause))
+        (true (println! (here after get_variables $vars)))
+        ($res (if (== $vars ()) () $clause))
+        )$res )
+)
+
+(= (check_constant ())
+    ()
+)
+(= (check_constant $pattern)
+   (let*(
+    ($clause (car-atom $pattern))
+    ($tail (cdr-atom $pattern))
+    ($res (constant_clause_check $clause)) 
+    ($rest (check_constant $tail))
+   )
+    (cons-atom $res $rest)
+    )
+    
 )
 (= (remove_constant_clauses $pattern)
     (let* (
-        ($unfolded (map-atom $pattern $clause (constant_clause_check $clause)))
+        ($unfolded (check_constant $pattern))
+        (true (println! (here after map $unfolded)))
         ($final (fold $unfolded ()))
     )
     $final)
