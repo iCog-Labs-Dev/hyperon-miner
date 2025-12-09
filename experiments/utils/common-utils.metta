@@ -43,6 +43,33 @@
 ))
 
 
+(= (get_variables_for_tree $pattern)
+    (if (== $pattern ())
+        ()
+        (let* (
+                ($head (car-atom $pattern))
+                ($tail (cdr-atom $pattern))
+                ($headvar (if (== (get-metatype $head) Expression)
+                                (get_variables_for_tree $head)
+                                (if (== (get-metatype $head) Variable)
+                                ($head)
+                                ())
+                                ))
+                ($tailvar (get_variables_for_tree $tail))
+            )
+            (union-atom $headvar $tailvar)
+        )
+    )
+)
+
+(= (does_exist $var $list_vars)
+    (if (== $list_vars ())
+        False
+        (if (== $var (car-atom $list_vars))
+            True
+            (does_exist $var (cdr-atom $list_vars)))
+    )
+)
 
 ;;Determines the number of conjunctive clauses in a pattern.
 (=(n_conjuncts_new $pattern) (

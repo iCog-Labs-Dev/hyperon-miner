@@ -33,26 +33,6 @@
 )
 
 
-(= (get_variables_for_tree $pattern)
-    (if (== $pattern ())
-        ()
-        (let* (
-                ($head (car-atom $pattern))
-                ($tail (cdr-atom $pattern))
-                ($headvar (if (== (get-metatype $head) Expression)
-                                (get_variables_for_tree $head)
-                                (if (== (get-metatype $head) Variable)
-                                ($head)
-                                ())
-                                ))
-                ($tailvar (get_variables_for_tree $tail))
-            )
-            (union-atom $headvar $tailvar)
-        )
-    )
-)
-
-
 (= (get_variable_for_pattern $pattern)
     (let true (println! $pattern) (case ($pattern) (
             ( (()) ())
@@ -126,15 +106,6 @@
             (if (does_exist $head $cnjtion_vars)
                 (concatTuple ( ($head (generateRandomVar))) (address_conflict $tail $cnjtion_vars ))
                 (concatTuple ( ($head $head)) (address_conflict $tail $cnjtion_vars))))
-    )
-)
-
-(= (does_exist $var $list_vars)
-    (if (== $list_vars ())
-        False
-        (if (== $var (car-atom $list_vars))
-            True
-            (does_exist $var (cdr-atom $list_vars)))
     )
 )
 
@@ -253,9 +224,13 @@
 (= (remove_conjuncts_with_redundant_clauses $conjunction) 
     (let* (
         ($conjuncts (get-conjuncts $conjunction))
+        (true (println! ("Conjuncts before removing redundant clauses" $conjuncts)))
         ($uselessrem (remove_useless_clauses $conjuncts))
+        (true (println! ("Conjuncts after removing redundant clauses" $uselessrem)))
         ($debconj (replace $uselessrem))
+        (true (println! ("Debruijn conjuncts after removing redundant clauses" $debconj)))
         ($unique_conjuncts (unique-atom $debconj))
+        (true (println! ("Unique debruijn conjuncts" $unique_conjuncts (size-atom $conjuncts))))
         )
     (if (== (size-atom $conjuncts) (size-atom $unique_conjuncts))
         $conjunction
@@ -352,6 +327,7 @@
     (let* (
         (true (println! "==== Formating  started ====="))
         ($sortedlist (unique-atom (collapse (match $conjspace $pattern (sort_conj $pattern)))))
+        (true (println! (here in formating $sortedlist)))
         ($sorted (superpose $sortedlist))
         ($res (cons-atom , $sorted))
         ($var (replacev $res))
