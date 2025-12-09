@@ -1,14 +1,14 @@
 
-! (register-module! ../../../../hyperon-miner)
-! (import! &self hyperon-miner:experiments:frequent-pattern-miner:conjunction-expansion)
-! (import! &self hyperon-miner:experiments:utils:common-utils)
-! (import! &self hyperon-miner:experiments:frequent-pattern-miner:conj-exp)
+!(import! &self ../../utils/common-utils)
+!(import! &self ../../utils/index_to_var)
+!(import! &self ../../utils/variable-combinations)
+!(import! &self ../conjunction-expansion)
 
 
-!(assertEqual (get_variable_for_pattern (link $x $y)) ($x $y))
-!(assertEqual (get_variable_for_pattern (link $x (link $y $z))) ($x $y $z))
-!(assertEqual (get_variable_for_pattern (link $x (link $y (link $z $t)))) ($x $y $z $t))
-!(assertEqual (get_variable_for_pattern  (link (link (link $s $k) (link $n $m)) (link (link $g $t) (link $p $r)))) ($s $k $n $m $g $t $p $r))
+!(assertEqual (get_variables_for_tree (link $x $y)) ($x $y))
+!(assertEqual (get_variables_for_tree (link $x (link $y $z))) ($x $y $z))
+!(assertEqual (get_variables_for_tree (link $x (link $y (link $z $t)))) ($x $y $z $t))
+!(assertEqual (get_variables_for_tree  (link (link (link $s $k) (link $n $m)) (link (link $g $t) (link $p $r)))) ($s $k $n $m $g $t $p $r))
 
 
 !(assertEqual (substitute (link $x $y) ($a $b)) ((link $a $b) ()))

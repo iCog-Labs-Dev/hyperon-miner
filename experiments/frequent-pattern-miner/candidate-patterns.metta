@@ -1,9 +1,7 @@
 
-! (import! &self freq-pat)
-
----------------------------------
+; ---------------------------------
 ;; candidatePattern
----------------------------------
+; ---------------------------------
 ;get candidate patterns based on theri support
 ;; 1. get the specialized pattern
 ;; 2. calculate the support of the pattern
@@ -33,16 +31,15 @@
 ;         )
 ; )))
 
-(= (candidatePattern  $dbspace $spezspace $minsup $cndpspace)
+(= (candidatePattern $dbspace $spezspace $minsup $cndpspace)
     (match $spezspace (SpecializationOf $specialized $pattern)
         (let* ( 
-                (() (println! "==== Candidate Pattern started ====="))
-                ( $specializedvar (replacev $specialized))
+                (true (println! ("==== Candidate Pattern started =====", $specialized)))
+                ($specializedvar (replacev $specialized))
                 ($result (sup-num $dbspace $specializedvar))
-                (() (println! (here in candidatePattern $result)))
-                ; ($rem (if  (>= $result $minsup) (remove-atom $cndpspace (CandidatePattern $specialized $result)) ())  )             
+                (true (println! (here in candidatePattern $result)))
+                ($rem (if  (>= $result $minsup) (remove-atom $cndpspace (CandidatePattern $specialized $result)) ())  )             
                 ($add (if (>= $result $minsup) (add-atom $cndpspace (CandidatePattern $specialized $result)) ()))
             ) 
-        ; ($add $rem)
         $add
 )))
