@@ -1,9 +1,6 @@
 (: Nat Type)
 (: Z Nat)
 (: S (-> Nat Nat))
-(: Nat Type)
-(: Z Nat)
-(: S (-> Nat Nat))
 
 (= (debruijn2num Z) 0)
 

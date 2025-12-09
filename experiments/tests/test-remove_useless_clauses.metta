@@ -1,8 +1,7 @@
-!(import! &self ../utils/index_to_var)
 !(import! &self ../utils/common-utils)
-!(import! &self ../utils/blk-abstractness)
-!(import! &self ../utils/partition-metta)
-!(import! &self ../frequent-pattern-miner/conjunction-expansion)
+!(import! &self ../utils/index_to_var)
+!(import! &self ../utils/surp-utils/blk-abstractness)
+!(import! &self ../utils/surp-utils/partition-metta)
 !(import! &self ../utils/remove_useless_clauses)
 
 
