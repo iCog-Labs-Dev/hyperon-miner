@@ -173,8 +173,8 @@
 
 (= (is_more_abstract_for_var $var $others)
     (let* (
-        ($filtered (filter_foreach_var $var $others))
-        ($isMoreAbstract (if (== (eval (unique-atom $filtered)) ()) False True))
+        ($filtered (if (== $others ()) (()) (filter_foreach_var $var $others)))
+        ($isMoreAbstract (if (== (eval (unique-atom $filtered)) (())) False True))
     )
     ($isMoreAbstract $filtered $var)
     )
