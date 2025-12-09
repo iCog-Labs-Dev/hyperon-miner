@@ -11,26 +11,38 @@ on:
 jobs:
   setup-and-test:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # -------------------------------------------------------
+      # Install Python + SciPy (added for your test dependency)
+      # -------------------------------------------------------
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10" # SciPy supports 3.9–3.12
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install scipy
+          # If your tests require other libs, add them here:
+          # pip install -r requirements.txt
+      # -------------------------------------------------------
       - name: Install SWI-Prolog
         run: |
           sudo apt-get update
           sudo apt-get install -y swi-prolog
 
-
-      #  Run setup.sh (clones PeTTa, sets paths, makes run.sh executable)
+      # Run setup.sh (clones PeTTa, sets paths, makes run.sh executable)
       - name: Run setup script
         run: |
           chmod +x setup.sh
           ./setup.sh
 
-  
       - name: Run PeTTa tests
         run: python3 scripts/run-tests.py
         env:
-          # Add PeTTa to PATH so run.sh can be found
           PATH: ${{ github.workspace }}/PeTTa:${{ env.PATH }}
