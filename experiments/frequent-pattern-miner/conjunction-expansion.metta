@@ -178,9 +178,7 @@
 )
 (= (replace_pattern $cnjtion $pattern $pv2cv)
     (let* (
-            (true (println! (here in replace_pattern $pv2cv)))
             ($sup (superpose $pv2cv))
-            (true (println! (here in substitute $pattern $sup)))
             ($exp (substitute $pattern $sup))
             ($new_cnjtion (, $cnjtion (car-atom $exp)))
         )
@@ -224,13 +222,9 @@
 (= (remove_conjuncts_with_redundant_clauses $conjunction) 
     (let* (
         ($conjuncts (get-conjuncts $conjunction))
-        (true (println! ("Conjuncts before removing redundant clauses" $conjuncts)))
         ($uselessrem (remove_useless_clauses $conjuncts))
-        (true (println! ("Conjuncts after removing redundant clauses" $uselessrem)))
         ($debconj (replace $uselessrem))
-        (true (println! ("Debruijn conjuncts after removing redundant clauses" $debconj)))
         ($unique_conjuncts (unique-atom $debconj))
-        (true (println! ("Unique debruijn conjuncts" $unique_conjuncts (size-atom $conjuncts))))
         )
     (if (== (size-atom $conjuncts) (size-atom $unique_conjuncts))
         $conjunction
@@ -288,9 +282,7 @@
         ($conjunct (replacev $coming_conj))
         ($matches (match $cndb (CandidatePattern $pattern $cnt) (replacev $pattern)))
         ($listconj (expand_conjunction $conjunct $matches $db $ms 2 False))
-        (true (println! ("====list_conj" $listconj)))
         ($fitlered (remove_conjuncts_with_redundant_clauses $listconj))
-        (true (println! ("==== Filtered conjunctions ====" $fitlered)))
         ($final (replace $fitlered))
 
     )
@@ -327,7 +319,6 @@
     (let* (
         (true (println! "==== Formating  started ====="))
         ($sortedlist (unique-atom (collapse (match $conjspace $pattern (sort_conj $pattern)))))
-        (true (println! (here in formating $sortedlist)))
         ($sorted (superpose $sortedlist))
         ($res (cons-atom , $sorted))
         ($var (replacev $res))
