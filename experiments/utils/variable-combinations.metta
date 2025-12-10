@@ -16,7 +16,6 @@
                 ($tail-comb (cdr-atom $combinations))
                 ($check (exist $head-comb $vars))
                 ($res (if $check $head-comb Empty))
-                (true (println! (here in vars-exist $res)))
                 ($rest (vars-exist $tail-comb $vars))
               )
             (cons-atom $res $rest)
@@ -74,7 +73,6 @@
               ;; Update 4: Pass $vars TWICE. 
               ;; Once as the list to iterate, once as the full master list.
               ($final (try-replace $vars $vars $rest-pat2 $current $after-keep))
-              (true (println! (here in combiner-all $final)))
              )
          $final
          )))
@@ -86,22 +84,9 @@
 (= (combine_lists $vars1 $vars2) 
     (let* (
         ($combinations (combiner-all $vars1 $vars2 () ()))
-        ; (() (println!( "Combinations: " $combinations)))
         ($vars1-check (vars-exist $combinations $vars1))
-        (true (println! ("Vars1 check: " $vars1-check)))
-        ; ($vars2-check (if (vars-exist $combinations $vars2) $combinations Empty))
-        ; (() (println! ("Vars2 check: " $vars2-check)))
     ) $vars1-check
     )
 )
 
 
-; ; !(experimenting with the second pattern that has 1 variable)
-; !(combine_lists ($B) ($C))
-; !(combine_lists ($A $B) ($C))
-
-; ; !(experimenting with the second pattern that has 2 variables)
-; !(combine_lists ($A $B) ($c $d))
-
-; ; !(experimenting with the second pattern that has 3 variables)
-; !(combine_lists ($A $B) ($A $C $D))

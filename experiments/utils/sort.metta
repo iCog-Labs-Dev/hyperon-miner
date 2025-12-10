@@ -126,9 +126,7 @@
 (= (sort_conj $conjunct)
     (let* (
         ($pattern (get-conjuncts $conjunct))
-        (true (println! ("Unsorted Pattern: " $pattern)))
         ($sorted (sort_conj_helper $pattern))
-        (true (println! ("Sorted Pattern: " $sorted)))
     )$sorted
     )
 )
@@ -138,9 +136,7 @@
        (let* (
             ($score (set_score $pattern))
             ($passed (sort_pass $pattern))
-            (true (println! ("Passed: " $passed)))
             (($rest $last) (pop $passed))
-            (true (println! ("Rest: " $rest)))
             ($rem (sort_conj_helper $rest))
         )
         (union-atom $rem $last))
