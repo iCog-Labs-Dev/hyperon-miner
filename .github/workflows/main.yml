@@ -16,11 +16,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install SWI-Prolog + Janus
+      - name: Install SWI-Prolog and Janus
         run: |
           sudo apt-get update
-          sudo apt-get install -y swi-prolog swi-prolog-nox swi-prolog-packages
-          swipl -g "pack_install(janus,[interactive(false)])" -t halt
+          sudo apt-get install -y swi-prolog libpython3-dev cmake git
+
+          # Build Janus manually
+          git clone https://github.com/SWI-Prolog/packages-janus.git
+          cd packages-janus
+          mkdir build && cd build
+          cmake -DCMAKE_INSTALL_PREFIX=/usr ..
+          make -j$(nproc)
+          sudo make install
 
 
       - name: Setup Python Environment
