@@ -39,6 +39,10 @@ jobs:
         run: |
           chmod +x setup.sh
           ./setup.sh
+      - name: Debug failing test
+        run: |
+          echo "=== DEBUG test-jsd.metta ==="
+          ./PeTTa/run.sh experiments/surprisingness/tests/test-jsd.metta --debug || true
 
       - name: Run PeTTa tests
         run: python3 scripts/run-tests.py
