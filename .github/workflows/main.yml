@@ -19,10 +19,11 @@ jobs:
       - name: Install SWI-Prolog and Janus
         run: |
           sudo apt-get update
-          sudo apt-get install -y swi-prolog libpython3-dev cmake git
+          sudo apt-get install -y swi-prolog libpython3-dev build-essential cmake git
 
-          # Build Janus manually
-          git clone https://github.com/SWI-Prolog/packages-janus.git
+          # Clone Janus using the public git protocol (no auth needed)
+          git clone --depth 1 git://github.com/SWI-Prolog/packages-janus.git
+
           cd packages-janus
           mkdir build && cd build
           cmake -DCMAKE_INSTALL_PREFIX=/usr ..
