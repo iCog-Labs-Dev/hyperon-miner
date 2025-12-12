@@ -76,10 +76,10 @@ allowed_tests = {
     "test-isurp-old.metta",
     "test-common-utils.metta",
     "test-isurp.metta",
-    "test-surp.metta",
     "test-est-tv.metta",
     "test-surp.metta",
     "test-emp-tv.metta",
+    "test-jsd.metta",
 }
 
 # Collect tests inside ../
