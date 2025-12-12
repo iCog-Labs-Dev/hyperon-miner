@@ -153,3 +153,26 @@
 ;;   3. Checks compatibility with corresponding `pro_prob_without_joint` case
 ;; =============================================================================
 !(assertEqual (prob-with-joint &kb 60 (((Inheritance $x man)) ((Inheritance $x sodaDrinker) (Inheritance $x ugly))) ($x) 1) 0.016666666666666666)
+
+
+
+;; =============================================================================
+;; Test: do-ji-tv-est
+;; -----------------------------------------------------------------------------
+;; Purpose:
+;;   Verify estimation of TruthValues for joint-inference patterns.
+;;
+;; Inputs:
+;;   - DB Reference: &db
+;;   - Pattern: (, (Inheritance $x ugly)
+;;                  (Inheritance $x woman))
+;;
+;; Expected Output:
+;;   (STV 0.0027777777777780515 0.0006976744186046523)
+;;
+;; Verification:
+;;   1. Confirms joint-inference TruthValue estimation
+;;   2. Validates accuracy of small probability values
+;; =============================================================================
+!(assertEqual (do-ji-tv-est &kb  (,(Inheritance $x ugly) (Inheritance $x woman))) 
+                (STV 0.0027777777777780515 0.0006976744186046523))
