@@ -44,8 +44,9 @@
         ($ld (kld $l_cdf $m_cdf))                      ;; ld = kld(l_cdf, m_cdf)
         ($rd (kld $r_cdf $m_cdf))                      ;; rd = kld(r_cdf, m_cdf)
         ($avg (avrg $ld $rd))                          ;; avrg(ld, rd)
+        ($sqr-avg (sqrt-math $avg))
     )
-    (sqrt-math $avg)                                         ;; return sqrt(avrg(ld, rd))
+        (py-call (round $sqr-avg 13))                                   ;; return sqrt(avrg(ld, rd))
 ))
 
 
