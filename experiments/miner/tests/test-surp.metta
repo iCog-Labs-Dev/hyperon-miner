@@ -32,8 +32,8 @@
 
 
 ;; load rules , system-proofs and miner-utils ...
-!(import! &self   ../surp-rules)
-!(migrateAtoms &self (superpose (&kb &kb1 &kb2 &kb3 &kb4))  (: $prabst $primis))
+!(import! (superpose (&kb &kb1 &kb2 &kb3 &kb4))    ../surp-rules)
+
 
 !(import! &self  ../system-proofs)
 !(import! &self ../miner-utils)
@@ -98,9 +98,7 @@
 (= (db-ratio2) 0.5)
 (= (normalization2) True)
  
- ;; import rules 
-!(import! &self   ../surp-rules)
-!(migrateAtoms &self &kb2 (: $prabst $primis))
+
 ;;init 
 !(init-params &kb2 &db (min-sup2) (surp-mode2) (db-ratio2) (normalization2))
 
@@ -125,9 +123,7 @@
 (=(db-ratio3) 0.5)
 (=(normalization3) True)
 
-;import rules
-!(import! &self   ../surp-rules)
-!(migrateAtoms &self &kb3 (: $prabst $primis))
+
 
 !(init-params &kb3 &db (min-sup3) (surp-mode3) (db-ratio3) (normalization3))
 
@@ -152,12 +148,10 @@
 (= (normalization4) True)
 
 ;!(import! &db-sm experiments:data:small-ugly)
-!(import! &self   ../../data/small-ugly)
-!(migrateAtoms &self &db-sm (Inheritance $prabst $primis))
+!(import! &db-sm   ../../data/small-ugly)
 
-;; import rules 
-!(import! &self   ../surp-rules)
-!(migrateAtoms &self &kb4 (: $prabst $primis))
+
+
 
 !(init-params &kb4 &db-sm (min-sup4) (surp-mode4) (db-ratio4) (normalization4))
 

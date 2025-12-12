@@ -406,7 +406,7 @@
 (= (syn $kb (S $k) (: ($prfabs $prfarg) $ccln))
    (let* (
      ((: $prfabs (-> $prms $ccln)) (syn $kb $k (: $prfabs (-> $prms $ccln))))
-         (true (println! (Next prims : $prms)))
+         ;(true (println! (Next prims : $prms)))
           ((: $prfarg $prms) (syn $kb $k (: $prfarg $prms)))
           )
      (: ($prfabs $prfarg) $ccln)))

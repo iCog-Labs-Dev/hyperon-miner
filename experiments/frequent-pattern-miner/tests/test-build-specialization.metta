@@ -1,20 +1,16 @@
- ! (register-module! ../../../../hyperon-miner)
- ! (import! &self hyperon-miner:experiments:frequent-pattern-miner:freq-pat)
- ! (import! &self hyperon-miner:experiments:frequent-pattern-miner:build-specialization)
- ! (bind! &specspace (new-space))
- ! (bind! &specredspace (new-space))
+ !(import! &self ../../utils/index_to_var)
+ !(import! &self ../build-specialization)
+;  !(import! &self ../../utils/common-utils)
+
+!(add-atom &dbspace (Inheritance Abe human))
+!(add-atom &dbspace (Inheritance Rio human))
+!(add-atom &dbspace (Inheritance Bob human))
+!(add-atom &dbspace (Inheritance Mike human))
 
 
-! (add-reduct &self (= (get-space) (new-space)))
-! (add-atom (get-space) (Inheritance Abe human))
-! (add-atom (get-space) (Inheritance Rio human))
-! (add-atom (get-space) (Inheritance Bob human))
-! (add-atom (get-space) (Inheritance Mike human))
+ !(build-specialization (Inheritance Z (S Z)) &dbspace &specspace)
 
-
- ! (build-specialization (Inheritance Z (S Z)) (get-space) &specspace)
-
- ! (match &specspace (SpecializationOf $x $y) (SpecializationOf $x $y))
+ !(match &specspace (SpecializationOf $x $y) (SpecializationOf $x $y))
 ;   expected:
 ;             (SpecializationOf (Inheritance Z human) (Inheritance Z (S Z))), 
 ;             (SpecializationOf (Inheritance Rio Z) (Inheritance Z (S Z))), 
@@ -24,11 +20,11 @@
 ;       The orders of the atoms in the list may be different.
 
 
-! (add-atom (get-space) (Inheritance (And (And Abe Rio) Mike) (Or Human Male)))
+!(add-atom &dbspace (Inheritance (And (And Abe Rio) Mike) (Or Human Male)))
 
-! (build-specialization (Inheritance Z (S Z)) (get-space) &specspace)
+!(build-specialization (Inheritance Z (S Z)) &dbspace &specspace)
 
-! (match &specspace (SpecializationOf $x $y) (SpecializationOf $x $y))
+!(match &specspace (SpecializationOf $x $y) (SpecializationOf $x $y))
 
 ;   expected:
     ; (SpecializationOf (Inheritance (And (And Z Rio) (S Z)) (S (S Z))) (Inheritance Z (S Z))), 
