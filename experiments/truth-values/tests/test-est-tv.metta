@@ -68,10 +68,13 @@
      (((Inheritance $x man) (Inheritance $x sodaDrinker)) ((Inheritance $x ugly))) 
      (((Inheritance $x man)) ((Inheritance $x sodaDrinker)) ((Inheritance $x ugly)))
    )) 
- ((STV 0.0 0.0001979229795046239) 
+ (
+  (STV 0.0 0.00019792297950462398) 
   (STV 0.0 0.0001979229795046239) 
   (STV 0.0 0.0001979229795046239) 
-  (STV 4.6296296296296274e-5 0.0006976744186046506)))
+  (STV 4.629629629629629e-5 0.0006976744186046511)
+  )
+)
 
 
 ;; =============================================================================
@@ -87,7 +90,7 @@
 ;;                 ((Inheritance $x sodaDrinker) (Inheritance $x ugly)))
 ;;
 ;; Expected Output:
-;;   (0 0.001979229795046239)
+;;   (0 0.0019792297950462397)
 ;;
 ;; Verification:
 ;;   1. Confirms proper exclusion of joint variable estimation
@@ -96,7 +99,7 @@
 ;; =============================================================================
 !(assertEqual 
  (pro_prob_without_joint &kb (((Inheritance $x man)) ((Inheritance $x sodaDrinker) (Inheritance $x ugly))))
- (0 0.001979229795046239))
+ (0 0.0019792297950462397))
 
 
 ;; =============================================================================
