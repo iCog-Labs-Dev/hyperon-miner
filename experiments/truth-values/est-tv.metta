@@ -262,7 +262,7 @@
 (=(do-ji-tv-est $db $pattern) (
     let $prtns (partitions $pattern)  
           ( let* (
-            (() (println! "======= Truth Value Estimation ======="))
+            ($_ (println! "======= Truth Value Estimation ======="))
             (($strength $confidence) (avrg_tv (ji-est-tv $db (db_size $db) $pattern $prtns) )))
            (STV $strength $confidence))           
 ))
