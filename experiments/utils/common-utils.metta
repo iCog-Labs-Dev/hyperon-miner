@@ -2,15 +2,6 @@
 ;; Common Utils ;;
 ;;;;;;;;;;;;;;;;;;
 
-;; move from beta-dist 
-(=(min-of-two $num1 $num2)(
-    if (< $num1 $num2) $num1 $num2
-))
-
-(=(max-of-two $num1 $num2)(
-    if (> $num1 $num2) $num1 $num2
-))
-
 ;;(: unify (-> Expression Expression Expression Expression %Undefined%))
 (= (unify $space $pattern $then $else)
    (if (is-space $space)
@@ -22,7 +13,7 @@
 
 (= (unify $a $b $then $else)
    (if (= $a $b)
-       (eval $then)
+       (eval $then) 
        (eval $else)))
 
 (= (assertEqual $A $B)
@@ -52,6 +43,33 @@
 ))
 
 
+(= (get_variables_for_tree $pattern)
+    (if (== $pattern ())
+        ()
+        (let* (
+                ($head (car-atom $pattern))
+                ($tail (cdr-atom $pattern))
+                ($headvar (if (== (get-metatype $head) Expression)
+                                (get_variables_for_tree $head)
+                                (if (== (get-metatype $head) Variable)
+                                ($head)
+                                ())
+                                ))
+                ($tailvar (get_variables_for_tree $tail))
+            )
+            (union-atom $headvar $tailvar)
+        )
+    )
+)
+
+(= (does_exist $var $list_vars)
+    (if (== $list_vars ())
+        False
+        (if (== $var (car-atom $list_vars))
+            True
+            (does_exist $var (cdr-atom $list_vars)))
+    )
+)
 
 ;;Determines the number of conjunctive clauses in a pattern.
 (=(n_conjuncts_new $pattern) (
@@ -1429,3 +1447,16 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
                 ($head (car-atom $list1))
                 ($tail (concat-atom (cdr-atom $list1) $list2)))
             (cons-atom $head $tail))))
+
+
+(=(beta_mean $alpha $beta) (
+   let $result  (// $alpha (+ $alpha $beta)) (mean $result)
+))
+
+(=(min-of-two $num1 $num2)(
+    if (< $num1 $num2) $num1 $num2
+))
+
+(=(max-of-two $num1 $num2)(
+    if (> $num1 $num2) $num1 $num2
+))

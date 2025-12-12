@@ -9,7 +9,7 @@
 ;================================
  (=(connected-subpatterns-with-var $partition $var)
 
-(let () (println! ("in con-sub-w-var")) (collapse (rmvPar (process-pattern (superpose $partition ) $var)))))
+(let $_ (println! ("in con-sub-w-var")) (collapse (rmvPar (process-pattern (superpose $partition ) $var)))))
 
 (= (checkInterSuper $var $el) (if (checkPat $el) (let $tail (cdr-atom $el) (checkInterSuper $var (superpose $tail)) ) (if (== $var $el) True (empty))) )  
 

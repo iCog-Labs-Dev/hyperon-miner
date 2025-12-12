@@ -78,6 +78,8 @@ allowed_tests = {
     "test-isurp.metta",
     "test-surp.metta",
     "test-est-tv.metta",
+    "test-surp.metta",
+    "test-emp-tv.metta",
 }
 
 # Collect tests inside ../
