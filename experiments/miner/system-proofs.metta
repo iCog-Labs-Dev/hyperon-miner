@@ -61,10 +61,9 @@
 ;; it caused infinite results in CPUEMP.
 ;----------------------------------------------------------------------------
 (= (syn $kb $_ (: $prf (emp-cpu $ptrn  $emp ))) 
-    (let* (($dbb (match $kb (db-ref $db) (eval (emp-tv $ptrn $db))))
-             (true (println! (here $dbb))))
+    (let $emp (match $kb (db-ref $db) (eval (emp-tv $ptrn $db)))
        
-    (: CPUEMP (emp-cpu $ptrn  (emp-tv $ptrn $dbb))) ) 
+    (: CPUEMP (emp-cpu $ptrn  $emp)) ) 
 )
 
 ;-----------------------------------------------------------------------------
@@ -73,10 +72,9 @@
 ;; it caused infinite results in CPUEST.
 ;-----------------------------------------------------------------------------
 (= (syn $kb $_ (: $prf (est-cpu  $ptrn $emp $est))) 
-    (let* (($dbb (match $kb (db-ref $db) $db))
-           ($pattern (remove-hashtag $ptrn)))
-    (: CPUEST (est-cpu $ptrn $emp (do-ji-tv-est $dbb $pattern ))) ) 
-)
+    (let $est-tv  (match $kb (db-ref $db) (do-ji-tv-est $db $ptrn))
+    (: CPUEST (est-cpu $ptrn $emp $est-tv)) ) )
+
 
 
 (= (syn $kb $_ (: $prf (jsd-cpu $emp $est $surp)))
@@ -406,7 +404,6 @@
 (= (syn $kb (S $k) (: ($prfabs $prfarg) $ccln))
    (let* (
      ((: $prfabs (-> $prms $ccln)) (syn $kb $k (: $prfabs (-> $prms $ccln))))
-         ;(true (println! (Next prims : $prms)))
           ((: $prfarg $prms) (syn $kb $k (: $prfarg $prms)))
           )
      (: ($prfabs $prfarg) $ccln)))

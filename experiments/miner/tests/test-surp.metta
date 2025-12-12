@@ -1,16 +1,17 @@
 
 ;; import utils 
+!(import! &self "../../utils/surp-utils/boost_petta.py")
 !(import! &self ../../utils/common-utils)
+!(import! &self ../../utils/constants)
+!(import! &self ../../utils/TruthValue)
 !(import! &self ../../utils/surp-utils/partition-metta)
 !(import! &self ../../utils/surp-utils/binomialMetta)
-!(import! &self ../../utils/surp-utils/surp-utils)
 !(import! &self ../../utils/surp-utils/beta-dist)
+!(import! &self ../../utils/surp-utils/surp-utils)
 !(import! &self ../../utils/surp-utils/blk-abstractness)
 !(import! &self ../../utils/surp-utils/eq-prob-petta)
 !(import! &self ../../utils/surp-utils/bs-utils)
 !(import! &self ../../utils/surp-utils/jsd-helper)
-!(import! &self ../../utils/TruthValue)
-!(import! &self ../../utils/constants)
 
 ; import truth value computing components
 !(import! &self ../../truth-values/emp-tv)
@@ -25,8 +26,8 @@
 
 
 ;; load the db space 
-!(import! &self ../../data/ugly_man_sodaDrinker)
-!(migrateAtoms &self &db  (Inheritance $x $y))
+!(import! &db ../../data/ugly_man_sodaDrinker)
+
 
 
 
@@ -156,13 +157,10 @@
 !(init-params &kb4 &db-sm (min-sup4) (surp-mode4) (db-ratio4) (normalization4))
 
 !(println! ("========== JSD Test =============="))
-
-(let $result (call_replace (syn &kb4 (fromNumber 19) (: $prf (jsd-surp $pattern $surp))))  
-(assertEqual $result (: ((((jsd-tv ((((minsupport FACT4) CPUReplaceindex) msT) CPU)) ((emp-rule ((((minsupport FACT4) CPUReplaceindex) msT) CPU)) CPUEMP))
- (((est-rule ((((minsupport FACT4) CPUReplaceindex) msT) CPU)) ((emp-rule ((((minsupport FACT4) CPUReplaceindex) msT) CPU)) CPUEMP)) CPUEST)) JSDCPU)
-  (jsd-surp (, (Inheritance Z man) (Inheritance Z ugly) (Inheritance Z sodaDrinker)) 0.8608962449888359))) )
-
-
+!(assertEqual (syn &kb4 (fromNumber 19) (: $prf (jsd-surp $pattern $surp))) 
+              (: ((((jsd-tv (((minsupport FACT4) msT) CPU)) ((emp-rule (((minsupport FACT4) msT) CPU)) CPUEMP)) 
+              (((est-rule (((minsupport FACT4) msT) CPU)) ((emp-rule (((minsupport FACT4) msT) CPU)) CPUEMP)) CPUEST)) JSDCPU) 
+              (jsd-surp (, (Inheritance $_337260 man) (Inheritance $_337260 ugly) (Inheritance $_337260 sodaDrinker)) 0.8608962449888)))
 
 
 
