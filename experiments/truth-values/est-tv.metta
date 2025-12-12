@@ -7,7 +7,7 @@
 ; (: prob-with-joint (-> SpaceType Number (BList Pattern) Any Number Number))
 ; (: ji-est-tv (-> SpaceType Number Pattern (PList Pattern) (List TruthValue)))
 
-(: do-ji-tv-est (-> SpaceType Pattern TruthValue))
+; (: do-ji-tv-est (-> SpaceType Pattern TruthValue))
 
 ;; =============================================================================
 ;; Function: pro_prob_without_joint
@@ -259,7 +259,7 @@
 ;;     all partitioned estimations of the pattern.
 ;; =============================================================================
 
-(=(do-ji-tv-est $db $pattern) (
+(= (do-ji-tv-est $db $pattern) (
     let $prtns (partitions $pattern)  
           ( let* (
             ($_ (println! "======= Truth Value Estimation ======="))
