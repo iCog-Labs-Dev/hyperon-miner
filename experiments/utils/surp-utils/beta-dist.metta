@@ -7,15 +7,6 @@
    let $result  (// $alpha (+ $alpha $beta)) (mean $result)
 ))
 
-(=(min-of-two $num1 $num2)(
-    if (< $num1 $num2) $num1 $num2
-))
-
-(=(max-of-two $num1 $num2)(
-    if (> $num1 $num2) $num1 $num2
-))
-
-
 
 
 ;;The variance of a Beta distribution is given by the formula:
@@ -197,9 +188,6 @@
     let (Beta (mean $mean) (variance $variance )) $beta (
         if (== $key mean) $mean $variance
       )))
-
-
-
 
 
 
