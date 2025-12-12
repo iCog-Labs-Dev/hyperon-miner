@@ -13,7 +13,7 @@
 
 (= (unify $a $b $then $else)
    (if (= $a $b)
-       (eval $then)
+       (eval $then) 
        (eval $else)))
 
 (= (assertEqual $A $B)

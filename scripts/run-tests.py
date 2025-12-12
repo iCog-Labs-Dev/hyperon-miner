@@ -77,6 +77,8 @@ allowed_tests = {
     "test-common-utils.metta",
     "test-isurp.metta",
     "test-surp.metta",
+    "test-est-tv.metta",
+    "test-surp.metta",
     "test-emp-tv.metta",
 }
 

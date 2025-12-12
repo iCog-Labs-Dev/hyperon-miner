@@ -3,6 +3,11 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
+(=(beta_mean $alpha $beta) (
+   let $result  (// $alpha (+ $alpha $beta)) (mean $result)
+))
+
+
 
 ;;The variance of a Beta distribution is given by the formula:
 ;;Variance = α * β / ((α + β)^2 * (α + β + 1))
