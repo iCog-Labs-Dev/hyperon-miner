@@ -358,7 +358,6 @@
             (if (== $val $val2)
                 (let* (
                     ($shaby $shab)
-                    (() (println! ($shaby val y)))
                     )
                     (: CPUHandleNestedExp (depth-handler $type $val $val2 $shab $shaby))
                 )    
