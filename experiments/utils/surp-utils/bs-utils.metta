@@ -103,7 +103,7 @@
 ;; Returns:
 ;;   - A list containing a random subsample of elements from the database.
 (= (generet-random-subsample $db $subsize)
-   (if (== $subsize 0)
+   (if (> $subsize 0)
         ()
        (let* ( 
                ($elements (random-element $db))

@@ -19,8 +19,8 @@
 ;; Tests ;;
 ;;;;;;;;;;;
 
-!(import! &self ../../data/ugly_man_sodaDrinker)
-!(migrateAtoms &self &db  (Inheritance $x $y))
+!(import! &db ../../data/ugly_man_sodaDrinker)
+
 
 
 ;; =============================================================================
@@ -59,8 +59,8 @@
 ;;  Test with coupled patterns
 ;; =================================
 ;; import coupled atoms
-!(import! &self ../../data/nested_coupled/mock_coupled)
-!(migrateAtoms &self &dbc  (Inheritance $x $y))
+!(import! &dbc ../../data/nested_coupled/mock_coupled)
+
 
 !(assertEqual (isurp-old (, (Inheritance (Person $x) man)
    (Inheritance (Person $x) ugly)
@@ -72,8 +72,8 @@
 ;; Nested patterns
 ;; =====================
 ;; import nested atoms
-!(import! &self ../../data/nested_coupled/true_nested)
-!(migrateAtoms &self &dbn  (Inheritance $x $y))
+!(import! &dbn ../../data/nested_coupled/true_nested)
+
 !(assertEqual (isurp-old (, (Inheritance (And (And (Person $x) man) (Or human sodaDrinker)) (Or (And human man) (And human sodaDrinker)))
                            (Inheritance (And (And (Person $x)   man) (Or human sodaDrinker)) (Or (And human man) (And human ugly)))
                            (Inheritance (And (And human man)   (Or (Person $x) (Person Mike)))   (Or (And human man)   (And human sodaDrinker)))

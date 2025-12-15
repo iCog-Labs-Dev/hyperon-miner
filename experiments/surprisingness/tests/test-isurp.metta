@@ -11,27 +11,9 @@
 !(import! &self ../../truth-values/emp-tv)
 !(import! &self ../../truth-values/est-tv)
 !(import! &self ../../utils/index_to_var)
-!(import! &self ../../data/ugly_man_sodaDrinker)
+!(import! &kb ../../data/ugly_man_sodaDrinker)
 !(import! &self ../emp-prob)
 !(import! &self ../isurp)
-
-
-
-(migrateAtoms (-> %Undefined% %Undefined% Expression %Undefined%))
-(= (migrateAtoms $FromSpace $ToSpace $Pattern)
-   (collapse (match &self $Pattern  (collapse ((add-atom &kb $Pattern) 
-                          (remove-atom &self $Pattern))))))
-
-!(migrateAtoms &self &kb (Inheritance $a $b))
-!(===================================)
-;  ! (import! &kb experiments:data:nested_coupled:mock_coupled)
-
-
-
-
-
-
-
 
 
 

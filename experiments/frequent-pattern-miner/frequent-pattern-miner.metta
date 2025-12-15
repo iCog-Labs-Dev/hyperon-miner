@@ -12,7 +12,6 @@
             (let* (
                     (true (println! ("==== Abstract Pattern started =====")))
                     (($linkunique) (unique-atom (collapse (match $dbspace ($link $x $y) $link))))
-                    (true (println! ($linkunique $z $t)))
                     ($result (sup-num $dbspace ($linkunique $z $t)))
                     ($add1 (if (>= $result $minsup) (remove-atom $aptrnspace (AbstractPattern ($linkunique Z (S Z)))) ()))
                     ($rem1 (if (>= $result $minsup) (add-atom $aptrnspace (AbstractPattern ($linkunique Z (S Z)))) ()))

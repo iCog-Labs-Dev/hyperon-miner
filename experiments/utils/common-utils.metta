@@ -13,7 +13,7 @@
 
 (= (unify $a $b $then $else)
    (if (= $a $b)
-       (eval $then)
+       (eval $then) 
        (eval $else)))
 
 (= (assertEqual $A $B)
@@ -1447,3 +1447,16 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
                 ($head (car-atom $list1))
                 ($tail (concat-atom (cdr-atom $list1) $list2)))
             (cons-atom $head $tail))))
+
+
+(=(beta_mean $alpha $beta) (
+   let $result  (// $alpha (+ $alpha $beta)) (mean $result)
+))
+
+(=(min-of-two $num1 $num2)(
+    if (< $num1 $num2) $num1 $num2
+))
+
+(=(max-of-two $num1 $num2)(
+    if (> $num1 $num2) $num1 $num2
+))
