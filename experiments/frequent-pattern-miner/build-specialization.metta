@@ -72,6 +72,3 @@
 )
 
 
-; !(build-specialization (Inheritance Z (S Z)) &dbspace &specspace)
-
-; !(match &specspace (SpecializationOf $x $y) (SpecializationOf $x $y))
