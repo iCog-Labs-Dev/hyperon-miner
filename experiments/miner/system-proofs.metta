@@ -34,9 +34,6 @@
                 ))
 
 
-(= (get-clauses-inner $cnj) (
-  unify (, $ncnj $ptrn) $cnj (let $result (get-clauses-inner $ncnj) (cons-atom $ptrn $result) ) ($cnj)
-))
 
 (= (conj? $p)
     (case $p
@@ -196,7 +193,7 @@
 (= (syn $kb $_ (: $prf (uniqueLink $pattern $cnt))) 
     (let* (
         ($db (match $kb (db-ref $db) $db))
-        ($uniquelink (collapse (unique (match $db ($link $x $y) $link)) ) )
+        ($uniquelink (unique-atom (collapse (match $db ($link $x $y) $link)) ) )
         ($sup (superpose $uniquelink))
         )
     (if (== (size-atom $uniquelink) 0)
@@ -209,7 +206,9 @@
 ;; system proof to replace variables with debruijn index
 (= (syn $kb $_ (: $prf (replace_variables $ptrn)))
     (let* (
-        ($new_ptrn (call_replace $ptrn))
+        (true (println! ("==== Replacing variables with debruijn index =====" $ptrn)) )
+        ($new_ptrn (replace $ptrn))
+        (true (println! (here $new_ptrn)))
         )
     (if (== $new_ptrn ())
           (empty)
@@ -236,7 +235,9 @@
 ;;system proof to replace debruijn index with variables
 (= (syn $kb $_ (: $prf (replace_index $ptrn $res)))
     (let* (
-        ($new_ptrn (call_replacev $ptrn))
+        (true (println! "==== Replacing index with variables =====") )
+        ($new_ptrn (replacev $ptrn))
+        (true (println! (here $new_ptrn)))
         )
     (if (== $new_ptrn ())
           (empty)
@@ -249,7 +250,7 @@
 ;;system proof to replace debruijn index with variables
 (= (syn $kb $_ (: $prf (sort_conjunctions $ptrn $res)))
     (let* (
-        ($new_ptrn (call_sort_conj $ptrn))
+        ($new_ptrn (sort_conj $ptrn))
         )
     (if (== $new_ptrn ())
           (empty)
@@ -260,13 +261,13 @@
 
 ;-----------------------------------------------------------------------------
 ;; system proof to get variables of a pattern
-(= (syn $kb $_ (: $prf (get_variables $ptrn $vars)))
+(= (syn $kb $_ (: $prf (get_variables_prf $ptrn $vars)))
     (let* (
-        ($vars (get_variable_for_pattern $ptrn))
+        ($vars (get_variables_for_tree $ptrn))
         )
     (if (== $ptrn ())
           (empty)
-             (: CPUGetPatternVariables (get_variables $ptrn $vars))
+             (: CPUGetPatternVariables (get_variables_prf $ptrn $vars))
         )    
     )
 )
@@ -288,7 +289,11 @@
 ;; system proof to substitute variables in a pattern by another variables
 (= (syn $kb $_ (: $prf (substitute_variables $pattern $vars $subpattern)))
     (let* (
-        ($subpattern (substitute $pattern $vars))
+        (true (println! ("==== Substituting variables =====" $pattern , $vars)))
+        ($eachvars (superpose $vars))
+        (true (println! (here $eachvars)))
+        ($subpattern (substitute $pattern $eachvars))
+        (true (println! (here $subpattern)))
         )
     (if (== $subpattern ())
           (empty)
@@ -301,8 +306,9 @@
 ;;system proof to count the number of clauses in a pattern
 (= (syn $kb $_ (: $prf (clause_count $ptrn $cnt)))
     (let* (
-
-        ($cnt (let $clauses (get-clauses-inner $ptrn) (size-atom $clauses)))
+        (true (println! "==== Counting clauses =====") )
+        ($cnt (let $clauses (get-conjuncts $ptrn) (size-atom $clauses)))
+        (true (println! (here $cnt)))
 
         )
     (if (== $cnt 0)
@@ -314,13 +320,25 @@
 
 ;-----------------------------------------------------------------------------
 ;; system proof to clean conjunction with redundant clauses
-(= (syn $kb $_ (: $prf (conjunction_clean $conjunction)))
+(= (syn $kb $_ (: $prf (conjunction_clean_useless_clause $conjunction)))
+    (let* (
+        ($conjuncts (get-conjuncts $conjunction))
+        ($unique_conjuncts (remove_useless_clauses $conjuncts))
+        )
+    (if (== (size-atom $conjuncts) (size-atom $unique_conjuncts))
+        (: CPUConjunctionClean1 (conjunction_clean_useless_clause $conjunction))
+        (empty)
+    )
+    )
+)
+
+(= (syn $kb $_ (: $prf (conjunction_clean_redundant_clause $conjunction)))
     (let* (
         ($conjuncts (get-conjuncts $conjunction))
         ($unique_conjuncts (unique-atom $conjuncts))
         )
     (if (== (size-atom $conjuncts) (size-atom $unique_conjuncts))
-        (: CPUConjunctionClean (conjunction_clean $conjunction))
+        (: CPUConjunctionClean2 (conjunction_clean_redundant_clause $conjunction))
         (empty)
     )
     )
@@ -338,7 +356,6 @@
             (if (== $val $val2)
                 (let* (
                     ($shaby $shab)
-                    (() (println! ($shaby val y)))
                     )
                     (: CPUHandleNestedExp (depth-handler $type $val $val2 $shab $shaby))
                 )    
@@ -357,8 +374,8 @@
 (= (syn $kb $_ (: $prf (valuation $type ($link $x $y) $val)))
     (let* (
         ($db (match $kb (db-ref $db) $db))
-        ( $valx (collapse (unique (match $db ($link $x $y) $x))))
-        ( $valy (collapse (unique (match $db ($link $x $y) $y))))
+        ( $valx  (unique-atom (collapse (match $db ($link $x $y) $x))))
+        ( $valy  (unique-atom (collapse (match $db ($link $x $y) $y))))
         )
     (if (== $type X)
         (if (== ($valx $valy) ())

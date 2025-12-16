@@ -1,6 +1,6 @@
 !(import! &self ../utils/common-utils)
 !(import! &self ../utils/index_to_var)
-!(import! &self ../data/ugly_man_sodadrinker)
+!(import! &dbspace ../data/ugly_man_sodadrinker)
 !(import! &self ../utils/sort)
 !(import! &self ../utils/variable-combinations)
 !(import! &self ../utils/surp-utils/blk-abstractness)
@@ -10,7 +10,6 @@
 !(import! &self ../frequent-pattern-miner/build-specialization)
 !(import! &self ../frequent-pattern-miner/candidate-patterns)
 !(import! &self ../frequent-pattern-miner/frequent-pattern-miner)
-!(migrateAtoms &self &dbspace (Inheritance $x $y))
 
 ; void MinerUTest::test_empty()
 ; {
