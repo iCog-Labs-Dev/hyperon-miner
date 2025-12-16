@@ -1,30 +1,32 @@
 ;; import order matters here
+!(import! &self "../../utils/surp-utils/boost_petta.py")
 !(import! &self ../../utils/common-utils)
 !(import! &self ../../utils/index_to_var)
+!(import! &self  ../../utils/constants)
+!(import! &self  ../../utils/TruthValue)
 !(import! &self ../../utils/surp-utils/partition-metta)
 
 
 ;;import surp components 
 !(import! &self  ../../utils/surp-utils/binomialMetta)
-!(import! &self  ../../utils/surp-utils/surp-utils)
-!(import! &self  ../../utils/TruthValue)
-!(import! &self  ../../utils/constants)
 !(import! &self ../../utils/surp-utils/beta-dist)
+!(import! &self  ../../utils/surp-utils/surp-utils)
 
 
 !(import! &self ../../utils/sort)
 !(import! &self ../../utils/variable-combinations)
 !(import! &self ../../utils/surp-utils/blk-abstractness)
 !(import! &self ../../utils/remove_useless_clauses)
-
 !(import! &self ../../utils/surp-utils/eq-prob-petta)
 !(import! &self ../../utils/surp-utils/bs-utils)
+!(import! &self ../../utils/surp-utils/jsd-helper)
 
 !(import! &self ../../truth-values/est-tv)
 !(import! &self ../../truth-values/emp-tv)
 !(import! &self ../../surprisingness/emp-prob)
 !(import! &self ../../surprisingness/isurp)
 !(import! &self ../../surprisingness/isurp-old)
+!(import! &self ../../surprisingness/jsd)
 
 !(import! &self ../../frequent-pattern-miner/build-specialization)
 !(import! &self ../../frequent-pattern-miner/candidate-patterns)
@@ -49,8 +51,8 @@
 ;; minimum support 10
 ;;(pattern-miner $kb $db $minsup $depth $surp-mode $normalization $db-ratio $conj_exp)
 
-!(pattern-miner &res1 &db 10 0 none none none True) 
-!(assertEqual (collapse (get-atoms &res1))
+(pattern-miner &res1 &db 10 0 none none none True) 
+(assertEqual (collapse (get-atoms &res1))
 ;;Expected result 
         ((supportOf (, (Inheritance $_493388 $_493394) (Inheritance $_493388 $_493418)) 190) 
         (supportOf (, (Inheritance $_493466 $_493472) (Inheritance $_493490 $_493472)) 800) 
@@ -74,8 +76,8 @@
 ;; minimum support 10
 ;;(pattern-miner $kb $db $minsup $depth $surp-mode $normalization $db-ratio $conj_exp)
 
-!(pattern-miner &res2 &db 10 1 none none none  True) 
-!(assertEqual (collapse (get-atoms &res2)) 
+(pattern-miner &res2 &db 10 1 none none none  True) 
+(assertEqual (collapse (get-atoms &res2)) 
 ((supportOf (, (Inheritance $_503984 $_503990) (Inheritance $_503984 $_504014) (Inheritance $_503984 $_504038)) 630)
 (supportOf (, (Inheritance $_503882 $_503888) (Inheritance $_503882 human) (Inheritance $_503882 $_503936)) 190)
 (supportOf (, (Inheritance $_503780 $_503786) (Inheritance $_503780 $_503810) (Inheritance $_503780 man)) 100)
@@ -191,13 +193,13 @@
 
 ; !(bind! &res7 (new-space))
 
-;  !(pattern-miner &res7 &db 3 1 jsd) 
-;  !(collapse (match &res7 $pattern $pattern ))
+(pattern-miner &res7 &db 5 1 jsd none 0.2 True) 
+(assertEqual (collapse (get-atoms &res7)) 
 ;; Expected result 
-;((surprisingnessOf (, (Inheritance $h99#9978924 human) (Inheritance $h99#9978924 sodaDrinker) (Inheritance $h99#9978924 ugly)) 0.8602770128397317) 
-;(surprisingnessOf (, (Inheritance $u24#9978925 human) (Inheritance $u24#9978925 man) (Inheritance $u24#9978925 sodaDrinker)) 0.8602770128397317) 
-;(surprisingnessOf (, (Inheritance $n61#9978926 human) (Inheritance $n61#9978926 man) (Inheritance $n61#9978926 ugly)) 0.8602770128397317) 
-;(surprisingnessOf (, (Inheritance $h49#9978927 man) (Inheritance $h49#9978927 sodaDrinker) (Inheritance $h49#9978927 ugly)) 0.8602770128397317) 
-;(surprisingnessOf (, (Inheritance Abe $t43#9978928) (Inheritance Allen $t43#9978928) (Inheritance Cason $t43#9978928)) 0.8602249031703285))
-
+((surprisingnessOf (, (Inheritance $_217764 human) (Inheritance $_217764 man) (Inheritance $_217764 ugly)) 0.8548398421185) 
+ (surprisingnessOf (, (Inheritance $_217872 human) (Inheritance $_217872 man) (Inheritance $_217872 sodaDrinker)) 0.8548398421185) 
+ (surprisingnessOf (, (Inheritance $_217980 human) (Inheritance $_217980 woman) (Inheritance $_217980 ugly)) 0.8548398421185) 
+ (surprisingnessOf (, (Inheritance $_218088 human) (Inheritance $_218088 woman) (Inheritance $_218088 sodaDrinker)) 0.8548398421185) 
+ (surprisingnessOf (, (Inheritance $_218196 human) (Inheritance $_218196 ugly) (Inheritance $_218196 sodaDrinker)) 0.8548398421185) 
+ (surprisingnessOf (, (Inheritance $_218304 man) (Inheritance $_218304 ugly) (Inheritance $_218304 sodaDrinker)) 0.8507324751176)))
 
