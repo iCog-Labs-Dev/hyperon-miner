@@ -10,6 +10,6 @@
 ;    (Inheritance $x gamer)
 ; ) &db)
 
-!(IIsurp-old (, (Inheritance $x human)
+(assertEqual (IIsurp-old (, (Inheritance $x human)
    (Inheritance $x gamer)
-) &db False)
+) &db False) 0.0007483996898389545)
