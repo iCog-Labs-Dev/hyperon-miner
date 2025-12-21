@@ -50,7 +50,7 @@
 
 
 ;;support of specialized patterns rule
-(: support 
+(: supports 
       (-> (specializationOf $aptrn $sptrn)
       (-> (replace_index $sptrn $nsptrn) 
        (-> (sup_count $nsptrn $count)
@@ -69,15 +69,16 @@
                (-> (clause_count $nptrn2 $clcnt2)
                 (-> (equals $clcnt2 1)
                  (-> (ms-threshold $ms)
-                  (-> (get_variables $nptrn1 $vars1)
-                   (-> (get_variables $nptrn2 $vars2)
+                  (-> (get_variables_prf $nptrn1 $vars1)
+                   (-> (get_variables_prf $nptrn2 $vars2)
                     (-> (combine_variables $vars1 $vars2 $comb)
                      (-> (substitute_variables $nptrn2 $comb ($subptrn2 $remaining))
                       (-> (sup_count (, $nptrn1 $subptrn2) $count)
                        (-> (⍃ $ms $count)
-                      (-> (replace_variables (, $nptrn1 $subptrn2))
-                      (-> (conjunction_clean (, $nptrn1 $subptrn2))
-                       (candidatePattern (, $nptrn1 $subptrn2) $count))))))))))))))))))))
+                       (-> (conjunction_clean_useless_clause (, $nptrn1 $subptrn2))
+                        (-> (replace_variables (, $nptrn1 $subptrn2))
+                          (-> (conjunction_clean_redundant_clause (, $nptrn1 $subptrn2))
+                            (candidatePattern (, $nptrn1 $subptrn2) $count)))))))))))))))))))))
 
 
 ;;; rule to format the patterns with their support

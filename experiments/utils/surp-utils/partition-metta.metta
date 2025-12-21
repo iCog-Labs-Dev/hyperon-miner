@@ -5,7 +5,6 @@
 )
 
 
-Generates all subsets (the powerset) of a given list
 ;; Example:  (powerset (a b)) → (() (b) (a) (a b))
 
 (= (powerset $lst)
@@ -21,6 +20,54 @@ Generates all subsets (the powerset) of a given list
    )
 )
 
+;; ===========================================================================
+;; FUNCTION: powerset-without-empity
+;;
+;; DESCRIPTION:
+;;   Generates all non-empty subsets of the given list.
+;;
+;; PARAMETERS:
+;;   • $list — A list of elements to compute the subsets from.
+;;
+;; RETURNS:
+;;   A flat list of lists, each representing a non-empty subset of $list.
+;;
+;; EXAMPLE:
+;;   (powerset-without-empity '(a b c))
+;;   ⇒ ((a) (b) (c) (a b) (a c) (b c) (a b c))
+;; ===========================================================================
+
+(= (powerset-without-empty $list)
+  (if (== $list ())
+      ()
+      (let $head (car-atom $list)
+        (let $tail (cdr-atom $list)
+          (let $tail-powerset (powerset-without-empty $tail)
+            (if (== $tail-powerset ())
+                (cons-atom (cons-atom $head ()) ())
+                (combine-powersets $head $tail-powerset $tail-powerset)
+            )
+          )
+        )
+      )
+  )
+)
+
+(= (combine-powersets $elem $remaining $original)
+  (if (== $remaining ())
+      $original
+      (let $first (car-atom $remaining)
+        (let $rest (cdr-atom $remaining)
+          (let $new-subset (cons-atom $elem $first)
+            (cons-atom $new-subset 
+              (combine-powersets $elem $rest $original)
+            )
+          )
+        )
+      )
+  )
+)
+
 ;;Checks if **any element** of $lst is in $used
 (=(any-in $lst $used)(let $inter (intersection-atom $lst $used) (if (== (size-atom $inter) 0) False True)))
 
@@ -30,7 +77,7 @@ Generates all subsets (the powerset) of a given list
    (and (not (== $subset ()))
         (not (== $subset $original))))  
 
-=========================================================================================
+; =========================================================================================
 ;;This function explores all combinations of valid, 
 ;;disjoint subsets that together cover the original list exactly once. It ensures:
 ;;No repetition.
@@ -112,5 +159,30 @@ Generates all subsets (the powerset) of a given list
 (:partitions (-> list_of_patterns partitions))
 
 
-(=(partitions $original) (partitions (powerset $original) $original))
-;!(partitions ((Inheritance $x man) (Inheritance $x sodaDrinker) (Inheritance $x ugly)))
+(= (partitions $original)
+   (let $first-element (car-atom $original)
+     (if (== $first-element ,)
+         (partitions (powerset (cdr-atom $original))
+                      (cdr-atom $original))
+         (partitions (powerset $original)
+                     $original)
+      )
+   )
+)
+
+(= (partitions-wout-pattern $original) (
+   let $partions (partitions $original)  (exclude-item ($original) $partions)
+))
+
+(= (partitions-with-pattern $original)
+   (let $first-element (car-atom $original)
+     (if (== $first-element ,)
+         (let* (
+            ($tail (cdr-atom $original))
+            ($part-1 (partitions (powerset $tail) $tail))
+            ) 
+            (cons-atom ($tail) $part-1)
+         )
+         (let $part-2 (partitions (powerset $original)
+                     $original) (cons-atom ($original) $part-2))))
+)

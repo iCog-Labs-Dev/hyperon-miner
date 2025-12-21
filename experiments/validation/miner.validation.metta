@@ -1,26 +1,15 @@
-! (register-module! ../../../hyperon-miner)
-; ! (import! &db hyperon-miner:experiments:data:sample-data)
-; ! (import! &db hyperon-miner:experiments:data:ugly_man_sodaDrinker)
-! (import! &db hyperon-miner:experiments:data:small-ugly)
-; ! (import! &self hyperon-miner:experiments:rules:conjunction-expansion)
-; ! (import! &self hyperon-miner:experiments:frequent-pattern-miner:frequent-pattern-miner)
-! (import! &self hyperon-miner:experiments:frequent-pattern-miner:frequent-pattern-miner-generic)
-! (import! &self hyperon-miner:experiments:frequent-pattern-miner:use-python)
-! (import! &self hyperon-miner:experiments:utils:common-utils)
-! (import! &self hyperon-miner:experiments:utils:remove_useless_clauses)
-; ! (import! &self hyperon-miner:experiments:utils:index_to_var)
-! (import! &self hyperon-miner:experiments:utils:blk-abstractness)
-! (import! &self hyperon-miner:experiments:utils:gen_partition)
-; ! (import! &self hyperon-miner:experiments:utils:variable-combinations)
-! (bind! &kb (new-space))
-! (bind! &dbspace (new-space))
-! (bind! &testspace (new-space))
-! (bind! &specspace (new-space))
-! (bind! &cndpspace (new-space))
-! (bind! &aptrnspace (new-space))
-! (bind! &conjspace (new-space))
-
-!(let $x (get-atoms &db) (add-atom &dbspace $x))
+!(import! &self ../utils/common-utils)
+!(import! &self ../utils/index_to_var)
+!(import! &dbspace ../data/ugly_man_sodadrinker)
+!(import! &self ../utils/sort)
+!(import! &self ../utils/variable-combinations)
+!(import! &self ../utils/surp-utils/blk-abstractness)
+!(import! &self ../utils/surp-utils/partition-metta)
+!(import! &self ../utils/remove_useless_clauses)
+!(import! &self ../frequent-pattern-miner/conjunction-expansion)
+!(import! &self ../frequent-pattern-miner/build-specialization)
+!(import! &self ../frequent-pattern-miner/candidate-patterns)
+!(import! &self ../frequent-pattern-miner/frequent-pattern-miner)
 
 ; void MinerUTest::test_empty()
 ; {
@@ -42,9 +31,9 @@
     (frequency-pattern-miner &testspace &specspace &cndpspace &aptrnspace &conjspace 5 0 False)
 )
 
-; !(test_empty)
+; !(assertEqual (test_empty) ())
 
-==========================================================================================================
+; ==========================================================================================================
 ; void MinerUTest::test_AB_AC()
 ; {
 ; 	logger().info("BEGIN TEST: %s", __FUNCTION__);
@@ -78,13 +67,12 @@
         ($res (collapse (frequency-pattern-miner &testspace $x &cndpspace &conjspace 2 0 False)))
         ($dbrem1 (remove-atom &testspace (Inheritance A B)))
         ($dbrem2 (remove-atom &testspace (Inheritance A C)))
-        ($cnd (unique (match &cndpspace $pattern $pattern)))
+        ($cnd (collapse (match &cndpspace (CandidatePattern $pattern $cnt) $pattern)))
     )$cnd)
 )
 
-; !(assertEqual (subtraction (test_AB_AC) (superpose ((Inheritance Z (S Z)) (Inheritance A Z)))) (superpose ())) 
-
-===============================================================================================================
+; !(assertEqual (subtraction-atom (test_AB_AC) ((Inheritance Z (S Z)) (Inheritance A Z))) ())
+; ===============================================================================================================
 
 ; void MinerUTest::test_AB_AC_BC()
 ; {
@@ -136,13 +124,12 @@
         ($dbrem1 (remove-atom &testspace (Inheritance A B)))
         ($dbrem2 (remove-atom &testspace (Inheritance A C)))
         ($dbrem3 (remove-atom &testspace (Inheritance B C)))
-        ($cnd (unique (match &cndpspace $pattern $pattern)))
+        ($cnd (collapse (match &cndpspace (CandidatePattern $pattern $cnt) $pattern)))
     )$cnd)
 )
 
-; !(assertEqual (subtraction (test_AB_AC_BC) (superpose ((Inheritance Z (S Z)) (Inheritance Z C) (Inheritance A Z)))) (superpose ()))
-
-==========================================================================================================================
+; !(assertEqual (subtraction-atom (test_AB_AC_BC) ((Inheritance Z (S Z)) (Inheritance Z C) (Inheritance A Z))) ())
+; ==========================================================================================================================
 
 ; void MinerUTest::test_AB_ABC()
 ; {
@@ -189,13 +176,12 @@
         ($res (collapse (frequency-pattern-miner &testspace $x &cndpspace &conjspace 2 0 False)))
         ($dbrem1 (remove-atom &testspace (Inheritance A B)))
         ($dbrem2 (remove-atom &testspace (Inheritance A (And B C))))
-        ($cnd (unique (match &cndpspace $pattern $pattern)))
+        ($cnd (collapse (match &cndpspace (CandidatePattern $pattern $cnt) $pattern)))
     )$cnd)
 )
 
-; !(assertEqual (subtraction (unique (test_AB_ABC)) (superpose ((Inheritance A Z) (Inheritance Z (S Z))))) (superpose ()))
-
-======================================================================================================================
+; !(assertEqual (subtraction-atom (test_AB_ABC) ((Inheritance A Z) (Inheritance Z (S Z)))) ())
+; ======================================================================================================================
 
 ; void MinerUTest::test_ABCD()
 ; {
@@ -251,17 +237,17 @@
     (let*(
         ($dbadd5 (add-atom &testspace (Implication (Inheritance A B) (Inheritance C D))))
         ($dbadd6 (add-atom &testspace (Implication (Inheritance E F) (Inheritance G H))))
-        ($res (collapse (frequency-pattern-miner &testspace (Implication $x $y) &cndpspace &conjspace 2 0 False)))
+        ($res (collapse (frequency-pattern-miner &testspace &specspace &cndpspace &aptrnspace &conjspace 2 0 False)))
         ($dbrem5 (remove-atom &testspace (Implication (Inheritance A B) (Inheritance C D))))
         ($dbrem6 (remove-atom &testspace (Implication (Inheritance E F) (Inheritance G H))))
-        ($cnd (unique (match &cndpspace $pattern $pattern)))
+        ($cnd (collapse (match &cndpspace (CandidatePattern $pattern $cnt) $pattern)))
     )
 $cnd
     )
 )
-; !(assertEqual (subtraction (unique (test_ABCD)) (superpose ((Inheritance Z (S Z)) (Implication Z (S Z)) (Implication Z (Inheritance (S Z) (S (S Z)))) (Implication (Inheritance Z (S Z)) (S (S Z))) (Implication (Inheritance Z (S Z)) (Inheritance (S (S Z)) (S (S (S Z)))))))) (superpose ()))
 
-==========================================================================================================================================================
+; !(assertEqual (subtraction-atom (test_ABCD) ((Inheritance Z (S Z)) (Implication Z (S Z)) (Implication Z (Inheritance (S Z) (S (S Z)))) (Implication (Inheritance Z (S Z)) (S (S Z))) (Implication (Inheritance Z (S Z)) (Inheritance (S (S Z)) (S (S (S Z))))))) ())
+; ==========================================================================================================================================================
 
 ; void MinerUTest::test_ABAB()
 ; {
@@ -310,18 +296,17 @@ $cnd
     (let*(
         ($dbadd5 (add-atom &testspace (Implication (Inheritance A B) (Inheritance A B))))
         ($dbadd6 (add-atom &testspace (Implication (Inheritance B C) (Inheritance B C))))
-        ($res (collapse (frequency-pattern-miner &testspace $x &cndpspace &conjspace 2 0 False)))
+        ($res (collapse (frequency-pattern-miner &testspace &specspace &cndpspace &aptrnspace &conjspace 2 0 False)))
         ($dbrem5 (remove-atom &testspace (Implication (Inheritance A B) (Inheritance A B))))
         ($dbrem6 (remove-atom &testspace (Implication (Inheritance B C) (Inheritance B C))))
-        ($cnd (unique (match &cndpspace $pattern $pattern)))
+        ($cnd (collapse (match &cndpspace (CandidatePattern $pattern $cnt) $pattern)))
     )
 $cnd
     )
 )
 
-; !(assertEqual (intersection (test_ABAB) (superpose ((Implication (Inheritance Z (S Z)) (Inheritance Z (S Z)))))) (superpose ((Implication (Inheritance Z (S Z)) (Inheritance Z (S Z))))))
-
-===============================================================================================================================
+; !(assertEqual (intersection-atom (test_ABAB) ((Implication (Inheritance Z (S Z)) (Inheritance Z (S Z))))) ((Implication (Inheritance Z (S Z)) (Inheritance Z (S Z)))))
+ ; ===============================================================================================================================
 
 ; void MinerUTest::test_AAAA()
 ; {
@@ -373,16 +358,15 @@ $cnd
         ($res (collapse (frequency-pattern-miner &testspace $x &cndpspace &conjspace 2 0 False)))
         ($dbrem5 (remove-atom &testspace (Implication (Inheritance A A) (Inheritance A A))))
         ($dbrem6 (remove-atom &testspace (Implication (Inheritance B B) (Inheritance B B))))
-        ($cnd (unique (match &cndpspace $pattern $pattern)))
+        ($cnd (collapse (match &cndpspace (CandidatePattern $pattern $cnt) $pattern)))
 
     )
 $cnd
     )
 )
 
-; !(assertEqual (intersection (test_AAAA) (superpose ((Implication (Inheritance Z Z) (Inheritance Z Z))))) (superpose ((Implication (Inheritance Z Z) (Inheritance Z Z)))))
-
-=========================================================================================================================
+; !(assertEqual (intersection-atom (test_AAAA) ((Implication (Inheritance Z Z) (Inheritance Z Z)))) ((Implication (Inheritance Z Z) (Inheritance Z Z))))
+; =========================================================================================================================
 
 ; void MinerUTest::test_transitivity()
 ; {
@@ -427,13 +411,13 @@ $cnd
         ($res (collapse (frequency-pattern-miner &testspace $x &cndpspace &conjspace 1 0 True)))
         ($dbrem1 (remove-atom &testspace (Inheritance A B)))
         ($dbrem2 (remove-atom &testspace (Inheritance B C)))
-        ($cnd (match &conjspace $pattern $pattern))
-    )$cnd)
+        ($conj (collapse (match &conjspace $pattern $pattern)))
+        ($uniq (unique-atom $conj))
+    )$uniq)
 )
 
-; !(assertEqual (intersection (test_transitivity) (superpose ((, (Inheritance Z (S Z)) (Inheritance (S Z) (S (S Z))))))) (superpose ((, (Inheritance Z (S Z)) (Inheritance (S Z) (S (S Z)))))))
-
-======================================================================================================================
+; !(assertEqual (intersection-atom (test_transitivity) ((, (Inheritance Z (S Z)) (Inheritance (S Z) (S (S Z)))))) ((, (Inheritance Z (S Z)) (Inheritance (S Z) (S (S Z))))))
+; ======================================================================================================================
 
 ; void MinerUTest::test_long_transitivity()
 ; {
@@ -485,13 +469,13 @@ $cnd
         ($dbrem1 (remove-atom &testspace (Inheritance A B)))
         ($dbrem2 (remove-atom &testspace (Inheritance B C)))
         ($dbrem2 (remove-atom &testspace (Inheritance C D)))
-        ($cnd (match &conjspace $pattern $pattern))
-    )$cnd)
+        ($conj (collapse (match &conjspace $pattern $pattern)))
+        ($uniq (unique-atom $conj))
+    )$uniq)
 )
 
-; !(assertEqual (intersection (test_long_transitivity) (superpose ((, (, (Inheritance Z (S Z)) (Inheritance (S Z) (S (S Z)))) (Inheritance (S (S Z)) (S (S (S Z)))))))) (superpose ((, (, (Inheritance Z (S Z)) (Inheritance (S Z) (S (S Z)))) (Inheritance (S (S Z)) (S (S (S Z))))))))
-
-==========================================================================================================================
+; !(assertEqual (intersection-atom (test_long_transitivity) ((, (, (Inheritance Z (S Z)) (Inheritance (S Z) (S (S Z)))) (Inheritance (S (S Z)) (S (S (S Z))))))) ((, (, (Inheritance Z (S Z)) (Inheritance (S Z) (S (S Z)))) (Inheritance (S (S Z)) (S (S (S Z)))))))
+ ; ==========================================================================================================================
 
 ; void MinerUTest::test_SodaDrinker_incremental()
 ; {
@@ -566,9 +550,10 @@ $cnd
 (= (test_SodaDrinker_incremental)
     (let* (
         ($add (collapse (match &dbspace $atom (add-atom &testspace $atom))))
-        ($res (collapse (frequency-pattern-miner &testspace $x &cndpspace &conjspace 5 1 True)))
-        ($conj (match &conjspace $pattern $pattern))
-    )$conj)
+        ($res (collapse (frequency-pattern-miner &testspace &specspace &cndpspace &aptrnspace &conjspace 5 1 True)))
+        ($conj (collapse (match &conjspace $pattern $pattern)))
+        ($uniq (unique-atom $conj))
+    )$uniq)
 )
 
-; !(assertEqual (intersection (test_SodaDrinker_incremental) (superpose ((, (, (Inheritance Z man) (Inheritance Z sodaDrinker)) (Inheritance Z ugly))))) (superpose ((, (, (Inheritance Z man) (Inheritance Z sodaDrinker)) (Inheritance Z ugly)))))
+; !(assertEqual (intersection-atom (test_SodaDrinker_incremental) ((, (, (Inheritance Z man) (Inheritance Z sodaDrinker)) (Inheritance Z ugly)))) ((, (, (Inheritance Z man) (Inheritance Z sodaDrinker)) (Inheritance Z ugly))))
