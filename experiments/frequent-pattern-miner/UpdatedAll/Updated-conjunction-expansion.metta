@@ -137,6 +137,6 @@
 ;; function to extract candidate patterns and call doConjunct 
 ;(: conjunct (-> SpaceType SpaceType SpaceType Number Number Atom))
 (= (conjunct $db $candidatePatterns $minSup $depth )   
-    (collapse (let $conj (eval (doConjunct $db $candidatePatterns (, (superpose $candidatePatterns)) $minSup $depth)) $conj)) 
+    (collapse (let $conj (eval (doConjunct $db $candidatePatterns (, (superpose $candidatePatterns)) $minSup $depth)) (sort $conj))) 
 )   
 ; !(conjunct &self ((Inheritance Allen $_89484) (Inheritance $_89454 human) (Inheritance $_89430 $_89436) (Inheritance Abe $_89412) (Inheritance Cason $_89388) (Inheritance Davion $_89364) (Inheritance Hessley $_89340) (Inheritance Jadrian $_89316) (Inheritance Rio $_89292) (Inheritance Bob $_89268) (Inheritance Mike $_89244) (Inheritance Zac $_89220) (Inheritance Lily $_89196) (Inheritance Emily $_89172) (Inheritance Lucy $_89148) (Inheritance Sophia $_89124) (Inheritance Alaura $_89100) (Inheritance Breonna $_89076) (Inheritance Jaleesa $_89052) (Inheritance Jassy $_89028) (Inheritance Jenica $_89004) (Inheritance Kecia $_88980) (Inheritance $_88950 man) (Inheritance $_88926 woman) (Inheritance $_88902 ugly) (Inheritance $_88878 sodaDrinker)) f 2 (S Z))
