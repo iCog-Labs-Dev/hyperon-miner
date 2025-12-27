@@ -1,5 +1,6 @@
-!(import! &self ../../data/small-ugly)
+; !(import! &self ../../data/small-ugly)
 ; !(import! &self ../../data/ugly_man_sodaDrinker)
+!(import! &self ../../data/dataset_for_n_arry_format)
 
 ;; lets transfer this data to other space
 !(bind! dataBase (new-space))
@@ -25,4 +26,4 @@
 !(bind! conjunctSpace (new-space))
 
 ; !(frequency-pattern-miner dataBase-space conjunct-Space min-Support number-of-pattern-in-one-conjunct minus 2)
-!(frequency-pattern-miner dataBase conjunctSpace 4 1)
+!(frequency-pattern-miner dataBase conjunctSpace 3 1)
