@@ -8,7 +8,7 @@
 ))))
 
 ;output ((TruthValue 0.012269938650306744 0.33523545506746033) (TruthValue 0 0.34522720801070966))
-!(IIsurp-pln (, (Inheritance $x human)
+(IIsurp-pln (, (Inheritance $x human)
    (Inheritance $x gamer)
 ) &db)
 

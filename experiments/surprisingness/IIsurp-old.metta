@@ -591,12 +591,18 @@ $superCons
 ($retval-max (if (== $all-prob-est ()) () (max-atom $all-prob-est)))
 ($retval-min (if (== $all-prob-est ()) () (min-atom $all-prob-est)))
 
+; ($retval-max (if (== $all-fn-sups ()) () (max-atom $all-fn-sups)))
+; ($retval-min (if (== $all-fn-sups ()) () (min-atom $all-fn-sups)))
+
 
 
 
 
 )
 
+; $all-fn-sups
+
+; $interval-list 
 ($retval-max $retval-min)
 
 
@@ -660,6 +666,7 @@ $superCons
   
   )
 
+  ; $supercons
   ($maxSuperprob $minSuperprob)
 
 
@@ -678,8 +685,9 @@ $superCons
 
 
 
-(=(max-factor $coherence) (* 0.03 (- 1 $coherence)))
-(=(min-factor $coherence ) (* 0.03 $coherence))
+; (=(max-factor $coherence) (- 1 $coherence))
+(=(max-factor $coherence) (* 0.4 (// 1 $coherence)))
+(=(min-factor $coherence )   (pow-math $coherence 2))
 
 
 
@@ -689,12 +697,16 @@ $superCons
 ($factor (if (== $maxOrmin max) (max-factor $coh) (min-factor $coh)  ) )
 ($new_prob (* $factor $prob))
 )
+
+; $prob
 $new_prob
 )
 
 )
 
 (= (total_counts $pattern $db) (cal_binomial (db_size $db) (n_conjuncts_new $pattern)))
+
+; (= (total_counts $pattern $db) (pow-math (db_size $db) (n_conjuncts_new $pattern)))
 
 ;supercalled by the super concepts list
 ;we remove the comma from conjunct before passing it here 
@@ -708,26 +720,35 @@ $new_prob
 ($con_super_pattern ($link $some1 $superconc))
 
 ;here we would have the the g(x) funcion that takes in the coherence 
-; ($conjWoutCand (rmvEl $candPat $conjunct))
+($conjWoutCand (rmvEl $candPat $conjunct))
 
-($conjWoutCand (subtraction-atom $conjunct ($conjunct)))
+;subtraction-atom doesn't work
+
+; ($conjWoutCand (subtraction-atom $conjunct ($conjunct)))
 ($conjWSup (cons-atom $con_super_pattern $conjWoutCand))
 ($compconj (cons-atom , $conjWSup))
 ($comb-support (collapse (match $db $compconj $compconj)))
+($check-sup (size-atom $comb-support ))
 ($filtered-sups (filter-conjuncts $comb-support))
 ($conjSup (size-atom  $filtered-sups   ))
 ($conjProb (// $conjSup $total_count))
 ($supConSup (sup-num $db $con_super_pattern ))
-($canConSup (sup-num $db $candidate  ))
+($canConSup (sup-num $db $candPat  ))
 ($superprob (// $supConSup $total_count))
 ($candidateProb (// $canConSup $total_count))
 
 ; ($final_prob (* (* $concCoh $conjProb) (// $candidateProb $superprob)))
-($final_prob (*  $conjProb (// $candidateProb $superprob)))
+
+
+
+($final_prob (*  $conjProb (// $canConSup $supConSup)))
 
 
 
 )
+
+
+
 ($final_prob $coher)
 )
 
@@ -746,7 +767,7 @@ $new_prob
     let* (
         ($_ (println! "==== IIsurp-old surprisingness ====="))
         ($total_count (total_counts $pattern $db))
-        ($psup (collapse (match &db $pattern $patter)))
+        ($psup (collapse (match $db $pattern $pattern)))
         ($pattern_prob (// (size-atom $psup) $total_count))
         
         ($conjunct (cdr-atom $pattern))
@@ -761,8 +782,14 @@ $new_prob
         ($dst (dst_from_interval $emin $emax $pattern_prob))
 
     ) 
+  ;  (( $pattern_prob ) ($subset-results) ($results-inter ) ($dst) ((- $pattern_prob(car-atom $results-inter))))
+ 
 
-    $dst
+  
+ 
+  $dst
+
+  
 
     
   ; (min-atom (((if (== True $normalize) (// $dst (max-atom ($emax $pattern_prob))) $dst) 1.0)))       

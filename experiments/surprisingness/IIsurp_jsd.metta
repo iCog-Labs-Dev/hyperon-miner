@@ -561,7 +561,7 @@ $superCons
 ($conjSup (size-atom  $filtered-sups   ))
 ($conjProb (// $conjSup $total_count))
 ($supConSup (sup-num $db $con_super_pattern ))
-($canConSup (sup-num $db $candidate  ))
+($canConSup (sup-num $db $candPat  ))
 ($superprob (// $supConSup $total_count))
 ($candidateProb (// $canConSup $total_count))
 
