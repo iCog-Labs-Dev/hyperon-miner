@@ -12,7 +12,7 @@
 
 ;; Type definition for -> to prevent early reduction
 ;; of the conclusions before matching the correct premises.
-(: -> (-> Atom Atom Type))
+;(: -> (-> Atom Atom Type))
 
 ;;create working space for db and kbs
 !(bind! &freq-kb (new-space)) 
@@ -22,63 +22,63 @@
 
 
 
------------------------------------------------------------------------------
+;-----------------------------------------------------------------------------
 ;; clean-atomspace
-----------------------------------------------------------------------------
+;----------------------------------------------------------------------------
 ;; Clean AtomSpaces from unnecessary atoms for the operation, which might occur on importing.
 (= (clean-atomspaces $dbspace $freq-kb $surp-kb) (
     superpose (
             (println! "==== Cleaning AtomSpaces =====") 
-            (let ($link $x $y) (get-atoms $dbspace) (add-atom &db ($link $x $y)))
-            (let $atoms  (get-atoms $freq-kb) (add-reduct &freq-kb $atoms) )
-            (let $atoms  (get-atoms $surp-kb) (add-reduct &surp-kb $atoms) )
+           (let ($link $x $y) (get-atoms $dbspace) (add-atom &db ($link $x $y)))
+           (let $atoms  (get-atoms $freq-kb) (add-atom &freq-kb $atoms) )
+            (let $atoms  (get-atoms $surp-kb) (add-atom &surp-kb $atoms) )
     )
 ))
 
 
 
-----------------------------------------------------------------------
+;----------------------------------------------------------------------
 ;; init-miner 
-----------------------------------------------------------------------
+;----------------------------------------------------------------------
 ;; Initialize hyperparameters in both knowledge bases so as to make them accessible for the chainne.r
-(= (init-miner $db $kb1 $kb2 $ms $surp $db-ratio $normalization)
+(= (init-miner $db $kb $ms $surp $db-ratio $normalization)
     ( superpose (  
                   (println! "==== Initialize hyperparameters =====") 
-                  (add-atom (superpose ($kb1 $kb2)) (: msT (ms-threshold $ms)))
-                  (add-atom (superpose ($kb1 $kb2)) (: dbref (db-ref $db)))
-                  (add-atom (superpose ($kb1 $kb2)) (: dbr (db-ratio $db-ratio)))
-                  (add-reduct (superpose ($kb1 $kb2)) (: dbsize (db-size (db_size $db))))
-                  (add-atom (superpose ($kb1 $kb2)) (surp-mod $surp))
-                  (add-atom (superpose ($kb1 $kb2)) (db-ratio $db-ratio))
-                  (add-reduct (superpose ($kb1 $kb2)) (db-size (db_size $db)))
-                  (add-atom (superpose ($kb1 $kb2)) (db-ref $db))
-                  (add-atom $kb2 (: surpMode (surp-mode $surp)))
-                  (add-reduct $kb2 (if $normalization
-                                              (: normalize (normalized True))  
-                                              (: normalize (normalized False))))
+                  (add-atom  $kb (: msT (ms-threshold $ms)))
+                 (add-atom  $kb (: dbref (db-ref $db)))
+                  (add-atom  $kb (: dbr (db-ratio $db-ratio)))
+                  (let $res (db_size $db) (add-atom $kb (: dbsize (db-size $res)) ))
+                  (add-atom  $kb (surp-mod $surp))
+                  (add-atom  $kb (db-ratio $db-ratio))
+                  (let $res2 (db_size $db) (add-atom $kb (db-size $res2)))
+                  (add-atom  $kb (db-ref $db))
+                  (add-atom $kb (: surpMode (surp-mode $surp)))
+                  (if $normalization
+                                              (add-atom $kb (: normalize (normalized True)))  
+                                              (add-atom $Kb (: normalize (normalized False))))
                                 
     )))
 
------------------------------------------------------------
+;-----------------------------------------------------------
 ;; get-patterns
------------------------------------------------------------
+;-----------------------------------------------------------
 ;;Returns frequent patters with their support from the kb
 (= (get-patterns $kb $res) (
     match $kb  (: $prf (hasSupport $nptrn $count))  (add-atom $res   (: $prf (hasSupport $nptrn $count)))        
 ))
 
 
------------------------------------------------------------------
+;-----------------------------------------------------------------
 ;; mine-surp
------------------------------------------------------------------
+;-----------------------------------------------------------------
 ;; extract the mode of the Surprisingness
 ;; if the surprisingness mode is none return lis of mined patterns
 ;; otherwise launches the backward chainer for surprising patterns mining
 (= (mine-surp $kb $res $surp-mode)  
   ( case $surp-mode (
         (none    (get-patterns $kb $res) ) 
-        (jsdsurp (let $result  (syn $kb (fromNumber 13) (: $prf (jsdsurp $what_is_surprise $value)))   (add-atom $res $result)))
-        ($_        (let (: $prf $ccln) (syn $kb (fromNumber 17) (: $prf (Isurp $what_is_surprise $value)))    (add-atom $res (: $prf $ccln))))
+        (jsdsurp (let $result  (syn $kb (fromNumber 13) (: $prf (est-tv $what_is_surprise $value)))   (add-atom $res $result)))
+        ($_        (let (: $prf $ccln) (syn $kb (fromNumber 19) (: $prf (Isurp $pattern $partitions)))    (add-atom $res (: $prf $ccln))))
     )                                                         
 ))
 
@@ -86,18 +86,21 @@
 
 
 
---------------------------------------------------------------------------------------
+
+;--------------------------------------------------------------------------------------
 ;; pattern-miner
---------------------------------------------------------------------------------------
-;; Chainer-based frequent and surprisingness pattern miner.
+;--------------------------------------------------------------------------------------
+;; Chainer-base;d frequent and surprisingness pattern miner.
 (= (pattern-miner $dbspace $freq-kb $surp-kb $ms $num-of-conjuct $cnj_exp $surp-mode $db-ratio $norm) (
     let* (
-        (() (println! "==== Pattern Miner Started ====="))
+        (true (println! "==== Pattern Miner Started ====="))
         ($dummy (collapse (clean-atomspaces $dbspace $freq-kb $surp-kb)))
-        ($dummy2 (collapse (init-miner &db &freq-kb &surp-kb $ms $surp-mode $db-ratio $norm)))
+        ($dummy1 (collapse (init-miner &db  &freq-kb $ms $surp-mode $db-ratio $norm)))
+        ($dummy2 (collapse (init-miner &db  &surp-kb $ms $surp-mode $db-ratio $norm)))
         (() (frequent-miner &db &freq-kb $num-of-conjuct $cnj_exp)) 
-        ($dummy3 (collapse (match &freq-kb (: $prf (hasSupport $nptrn $count))  (add-atom &surp-kb (: $prf (hasSupport $nptrn $count))))))
-        (() (println! "==== Surprissingness Scoring Started ====="))
+        ($dummy3 (collapse (match &freq-kb (: $prf (hasSupport $nptrn $count)) (add-atom &surp-kb (: $prf (hasSupport $nptrn $count))))))
+       ; ($dummy3 (collapse (match &freq-kb (: $prf (hasSupport $nptrn $count)) (let $pattern  (replacev $nptrn )(add-atom &surp-kb (: $prf (hasSupport $pattern $count)))))))
+        (true (println! "==== Surprissingness Scoring Started ====="))
         ($dummy4  (collapse (mine-surp &surp-kb &res $surp-mode)))
     )    
        ; (match &surp-kb $x $x)

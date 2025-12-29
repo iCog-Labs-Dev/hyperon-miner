@@ -23,31 +23,32 @@ It is a **functional implementation** of a pattern mining pipeline written in Me
 
 ## Surprisingness Modes
 
-| Mode         | Description                                      |
-|--------------|--------------------------------------------------|
-| `none`       | No surprisingness calculation. Only support info.|
-| `isurp-old`  | Computes surprisingness **without normalization**.|
-| `nisurp-old` | Computes surprisingness **with normalization**.   |
+| Mode         | normalization | Description                                       |
+|--------------|-------------------------------------------------------------------|
+| `none`       | none          | No surprisingness calculation. Only support info. |
+| `isurp`      | False         | Computes surprisingness **without normalization**.|
+| `isurp`      | True          | Computes surprisingness **with normalization**.   |
+
+
 
 ##  Requirements
-- MeTTa v0.2.4
+- PeTTa
 - A corpus (dataset) you want to mine patterns from
 - Clone and structure this `hyperon-miner` module
 
 ##  How to Run
 ### Example Call
 ```
-;; Register  the hyperon-miner based on your folder structure 
-! (register-module! hyperon-miner)
-
 ;; import the required modules 
-! (import! &self hyperon-miner:experiments:pattern-miner:pattern-miner)
-! (import! &self hyperon-miner:experiments:frequent-pattern-miner:frequent-pattern-miner)
-! (import! &self hyperon-miner:experiments:utils:common-utils)
-! (import! &self hyperon-miner:experiments:utils:surp-utils)
+!(import! &self ../../frequent-pattern-miner/build-specialization)
+!(import! &self ../../frequent-pattern-miner/candidate-patterns)
+!(import! &self ../../frequent-pattern-miner/conjunction-expansion)
+!(import! &self ../../frequent-pattern-miner/frequent-pattern-miner)
+!(import! &self ../pattern-miner)
 
 ;; import the corpus (data)
-! (import! &db your-path:data)
+!(import! &db ../../data/ugly_man_sodaDrinker)
+
 
 
 ;; Create a space for storing mining results

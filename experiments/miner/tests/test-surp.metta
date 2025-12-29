@@ -34,8 +34,6 @@
 
 ;; load rules , system-proofs and miner-utils ...
 !(import! (superpose (&kb &kb1 &kb2 &kb3 &kb4))    ../surp-rules)
-
-
 !(import! &self  ../system-proofs)
 !(import! &self ../miner-utils)
 

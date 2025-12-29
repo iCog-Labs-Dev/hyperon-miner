@@ -109,7 +109,7 @@
          ($result (collapse (candidate (fromNumber 5) $kb)))
          ($rem (remove-atom $kb $atom))
          ($results (collapse (conjunction (fromNumber 19) $kb 1 (- $number-of-conjuct 1))))
-         ($resultf (collapse (format (fromNumber 6) $kb)))
+         ($resultf (collapse (format (fromNumber 7) $kb)))
       ) ()
 )
 )

@@ -69,7 +69,8 @@
 ;; it caused infinite results in CPUEST.
 ;-----------------------------------------------------------------------------
 (= (syn $kb $_ (: $prf (est-cpu  $ptrn $emp $est))) 
-    (let $est-tv  (match $kb (db-ref $db) (do-ji-tv-est $db $ptrn))
+    (let* (($est-tv  (match $kb (db-ref $db) (do-ji-tv-est $db $ptrn)))
+           )
     (: CPUEST (est-cpu $ptrn $emp $est-tv)) ) )
 
 
@@ -206,9 +207,7 @@
 ;; system proof to replace variables with debruijn index
 (= (syn $kb $_ (: $prf (replace_variables $ptrn)))
     (let* (
-        (true (println! ("==== Replacing variables with debruijn index =====" $ptrn)) )
         ($new_ptrn (replace $ptrn))
-        (true (println! (here $new_ptrn)))
         )
     (if (== $new_ptrn ())
           (empty)
@@ -235,9 +234,7 @@
 ;;system proof to replace debruijn index with variables
 (= (syn $kb $_ (: $prf (replace_index $ptrn $res)))
     (let* (
-        (true (println! "==== Replacing index with variables =====") )
         ($new_ptrn (replacev $ptrn))
-        (true (println! (here $new_ptrn)))
         )
     (if (== $new_ptrn ())
           (empty)
@@ -289,11 +286,8 @@
 ;; system proof to substitute variables in a pattern by another variables
 (= (syn $kb $_ (: $prf (substitute_variables $pattern $vars $subpattern)))
     (let* (
-        (true (println! ("==== Substituting variables =====" $pattern , $vars)))
         ($eachvars (superpose $vars))
-        (true (println! (here $eachvars)))
         ($subpattern (substitute $pattern $eachvars))
-        (true (println! (here $subpattern)))
         )
     (if (== $subpattern ())
           (empty)
@@ -306,10 +300,7 @@
 ;;system proof to count the number of clauses in a pattern
 (= (syn $kb $_ (: $prf (clause_count $ptrn $cnt)))
     (let* (
-        (true (println! "==== Counting clauses =====") )
         ($cnt (let $clauses (get-conjuncts $ptrn) (size-atom $clauses)))
-        (true (println! (here $cnt)))
-
         )
     (if (== $cnt 0)
           (empty)
@@ -435,18 +426,14 @@
 ;; Iterative step
 (= (isyn $kb $depth (S $k) $query)
    (let* (
-      (true (println! (have called)))
       ($cres (collapse (syn $kb $depth $query)))
-          (true (println! (cres: $cres)))
           ($dummy (add-atoms-nodup $kb $cres))
           )
      (isyn $kb $depth $k (superpose $cres))))
 
 (= (collapser $kb $depth  $query)
    (let* (
-      (true (println! (have called)))
       ($cres (collapse (syn $kb $depth $query)))
-      (true (println! (cres: $cres)))
           )
      $cres))
 
