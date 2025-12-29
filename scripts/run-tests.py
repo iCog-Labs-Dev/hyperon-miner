@@ -80,6 +80,7 @@ allowed_tests = {
     "test-surp.metta",
     "test-emp-tv.metta",
     "test-jsd.metta",
+    "test-pattern-miner.metta"
 }
 
 # Collect tests inside ../
