@@ -10,7 +10,7 @@
     $finalAnswer
 ))
 
- (= (tuple-count $atom) (size-atom $atom))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Beta distributions from URE ;;;
@@ -110,7 +110,7 @@
    $result
    )
 )
-(= (// $a $b) (/ (* 1.0 $a) $b))
+
 
 ; (= (find_beta $mean $variance) (
 ;     * (- 1 $mean) (- ( // (* $mean (- 1 $mean)) $variance) 1)
