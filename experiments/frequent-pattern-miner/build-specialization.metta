@@ -47,10 +47,13 @@
                 (  
                     (true (println! ("==== Build specialization started =====", ($link $x $y))))
                     (($link $x1 $y1) (replacev ($link $x $y)))                            ; replacev is a function that replaces index with variables
+                    (true (println! (in buil spe  ($link $x1 $y1) )))
                     (($subx $suby) (match $dbspace ($link $x1 $y1) ($x1 $y1)))            ; getting the substitution /valuation of the pattern
                     ($shabx (depth-handler $subx))                                    ;handle depth in the x node
                     ($shaby (if (== $subx $suby) $shabx (depth-handler $suby)))                                    ; handle depth in the y node   
                     ($spec1 (replace (SpecializationOf ($link $shabx $ys) ($link $x $y)))) ;build the specialization and change the variables to indexs
+                    ;(true (println! (in  spe  $spec1 )))
+
                     ($spec2 (replace (SpecializationOf ($link $xs $shaby) ($link $x $y)))) ;build the specialization and change the variables to indexs
                     ($spec3 (replace (SpecializationOf ($link $shabx $shaby) ($link $x $y)))) ;build the specialization and change the variables to indexs
                 )

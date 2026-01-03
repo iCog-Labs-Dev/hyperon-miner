@@ -64,6 +64,7 @@
     (    (true (println! "==== Pattern Miner Started ====="))
          ($dummy (collapse (let ($link $x $y) (get-atoms $db) (add-atom &dbspace ($link $x $y))) ))
          ($frequent-pattern  (frequency-pattern-miner &dbspace &specspace &cndpspace &aptrnspace &conjspace $minsup $depth $conj_exp))
+         (true (freq $frequent-pattern))
          ($dummy3  (call-surprisingness $kb &dbspace $frequent-pattern $surp-mode $normalization $db-ratio))
           )  ()))
 

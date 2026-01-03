@@ -38,6 +38,7 @@
    (let*(
            (true (println! "==== Frequent miner started ====="))
            ($abs (collapse (abstract-pattern $dbspace $minsup $aptrnspace $cndpspace))) ; prevent patterns that dont have a support from being speciallized
+            (true (println! (abstra (get-atoms $aptrnspace))))
            ($var  (collapse (match $aptrnspace (AbstractPattern $pattern) (build-specialization $pattern $dbspace $specspace)))) ; specializa abstract patterns
            ($temp2  (collapse (candidatePattern $dbspace $specspace $minsup $cndpspace))); get candidate patterns
             ($temp3  (if $cnj_exp (collapse (conjunct $dbspace $cndpspace $conjspace $minsup $depth)) $temp2)) ; store candidate patterns
