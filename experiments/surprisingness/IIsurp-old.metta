@@ -5,7 +5,7 @@
 (=(prob-accumulator $lst) (foldl-atom $lst 1 $acc $x (* $x $acc)))
 ;supercalled with the list of sub concepts, 
 
-(=(getcohfact_sub $coh $maxormin)
+(=(get-coh-fact-sub $coh $maxormin)
 (if (== $maxormin max) (max-factor $coh) (min-factor $coh))
 
 
@@ -27,11 +27,11 @@
   
   ($prob-bodies (collapse (get-conc-prob-for-sub (superpose $comb) $db $total_count))) 
 
-($subProbsmax (collapse (getcohfact_sub (superpose $prob-bodies)  max)))
+($subProbsmax (collapse (get-coh-fact-sub (superpose $prob-bodies)  max)))
 ($Accumulatedcohformax (prob-accumulator $subProbsmax))
 ($maxsubprob (* $comb-prob-main $Accumulatedcohformax))
 
-($subProbsmin (collapse (getcohfact_sub (superpose $prob-bodies)  min)))
+($subProbsmin (collapse (get-coh-fact-sub (superpose $prob-bodies)  min)))
 ($Accumulatedcohformin (prob-accumulator $subProbsmin))
 ($minsubprob (* $comb-prob-main $Accumulatedcohformin))
  
@@ -78,10 +78,10 @@
 
 ($comb-probs (collapse (get-comb-prob (superpose $with-conc) $db $total_count)))
 
-($allMaxs (collapse (handleCartProbs (superpose $comb-probs) max)))
+($allMaxs (collapse (handle-cart-probs (superpose $comb-probs) max)))
 ($max-bound (max-atom $allMaxs))
 
-($allMins (collapse (handleCartProbs (superpose $comb-probs) min)))
+($allMins (collapse (handle-cart-probs (superpose $comb-probs) min)))
 ($min-bound (min-atom $allMins))
 
 
@@ -96,7 +96,7 @@
 
 )
 
-(=(handleCartProbs $list-el $type) 
+(=(handle-cart-probs $list-el $type) 
 (let ($max $min) $list-el (if (== $type max) $max $min))
 )
 
@@ -108,12 +108,12 @@
 
 
 
-(=(get_set_prob_intervals $conjunct-w-comma $db $total_count) 
+(=(get-set-prob-intervals $conjunct-w-comma $db $total_count) 
 
 (let* (
   ; ($total_count (universe-count $conjunct-w-comma $db))
 ($conjunct (if (== (car-atom $conjunct-w-comma) ,) (cdr-atom $conjunct-w-comma) ($conjunct-w-comma)))
-($interval-list (collapse (getConceptProbCall (superpose $conjunct ) $conjunct  $db $total_count)))
+($interval-list (collapse (get-concept-prob-call (superpose $conjunct ) $conjunct  $db $total_count)))
 
 ($all-fn-sups (handle-list-interval $interval-list ()))
 
@@ -160,7 +160,7 @@
 
 
 
-(=(getConceptProbCall $candidate $conjunct $db $total_count)
+(=(get-concept-prob-call $candidate $conjunct $db $total_count)
 (getConceptProb $candidate $conjunct $db $total_count  )
 )
 
@@ -174,7 +174,7 @@
   ($orInst (collapse (match $db ($link $any $conc) $any)))
   ($concepts-raw (collapse (match $db ($link $anyI $anyC) $anyC)))
   ($concepts (unique-atom $concepts-raw))
-  ($supercons  (SubSuperConcepts $orInst $concepts $conc super $db ))
+  ($supercons  (sub-super-concepts $orInst $concepts $conc super $db ))
 ) (if (== $supercons ()) (empty) (let* (
   
   
@@ -299,13 +299,13 @@ $new_prob
         ($conjunct (cdr-atom $pattern))
         ($partitions (partitions $conjunct))
         ($results-inter  (isurp-old_  $partitions $db $total_count))
-        ($subset-results (get_set_prob_intervals $pattern $db $total_count))
+        ($subset-results (get-set-prob-intervals $pattern $db $total_count))
         ($results (if (not (== $subset-results ())) (union-atom $results-inter $subset-results) $results-inter))
 
         ($emin (min-atom $results))
         ($emax (max-atom $results))
        
-        ($dst (dst_from_interval $emin $emax $pattern_prob))
+        ($dst (dst-from-interval $emin $emax $pattern_prob))
 
     ) 
   ;  (( $pattern_prob ) ($subset-results) ($results-inter ) ($dst) ((- $pattern_prob(car-atom $results-inter))))

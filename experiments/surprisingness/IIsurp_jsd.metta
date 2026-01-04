@@ -19,7 +19,7 @@
 (=(prob-accumulator $lst) (foldl-atom $lst 1 $acc $x (* $x $acc)))
 ;supercalled with the list of sub concepts, 
 
-(=(getcohfact_sub $coh $maxormin)
+(=(get-coh-fact-sub $coh $maxormin)
 (if (== $maxormin max) (max-factor $coh) (min-factor $coh))
 
 
@@ -44,7 +44,7 @@
   
   ($prob-bodies (collapse (get-conc-prob-for-sub (superpose $comb) $db $total_count))) 
 
-; ($subProbsmax (collapse (getcohfact_sub (superpose $prob-bodies)  max)))
+; ($subProbsmax (collapse (get-coh-fact-sub (superpose $prob-bodies)  max)))
 ($Accumulatedcohformax (prob-accumulator $prob-bodies))
 ($new_conf (* $conf $Accumulatedcohformax))
 
@@ -104,7 +104,7 @@
 
 )
 
-(=(handleCartProbs $list-el $type) 
+(=(handle-cart-probs $list-el $type) 
 (let ($max $min) $list-el (if (== $type max) $max $min))
 )
 
@@ -148,7 +148,7 @@
 (let* (
   ; ($total_count (universe-count $conjunct-w-comma $db))
 ($conjunct (if (== (car-atom $conjunct-w-comma) ,) (cdr-atom $conjunct-w-comma) ($conjunct-w-comma)))
-($interval-list (collapse (getConceptProbCall (superpose $conjunct ) $conjunct  $db $total_count)))
+($interval-list (collapse (get-concept-prob-call (superpose $conjunct ) $conjunct  $db $total_count)))
 
 
 
@@ -188,7 +188,7 @@
 
 
 
-(=(getConceptProbCall $candidate $conjunct $db $total_count)
+(=(get-concept-prob-call $candidate $conjunct $db $total_count)
 (getConceptProb $candidate $conjunct $db $total_count  )
 )
 
@@ -230,7 +230,7 @@
   ($candidate_count (total_counts $candidate $db))
   ($concepts-raw (collapse (match $db ($link $anyI $anyC) $anyC)))
   ($concepts (unique-atom $concepts-raw))
-  ($supercons  (SubSuperConcepts $orInst $concepts $conc super $db ))
+  ($supercons  (sub-super-concepts $orInst $concepts $conc super $db ))
 ) (if (== $supercons ()) (empty) (let* (
   
 

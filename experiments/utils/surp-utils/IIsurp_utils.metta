@@ -116,18 +116,18 @@ $coh
 
 (=(add-the-coherence $pair-H ) (foldl-atom $pair-H 0 $acc $x (+ $acc $x)))
   
-(=(dst_from_interval $emin $emax $emp) (
+(=(dst-from-interval $emin $emax $emp) (
   if (< $emax $emp) (- $emp $emax) (if (< $emp $emin ) (- $emin $emp) 0.0)
 ))
 
-(=(random_coherence) 0.5)
+(=(random-coherence) 0.5)
 
 (= (coherence $concept $db $link)
 (let* (
   ($ins (collapse (match $db ($link $any $concept) $any)))
   ($n (size-atom $ins))
 )
-(if (<= $n 1) (random_coherence)
+(if (<= $n 1) (random-coherence)
 
   ; helper -> 0.5, 0.5
   (let* (($pairwise  (cart-helper-set 2 $ins ()))
@@ -192,16 +192,16 @@ $coh
 (=(cal_binomial $n $k) (calculate_binomial $n $k))
 
 
-(= (returnSupers ($type $concept))
+(= (return-supers ($type $concept))
 (if (== $type Super) $concept (empty))
 
 )
-(= (returnSubs ($type $concept))
+(= (return-subs ($type $concept))
 (if (== $type Sub) $concept (empty))
 
 )
 
-(=(superHelper $OriIns $concept $originalConcept $type $db)
+(=(super-helper $OriIns $concept $originalConcept $type $db)
 (if (== $concept $originalConcept ) (empty) (let* (
   ($conIns (collapse (match $db ($link $any $concept) $any )))
   ($inter (intersection-atom $OriIns $conIns))
@@ -223,8 +223,8 @@ $coh
     ))
 )
 
-(=(SubSuperConcepts $OriginalInstances $concepts $originalConcept  $type $db  )
-(let* (($superCons (collapse (superHelper $OriginalInstances (superpose $concepts) $originalConcept $type $db )))
+(=(sub-super-concepts $OriginalInstances $concepts $originalConcept  $type $db  )
+(let* (($superCons (collapse (super-helper $OriginalInstances (superpose $concepts) $originalConcept $type $db )))
 
 
 )
@@ -279,7 +279,7 @@ $concepts
   ($concepts-raw (collapse (match $db ($link $anyI $anyC) $anyC)))
   
   ($concepts (unique-atom $concepts-raw))
-  ( $subcons (SubSuperConcepts $orInst $concepts $conc sub $db ))
+  ( $subcons (sub-super-concepts $orInst $concepts $conc sub $db ))
   
   
   )
@@ -301,7 +301,7 @@ $concepts
 
 (=(filter-subpatterns-wout-subs $subpattern $wsubs $db)
 (let* (
-  ($pats (collapse (return_only_pats (superpose $wsubs) )))
+  ($pats (collapse (return-only-pats (superpose $wsubs) )))
   ($intersec (intersection-atom ($subpattern) $pats))
   ($size (size-atom $intersec))
   
@@ -311,9 +311,9 @@ $concepts
 )
 )
 
-(=(return_only_pats $wsub) (let ($pat $cons) $wsub $pat ) )
+(=(return-only-pats $wsub) (let ($pat $cons) $wsub $pat ) )
 
-(=(dst_from_interval_lift-main $emin $emax $emp) (let* 
+(=(dst_from_interval_lift_main $emin $emax $emp) (let* 
 
 (
   ($lift (
