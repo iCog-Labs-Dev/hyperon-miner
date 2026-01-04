@@ -111,7 +111,7 @@
 ; Note: Uses size-atom on the results from match query
 ;
 (= (count-custom $namespace)
-   (size-atom (match &mork ((ns $namespace) $x) $x)))
+   (size-atom (collapse (match &mork ((ns $namespace) $x) $x))))
 
 ; ============================================================================
 ; LIST-NAMESPACE: List all atoms in a namespace
@@ -132,27 +132,28 @@
 ; Example Usage
 ; ============================================================================
 ;
-Add atoms to "users" namespace:
+; Add atoms to "users" namespace:
 !(add-atom-custom "users" (User alice 25))
 !(add-atom-custom "users" (User bob 30))
 ;
 ; Add atoms to "products" namespace:
-; !(add-atom-custom "products" (Product laptop 999))
-; !(add-atom-custom "products" (Product mouse 25))
+!(add-atom-custom "products" (Product laptop 999))
+!(add-atom-custom "products" (Product mouse 25))
 ;
-Get all atoms from a namespace:
+; Get all atoms from a namespace:
 !(list-namespace "users")
 ;
 ; Query with pattern matching:
-; !(match-custom "users" (User $name $age) $name)
+!(match-custom "users" (User $name $age) $name)
 ;
 ; Get count of atoms in namespace:
-; !(count-custom "users")
+!(count-custom "users")
 ;
 ; Remove specific atom:
-; !(remove-atom-custom "users" (User alice 25))
-;
-; Get all products:
-; !(list-namespace "products")
-;
+!(remove-atom-custom "users" (User alice 25))
+
+; Get all user atoms after removal:
+!(list-namespace "users")
+
 ; ============================================================================
+
