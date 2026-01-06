@@ -236,8 +236,7 @@
               (($strength $confidence) ((* $rp $rp_est) (* 1e-1 (car-atom $rc))))
                ($dummy (ji-est-tv $db $db_size $pattern $tail))
                ) 
-              (cons-atom (STV $strength $confidence)  $dummy) 
-            
+              (cons-atom (STV $strength $confidence)  $dummy)  
           ))
  )
 
