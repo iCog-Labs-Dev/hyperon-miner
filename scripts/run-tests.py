@@ -4,6 +4,11 @@ import sys
 import os
 import shutil
 from concurrent.futures import ThreadPoolExecutor, as_completed
+import faulthandler
+
+# Dump the current stack trace of all threads after X seconds
+# Set this to slightly less than your timeout (e.g., 10 minutes for debugging)
+faulthandler.dump_traceback_later(timeout=600, repeat=True)
 
 # Colors
 RESET = "\033[0m"
