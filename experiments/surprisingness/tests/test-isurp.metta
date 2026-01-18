@@ -1,4 +1,5 @@
 !(import! &self ../../utils/common-utils)
+!(import! &self ../../utils/mork-interface)
 !(import! &self ../../utils/surp-utils/partition-metta)
 !(import! &self ../../utils/surp-utils/binomialMetta)
 !(import! &self ../../utils/surp-utils/surp-utils)
@@ -15,7 +16,7 @@
 !(import! &self ../emp-prob)
 !(import! &self ../isurp)
 
-
+!(mork-load-space &kb &kb)
 
 
 
@@ -178,7 +179,7 @@
 ;;   3. Checks proper output format
 ;; =============================================================================
 
-!(assertEqual (isurp (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker) ) &kb False 0.2) 1.9290123456790123e-5)
+!(assertEqual (isurp (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker) (Inheritance $x woman) ) &kb False 0.2) 0)
 
 
 

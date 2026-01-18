@@ -1,9 +1,11 @@
 !(import! &self ../../utils/common-utils)
+!(import! &self ../../utils/mork-interface)
 !(import! &self  ../../utils/surp-utils/binomialMetta)
 !(import! &self  ../../utils/surp-utils/surp-utils)
 !(import! &self  ../../utils/surp-utils/partition-metta )
 !(import! &self  ../../utils/TruthValue)
 !(import! &self  ../../utils/constants)
+!(import! &self ../../utils/mork-interface)
 
 
 ;! (import! &self  ../../utils/customType)
@@ -14,12 +16,14 @@
 
 
 
-
 ;;;;;;;;;;;
 ;; Tests ;;
 ;;;;;;;;;;;
 
 !(import! &db ../../data/ugly_man_sodaDrinker)
+!(mork-load-space &db &db)
+
+
 
 
 

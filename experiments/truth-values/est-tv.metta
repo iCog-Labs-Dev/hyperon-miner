@@ -65,7 +65,7 @@
 ;;   - The estimated set size of values that Xi can take.
 ;; =============================================================================
 (=(estimate_v_xi $db $pattern_i) (
-    let $result (sup-num $db $pattern_i)         ;; Get the support count (S) for the pattern component in the database
+    let $result (sup-num-custom $db $pattern_i)         ;; Get the support count (S) for the pattern component in the database
     ((py-atom pow) $result 0.5)                  ;; Take the Nth root (square root) of the support count
 ))
 
@@ -262,7 +262,7 @@
     let $prtns (partitions $pattern)  
           ( let* (
             ($_ (println! "======= Truth Value Estimation ======="))
-            (($strength $confidence) (avrg_tv (ji-est-tv $db (db_size $db) $pattern $prtns) )))
+                        (($strength $confidence) (avrg_tv (ji-est-tv $db (db-size-custom $db) $pattern $prtns) )))
            (STV $strength $confidence))           
 ))
 

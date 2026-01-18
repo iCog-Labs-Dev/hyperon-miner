@@ -15,14 +15,23 @@
 ;;
 ;; =============================================================================
 (= (subsample-py $db $subsize)
-    (let* (
-            ($random-selected (generet-random-subsample $db $subsize))
-            ($space (copy-db &subsampled-db $random-selected))
-            )
+        (let* (
+                        ($random-selected (generet-random-subsample $db $subsize))
+                        ($ns (new-space))
+                        ($_ (add-atoms-to-namespace $ns $random-selected))
+                    )
+                $ns))
 
-        &subsampled-db
-    )
+(= (add-atoms-to-namespace $namespace $atoms)
+        (if (== $atoms ())
+                ()
+                (let* (
+                                (($head $tail) (decons-atom $atoms))
+                                ($_ (add-atom-custom $namespace $head))
+                            )
+                        (add-atoms-to-namespace $namespace $tail)))
 )
+
 
 
 ;; avrg-tv-py
@@ -77,12 +86,11 @@
 ;; =============================================================================
 (= (random-element $db)
    (let* (
-           ($list (collapse (get-atoms $db)))
+                     ($list (collapse (get-atoms-custom $db)))
            
            ($length (length $list))
            ($index (random-int 0 (- $length 1)))       
            ($element (get-element-by-Index $list $index))
-           ($_ (println! $element))
          )
          $element))
 
@@ -103,16 +111,16 @@
 ;; Returns:
 ;;   - A list containing a random subsample of elements from the database.
 (= (generet-random-subsample $db $subsize)
-   (if (> $subsize 0)
-        ()
-       (let* ( 
-               ($elements (random-element $db))
-               ($new-subsize (- $subsize 1))
-               ($tail-elements (generet-random-subsample $db $new-subsize))
-             )
-             (cons-atom $elements $tail-elements)
-       )
-   )
+    (if (<= $subsize 0)
+          ()
+         (let* ( 
+                    ($elements (random-element $db))
+                    ($new-subsize (- $subsize 1))
+                    ($tail-elements (generet-random-subsample $db $new-subsize))
+                 )
+                 (cons-atom $elements $tail-elements)
+         )
+    )
 )
 
 

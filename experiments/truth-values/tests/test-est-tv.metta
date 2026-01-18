@@ -1,6 +1,7 @@
 !(import! &self ../../utils/common-utils)
 !(import! &self ../../utils/constants)
 !(import! &self ../../utils/TruthValue)
+!(import! &self ../../utils/mork-interface)
 !(import! &self ../../utils/surp-utils/partition-metta)
 !(import! &self ../../utils/surp-utils/binomialMetta)
 !(import! &self ../../utils/surp-utils/beta-dist)
@@ -11,19 +12,11 @@
 !(import! &self ../../truth-values/emp-tv)
 !(import! &self ../../truth-values/est-tv)
 !(import! &self ../../utils/index_to_var)
-!(import! &self ../../data/ugly_man_sodaDrinker)
+!(import! &kb ../../data/ugly_man_sodaDrinker)
 !(import! &self ../../surprisingness/emp-prob)
 !(import! &self ../../surprisingness/isurp)
 
-
-
-(migrateAtoms (-> %Undefined% %Undefined% Expression %Undefined%))
-(= (migrateAtoms $FromSpace $ToSpace $Pattern)
-   (collapse (match &self $Pattern  (collapse ((add-atom &kb $Pattern) 
-                          (remove-atom &self $Pattern))))))
-
-!(migrateAtoms &self &kb (Inheritance $a $b))
-!(===================================)
+!(mork-replace-namespace &kb &kb)
 
 
 ;; =============================================================================

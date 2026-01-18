@@ -52,7 +52,7 @@
     let* (
       (($subpattern $tail) (decons-atom $subpatterns))
       ($joined_comma (cons-atom , $subpattern) )
-    ($empr (emp-prob $joined_comma   $db))
+    ($empr (emp-prob $joined_comma $db))
     ($new_prob (* $p $empr))
     
     )
@@ -105,18 +105,16 @@
 ;; ==============================================================
 (= (ji-prob-est $partition $pattern $db $db_ratio) (let* 
 ( 
-
   ($p (pro-prob-wout-joint $partition $db $db_ratio 1))
-  ($db-size (db_size $db))
-
+  ($db-size (db-size-custom $db))
   ; ($eq_prob (eq-prob-py $partition $pattern $db-size)) ; TODO: for fast excution use eq-prob-py
-  
   ($eq_prob (eq-prob $partition $pattern $db))
   )
   (* $p $eq_prob)
 
 )
 )
+
 
 
 

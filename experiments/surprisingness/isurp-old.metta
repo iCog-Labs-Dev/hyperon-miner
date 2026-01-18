@@ -51,7 +51,7 @@
 ;;   - $db: The database context in which the pattern appears.
 ;; Returns:
 ;;   - The total number of possible combinations based on database size and number of conjunctive clauses.
-(= (total_counts $pattern $db) (cal_binomial (db_size $db) (n_conjuncts_new $pattern)))
+(= (total_counts $pattern $db) (cal_binomial (db-size-custom $db) (n_conjuncts_new $pattern)))
 
 
 
@@ -73,7 +73,7 @@
 
 ;;Recursively calculates the support for each component of a 
 (=(compute-component-support $cps $db)
-(collapse (sup-num $db (superpose $cps)) )
+(collapse (sup-num-custom $db (superpose $cps)) )
 )
 
 
@@ -92,12 +92,12 @@
 ;   - $db: The database in which the pattern is evaluated.
 ; Returns:
 ;   - The probability value as a ratio of the pattern's support to its total possible count.
-(= (prob $pattern $db $total_count) (// (sup-num $db $pattern) $total_count))
+(= (prob $pattern $db $total_count) (// (sup-num-custom $db $pattern) $total_count))
 
 
 ;;Converts a list of blocks into a conjunctive pattern
 (=(add-pattern $blks $db) (
-let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
+let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom-custom $db $pattern))) $pattern
 ))
 
 

@@ -3,6 +3,8 @@
 ;argumets: $paratition (the target patition which is a list of blocks)
 ;$var the variable we are concerned with
 
+!(import! &self ../mork-interface)
+
 ;Returns:
 ;The blocks inside the partiton that contain the target variable $var
 ;
@@ -301,7 +303,7 @@
                 ($c (if (>= $i 0)
                         (let $i-blk (index-atom $sorted-partition $i)
                             (value-count $i-blk $var $db))
-                        (let $U (collapse (get-atoms $db)) (size-atom $U))))  ; Use |U| = db.size() as fallback
+                        (db-size-custom $db)))  ; Use |U| = db.size() as fallback
 
                 ($j-blk-count (value-count $j-blk $var $db))
                 
@@ -318,7 +320,7 @@
     (let $conj-blk (union-atom (,) $blk) (let*
      (
         
-        ($match-values (collapse (match $db $conj-blk $var)) )
+        ($match-values (collapse (match-custom $db $conj-blk $var)) )
         
         ($ground-value (unique-atom $match-values))
      

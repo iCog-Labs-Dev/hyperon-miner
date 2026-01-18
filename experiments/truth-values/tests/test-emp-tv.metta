@@ -1,6 +1,7 @@
 !(import! &self ../../utils/constants)
 !(import! &self ../../utils/common-utils)
 !(import! &self ../../utils/TruthValue)
+!(import! &self ../../utils/mork-interface)
 !(import! &self ../../utils/index_to_var)
 !(import! &self ../../utils/surp-utils/beta-dist)
 !(import! &self ../../utils/surp-utils/surp-utils)
@@ -12,6 +13,8 @@
 !(import! &self ../../truth-values/est-tv)
 !(import! &self ../../truth-values/emp-tv)
 !(import! &kb ../../data/ugly_man_sodaDrinker)
+
+!(mork-replace-namespace &kb &kb)
 
 
 
@@ -29,7 +32,8 @@
 ;; Verifies counting of matching patterns in the knowledge base
 ;; Expected: 60 instances of (Inheritance $x $y)
 ;; =============================================================================
-!(test (sup (Inheritance $x $y) &kb) 60)
+; !(test (sup-num-custom (Inheritance $x $y) &kb) )
+!(test (sup-num-custom &kb (Inheritance $x $y)) 60)
 
 ; ;; =============================================================================
 ; ;; Test: List Element Access
@@ -83,7 +87,7 @@
 ;; Verifies counting of all Inheritance relationships regardless of arguments
 ;; Expected: 60 total Inheritance relations
 ;; =============================================================================
-!(test (universe-count (Inheritance $x) &kb) 60)
+!(test (universe-count-custom (Inheritance $x) &kb) 60)
 
 ;; =============================================================================
 ;; Test: Empirical Truth Value Calculation

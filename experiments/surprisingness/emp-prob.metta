@@ -47,8 +47,8 @@
 (= (emp-prob $pattern $db)
     (let*
         (      
-            ( $ucount (universe-count $pattern $db))     
-            ( $sup (sup-num $db $pattern))
+            ( $ucount (universe-count-custom $pattern $db))
+            ( $sup (sup-num-custom $db $pattern))
             
         ) 
         (// $sup  $ucount)      
@@ -77,7 +77,7 @@
 ;;   - Empirical probability from appropriate sample
 ;; =============================================================================
 (= (emp_prob_subsmp $pattern $db $subsize)
-   (let $interdb (db_size $db)
+   (let $interdb (db-size-custom $db)
         (if (< $subsize $interdb)
         (let* (
                 ($intvar (subsample-py $db $subsize))
@@ -146,7 +146,7 @@
 ;;   - Averaged probability estimate
 ;; =============================================================================
 ( = (emp_prob_bs $pattern $db $n_resample $subsize)
-    (let* (($interdb  (db_size $db)) ) (if (< $subsize $interdb)
+    (let* (($interdb  (db-size-custom $db)) ) (if (< $subsize $interdb)
         (emp-prob $pattern $db)
         ; (let* (($intervar (emp_prob_helper $pattern $db $n_resample $subsize))  ) (avrg-tuple $intervar))
         (emp-prob $pattern $db)
@@ -214,12 +214,10 @@
 
 (= (emp-prob-pbs $pattern $db $prob-estimate $db-ratio)
     (let* ( 
-            ($_ (println! ("Empirical Probability with PBS for Pattern: " $pattern)))
             
              ($support-estimate (prob_to_support $pattern $db $prob-estimate))
-             ($db-size-unorm (db_size $db))
+             ($db-size-unorm (db-size-custom $db))
              ($db-size (* $db-size-unorm $db-ratio))
-             ($_ (println! ("Support Estimate: " $support-estimate ==== (< $db-size $support-estimate)) ))
          )
         (if (< $db-size $support-estimate)
             (let* ( 

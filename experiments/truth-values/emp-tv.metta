@@ -87,9 +87,9 @@
     (let*
         (  
              ($_ (println! "======= Emperical Truth Value ======="))
-            ( $ucount  (universe-count $pattern $db))
+            ( $ucount  (universe-count-custom $pattern $db))
             ( $ms $ucount) ;;  we didn't use ms for support calculation
-            ( $sup (sup-num $db $pattern))
+            ( $sup (sup-num-custom $db $pattern))
             ( $conf (count_to_confidence $ucount))
             ($mean (// $sup $ucount))
             ($confidence   (* 1e-1 $conf))
@@ -117,7 +117,7 @@
 ;;   - The support value, representing the expected count or weight of the pattern in the database
 ;; =============================================================================
 (= (prob_to_support $pattern $db $prob)
-    (let $che (universe-count $pattern $db) (* $prob $che))
+    (let $che (universe-count-custom $pattern $db) (* $prob $che))
 )
 
 
@@ -147,7 +147,7 @@
 (= (sup $pattern $db)
     (tuple-count 
         (collapse 
-            (match $db $x (let $pattern $x $pattern)))))
+            (match-custom $db $x (let $pattern $x $pattern)))))
 
 
 
@@ -201,7 +201,7 @@
 ;; =============================================================================
 (= (add_n_atoms_to_db $db $n)
     (if (<= $n 0) $db
-        (let* ( ($_ (add-atom $db Pattern))
+        (let* ( ($_ (add-atom-custom $db Pattern))
             )
         (add_n_atoms_to_db $db (- $n 1))
     )
@@ -229,11 +229,13 @@
 ;;   - A new database instance, containing the original database's data and the additional atoms added.
 ;; =============================================================================
 (= (copy-and-add-atom $db $n)
-    (if (<= $n 0) $db
-        (let* ( ($new-db (copy-db (new-space) ( (collapse (get-atoms $db)) ))))
-        )
-    (add_n_atoms_to_db $db $n)
-))
+    (if (<= $n 0)
+        $db
+        (let* (
+                ($new-db (new-space))
+                ($_ (copy-db-by-size $new-db (collapse (get-atoms-custom $db)) 0 (db-size-custom $db)))
+              )
+            (add_n_atoms_to_db $new-db $n))))
 
 ;; =============================================================================
 ;; Function: duplicate-and-expand-space
@@ -255,10 +257,12 @@
 ;;   - A new space instance containing the original space's data and the additional atoms added.
 ;; =============================================================================
 (= (duplicate-and-expand-space $space $n)
-    (let* (($che (collapse (get-atoms $space) ) ) ($new-db (copy-db  (new-space) $che )))
-        (add_n_atoms_to_db $new-db $n)
-    )
-)
+    (let* (
+            ($che (collapse (get-atoms-custom $space)))
+            ($new-db (new-space))
+            ($_ (copy-db-by-size $new-db $che 0 (size-atom $che)))
+          )
+        (add_n_atoms_to_db $new-db $n)))
 
 
 
@@ -310,7 +314,7 @@
                         let*
                             (
                                 (($head $tail) (decons-atom $old-db-content))
-                                ($_ (add-atom $db $head)) 
+                                ($_ (add-atom-custom $db $head))
                                 
                             )
                             (copy-db-by-size $db $tail $next_num $size)
@@ -345,13 +349,13 @@
 ;;   - A new database instance with a size adjusted to match the target subset size ($subsize).
 ;; =============================================================================
 (= (subsample $db $subsize)
-    (if (<= (db_size $db) $subsize)
+    (if (<= (db-size-custom $db) $subsize)
         $db
-        (case (categorize_subsize  $subsize (db_size $db))
+        (case (categorize_subsize  $subsize (db-size-custom $db))
             (
-                (1 (duplicate-and-expand-space $db (- (* $subsize 2) (db_size $db)))) ; if it is in group 1 add atoms to the database
-                (2 (copy-db-by-size (new-space) (collapse (get-atoms $db ) ) 0 (- (* $subsize 2) (db_size $db))))
-                ($_ (copy-db-by-size (new-space) (collapse (get-atoms $db ) ) 0 (- (* $subsize 2) (db_size $db))))
+                (1 (duplicate-and-expand-space $db (- (* $subsize 2) (db-size-custom $db)))) ; if it is in group 1 add atoms to the database
+                (2 (copy-db-by-size (new-space) (collapse (get-atoms-custom $db ) ) 0 (- (* $subsize 2) (db-size-custom $db))))
+                ($_ (copy-db-by-size (new-space) (collapse (get-atoms-custom $db ) ) 0 (- (* $subsize 2) (db-size-custom $db))))
             )
         )
     )
@@ -379,10 +383,8 @@
 ;;   - The empirical truth value for the pattern based on the subsampled database.
 ;; =============================================================================
 (= (emp-tv-subsmp $pattern $db $subsize)
-    (let* ( ($space (subsample-py $db $subsize)))
-        (emp-tv $pattern $space)
-    )
-)
+    (let $ns (subsample-py $db $subsize)
+        (emp-tv $pattern $ns)))
 
 ;; =============================================================================
 ;; Function: emp-tv-bs-helper
@@ -488,7 +490,7 @@
 ;;   - If subsize is greater than or equal to the database size: The direct empirical truth value of the pattern.
 ;; =============================================================================
 (= (emp-tv-bs $pattern $db $n-resample $subsize)
-    (if (< $subsize (db_size $db))
+    (if (< $subsize (db-size-custom $db))
         (let* (
                 ($esstvs (emp-tv-bs-helper $pattern $db $n-resample $subsize))
                 ((EMPTV $mean $variance) (avrg-tv-py $esstvs))
@@ -538,7 +540,7 @@
 (= (emp_tv_pbs $pattern $db $prob_estimate $db_ratio)  
      (let* (
         ($support_estimate (prob_to_support $pattern $db $prob_estimate))
-        ($db-size (* (db_size $db) $db_ratio))
+        ($db-size (* (db-size-custom $db) $db_ratio))
         ($subsize (subsmp-size $pattern $db-size $support_estimate))
         ($n-resample 10)
         )
