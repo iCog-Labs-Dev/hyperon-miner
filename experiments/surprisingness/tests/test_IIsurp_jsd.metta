@@ -1,6 +1,8 @@
 !(import! &self ../../data/II_surp_kb/kb1)
 !(import! &self ../../utils/surp-utils/IIsurp_utils)
 !(import! &self ../../utils/surp-utils/IIsurp_avrg)
+!(import! &self ../../utils/common-utils)
+
 !(import! &self ../IIsurp_jsd)
 
 
@@ -9,7 +11,7 @@
 ))))
 
 ;output ((TruthValue 0.0008229836899595981 0.3352354550674603) (TruthValue 0 0.34522720801070966))
-!(IIsurp-pln (, (Inheritance $x human)
+(assertEqual (IIsurp-pln (, (Inheritance $x human)
    (Inheritance $x gamer)
-) &db)
+) &db) ((TruthValue 0.0008229836899595981 0.3352354550674603) (TruthValue 0 0.34522720801070966)))
 

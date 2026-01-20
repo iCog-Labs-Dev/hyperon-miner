@@ -1,14 +1,15 @@
 import subprocess
 import pathlib
 import sys
-import os
 import shutil
 from concurrent.futures import ThreadPoolExecutor, as_completed
-import faulthandler
 
-# Dump the current stack trace of all threads after X seconds
-# Set this to slightly less than your timeout (e.g., 10 minutes for debugging)
-faulthandler.dump_traceback_later(timeout=600, repeat=True)
+# ------------------------------
+# Configuration
+# ------------------------------
+
+MAX_WORKERS = 2          # Safe for GitHub Actions
+TEST_TIMEOUT = 300       # Seconds per test (5 minutes)
 
 # Colors
 RESET = "\033[0m"
@@ -17,66 +18,72 @@ RED = "\033[91m"
 YELLOW = "\033[93m"
 CYAN = "\033[96m"
 
+# ------------------------------
+# Helpers
+# ------------------------------
 
-def print_ascii_art(text):
-    print(CYAN + f"\n{text}\n" + RESET)
+def print_header(text):
+    print(CYAN + "\n" + "=" * 60)
+    print(text)
+    print("=" * 60 + RESET)
 
 
 def extract_and_print(result, path, idx):
-    """
-    Print result of one test.
-    Returns True on failure, False on success.
-    """
-    output = result.stdout if result.stdout else result.stderr
+    output = result.stdout or result.stderr or ""
     text = output.strip()
 
-    # Simple Petta failure logic
-    has_failure = (result.returncode != 0) or ("❌" in text)
+    failed = result.returncode != 0 or "❌" in text
 
-    print(YELLOW + f"Test {idx + 1}: {path}" + RESET)
-    print((RED if has_failure else GREEN) +
-          ("test failed" if has_failure else "test passed") +
+    print(YELLOW + f"\nTest {idx + 1}: {path}" + RESET)
+    print((RED if failed else GREEN) +
+          ("FAILED" if failed else "PASSED") +
           RESET)
-    print(YELLOW + f"Exit-code: {result.returncode}" + RESET)
-    print("-" * 40)
+    print(YELLOW + f"Exit code: {result.returncode}" + RESET)
 
-    return has_failure
+    if failed:
+        print(RED + "Output:" + RESET)
+        print(text[:3000])  # Avoid huge logs
+
+    return failed
 
 
 def run_test_file(test_file):
-    """
-    Run a single Petta test file using run.sh.
-    """
-    try:
-        run_sh = shutil.which("run.sh")
-        if not run_sh:
-            raise FileNotFoundError("run.sh not found in PATH")
+    run_sh = shutil.which("run.sh")
+    if not run_sh:
+        raise RuntimeError("❌ run.sh not found in PATH")
 
+    try:
         result = subprocess.run(
             [run_sh, str(test_file)],
             capture_output=True,
             text=True,
-            check=False
+            timeout=TEST_TIMEOUT
         )
-        return result, test_file, False
+        return result, test_file
+
+    except subprocess.TimeoutExpired:
+        class TimeoutResult:
+            returncode = -1
+            stdout = ""
+            stderr = f"⏰ Timeout after {TEST_TIMEOUT}s"
+
+        return TimeoutResult(), test_file
 
     except Exception as e:
-        # Create fallback result
-        class MockResult:
+        class ErrorResult:
             returncode = -1
             stdout = ""
             stderr = str(e)
 
-        return MockResult(), test_file, True
+        return ErrorResult(), test_file
 
 
 # ------------------------------
-# Main Script
+# Main
 # ------------------------------
 
-print_ascii_art("Parallel Test Runner")
+print_header("Parallel Petta Test Runner")
 
-# Whitelist
 allowed_tests = {
     "test-isurp-old.metta",
     "test-common-utils.metta",
@@ -88,33 +95,32 @@ allowed_tests = {
     "test-pattern-miner.metta"
 }
 
-# Collect tests inside ../
 root = pathlib.Path("../")
-test_files = [
+test_files = sorted(
     f for f in root.rglob("test-*.metta")
     if f.name in allowed_tests
-]
+)
 
 if not test_files:
-    print("⚠️  No whitelisted tests found.")
+    print(YELLOW + "⚠️  No whitelisted tests found." + RESET)
     sys.exit(0)
 
 total = len(test_files)
 fails = 0
 failed_tests = []
 
-# Run tests in parallel (keeping behavior similar to your original script)
-with ThreadPoolExecutor() as executor:
-    future_to_test = {
-        executor.submit(run_test_file, path): idx
-        for idx, path in enumerate(test_files)
+print(CYAN + f"Running {total} tests with {MAX_WORKERS} workers...\n" + RESET)
+
+with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
+    futures = {
+        executor.submit(run_test_file, test): idx
+        for idx, test in enumerate(test_files)
     }
 
-    for future in as_completed(future_to_test):
-        idx = future_to_test[future]
-        result, path, _ = future.result()
-        failed = extract_and_print(result, path, idx)
-        if failed:
+    for future in as_completed(futures):
+        idx = futures[future]
+        result, path = future.result()
+        if extract_and_print(result, path, idx):
             fails += 1
             failed_tests.append(str(path))
 
@@ -122,14 +128,16 @@ with ThreadPoolExecutor() as executor:
 # Summary
 # ------------------------------
 
-print(CYAN + "\nTest Summary\n" + RESET)
-print(f"{total} files tested.")
-print(RED + f"{fails} failed." + RESET)
-print(GREEN + f"{total - fails} succeeded." + RESET)
+print_header("Test Summary")
+print(f"Total: {total}")
+print(GREEN + f"Passed: {total - fails}" + RESET)
+print(RED + f"Failed: {fails}" + RESET)
 
 if fails:
-    print(RED + "\nFailed test files:" + RESET)
+    print(RED + "\nFailed tests:" + RESET)
     for f in failed_tests:
-        print(" - " + f)
-    print(RED + "\nTests failed. Exiting with code 1." + RESET)
+        print(" -", f)
     sys.exit(1)
+
+print(GREEN + "\n✅ All tests passed!" + RESET)
+sys.exit(0)
