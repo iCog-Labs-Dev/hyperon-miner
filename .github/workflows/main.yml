@@ -11,28 +11,26 @@ on:
 jobs:
   setup-and-test:
     runs-on: macos-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install SWI-Prolog
+      # Homebrew is preinstalled on macOS runners
+      - name: Install SWI-Prolog and Python
         run: |
-          sudo apt-add-repository ppa:swi-prolog/devel -y
-          sudo apt-get update
-          sudo apt-get install -y swi-prolog python3-pip
+          brew update
+          brew install swi-prolog python
 
-      - name: Install Python Dependencies
+      - name: Install Python dependencies
         run: |
-          # We use --break-system-packages because GitHub runners enforce PEP 668.
-          # Since this is a temporary CI environment, this is safe.
-          python3 -m pip install --break-system-packages numpy==2.2.1 regex==2023.12.25 scipy==1.13.1
+          python3 -m pip install --upgrade pip
+          python3 -m pip install numpy==2.2.1 regex==2023.12.25 scipy==1.13.1
 
       - name: Run setup script
         run: |
           chmod +x setup.sh
           ./setup.sh
-
 
       - name: Run PeTTa tests
         run: python3 scripts/run-tests.py
