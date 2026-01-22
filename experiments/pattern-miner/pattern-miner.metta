@@ -48,7 +48,7 @@
   (case $surp-mode (
      (none (add-atom $kb $pattern))
      (jsd (do-jsd-surp $kb $db $pattern))
-     (isurp-old (isurp-old $pattern $db $normalization))
+     (isurp-old (let $surp (isurp-old $pattern $db $normalization) (add-atom-nodup $kb  (surprisingnessOf $pattern $surp) )))
     ; ($_  (do-surp $kb $db $surp-mode $pattern $normalization $db-ratio))
   )))
 
