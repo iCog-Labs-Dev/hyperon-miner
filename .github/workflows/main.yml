@@ -10,22 +10,25 @@ on:
 
 jobs:
   setup-and-test:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Homebrew is preinstalled on macOS runners
-      - name: Install SWI-Prolog and Python
+      - name: Install SWI-Prolog
         run: |
-          brew update
-          brew install swi-prolog python
+          sudo apt-add-repository ppa:swi-prolog/devel -y
+          sudo apt-get update
+          sudo apt-get install -y swi-prolog python3-pip
 
-      - name: Install Python dependencies
+      - name: Install Python Dependencies
         run: |
-          python3 -m pip install --upgrade pip
-          python3 -m pip install numpy==2.2.1 regex==2023.12.25 scipy==1.13.1
+          # GitHub Ubuntu runners enforce PEP 668
+          python3 -m pip install --break-system-packages \
+            numpy==2.2.1 \
+            regex==2023.12.25 \
+            scipy==1.13.1
 
       - name: Run setup script
         run: |
