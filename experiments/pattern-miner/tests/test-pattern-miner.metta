@@ -108,8 +108,8 @@
 ;;(pattern-miner $kb $db $minsup $depth $surp-mode $normalization $db-ratio $conj_exp)
 
 
-(pattern-miner &res3 &db 10 0 isurp-old False none True) 
-(assertEqual (collapse (get-atoms &res3)) 
+!(pattern-miner &res3 &db 10 0 isurp-old False none True) 
+!(assertEqual (collapse (get-atoms &res3)) 
 ;; Expected result
         ((surprisingnessOf (, (Inheritance $_560150 $_560156) (Inheritance $_560150 $_560156)) 0.07344632768361578) 
         (surprisingnessOf (, (Inheritance $_560234 human) (Inheritance $_560234 man)) 0.005585878898145486) 
@@ -194,8 +194,8 @@
 
 ; !(bind! &res7 (new-space))
 
-!(pattern-miner &res7 &db 5 1 jsd none 0.2 True) 
-!(assertEqual (collapse (get-atoms &res7)) 
+(pattern-miner &res7 &db 5 1 jsd none 0.2 True) 
+(assertEqual (collapse (get-atoms &res7)) 
 ;; Expected result 
 ((surprisingnessOf (, (Inheritance $_217764 human) (Inheritance $_217764 man) (Inheritance $_217764 ugly)) 0.8548398421185) 
  (surprisingnessOf (, (Inheritance $_217872 human) (Inheritance $_217872 man) (Inheritance $_217872 sodaDrinker)) 0.8548398421185) 
