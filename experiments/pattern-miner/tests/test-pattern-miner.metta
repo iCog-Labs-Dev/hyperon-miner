@@ -51,8 +51,8 @@
 ;; minimum support 10
 ;;(pattern-miner $kb $db $minsup $depth $surp-mode $normalization $db-ratio $conj_exp)
 
-(pattern-miner &res1 &db 10 0 none none none True) 
-(assertEqual (collapse (get-atoms &res1))
+!(pattern-miner &res1 &db 10 0 none none none True) 
+!(assertEqual (collapse (get-atoms &res1))
 ;;Expected result 
         ((supportOf (, (Inheritance $_493388 $_493394) (Inheritance $_493388 $_493418)) 190) 
         (supportOf (, (Inheritance $_493466 $_493472) (Inheritance $_493490 $_493472)) 800) 
@@ -128,8 +128,8 @@
 ;;(pattern-miner $kb $db $minsup $depth $surp-mode $normalization $db-ratio $conj_exp)
 
 
-!(pattern-miner &res4 &db 5 0 isurp True 0.2 True) 
-!(assertEqual (collapse (get-atoms &res4))
+(pattern-miner &res4 &db 5 0 isurp True 0.2 True) 
+(assertEqual (collapse (get-atoms &res4))
 ;; Expected result
   ((surprisingnessOf (, (Inheritance $_679614 human) (Inheritance $_679614 man)) 0.6666666666666666) 
   (surprisingnessOf (, (Inheritance $_679698 human) (Inheritance $_679698 woman)) 0.6666666666666666) 
