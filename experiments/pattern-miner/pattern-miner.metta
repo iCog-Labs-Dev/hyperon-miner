@@ -48,7 +48,8 @@
   (case $surp-mode (
      (none (add-atom $kb $pattern))
      (jsd (do-jsd-surp $kb $db $pattern))
-     ($_  (do-surp $kb $db $surp-mode $pattern $normalization $db-ratio))
+     (isurp-old (isurp-old $pattern $db $normalization))
+    ; ($_  (do-surp $kb $db $surp-mode $pattern $normalization $db-ratio))
   )))
 
 
