@@ -12,8 +12,6 @@
 ;;   - Python backend for some partition generation functions
 ;; =============================================================================
 
-! (import! &self partition)
-
 
 
 ;; =============================================================================
@@ -126,7 +124,7 @@
     (let* (
             ($clause (get-clauses $pattern))
             ($subsets (gen-subsets $clause)))
-        (gen-partition $subsets $clause)))
+        (partition $subsets $clause)))
 
 
 ;; ===========================================================================
@@ -176,13 +174,13 @@
 ;; Example:
 ;;   (partition '(a b))
 ;;   ;; => returns all partitions where '(a b) appears as one block
-(= (partition $conj-pattern)  
-    (
-        let $part_wout-patt (generet-partition-without-pattern $conj-pattern)
-            (union-atom (($conj-pattern)) $part_wout-patt )
-    )
+; (= (partition $conj-pattern)  
+;     (
+;         let $part_wout-patt (generet-partition-without-pattern $conj-pattern)
+;             (union-atom (($conj-pattern)) $part_wout-patt )
+;     )
 
-)
+; )
 
 
 ;; ===========================================================================
@@ -206,9 +204,9 @@
 ;;   (remove-hashtag '(foo #bar #baz))
 ;;   ⇒ (foo bar baz)
 ;; ===========================================================================
-
-(= ( remove-hashtag $x) 
-    (remove-hashtag-py $x))
+; we can't send a variable to python in PeTTa.
+; (= ( remove-hashtag $x) 
+;     (remove-hashtag-py $x))
 
 
 

@@ -350,10 +350,7 @@
 ;; =============================================================================
 ; (: eq-prob (-> Expression Expression Expression Number))
 (= (eq-prob $partition $pattern $db)
-    (let* (($joint-vars (joint-variables $pattern $partition))
-     
-    
-     )
+    (let $joint-vars (joint-variables $pattern $partition)
         (calculate-prob-for-vars $joint-vars $partition $db 1.0)))
 
 ;; =============================================================================
