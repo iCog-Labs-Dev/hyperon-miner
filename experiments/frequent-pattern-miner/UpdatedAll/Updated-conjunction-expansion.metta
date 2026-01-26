@@ -1,15 +1,15 @@
 (= (expand_conjunction $conjunctVariables $conjunct $pattern $db $ms)
     (let*
         (
-            ($debug3 (println! (duplicates check 1)))
+            ; ($debug3 (println! (duplicates check 1)))
             ($patVars (eval (getOrderlyVariables $pattern)))
-            ($debug1 (println! (in expand conjunct_ with conjunct_:- $conjunct -> vars:- $conjunctVariables -> pattern:- $pattern patvars:- $patVars )))
+            ; ($debug1 (println! (in expand conjunct_ with conjunct_:- $conjunct -> vars:- $conjunctVariables -> pattern:- $pattern patvars:- $patVars )))
             ($combo (eval (combine_list $conjunctVariables $patVars))) ;;to get unDeterministic combinations made via MeTTa
             ; ($combo (superpose (combine_lists $conjunctVariables $patVars)))
 
-            ($debug2 (println! ("-"-"-"-"-"-"-"- after we called $conjunctVariables $patVars ---> combinations:- $combo)))
+            ; ($debug2 (println! ("-"-"-"-"-"-"-"- after we called $conjunctVariables $patVars ---> combinations:- $combo)))
             ($npat (eval (replace_pattern $conjunct $pattern $combo)))
-            ($debug3 (println! (duplicates check 2)))
+            ; ($debug3 (println! (duplicates check 2)))
             ; ($debug3 (println! ($conjunct --> $conjunctVariables --> $pattern --> (combo:- $combo) ( npat:- $npat))))
         )
         (eval (checker $db $npat $ms))
@@ -91,15 +91,9 @@
         ($debug1 (println! "==== Build conjunction with depth 0 ===="))
         ($conjunctVariables (eval (getOrderlyVariables $conjunct)))
         ($match (superpose $candidatePatterns))
-        ($debug2 (println! (in doConj function matches:- $match -> conjunct:- $conjunct -> vars:- $conjunctVariables)))
         (True (== () (collapse (eval (is_member $conjunct $match))))) ;this will stop the thread if match Is not New in the conjuncts
-        ($debug3 (println! ("match" is new in the "conjunct")))        
         ($listConj (expand_conjunction $conjunctVariables $conjunct $match $db $ms))
-        ; ($debug4 (println! (after expand conjunction listConjs:- $listConjs)))
-        ; ($listConj (superpose $listConjs))
-        ; ($debug5 (println! (this conj:- $listConj)))
         (True (sup-evalCustom $db $listConj $ms)) ;; the final conjunct will be filtered here ...
-        ($debug6 (println! ( ============= $listConj has passed ============)))
     )
     $listConj
     )
@@ -110,14 +104,10 @@
         ($debug1 (println! "==== Build conjunction with depth greater than 0 ====="))
         ($match (superpose $candidatePatterns))
         (True (== () (collapse (eval (is_member $conjunct $match))))) ;this will stop the thread if match Is not New in the conjuncts (repetition)
-        ; ($debug2 (println! ( conjuncts:- $conjunct conjunctVariables:- -- "match":- $match )))
         ($conjunctVariables (eval (getOrderlyVariables $conjunct)))
         ($listConjs (collapse (expand_conjunction $conjunctVariables $conjunct $match $db $ms)))
-        ; ($debug4 (println! (after expand conjunction listConjs:- $listConjs)))
         ($listConj (superpose $listConjs))
-        ; ($debug5 (println! (this conj:- $listConj)))
         (True (sup-evalCustom $db $listConj $ms)) ;; this will stop any unfinished conjunct that has lower support than the minimum support
-        ; ($debug3 (println! (has passed)))
         ($conj (doConjunct $db $candidatePatterns $listConj $ms $K))
     )
     $conj

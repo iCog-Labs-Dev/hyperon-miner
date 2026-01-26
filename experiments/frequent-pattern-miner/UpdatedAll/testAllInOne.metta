@@ -26,8 +26,4 @@
 !(bind! conjunctSpace (new-space))
 
 ; !(frequency-pattern-miner dataBase-space conjunct-Space min-Support number-of-pattern-in-one-conjunct minus 2)
-<<<<<<< HEAD
 !(frequency-pattern-miner dataBase conjunctSpace 3 1)
-=======
-!(frequency-pattern-miner dataBase conjunctSpace 3 1)
->>>>>>> b0e3eba12f689db0b57ae8c913449f23735a7df5

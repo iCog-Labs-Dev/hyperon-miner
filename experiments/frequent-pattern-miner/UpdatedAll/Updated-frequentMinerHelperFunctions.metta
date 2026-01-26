@@ -213,9 +213,7 @@
 ; Output: Combined list
 (= (combine_list $vars1 $vars2)   
     (let* (  
-        ($debug0 (println! (1.1.1.1---- Combining vars1:- $vars1 with vars2:- $vars2 ---- )))
         ($combinations (eval (combiner-pat1-pat2 $vars1 $vars2 ())))  
-        ($debug1 (println! (---- Combining vars1:- $vars1 with vars2:- $vars2 combinations:- $combinations ---- )))
         ($boolGot (vars-exist $combinations $vars1))  
         ($vars1-check (if $boolGot $combinations (empty)))  
     ) $combinations  
