@@ -318,7 +318,7 @@
 (= (formatter $conjspace $dbspace) 
     (let* (
         (true (println! "==== Formating  started ====="))
-        ($sortedlist (unique-atom (collapse (match-custom $conjspace $pattern (sort_conj $pattern)))))
+        ($sortedlist (unique-atom (collapse (match &mork (get-ns-pattern $spezspace $pattern) (sort_conj $pattern)))))
         ($sorted (superpose $sortedlist))
         ($res (cons-atom , $sorted))
         ($var (replacev $res))
