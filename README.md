@@ -2,23 +2,38 @@
 
 ## Description
 
-This project is a port of the classic Pattern Miner to **PeTTa**, a high-performance interpreter for the MeTTa language. The Pattern Miner is designed to discover frequent and surprising patterns within large hypergraphs (Atomspaces), which is essential for inference, learning, and cognitive architectures.
+The goal of this project is to port the classic Pattern Miner to Hyperon using MeTTa, the language of OpenCog Hyperon, using PeTTa which is a high-performance interpreter for the MeTTa language. Pattern Miner is used to identify not only frequent patterns but also interesting or surprising patterns in the large hypergraph space (Atomspace). This capability is crucial for inference, learning, and cognitive architectures.
 
 Following the original logic from OpenCog Classic and its Hyperon/MeTTa port, this version is optimized to run in the PeTTa environment.
 
 ## How it works (Simplified)
-Imagine you have a giant web of data (like a knowledge graph).
-1. **Find Frequent Stuff**: The miner looks for connections that appear often (e.g., "People often drink soda").
-2. **Find Surprising Stuff**: It then looks for things that are unexpected or rare relative to what we know (e.g., "A specific person who usually hates sugar is drinking soda" might be surprising).
+This pattern miner is to mine frequent and interesting patterns from Hypergraph AtomSpace. In order to do that, it will first mine frequent patterns and store them in a new space, which will be passed to the surprisingness components to score each pattern's surprisingness value.
 
-It does this in two main steps:
-1. **Frequent Pattern Mining**:
-   - Finds basic recurring links.
-   - Combines them into larger patterns.
-   - Filters out rare ones.
-2. **Surprisingness Scoring** (Optional):
-   - Takes the frequent patterns.
-   - Calculates how "surprising" they are using probability math.
+**To Mine Frequent Patterns:**
+- Mine Abstract Patterns:
+Query link nodes, form abstract patterns with variables, and filter by minimum support.
+
+- Specialize Patterns:
+Break abstract patterns into triplets, apply valuations (including nested expressions), and build specializations.
+
+- Select Candidate Patterns:
+Evaluate support for specialized patterns and keep those meeting the support threshold.
+
+- Expand via Conjunction:
+Combine candidate patterns through variable mapping, remove redundancy, and normalize structure.
+
+- Surprisingness Scoring (Optional):
+  - Compute the empirical probability of a pattern based on support or bootstrapped sampling
+
+  - Divide the pattern into partitions of sub-patterns
+
+  - For each partition, compute a probability estimate assuming independence between blocks
+
+  - From these estimates, determine the minimum (emin) and maximum (emax) probable values
+
+  - Compute the distance between the empirical probability and the interval emin,emax
+
+  - Optionally normalize this distance using the empirical value
 
 ## Getting Started with PeTTa
 
@@ -48,7 +63,7 @@ We have provided a starter script `run_miner.metta` in the root directory.
 3.  **Run with PeTTa**:
     Assuming you have the PeTTa `run.sh` script (from the PeTTa repository):
     ```bash
-    sh /path/to/petta/run.sh run_miner.metta
+    sh {"path-to-petta run.sh file"} {"path to run_miner.metta"}
     ```
 
 
