@@ -56,9 +56,9 @@
               ($emp_value (
                  unify ($link $x $y) $new_head  (emp-tv $new_head $db) 
                        (chain (cons-atom , $new_head) $ptrn (emp-tv $ptrn $db))));;conjunct if it is not single pattern
-              ($dummy (emp_tv_mem $tail $db))
+              ($old (emp_tv_mem $tail $db))
         )  
-            (cons-atom  $emp_value $dummy)
+            (cons-atom  $emp_value $old)
     )
  ))
 
