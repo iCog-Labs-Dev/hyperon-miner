@@ -1,16 +1,16 @@
-! (register-module! ../../../hyperon-miner/experiments)
-! (import! &self experiments:utils:common-utils)
-! (import! &self experiments:utils:beta-dist)
-! (import! &self experiments:utils:constants)
-! (import! &self experiments:utils:TruthValue)
-! (import! &self experiments:utils:surp-utils)
-! (import! &self experiments:utils:miner-utils)
-! (import! &self experiments:utils:gen_partition)
-! (import! &self experiments:truth-values:est-tv)
-! (import! &self experiments:truth-values:emp-tv)
-! (import! &kb experiments:data:ugly_man_sodaDrinker)
+!(import! &self ../utils/constants)
+!(import! &self ../utils/common-utils)
+!(import! &self ../utils/TruthValue)
+!(import! &self ../utils/surp-utils/beta-dist)
+!(import! &self ../utils/surp-utils/surp-utils)
+!(import! &self ../../utils/surp-utils/partition-metta)
+!(import! &self ../utils/gen_partition)
+!(import! &self ../utils/miner-utils)
+!(import! &self ../truth-values/est-tv)
+!(import! &self ../truth-values/emp-tv)
+!(import! &kb ../data/ugly_man_sodaDrinker)
 
-! (bind! square (py-atom numpy.square (-> Number Number)))
+( = (square $x) (* $x $x))
 
 
 ; The slight diffrences in the expected variance from the classic miner vs what we are getting in the ported version most likely arises from the approximations we used for contants.
@@ -31,13 +31,12 @@
     let* (
        ($tv_1  (STV 0 0.1))
        ($tv_2  (STV 0 0.1))
-       ($result (avrg_tv ($tv_1 $tv_2)))
+       ($result (eval (avrg_tv ($tv_1 $tv_2))))
 
     )
     $result 
 ))
-
-(assertEqual (test_avrg_tv_1) (0 0.09999999999999999))
+!(test (test_avrg_tv_1) (0 0.09999999999999999))
 
 ;========================================================
 ;avrg_tv test case 2 from classic miner repo
@@ -61,7 +60,7 @@
     )
     $result 
 ))
-(assertEqual (test_avrg_tv_2) (0.5 0001249843769528809))
+!(test (test_avrg_tv_2) (0.5 0.0001249843769528809))
 
 ;=================================================================
 ;avrg_tv test case 3 from classic miner repo
@@ -105,7 +104,7 @@
     $result 
 ))
 
-(assertEqual (test_avrg_tv_3) (1 0.0006774324781404488))
+!(test (test_avrg_tv_3) (1 0.0006774324781404488))
 
 ;==================================
 
