@@ -8,13 +8,13 @@
 ;; 3. store as a candidate if the support is greater than the minimum support
 
 (= (candidatePattern $dbspace $spezspace $minsup $cndpspace)
-    (match $spezspace (SpecializationOf $specialized $pattern)
+    (match-custom $spezspace (SpecializationOf $specialized $pattern)
         (let* ( 
                 (true (println! ("==== Candidate Pattern started =====", $specialized)))
                 ($specializedvar (replacev $specialized))
-                ($result (sup-num $dbspace $specializedvar))
-                ($rem (if  (>= $result $minsup) (remove-atom $cndpspace (CandidatePattern $specialized $result)) ())  )             
-                ($add (if (>= $result $minsup) (add-atom $cndpspace (CandidatePattern $specialized $result)) ()))
+                ($result (sup-num-custom $dbspace $specializedvar))
+                ($rem (if  (>= $result $minsup) (remove-atom-custom $cndpspace (CandidatePattern $specialized $result)) ())  )             
+                ($add (if (>= $result $minsup) (add-atom-custom $cndpspace (CandidatePattern $specialized $result)) ()))
             ) 
         $add
 )))

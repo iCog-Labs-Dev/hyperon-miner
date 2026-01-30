@@ -47,7 +47,7 @@
                 (  
                     (true (println! ("==== Build specialization started =====", ($link $x $y))))
                     (($link $x1 $y1) (replacev ($link $x $y)))                            ; replacev is a function that replaces index with variables
-                    (($subx $suby) (match $dbspace ($link $x1 $y1) ($x1 $y1)))            ; getting the substitution /valuation of the pattern
+                    (($subx $suby) (match-custom $dbspace ($link $x1 $y1) ($x1 $y1)))            ; getting the substitution /valuation of the pattern
                     ($shabx (depth-handler $subx))                                    ;handle depth in the x node
                     ($shaby (if (== $subx $suby) $shabx (depth-handler $suby)))                                    ; handle depth in the y node   
                     ($spec1 (replace (SpecializationOf ($link $shabx $ys) ($link $x $y)))) ;build the specialization and change the variables to indexs
@@ -56,12 +56,12 @@
                 )
             (
                 superpose (
-                    (remove-atom $specspace $spec1) ; remove the old specialization to avoid redundancy
-                    (add-atom $specspace $spec1) ; add the new specialization
-                    (remove-atom $specspace $spec2)
-                    (add-atom $specspace $spec2)
-                    (remove-atom $specspace $spec3)
-                    (add-atom $specspace $spec3)
+                    (remove-atom-custom $specspace $spec1) ; remove the old specialization to avoid redundancy
+                    (add-atom-custom $specspace $spec1) ; add the new specialization
+                    (remove-atom-custom $specspace $spec2)
+                    (add-atom-custom $specspace $spec2)
+                    (remove-atom-custom $specspace $spec3)
+                    (add-atom-custom $specspace $spec3)
                 )
 
         )

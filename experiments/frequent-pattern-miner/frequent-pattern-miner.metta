@@ -11,12 +11,12 @@
 (= (abstract-pattern $dbspace $minsup $aptrnspace $cndpspace)
             (let* (
                     (true (println! ("==== Abstract Pattern started =====")))
-                    (($linkunique) (unique-atom (collapse (match $dbspace ($link $x $y) $link))))
-                    ($result (sup-num $dbspace ($linkunique $z $t)))
-                    ($add1 (if (>= $result $minsup) (remove-atom $aptrnspace (AbstractPattern ($linkunique Z (S Z)))) ()))
-                    ($rem1 (if (>= $result $minsup) (add-atom $aptrnspace (AbstractPattern ($linkunique Z (S Z)))) ()))
-                    ($add2 (if (>= $result $minsup) (remove-atom $cndpspace (CandidatePattern ($linkunique Z (S Z)) $result)) ()))
-                    ($rem2 (if (>= $result $minsup) (add-atom $cndpspace (CandidatePattern ($linkunique Z (S Z)) $result)) ()))
+                    (($linkunique) (unique-atom (collapse (match-custom $dbspace ($link $x $y) $link))))
+                    ($result (sup-num-custom $dbspace ($linkunique $z $t)))
+                    ($add1 (if (>= $result $minsup) (remove-atom-custom $aptrnspace (AbstractPattern ($linkunique Z (S Z)))) ()))
+                    ($rem1 (if (>= $result $minsup) (add-atom-custom $aptrnspace (AbstractPattern ($linkunique Z (S Z)))) ()))
+                    ($add2 (if (>= $result $minsup) (remove-atom-custom $cndpspace (CandidatePattern ($linkunique Z (S Z)) $result)) ()))
+                    ($rem2 (if (>= $result $minsup) (add-atom-custom $cndpspace (CandidatePattern ($linkunique Z (S Z)) $result)) ()))
                 )
                ($add1 $rem1 $add2 $rem2)
              )
@@ -38,10 +38,10 @@
    (let*(
            (true (println! "==== Frequent miner started ====="))
            ($abs (collapse (abstract-pattern $dbspace $minsup $aptrnspace $cndpspace))) ; prevent patterns that dont have a support from being speciallized
-           ($var  (collapse (match $aptrnspace (AbstractPattern $pattern) (build-specialization $pattern $dbspace $specspace)))) ; specializa abstract patterns
-           ($temp2  (collapse (candidatePattern $dbspace $specspace $minsup $cndpspace))); get candidate patterns
+           ($var  (collapse (match-custom $aptrnspace (AbstractPattern $pattern) (build-specialization $pattern $dbspace $specspace)))) ; specializa abstract patterns
+            ($temp2  (collapse (candidatePattern $dbspace $specspace $minsup $cndpspace))); get candidate patterns
             ($temp3  (if $cnj_exp (collapse (conjunct $dbspace $cndpspace $conjspace $minsup $depth)) $temp2)) ; store candidate patterns
-            ($temp4  (if $cnj_exp (formatter $conjspace $dbspace) (match $cndpspace (CandidatePattern $pattern $cnt) (supportOf $pattern $cnt))))      
+            ($temp4  (if $cnj_exp (formatter $conjspace $dbspace) (match-custom $cndpspace (CandidatePattern $pattern $cnt) (supportOf $pattern $cnt))))
         )  
         $temp4
         )

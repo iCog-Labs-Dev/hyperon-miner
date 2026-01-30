@@ -201,6 +201,10 @@
 (= (sup-num-custom $namespace $pattern)
    (counter-custom $namespace $pattern))
 
+(= (sup-eval-custom $namespace $pattern $ms)
+   (let $sup (counter-custom $namespace $pattern)
+      (if (>= $sup $ms) True False)))
+
 (= (universe-count-custom $pattern $namespace)
    (pow-math (db-size-custom $namespace) (n_conjuncts $pattern)))
 
