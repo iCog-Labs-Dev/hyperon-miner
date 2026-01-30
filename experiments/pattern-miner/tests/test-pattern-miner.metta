@@ -1,6 +1,7 @@
 ;; import order matters here
 !(import! &self "../../utils/surp-utils/boost_petta.py")
 !(import! &self ../../utils/common-utils)
+!(import! &self ../../utils/mork-interface)
 !(import! &self ../../utils/index_to_var)
 !(import! &self  ../../utils/constants)
 !(import! &self  ../../utils/TruthValue)
@@ -33,7 +34,6 @@
 !(import! &self ../../frequent-pattern-miner/conjunction-expansion)
 !(import! &self ../../frequent-pattern-miner/frequent-pattern-miner)
 !(import! &self ../pattern-miner)
-!(import! &self ../../utils/mork-interface)
 
 
 ;; import kb
