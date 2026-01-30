@@ -1,13 +1,13 @@
-# Frequenc Pattern Miner
+# Frequent Pattern Miner
 
-The `frequenct-pattern-miner` is a modular pipeline for mining **frequent patterns** from a given atomspace. It extracts abstract patterns, specializes them, filters them by support, and constructs deeper conjunctive patterns and returns only the meaningful based on the support they have.
+The `frequent-pattern-miner` is a modular pipeline for mining **frequent patterns** from a given atomspace. It extracts abstract patterns, specializes them, filters them by support, and constructs deeper conjunctive patterns and returns only the meaningful based on the support they have.
 
 ---
 
 
 ## 🔧 Purpose
 
-To find  patterns that **frequently occur** in the atomspace , using a multi-step symbolic mining approach that includes abstraction, specialization, support evaluation, and conjunctive expansion.
+To find patterns that **frequently occur** in the atomspace, using a multi-step symbolic mining approach that includes abstraction, specialization, support evaluation, and conjunctive expansion.
 
 ---
 

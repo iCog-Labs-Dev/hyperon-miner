@@ -45,11 +45,14 @@
 ;; on the input surp mode.
 ;(: call-surprisingness (-> space space Atom pattern Atom))
 (= (call-surprisingness $kb $db $pattern $surp-mode $normalization $db-ratio)
-  (case $surp-mode (
-     (none (add-atom $kb $pattern))
-     (jsd (do-jsd-surp $kb $db $pattern))
-     ($_  (do-surp $kb $db $surp-mode $pattern $normalization $db-ratio))
-  )))
+  (if (== $surp-mode none)
+      (none (add-atom $kb $pattern))
+      (if (== $surp-mode jsd)
+            (jsd (do-jsd-surp $kb $db $pattern))
+            ($_  (do-surp $kb $db $surp-mode $pattern $normalization $db-ratio))
+      )
+   )
+)
 
 
 

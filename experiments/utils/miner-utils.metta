@@ -122,7 +122,7 @@
 ))
 
 ;;Substitutes variables in a pattern according to a provided map
-(: compose (->pattern dic pattern))
+; (: compose (->pattern dic pattern))
 (=(compose ($link $x) $subPat) (
     let* (
         ($new_x      (   

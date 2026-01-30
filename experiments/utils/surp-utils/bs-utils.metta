@@ -111,16 +111,16 @@
 ;; Returns:
 ;;   - A list containing a random subsample of elements from the database.
 (= (generet-random-subsample $db $subsize)
-    (if (<= $subsize 0)
-          ()
-         (let* ( 
-                    ($elements (random-element $db))
-                    ($new-subsize (- $subsize 1))
-                    ($tail-elements (generet-random-subsample $db $new-subsize))
-                 )
-                 (cons-atom $elements $tail-elements)
-         )
-    )
+   (if (< $subsize 0)
+        ()
+       (let* ( 
+               ($elements (random-element $db))
+               ($new-subsize (- $subsize 1))
+               ($tail-elements (generet-random-subsample $db $new-subsize))
+             )
+             (cons-atom $elements $tail-elements)
+       )
+   )
 )
 
 
