@@ -1,12 +1,10 @@
  ;  * cnjtion = (Inheritance X Y)
  ;  * pattern = (Inheritance Z W)
 
- ! (register-module! ../../../experiments)
-! (import! &self experiments:utils:common-utils)
-! (import! &self experiments:frequent-pattern-miner:freq-pat)
-! (import! &self experiments:frequent-pattern-miner:conj-exp)
-! (import! &self experiments:frequent-pattern-miner:conjunction-expansion)
-; ! (import! &self experiments:utils:variable-combinations)
+!(import! &self ../utils/common-utils)
+!(import! &self ../utils/index_to_var)
+!(import! &self ../utils/variable-combinations)
+!(import! &self ../frequent-pattern-miner/conjunction-expansion)
 
 ;; test knowledge base
 (Inheritance A B)
@@ -65,7 +63,7 @@
 ;   (, (Inheritance $X $Y) (Inheritance $Z $X)), 
 ;   (, (Inheritance $X $Y) (Inheritance $X $W))]
 
-======================================================================================================
+; ======================================================================================================
 
 ; void MinerUTest::test_expand_conjunction_4()
 ; {

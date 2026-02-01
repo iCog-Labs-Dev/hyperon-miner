@@ -1,12 +1,12 @@
-# Hyperon Pattern Miner
+# Pattern Miner (PeTTa Edition)
 
 ## Description
 
-The goal of this project is to port the classic Pattern Miner to Hyperon using MeTTa, the language of OpenCog Hyperon. Pattern Miner is used to identify not only frequent patterns but also interesting or surprising patterns in the large hypergraph space (Atomspace). This capability is crucial for inference, learning, and cognitive architectures.
+The goal of this project is to port the classic Pattern Miner to Hyperon using MeTTa, the language of OpenCog Hyperon, using PeTTa which is a high-performance interpreter for the MeTTa language. Pattern Miner is used to identify not only frequent patterns but also interesting or surprising patterns in the large hypergraph space (Atomspace). This capability is crucial for inference, learning, and cognitive architectures.
 
-For this current phase, we are directly porting from the classic implementation, following the same flow, algorithms, and structure. However, the actual implementation adheres to Hyperon concepts and leverages MeTTa’s capabilities for  reasoning and pattern manipulation.
+Following the original logic from OpenCog Classic and its Hyperon/MeTTa port, this version is optimized to run in the PeTTa environment.
 
-## How it works 
+## How it works (Simplified)
 This pattern miner is to mine frequent and interesting patterns from Hypergraph AtomSpace. In order to do that, it will first mine frequent patterns and store them in a new space, which will be passed to the surprisingness components to score each pattern's surprisingness value.
 
 **To Mine Frequent Patterns:**
@@ -22,24 +22,54 @@ Evaluate support for specialized patterns and keep those meeting the support thr
 - Expand via Conjunction:
 Combine candidate patterns through variable mapping, remove redundancy, and normalize structure.
 
+- Surprisingness Scoring (Optional):
+  - Compute the empirical probability of a pattern based on support or bootstrapped sampling
 
-After having frequent patterns, they will be processed by the surprisingness scoring part. For now, we haven't integrated the frequent miner with the surprisingness part, but both phases can be run independently to see their results. After the integration, the surprisingness phase starts from the frequent miner result and scores each of the mined patterns and meets the surprisingness rules. To do that, it will use a backward chainer.
+  - Divide the pattern into partitions of sub-patterns
 
-**Score Surprisingness Value:**
-- Compute the empirical probability of a pattern based on support or bootstrapped sampling
+  - For each partition, compute a probability estimate assuming independence between blocks
 
-- Divide the pattern into partitions of sub-patterns
+  - From these estimates, determine the minimum (emin) and maximum (emax) probable values
 
-- For each partition, compute a probability estimate assuming independence between blocks
+  - Compute the distance between the empirical probability and the interval emin,emax
 
-- From these estimates, determine the minimum (emin) and maximum (emax) probable values
+  - Optionally normalize this distance using the empirical value
 
-- Compute the distance between the empirical probability and the interval emin,emax
+## Getting Started with PeTTa
 
-- Optionally normalize this distance using the empirical value
+This project requires **PeTTa**. For installation instructions and setup guides, please refer to the official PeTTa repository:
+- [**PeTTa Repository & Setup Guide**](https://github.com/trueagi-io/PeTTa/tree/main)
+
+## Running the Code
+
+### How to Run on Your Data
+
+We have provided a starter script `run_miner.metta` in the root directory.
+
+1.  **Open `run_miner.metta`** and find the dataset import line:
+    ```metta
+    !(import! &db experiments/data/ugly_man_sodaDrinker)
+    ```
+    Change this path to point to your own `.metta` dataset.
+
+2.  **Adjust Parameters** (optional):
+    You can change the minimum support (frequency) or pattern depth in the miner call:
+    ```metta
+    ;; (pattern-miner output input min-support depth mode normalization db-ratio conj-exp)
+    !(pattern-miner &res &db 3 0 none none none True)
+    ```
 
 
+3.  **Run with PeTTa**:
+    Assuming you have the PeTTa `run.sh` script (from the PeTTa repository):
+    ```bash
+    sh {"path-to-petta run.sh file"} {"path to run_miner.metta"}
+    ```
 
-## Running the code
--  [Pattern-miner](https://github.com/iCog-Labs-Dev/hyperon-miner/tree/syn/experiments/pattern-miner)
+
+## Project Structure
+- `experiments/pattern-miner`: The main entry point for mining.
+- `experiments/frequent-pattern-miner`: Logic for finding frequent itemsets/links.
+- `experiments/surprisingness`: Logic for calculating how surprising a pattern is.
+- `experiments/validation`: Tests and validation files to prove correctness.
 

@@ -234,9 +234,9 @@
             ;    ($rp_est (prob-with-joint $db $db_size (remove-parenthesis $head) (joint-variables-init $pattern (remove-parenthesis $head)) 1))
                ($rp_est (eq-prob (remove-parenthesis $head)  $pattern $db))
               (($strength $confidence) ((* $rp $rp_est) (* 1e-1 (car-atom $rc))))
-               ($dummy (ji-est-tv $db $db_size $pattern $tail))
+              ($old (ji-est-tv $db $db_size $pattern $tail))
                ) 
-              (cons-atom (STV $strength $confidence)  $dummy)  
+              (cons-atom (STV $strength $confidence)  $old)  
           ))
  )
 
@@ -262,7 +262,8 @@
     let $prtns (partitions $pattern)  
           ( let* (
             ($_ (println! "======= Truth Value Estimation ======="))
-            (($strength $confidence) (avrg_tv (ji-est-tv $db (db_size $db) $pattern $prtns) )))
+            ($db_size (db_size $db))
+            (($strength $confidence) (avrg_tv (ji-est-tv $db $db_size $pattern $prtns) )))
            (STV $strength $confidence))           
 ))
 
