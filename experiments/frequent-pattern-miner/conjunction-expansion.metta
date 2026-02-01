@@ -337,7 +337,7 @@
 ;(: conjunct (-> space space space Number Number Atom))
 
 (= (conjunct $dbspace $cndpspace $conjspace $minsup $depth )   
-     (match-custom $cndpspace (CandidatePattern $pattern $cnt)
+     (match &mork (get-ns-pattern $cndpspace (CandidatePattern $pattern $cnt))
                    (let* (
                         (true (println! ("==== Conjuntion expansion started" $pattern)))
                         ($conj  (do-conjunct $dbspace $cndpspace  $pattern $minsup (fromNumber $depth)))
