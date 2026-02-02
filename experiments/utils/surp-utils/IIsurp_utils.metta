@@ -122,6 +122,11 @@ $coh
 
 (=(random-coherence) 0.5)
 
+
+; to measure the coherence of a concept how much the instances that inherit from the concept have in common, we do this by measuring every pair wise coherence among the instances that inherit from the super concept, 
+
+; to measure pairwise coherence we simply measure the ratio of the number of concepts the two instances inherit in common to the average amount of concepts inherited by the two instacns 
+
 (= (coherence $concept $db $link)
 (let* (
   ($ins (collapse (match $db ($link $any $concept) $any)))
@@ -269,6 +274,15 @@ $concepts
 (=(filter-subpatterns-w-subs $subpattern $db)
 (let* ((($link $a $b) $subpattern)
 ($subcons  (get-sub-conc-only $subpattern $db)))
+(if (== $subcons ()) (empty) ($subpattern $subcons))
+)
+)
+
+(=(filter-subpatterns-w-subs $subpattern $db $conc_db)
+(let* ((($link $a $b) $subpattern)
+
+
+($subcons (collapse (match $conc_db (Inheritance $any $b ) $any))))
 (if (== $subcons ()) (empty) ($subpattern $subcons))
 )
 )

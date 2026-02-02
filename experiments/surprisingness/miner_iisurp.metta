@@ -49,13 +49,17 @@
 
 
 ;the caller of this function should chekc if the return is -1, then not to include it in the final min-max interval
-(=(sub-prob-main $conjunct-w-comma $db $total_count) 
+(=(sub-prob-main $conjunct-w-comma $db $total_count $conc_db) 
+
+
+
+
 
 
 
 ( let*  (($conjunct (if (== (car-atom $conjunct-w-comma) ,) (cdr-atom $conjunct-w-comma) ($conjunct-w-comma)))
   
-  ($filted-conjunct-w-subconcepts (collapse (filter-subpatterns-w-subs (superpose $conjunct) $db)))) (if (== $filted-conjunct-w-subconcepts () ) ()
+  ($filted-conjunct-w-subconcepts (collapse (filter-subpatterns-w-subs (superpose $conjunct) $db $conc_db)))) (if (== $filted-conjunct-w-subconcepts () ) ()
 
 
  (let* (
@@ -103,8 +107,6 @@
 
 
 
-
-
 ; within the get-set-prob-intervals 
 
 ; 1st: we send each subpattern in the conjunct in its own branch using superpose , and the output from each branch is the estimate probability considering the super concept counterparts for the concept mentioned in the subpattern.
@@ -116,18 +118,21 @@
 
 
 
-(=(get-set-prob-intervals $conjunct-w-comma $db $total_count) 
+
+(=(get-set-prob-intervals $conjunct-w-comma $db $total_count $conc_db) 
 
 (let* (
   ; ($total_count (universe-count $conjunct-w-comma $db))
 ($conjunct (if (== (car-atom $conjunct-w-comma) ,) (cdr-atom $conjunct-w-comma) ($conjunct-w-comma)))
-($interval-list (collapse (get-concept-prob-call (superpose $conjunct ) $conjunct  $db $total_count)))
+($interval-list (collapse (get-concept-prob-call (superpose $conjunct ) $conjunct  $db $total_count $conc_db)))
 
 ($all-fn-sups (handle-list-interval $interval-list ()))
 
-($sub-int (sub-prob-main $conjunct-w-comma $db $total_count))
+($sub-int (sub-prob-main $conjunct-w-comma $db $total_count $conc_db))
 
 (($all-prob-est) (collapse (union-atom $all-fn-sups $sub-int  )))
+
+
 
 ; ; ; compute retval-max/min only when allmaxs2 is non-empty
 ($retval-max (if (== $all-prob-est ()) () (max-atom $all-prob-est)))
@@ -144,11 +149,22 @@
 ($retval-max $retval-min)
 
 
-))
-
-(=(get-concept-prob-call $candidate $conjunct $db $total_count)
-(getConceptProb $candidate $conjunct $db $total_count  )
 )
+
+
+)
+
+
+
+
+
+
+
+(=(get-concept-prob-call $candidate $conjunct $db $total_count $conc_db)
+(getConceptProb $candidate $conjunct $db $total_count  $conc_db )
+)
+
+;super called
 
 ; it retirves the concept from the subpattern it got through superpose.
 
@@ -163,18 +179,19 @@
 ; 6th: compute the final proboabilty of the super pattern by accouting for the coherence and the normalizing term which is jsut hte support of oru target concept divided by the support of the super concept. (this is done by the getcohfact , and the factor that depends on the coherence of the super concept also depends on whether we are trying to compute the max or min estimate.) 
 
 ; 7th: fetch the max estimate and min estimate from the return estimates returned by getcohfact and return them as a tuple.
-
-
-(=(getConceptProb $candidate $conjunct $db $total_count)
+(=(getConceptProb $candidate $conjunct $db $total_count $conc_db )
 
 
 ( let* (
 
    (($link $per $conc) $candidate)
-  ($orInst (collapse (match $db ($link $any $conc) $any)))
-  ($concepts-raw (collapse (match $db ($link $anyI $anyC) $anyC)))
-  ($concepts (unique-atom $concepts-raw))
-  ($supercons  (sub-super-concepts $orInst $concepts $conc super $db ))
+  ; ($orInst (collapse (match $db ($link $any $conc) $any)))
+  ; ($concepts-raw (collapse (match $db ($link $anyI $anyC) $anyC)))
+  ; ($concepts (unique-atom $concepts-raw))
+  ($supercons  (collapse (match $conc_db (Inheritance $conc $any ) $any)))
+
+
+  ; ($supercons  (sub-super-concepts $orInst $concepts $conc super $db ))
 ) (if (== $supercons ()) (empty) (let* (
   
   
@@ -239,7 +256,6 @@ $new_prob
 ;total count is the universal count of the orignial conjuct
 
 
-
 ; for each superconept constructs a super pattern by exchanging a new subpattern containing the superpattern with the subpattern containing our target concept form our original conjunct. along with the coherence of the corresponding super concept.
 (= (get-prob-func $superconc  $db  $candPat $conjunct $total_count)
 (let* (
@@ -293,14 +309,13 @@ $new_prob
 
 (= (prob $pattern $db $total_count) (// (sup-num $db $pattern) $total_count))
 
-
 ; The first step in IIsurp is calculating the estimations assuming independence among its subpatterns like how its done Isurp and storing it in $results-inter
 
 ; The second step is to compute the estimates considering the super and sub couterparts of the subpatterns in the conjunct by calling the get-set-prob-intervals function and stroring the estimates in $subset-results.
 
 ; The third step is combining the tow sets of estimates and finding the maximum and minimum estmiates to act as bounds from which we measure the distance the empirical probability deviates from that bound, that distance becomes hte output as the surprisingness measure.
 
-(= (IIsurp-old $pattern $db $normalize) (
+(= (IIsurp-old $pattern $db $normalize $conc_db) (
     let* (
         ($_ (println! "==== IIsurp-old surprisingness ====="))
         ($total_count (total_counts $pattern $db))
@@ -310,13 +325,13 @@ $new_prob
         ($conjunct (cdr-atom $pattern))
         ($partitions (partitions $conjunct))
         ($results-inter  (isurp-old_  $partitions $db $total_count))
-        ($subset-results (get-set-prob-intervals $pattern $db $total_count))
+        ($subset-results (get_set_prob_intervals $pattern $db $total_count $conc_db))
         ($results (if (not (== $subset-results ())) (union-atom $results-inter $subset-results) $results-inter))
 
         ($emin (min-atom $results))
         ($emax (max-atom $results))
        
-        ($dst (dst-from-interval $emin $emax $pattern_prob))
+        ($dst (dst_from_interval $emin $emax $pattern_prob))
 
     ) 
   ;  (( $pattern_prob ) ($subset-results) ($results-inter ) ($dst) ((- $pattern_prob(car-atom $results-inter))))
@@ -333,7 +348,3 @@ $new_prob
 
      
 ) )
-
-
-
-

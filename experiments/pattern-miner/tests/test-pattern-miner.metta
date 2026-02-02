@@ -38,6 +38,12 @@
 ;; import kb
 !(import! &db ../../data/ugly_man_sodaDrinker)
 
+;import IIsurp 
+
+!(import! &self ../../utils/surp-utils/IIsurp_utils)
+!(import! &self ../../utils/surp-utils/concept-miner)
+!(import! &self ../miner_iisurp.metta)
+
 
 
 

@@ -17,6 +17,18 @@
      ))))
 )
 
+(= (do-IIsurp $kb $db (supportOf $pattern $support) $conc_db)(
+   case (match $kb  (surprisingnessOf $pattern $surp_val) $pattern)
+( ($pattern ())
+  (Empty ( let* (
+     
+     ($surp (IIsurp-old $pattern $db False $conc_db))
+     
+     )
+     (add-atom-nodup $kb   (surprisingnessOf $pattern $surp))
+     ))))
+)
+
 
 
 
@@ -44,16 +56,24 @@
 ;;function to call the surprisingness algorithms based 
 ;; on the input surp mode.
 ;(: call-surprisingness (-> space space Atom pattern Atom))
-(= (call-surprisingness $kb $db $pattern $surp-mode $normalization $db-ratio)
-  (if (== $surp-mode none)
-         (add-atom $kb $pattern)
-      (if (== $surp-mode jsd)
-           (do-jsd-surp $kb $db $pattern)
-            (do-surp $kb $db $surp-mode $pattern $normalization $db-ratio)
-      )
-   )
-)
+; (= (call-surprisingness $kb $db $pattern $surp-mode $normalization $db-ratio)
+;   (if (== $surp-mode none)
+;          (add-atom $kb $pattern)
+;       (if (== $surp-mode jsd)
+;            (do-jsd-surp $kb $db $pattern)
+;             (do-surp $kb $db $surp-mode $pattern $normalization $db-ratio)
+;       )
+;    )
+; )
 
+(= (call-surprisingness $kb $db $pattern $surp-mode $normalization $db-ratio)
+(if (== $surp-mode none) (add-atom $kb $pattern) (if (== $surp-mode jsd ) (do-jsd-surp $kb $db $pattern) 
+
+(if (== $surp-mode IIsurp) (do-IIsurp $kb $db $pattern &conceptSpace ) (do-surp $kb $db $surp-mode $pattern $normalization $db-ratio))
+
+))
+  
+  )
 
 
 
@@ -66,6 +86,7 @@
     let*
     (    (true (println! "==== Pattern Miner Started ====="))
          ($dummy (collapse (let ($link $x $y) (get-atoms $db) (add-atom &dbspace ($link $x $y))) ))
+         ($mine-rel (inititate-IIsurp-miner &dbspace &conceptSpace ) )
          ($frequent-pattern  (frequency-pattern-miner &dbspace &specspace &cndpspace &aptrnspace &conjspace $minsup $depth $conj_exp))
          ($dummy3  (call-surprisingness $kb &dbspace $frequent-pattern $surp-mode $normalization $db-ratio))
           )  ()))
