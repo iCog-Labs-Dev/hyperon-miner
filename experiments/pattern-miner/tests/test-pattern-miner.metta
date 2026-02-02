@@ -42,7 +42,7 @@
 
 !(import! &self ../../utils/surp-utils/IIsurp_utils)
 !(import! &self ../../utils/surp-utils/concept-miner)
-!(import! &self ../miner_iisurp.metta)
+!(import! &self ../../surprisingness/miner_iisurp.metta)
 
 
 
