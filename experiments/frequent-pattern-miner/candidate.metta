@@ -1,10 +1,7 @@
-! (import! &self freq-pat)
-
-
-(= (candidatePattern $specializations $minsup $dbspace)
+(= (candidatepattern $specializations $minsup $dbspace)
         (let* ( 
-                (() (println! "==== Candidate Pattern started ====="))
-                ( $specializedvar (replacev $specializations))
+                (true (println! "==== Candidate Pattern started ====="))
+                ($specializedvar (replacev $specializations))
                 ($result (sup-num $dbspace $specializedvar))
                 ($add (if (>= $result $minsup) $specializedvar ()))
             ) 
@@ -18,11 +15,10 @@
 (= (miner $pattern $dbspace $minsup)
         (let*(
                 ($vals (collapse (valuation $pattern $dbspace)))
-                (() (println! (here in miner $vals)))
-                ($shallow_abstractions (unique (shallow_abstractions $vals () 0)))
-                ($specialized (specialization $pattern $shallow_abstractions))
-                ($candidates (candidatePattern $specialized $minsup $dbspace))
-                (() (println! "==== Candidate Pattern ended ====="))
+                ($shallow_abstractions (unique-atom (collapse (shallow_abstractions $vals () 0))))
+                ($specialized (specialization $pattern (superpose $shallow_abstractions)))
+                ($candidates (candidatepattern $specialized $minsup $dbspace))
+                (true (println! "==== Candidate Pattern ended ====="))
         )
         $candidates
         )
@@ -60,8 +56,8 @@
 (= (candidate-pattern-miner $initpat $dbspace $minsup $cndpspace)
         (let* (
                 ($candidates (miner $initpat $dbspace $minsup))
-                (() (println! (here in frequent-pattern-miner $candidates)))
                 ($indexed (replace $candidates))
+                ($rem (if (== $indexed ()) () (remove-atom $cndpspace $indexed)))
                 ($add (if (== $indexed ()) () (add-atom $cndpspace $indexed)))
                 ($next (has_nested_expression_with_respect_to $initpat $candidates))
                 ($rec (if $next (candidate-pattern-miner $candidates $dbspace $minsup $cndpspace) ()))

@@ -1,4 +1,5 @@
 
+; !(import! &db ../data/ugly_man_sodaDrinker)
 
 (= (get_variables_with_index $queue $current_index $acc_vars)
     (if (== $queue ())
@@ -7,7 +8,7 @@
                 ($front (car-atom $queue))
                 ($rest (cdr-atom $queue))
                 ($is_var (== (get-metatype $front) Variable))
-                ($new_acc (if $is_var (cons-atom ($front $current_index) $acc_vars) $acc_vars))
+                ($new_acc (if $is_var (union-atom $acc_vars (($front $current_index))) $acc_vars))
                 ($components (if (== (get-metatype $front) Expression)
                                  $front
                                  ()))
@@ -20,10 +21,10 @@
 )
 
 
-(= (get_variables_for_tree $pattern)
+(= (get_variables_for_pattern $pattern)
     (let* (
             (($vars $_) (get_variables_with_index $pattern 0 ()))
-            (() (println! (here in get_variables_for_tree $vars)))
+            (true (println! (here in get_variables_for_pattern $vars)))
         )
         (superpose $vars)
     )
@@ -76,17 +77,18 @@
 
 (= (valuation $pattern $dbspace)
     (if (== (get-metatype $pattern) Variable)
-        (collapse (unique (match $dbspace $pattern $pattern)))
+        (unique-atom (collapse (match $dbspace $pattern $pattern)))
         (let* (
-            (($list_vars $index) (get_variables_for_tree $pattern))
-            ($satisfy (collapse (match $dbspace $pattern $pattern)))
-            ($val (get_vals $satisfy $index ()))
-            ($unique (unique-atom $val))
-            ($final (cons-atom $list_vars $unique))
+            (($list_vars $index) (get_variables_for_pattern $pattern))
+            (true (println! (here in valuation $list_vars)))
+            ($satisfy (unique-atom (collapse (match $dbspace $pattern $pattern))))
+            ($val (get_vals $satisfy $index ($list_vars)))
+            ($final (unique-atom $val))
+            (true (println! (here in final $final)))
             )
             $final
         )
     )
     
 )
-
+; !(valuation (Inheritance $x $y) &db)

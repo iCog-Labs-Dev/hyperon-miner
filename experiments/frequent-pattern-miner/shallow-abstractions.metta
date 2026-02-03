@@ -5,7 +5,7 @@
 
 (= (shallow_abstractions $valuations $history $current_index)
     (let* (
-        (() (println! (here in shallow_abstractions $valuations $history $current_index)))
+        (true (println! (here in shallow_abstractions $valuations $history $current_index)))
         ($head (car-atom $valuations))
         ($tail (cdr-atom $valuations))
         (($vals $abstractions $index) (get_abstractions $head $history $current_index))
@@ -58,18 +58,18 @@
     )
 )
 
-(= (find_index () $val $index)
+(= (find_index_his () $val $index)
     ()
 )
 
-(= (find_index $list $val $index)
+(= (find_index_his $list $val $index)
     (let* (
             ($head (car-atom $list))
             ($tail (cdr-atom $list))
         )
         (if (== $head $val)
             (fromNumber $index)
-            (find_index $tail $val (+ $index 1))
+            (find_index_his $tail $val (+ $index 1))
         )
     )
 )
@@ -85,7 +85,7 @@
             ($tail (cdr-atom $valuation))
             (($abstraction $new_history $next_index) (if (== (intersection-atom ($head) $history) ())
                                                         ((fromNumber $current_index) (union-atom $history ($head)) (+ $current_index 1))
-                                                        ((find_index $history $head $var_index) $history $current_index)
+                                                        ((find_index_his $history $head $var_index) $history $current_index)
                                                       ))
             (($abstractions_tail $rest_index) (get_abstraction $tail $var_index $new_history $next_index))
         )
