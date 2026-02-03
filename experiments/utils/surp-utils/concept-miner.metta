@@ -2,22 +2,41 @@
 
 
 
+; (= (inititate-IIsurp-miner $db $conc_db )
+
+; (let* (
+;   ($dummy (collapse (let ($link $x $y) (get-atoms $db) (add-atom &dbspace1 ($link $x $y))) ))
+  
+;   ($concepts-raw (collapse (match &dbspace1 ($link $anyI $anyC) $anyC)))
+;   ($concepts (unique-atom $concepts-raw))
+;   ($intermeidate (helper-iter $concepts $concepts &dbspace1 $conc_db))
+  
+;   )
+;    (collapse (match $conc_db $y $y ))
+  
+;   )
+ 
+  
+; )
+
+
+
 (= (inititate-IIsurp-miner $db $conc_db )
 
 (let* (
+
   
   ($concepts-raw (collapse (match $db ($link $anyI $anyC) $anyC)))
   ($concepts (unique-atom $concepts-raw))
   ($intermeidate (helper-iter $concepts $concepts $db $conc_db))
   
   )
-   (done)
+   (collapse (match $conc_db $y $y ))
   
   )
  
   
 )
-
 
 
 
@@ -59,7 +78,7 @@
 
 
 (=(sub-super-concepts $OriginalInstances $concepts $originalConcept  $type $db  )
-(let* (($superCons (collapse (super-helper $OriginalInstances (superpose $concepts) $originalConcept $type $db )))
+(let* (($superCons (collapse (super-helper-conc $OriginalInstances (superpose $concepts) $originalConcept $type $db )))
 
 
 )
@@ -71,7 +90,7 @@ $superCons
 
 )
 
-(=(super-helper $OriIns $concept $originalConcept $type $db)
+(=(super-helper-conc $OriIns $concept $originalConcept $type $db)
 (if (== $concept $originalConcept ) (empty) (let* (
   ($conIns (collapse (match $db ($link $any $concept) $any )))
   ($inter (intersection-atom $OriIns $conIns))

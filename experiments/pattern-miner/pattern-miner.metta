@@ -32,6 +32,7 @@
 
 
 
+
 ;--------------------------------------------------
 ;; do-surp 
 ;--------------------------------------------------
@@ -56,24 +57,25 @@
 ;;function to call the surprisingness algorithms based 
 ;; on the input surp mode.
 ;(: call-surprisingness (-> space space Atom pattern Atom))
-; (= (call-surprisingness $kb $db $pattern $surp-mode $normalization $db-ratio)
-;   (if (== $surp-mode none)
-;          (add-atom $kb $pattern)
-;       (if (== $surp-mode jsd)
-;            (do-jsd-surp $kb $db $pattern)
-;             (do-surp $kb $db $surp-mode $pattern $normalization $db-ratio)
-;       )
-;    )
-; )
 
-(= (call-surprisingness $kb $db $pattern $surp-mode $normalization $db-ratio)
-(if (== $surp-mode none) (add-atom $kb $pattern) (if (== $surp-mode jsd ) (do-jsd-surp $kb $db $pattern) 
+; 
 
-(if (== $surp-mode IIsurp) (do-IIsurp $kb $db $pattern &conceptSpace ) (do-surp $kb $db $surp-mode $pattern $normalization $db-ratio))
+(= (call-surprisingness $kb $db $pattern $surp-mode $normalization $db-ratio $conc_db)
+  (if (== $surp-mode none)
+         (add-atom $kb $pattern)
+      (if (== $surp-mode jsd)
+           (do-jsd-surp $kb $db $pattern)
+            
+            ( if (== $surp-mode IIsurp)
+               (let   (collapse (let $el (superpose $conc_db) (add-atom &conceptSpace $el))) (do-IIsurp $kb $db $pattern &conceptSpace ))
 
-))
-  
-  )
+               (do-surp $kb $db $surp-mode $pattern $normalization $db-ratio))
+      )
+   )
+)
+
+
+
 
 
 
@@ -82,11 +84,21 @@
 ;--------------------------------------------------------------
 ;; the main pattern mining pipeline for the functional approach 
 ;(: pattern-miner (-> $space space Number Number Atom Atom))
-(= (pattern-miner $kb $db $minsup $depth $surp-mode $normalization $db-ratio $conj_exp) ( 
+
+
+
+(= (pattern-miner $kb $db $minsup $depth $surp-mode $normalization $db-ratio $conj_exp ) ( 
     let*
     (    (true (println! "==== Pattern Miner Started ====="))
          ($dummy (collapse (let ($link $x $y) (get-atoms $db) (add-atom &dbspace ($link $x $y))) ))
-         ($mine-rel (inititate-IIsurp-miner &dbspace &conceptSpace ) )
+
+         
+ 
          ($frequent-pattern  (frequency-pattern-miner &dbspace &specspace &cndpspace &aptrnspace &conjspace $minsup $depth $conj_exp))
-         ($dummy3  (call-surprisingness $kb &dbspace $frequent-pattern $surp-mode $normalization $db-ratio))
+
+          ($rel-rets (inititate-IIsurp-miner &dbspace &conceptSpace_mid) )
+
+        
+
+         ($dummy3  (call-surprisingness $kb &dbspace $frequent-pattern $surp-mode $normalization $db-ratio $rel-rets ))
           )  ()))

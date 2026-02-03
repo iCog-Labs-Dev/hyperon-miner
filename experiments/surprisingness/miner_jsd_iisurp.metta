@@ -39,7 +39,7 @@
   ($filtered-sups (filter-conjuncts $comb-support))
   ($sup-num (size-atom $filtered-sups))
   ($comb-prob-main (// $sup-num $total_count))
-  ($conf (count_to_confidence $total_count))
+  ($conf (count_to_confidence-iisurp $total_count))
 
   
   ($prob-bodies (collapse (get-conc-prob-for-sub (superpose $comb) $db $total_count))) 
@@ -90,7 +90,7 @@
 
 ($comb-probs (collapse (get-comb-prob (superpose $with-conc) $db $total_count)))
 
-(($sub_avrg_str $sub_avrg_conf  ) (avrg_tv $comb-probs))
+(($sub_avrg_str $sub_avrg_conf  ) (avrg_tv-iisurp $comb-probs))
 
 
 
@@ -152,7 +152,7 @@
 
 
 
- (($supersTVstr $supersTVconf) (if (not (== $interval-list ()))  (avrg_tv $interval-list ) ()))
+ (($supersTVstr $supersTVconf) (if (not (== $interval-list ()))  (avrg_tv-iisurp $interval-list ) ()))
  ($superTV (TruthValue $supersTVstr $supersTVconf ))
 
 ; ($maxSubs (collapse (handle_interval_list (superpose $interval-list) maxsub )))
@@ -235,7 +235,7 @@
   ($sup-prob-body (collapse  (get-prob-func (superpose $supercons) $db $candidate $conjunct $total_count )))
 
   ($superProbsmax (collapse (getcohfact (superpose $sup-prob-body) $db  $candidate_count)))
-  ($maxSuperprob (avrg_tv $superProbsmax ))
+  ($maxSuperprob (avrg_tv-iisurp $superProbsmax ))
   ($avrg_super_tv (cons-atom TruthValue $maxSuperprob))
 
 
@@ -248,7 +248,7 @@
 )
 
 
-(= (total_counts $pattern $db) (cal_binomial (db_size $db) (n_conjuncts_new $pattern)))
+(= (total_counts-iisurp $pattern $db) (cal_binomial-iisurp (db_size-iisurp $db) (n_conjuncts_new-iisurp $pattern)))
 
 
 
@@ -262,21 +262,21 @@
 ($con_super_pattern ($link $some1 $superconc))
 
 ;here we would have the the g(x) funcion that takes in the coherence 
-($conjWoutCand (rmvEl $candPat $conjunct))
+($conjWoutCand (rmvEl-iisurp $candPat $conjunct))
 ($conjWSup (cons-atom $con_super_pattern $conjWoutCand))
 ($compconj (cons-atom , $conjWSup))
 ($comb-support (collapse (match $db $compconj $compconj)))
 ($filtered-sups (filter-conjuncts $comb-support))
 ($conjSup (size-atom  $filtered-sups   ))
 ($conjProb (// $conjSup $total_count))
-($supConSup (sup-num $db $con_super_pattern ))
-($canConSup (sup-num $db $candPat  ))
+($supConSup (sup-num-iisurp $db $con_super_pattern ))
+($canConSup (sup-num-iisurp $db $candPat  ))
 ($superprob (// $supConSup $total_count))
 ($candidateProb (// $canConSup $total_count))
 
 
 ($final_prob (*  $conjProb (// $candidateProb $superprob)))
-($conf (count_to_confidence $total_count ))
+($conf (count_to_confidence-iisurp $total_count ))
 
 
 
@@ -287,28 +287,28 @@
 
 
 )
-(= (DEFAULT_K) 800.0)
+(= (DEFAULT_K-iisurp) 800.0)
 
-(= (count_to_confidence $x) (// $x (+ $x (DEFAULT_K))))
+(= (count_to_confidence-iisurp-iisurp-iisurp $x) (// $x (+ $x (DEFAULT_K-iisurp))))
 
 (= (handle_interval_list $list-el $type)
 (let ($maxsup $minsup)  $list-el (if (== $type maxsup ) $maxsup $minsup
 ))
 )
 
-(= (prob $pattern $db $total_count) (// (sup-num $db $pattern) $total_count))
+(= (prob $pattern $db $total_count) (// (sup-num-iisurp $db $pattern) $total_count))
 
 (= (IIsurp-pln $pattern $db $conc_db) (
     let* (
         
-        ($total_count (total_counts $pattern $db))
+        ($total_count (total_counts-iisurp $pattern $db))
         ; ($pattern_prob (emp-tv $pattern $db ))
        
         ; ($result_tv_inter (do-ji-tv-est $db $pattern) )
         ($subset-results_tvs (get_set_prob_intervals $pattern $db $total_count $conc_db))
         ; (($results ) (collapse (union-atom $results_tv_inter $subset-results_tvs)))
 
-        ; ($final_estimate (avrg_tv $results))
+        ; ($final_estimate (avrg_tv-iisurp $results))
         ; ($final_tv (cons-atom TruthValue $final_estimate))
  
         ; ($dst (do-jsd $final_tv $pattern_prob))

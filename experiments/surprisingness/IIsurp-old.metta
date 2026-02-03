@@ -230,7 +230,7 @@ $new_prob
 
 )
 
-(= (total_counts $pattern $db) (cal_binomial (db_size $db) (n_conjuncts_new $pattern)))
+(= (total_counts-iisurp $pattern $db) (cal_binomial-iisurp (db_size-iisurp $db) (n_conjuncts_new-iisurp $pattern)))
 
 ; (= (total_counts $pattern $db) (pow-math (db_size $db) (n_conjuncts_new $pattern)))
 
@@ -250,7 +250,7 @@ $new_prob
 ($con_super_pattern ($link $some1 $superconc))
 
 ;here we would have the the g(x) funcion that takes in the coherence 
-($conjWoutCand (rmvEl $candPat $conjunct))
+($conjWoutCand (rmvEl-iisurp $candPat $conjunct))
 
 ;subtraction-atom doesn't work
 
@@ -262,8 +262,8 @@ $new_prob
 ($filtered-sups (filter-conjuncts $comb-support))
 ($conjSup (size-atom  $filtered-sups   ))
 ($conjProb (// $conjSup $total_count))
-($supConSup (sup-num $db $con_super_pattern ))
-($canConSup (sup-num $db $candPat  ))
+($supConSup (sup-num-iisurp $db $con_super_pattern ))
+($canConSup (sup-num-iisurp $db $candPat  ))
 ($superprob (// $supConSup $total_count))
 ($candidateProb (// $canConSup $total_count))
 
@@ -291,7 +291,6 @@ $new_prob
 ))
 )
 
-(= (prob $pattern $db $total_count) (// (sup-num $db $pattern) $total_count))
 
 
 ; The first step in IIsurp is calculating the estimations assuming independence among its subpatterns like how its done Isurp and storing it in $results-inter
@@ -303,20 +302,20 @@ $new_prob
 (= (IIsurp-old $pattern $db $normalize) (
     let* (
         ($_ (println! "==== IIsurp-old surprisingness ====="))
-        ($total_count (total_counts $pattern $db))
+        ($total_count (total_counts-iisurp $pattern $db))
         ($psup (collapse (match $db $pattern $pattern)))
         ($pattern_prob (// (size-atom $psup) $total_count))
         
-        ($conjunct (cdr-atom $pattern))
-        ($partitions (partitions $conjunct))
-        ($results-inter  (isurp-old_  $partitions $db $total_count))
+        ; ($conjunct (cdr-atom $pattern))
+        ($partitions (partitions $pattern))
+        ($results-inter  (isurp-old_iisurp  $partitions $db $total_count))
         ($subset-results (get-set-prob-intervals $pattern $db $total_count))
         ($results (if (not (== $subset-results ())) (union-atom $results-inter $subset-results) $results-inter))
 
         ($emin (min-atom $results))
         ($emax (max-atom $results))
        
-        ($dst (dst-from-interval $emin $emax $pattern_prob))
+        ($dst (dst-from-interval-iisurp $emin $emax $pattern_prob))
 
     ) 
   ;  (( $pattern_prob ) ($subset-results) ($results-inter ) ($dst) ((- $pattern_prob(car-atom $results-inter))))

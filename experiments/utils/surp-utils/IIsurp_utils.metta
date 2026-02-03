@@ -61,25 +61,25 @@ $coh
 
 
 
-(= (rmvEl $tar $list)
+(= (rmvEl-iisurp $tar $list)
 (collapse (let* (($el (superpose $list)) (($link $var $conc) $el) (($link2 $var2 $conc2) $tar)) (if (and (== $link $link2) (== $conc $conc2)) (empty) $el)))
 
 
 )
 
-(= (sup-num $db $pattern)
-    (let $sup (counter $db $pattern)
+(= (sup-num-iisurp $db $pattern)
+    (let $sup (counter-iisurp $db $pattern)
         $sup
     )
 )
 
-(= (counter $db $ptrn)
+(= (counter-iisurp $db $ptrn)
     (let $result (collapse (match $db $ptrn $ptrn))
-         (tuple-count $result)
+         (tuple-count-iisurp $result)
     )
 )
 
- (= (tuple-count $atom) (size-atom $atom))
+ (= (tuple-count-iisurp $atom) (size-atom $atom))
 
 
 (=(handle-list-interval $x $acc )
@@ -116,7 +116,7 @@ $coh
 
 (=(add-the-coherence $pair-H ) (foldl-atom $pair-H 0 $acc $x (+ $acc $x)))
   
-(=(dst-from-interval $emin $emax $emp) (
+(=(dst-from-interval-iisurp $emin $emax $emp) (
   if (< $emax $emp) (- $emp $emax) (if (< $emp $emin ) (- $emin $emp) 0.0)
 ))
 
@@ -179,22 +179,22 @@ $coh
   )
 )
 
-(=(n_conjuncts_new $pattern) (
+(=(n_conjuncts_new-iisurp $pattern) (
    let ($head $tail) (decons-atom $pattern) (
     if (== $head ,) (size-atom $tail) 1)
 ))
 
-(= (// $a $b) (/ (* 1.0 $a) $b))
+; (= (// $a $b) (/ (* 1.0 $a) $b))
 
-(= (prob $pattern $db $total_count) (let $ff (sup-num $db $pattern) (// $ff  $total_count)))
+(= (prob-iisurp $pattern $db $total_count) (let $ff (sup-num-iisurp $db $pattern) (// $ff  $total_count)))
 
-(= (db_size $db)
+(= (db_size-iisurp $db)
      (let $a (collapse (get-atoms $db)) (size-atom $a))
     
 ) 
 
-(= (calculate_binomial $n $k) (calculate_binomial_helper (max-atom ($n)) (max-atom ($k)) 1))
-(=(cal_binomial $n $k) (calculate_binomial $n $k))
+(= (calculate_binomial-iisurp $n $k) (calculate_binomial_helper-iisurp (max-atom ($n)) (max-atom ($k)) 1))
+(=(cal_binomial-iisurp $n $k) (calculate_binomial-iisurp $n $k))
 
 
 (= (return-supers ($type $concept))
@@ -255,7 +255,7 @@ $concepts
 
 )
 
-(= (calculate_binomial_helper $n $k $result)
+(= (calculate_binomial_helper-iisurp $n $k $result)
     (if (or (> $k $n ) (< $k 0))
         0
         (if (or (== $k 0) (== $k $n))
@@ -263,7 +263,7 @@ $concepts
             (let*
                 (
                     ($temp (/ $n (- $n $k)))
-                    ($newResult  (* $temp (calculate_binomial_helper (- $n 1) $k $temp)))
+                    ($newResult  (* $temp (calculate_binomial_helper-iisurp (- $n 1) $k $temp)))
                 )
                 $newResult
             )
@@ -344,12 +344,12 @@ $capped-ans
 
 )
 
-(=(iprob_ $partition $db $total_count)(
+(=(iprob_iisurp $partition $db $total_count)(
     if (== $partition ()) () (
         let* (
            ( ($head $tail) (decons-atom $partition))
-           ($prob (blk-prob $head $db $total_count))
-           ($dummy (iprob_ $tail $db $total_count))
+           ($prob (blk-prob-iisurp $head $db $total_count))
+           ($dummy (iprob_iisurp $tail $db $total_count))
         ) 
              (cons-atom $prob $dummy)
     )
@@ -358,25 +358,25 @@ $capped-ans
 
 ;;This is the recursive version of iprob-old. While the non-deterministic (or above) 
 ;;implementation works within this file, it causes issues when used from other files.
-(=(iprob $partition $db $total_count) (
-    let $products (iprob_ $partition $db $total_count) (accumulator-x $products)
+(=(iprob-iisurp $partition $db $total_count) (
+    let $products (iprob_iisurp $partition $db $total_count) (accumulator-x-iisurp $products)
 ))
 
 
 ;;Recursive steps for isurp
-(= (isurp-old_ $partitions $db $total_count) (
+(= (isurp-old_iisurp $partitions $db $total_count) (
     if (== $partitions ()) () (
         let* (
             (($head $tail) (decons-atom $partitions))
-             ($res (iprob $head $db $total_count))
-             ($dummy (isurp-old_ $tail $db $total_count)))
+             ($res (iprob-iisurp $head $db $total_count))
+             ($dummy (isurp-old_iisurp $tail $db $total_count)))
         (cons-atom $res $dummy)
     )
 ))
 
 ;;Calculates the probability of a block within a partition by first converting 
 ;;it into a pattern and then computing its probability.
-(= (blk-prob $blk $db $total_count) (
+(= (blk-prob-iisurp $blk $db $total_count) (
     let* (($pattern (cons-atom , $blk)) 
     ($sup (collapse (match $db $pattern $pattern)))
     ($count (size-atom $sup))
@@ -389,9 +389,9 @@ $capped-ans
 
 ; (= (prob $pattern $db $total_count) (// (sup-num $db $pattern) $total_count))
 
-(=(accumulator-x $num_list) (accumulator-x $num_list 1))
-(=(accumulator-x $num_list $prev_value)  (
-   if (== $num_list ()) $prev_value (let ($head $tail) (decons-atom $num_list) (accumulator-x $tail (* $head $prev_value)))
+(=(accumulator-x-iisurp $num_list) (accumulator-x-iisurp $num_list 1))
+(=(accumulator-x-iisurp $num_list $prev_value)  (
+   if (== $num_list ()) $prev_value (let ($head $tail) (decons-atom $num_list) (accumulator-x-iisurp $tail (* $head $prev_value)))
 ))
 
 
@@ -401,68 +401,3 @@ $capped-ans
 ;===================
 
 
-(=(all-in $lst $used)
-(let $inter (intersection-atom $lst $used) (if (== (size-atom $inter) (size-atom $lst)) True False))
-
-)
-
-
-
-
-(= (powerset $lst)
-   (if (== $lst ())
-       (())                             
-       (let* (
-          (($head $tail) (decons-atom $lst))
-          ($ps-tail   (powerset $tail)) 
-          ($with-head (map-atom $ps-tail $s (cons-atom $head $s)))
-         )
-         (union-atom $ps-tail $with-head) 
-       )
-   )
-)
-
-
-(=(any-in $lst $used)(let $inter (intersection-atom $lst $used) (if (== (size-atom $inter) 0) False True)))
-
-
-
-(= (valid-subset $subset $original)
-   (and (not (== $subset ()))
-        (not (== $subset $original))))  
-
-
-
-(= (partitions-collect $subsets $original $current $used)
-   (if (== $subsets ())
-       ()
-       (let ($subset $rest) (decons-atom $subsets)   
-         (if (and (valid-subset $subset $original)
-                  (not (any-in $subset $used)))     
-             (let* (
-                    ($first (partitions-helper $subsets $original (cons-atom $subset $current) (union-atom $used $subset)))
-                      ($second (partitions-collect $rest $original $current $used)))
-                        (union-atom $first $second))
-             (partitions-collect $rest $original $current $used)))))
-
- ; Recursive helper
-(= (partitions-helper $subsets $original $current $used)
-   (if (all-in $original $used)
-       ($current)
-       (partitions-collect (cdr-atom $subsets) $original $current $used))
-       
-
-       
-       )
-
-
-; Main: Generate all partitions
-(= (partitions $subsets $original)
-   (partitions-collect $subsets $original () ()))
-
-
-
-
-
-
-(=(partitions $original) (let $f  (powerset $original) (partitions $f $original)))

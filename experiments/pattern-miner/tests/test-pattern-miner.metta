@@ -7,10 +7,13 @@
 !(import! &self ../../utils/surp-utils/partition-metta)
 
 
+
 ;;import surp components 
 !(import! &self  ../../utils/surp-utils/binomialMetta)
 !(import! &self ../../utils/surp-utils/beta-dist)
 !(import! &self  ../../utils/surp-utils/surp-utils)
+!(import! &self ../../utils/surp-utils/IIsurp_utils)
+
 
 
 !(import! &self ../../utils/sort)
@@ -27,6 +30,8 @@
 !(import! &self ../../surprisingness/isurp)
 !(import! &self ../../surprisingness/isurp-old)
 !(import! &self ../../surprisingness/jsd)
+!(import! &self ../../utils/surp-utils/concept-miner)
+!(import! &self ../../surprisingness/miner_iisurp)
 
 !(import! &self ../../frequent-pattern-miner/build-specialization)
 !(import! &self ../../frequent-pattern-miner/candidate-patterns)
@@ -40,9 +45,8 @@
 
 ;import IIsurp 
 
-!(import! &self ../../utils/surp-utils/IIsurp_utils)
-!(import! &self ../../utils/surp-utils/concept-miner)
-!(import! &self ../../surprisingness/miner_iisurp.metta)
+
+
 
 
 
