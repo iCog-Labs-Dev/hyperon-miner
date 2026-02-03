@@ -23,48 +23,57 @@ It is a **functional implementation** of a pattern mining pipeline written in Me
 
 ## Surprisingness Modes
 
-| Mode         | Description                                      |
-|--------------|--------------------------------------------------|
-| `none`       | No surprisingness calculation. Only support info.|
-| `isurp-old`  | Computes surprisingness **without normalization**.|
-| `nisurp-old` | Computes surprisingness **with normalization**.   |
+| Mode        | Normalization | Description |
+|-------------|---------------|-------------|
+| `none`      | `none`        | **(Default)** No surprisingness. Returns only frequent patterns with support count. |
+| `isurp`     | `True`        | **(Recommended)** Computes information-theoretic surprisingness **normalized** (0-1). |
+| `isurp`     | `False`       | Computes raw information-theoretic surprisingness score. |
+| `jsd`       | `none`        | Uses **Jensen-Shannon Divergence** to measure statistical distance/surprise. |
+| `isurp-old` | `False`       | Legacy surprisingness implementation. |
+
+
+
 
 ##  Requirements
-- MeTTa v0.2.4
+- **PeTTa** Interpreter
 - A corpus (dataset) you want to mine patterns from
-- Clone and structure this `hyperon-miner` module
+- This `hyperon-miner` repository structure
 
 ##  How to Run
-### Example Call
-```
-;; Register  the hyperon-miner based on your folder structure 
-! (register-module! hyperon-miner)
+To use the pattern miner, create a new `.metta` script (e.g., `run_miner.metta`) and import the necessary modules.
 
-;; import the required modules 
-! (import! &self hyperon-miner:experiments:pattern-miner:pattern-miner)
-! (import! &self hyperon-miner:experiments:frequent-pattern-miner:frequent-pattern-miner)
-! (import! &self hyperon-miner:experiments:utils:common-utils)
-! (import! &self hyperon-miner:experiments:utils:surp-utils)
+### Example Script
+```metta
+;; Adjust paths based on where you create this file!
+;; If this file is in the 'experiments/pattern-miner' folder:
 
-;; import the corpus (data)
-! (import! &db your-path:data)
+;; 1. Import the Frequent Pattern Miner modules
+!(import! &self ../frequent-pattern-miner/build-specialization)
+!(import! &self ../frequent-pattern-miner/candidate-patterns)
+!(import! &self ../frequent-pattern-miner/conjunction-expansion)
+!(import! &self ../frequent-pattern-miner/frequent-pattern-miner)
 
+;; 2. Import the Pattern Miner Main Logic
+!(import! &self pattern-miner)
 
-;; Create a space for storing mining results
+;; 3. Import your Corpus (Data)
+!(import! &db ../../data/ugly_man_sodaDrinker)
+
+;; 4. Prepare Spaces
 !(bind! &res (new-space))
 
-;; Run the pattern miner:
-;; (pattern-miner $kb $db $minsup $depth $surp-mode)
-;; - $kb: space where results are stored
-;; - $db: database space to mine
-;; - $minsup: minimum support (integer)
-;; - $depth: number of conjucts of the pattern 
-                    0 -> 2 conjucts   (, (link A B) (link C B))
-                    1 -> 3 conjucts   (, (link A B) (link A C) (link A D))
-;; - $surp-mode: 'none' | 'isurp-old' | 'nisurp-old' (surprisingness methods)
-
-!(pattern-miner &res &db 3 0 none)
+;; 5. Run the Miner
+;; (pattern-miner $kb $db $minsup $depth $surp-mode $normalization $db-ratio $conj_exp)
+!(pattern-miner &res &db 3 0 none none none True)
 ```
+
+
+### Execution
+Run your script using PeTTa:
+```bash
+petta run_miner.metta
+```
+
 
 
 ##  Expected Output Format

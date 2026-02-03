@@ -1,29 +1,23 @@
-
-! (register-module! ../../../hyperon-miner/experiments)
-
-! (import! &self experiments:surprisingness:isurp)
-! (import! &self experiments:surprisingness:emp-prob)
-! (import! &self experiments:truth-values:emp-tv)
-! (import! &self experiments:truth-values:est-tv)
-! (import! &self experiments:truth-values:emp-tv)
-! (import! &self experiments:utils:gen_partition)
-! (import! &self experiments:utils:common-utils)
-! (import! &self experiments:utils:blk-abstractness)
-! (import! &self experiments:utils:eq-prob)
-! (import! &self experiments:utils:index_to_var)
-! (import! &self experiments:utils:surp-utils)
-! (import! &self experiments:utils:beta-dist)
-! (import! &self experiments:utils:constants)
-! (import! &self experiments:utils:TruthValue)
-! (import! &self experiments:utils:miner-utils)
-! (import! &kb experiments:data:ugly_man_sodaDrinker)
-
+!(import! &self ../utils/constants)
+!(import! &self ../utils/common-utils)
+!(import! &self ../utils/TruthValue)
+!(import! &self ../utils/index_to_var)
+!(import! &self ../utils/surp-utils/beta-dist)
+!(import! &self ../utils/surp-utils/surp-utils)
+!(import! &self ../utils/surp-utils/partition-metta)
+!(import! &self ../utils/surp-utils/binomialMetta)
+!(import! &self ../utils/surp-utils/blk-abstractness)
+!(import! &self ../utils/surp-utils/eq-prob-petta)
+!(import! &self ../utils/surp-utils/bs-utils)
+!(import! &self ../truth-values/est-tv)
+!(import! &self ../truth-values/emp-tv)
+!(import! &kb ../data/ugly_man_sodaDrinker)
 
 
 ; ===============================
 ; do_emp_tv Validation 1
 ; ===============================
-!(assertEqual (do_emp_tv
+!(test (do_emp_tv
    (,
       (Inheritance $x ugly)
       (Inheritance $x man)
@@ -31,8 +25,7 @@
    )
    &kb        ; knowledge base: ugly-man-soda-drinker
    1          ; database ratio
-) (stv 2.3148148148148147e-5, 0.09963099630996311))
-
+) (EMPTV 2.3148148148148147e-5 0.09963099630996311))
 ; ===============================
 ; Parameters Info
 ; ===============================
@@ -61,14 +54,14 @@
 ; ===============================
 ; do_emp_tv Validation 2
 ; ===============================
-!(assertEqual (do_emp_tv
+!(test (do_emp_tv
    (,
       (Inheritance $x ugly)
       (Inheritance $x man)
    )
    &kb        ; knowledge base: ugly-man-soda-drinker
    1          ; database ratio
-) (stv 0.001388888888888889, 0.08181818181818183))
+) (EMPTV 0.001388888888888889 0.08181818181818183))
 
 ; ===============================
 ; Parameters Info
@@ -99,14 +92,14 @@
 ; ===============================
 ; do_emp_tv Validation 3
 ; ===============================
-!(assertEqual (do_emp_tv
+!(test (do_emp_tv
    (,
       (Inheritance $x ugly)
       (Inheritance $x woman)
    )
-   &db        ; knowledge base: ugly-man-soda-drinker
+   &kb        ; knowledge base: ugly-man-soda-drinker
    0.02          ; database ratio
-) (stv 0 0.0001249843769528809))
+) (EMPTV 0 0.0001249843769528809))
 
 
 ; ===============================
@@ -117,7 +110,7 @@
 ;       (Inheritance $x woman))
 
 ; Corpus:
-;   &db -> ugly-man-soda-drinker
+;   &kb -> ugly-man-soda-drinker
 
 ; Database Ratio: 0.02
 
@@ -137,15 +130,15 @@
 ; ===============================
 ; do_emp_tv Validation 4
 ; ===============================
-!(assertEqual (do_emp_tv
+!(test (do_emp_tv
    (,
       (Inheritance $x ugly)
       (Inheritance $x woman)
       (Inheritance $x sodaDrinker)
    )
-   &db        ; knowledge base: ugly-man-soda-drinker
+   &kb        ; knowledge base: ugly-man-soda-drinker
    0.02          ; database ratio
-) (stv 0.0 0.09963099630996311))
+) (EMPTV 0.0 0.09963099630996311))
 
 
 ; ===============================
@@ -157,7 +150,7 @@
 ;       (Inheritance $x sodaDrinker))
 
 ; Corpus:
-;   &db -> ugly-man-soda-drinker
+;   &kb -> ugly-man-soda-drinker
 
 ; Database Ratio: 0.02
 
