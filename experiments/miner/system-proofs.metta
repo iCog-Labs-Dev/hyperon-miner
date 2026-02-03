@@ -294,7 +294,8 @@
         (true (println! ("==== Substituting variables =====" $pattern , $vars)))
         ($eachvars (superpose $vars))
         (true (println! (here $eachvars)))
-        ($subpattern (substitute $pattern $eachvars))
+        (($sub $remaining) (substitute $pattern $eachvars))
+        ($subpattern (if (== (get-metatype $pattern) Variable) ((car-atom $sub) $remaining) ($sub $remaining)))
         (true (println! (here $subpattern)))
         )
     (if (== $subpattern ())
@@ -395,6 +396,94 @@
     )
 )     
 
+; ------------------------------------------------------------------------------
+;; functions to get valuation of a pattern
+(= (syn $kb $_ (: $prf (get_matches $pattern $results)))
+    (let* (
+        ($db (match $kb (db-ref $db) $db))
+        ($results (unique-atom (collapse (match $db $pattern $pattern))))
+        (true (println! ("==== Getting matches =====" $pattern , $results)))
+        )
+    (if (== $results ())
+          (empty)
+             (: CPUGetMatches (get_matches $pattern $results))
+        )    
+    )
+)
+
+; ------------------------------------------------------------------------------
+;; functions to get valuation of a pattern
+(= (syn $kb $_ (: $prf (istop $pattern)))
+    (if (== (get-metatype $pattern) Variable)
+        (: CPUIsTop (istop $pattern))
+        (empty))
+)
+
+; ------------------------------------------------------------------------------
+;; functions to get valuation of a pattern
+(= (syn $kb $_ (: $prf (isnottop $pattern)))
+    (if (not (== (get-metatype $pattern) Variable))
+        (: CPUIsNotTop (isnottop $pattern))
+        (empty))
+)
+
+; ------------------------------------------------------------------------------
+;; system proof to handle conjunction
+(= (syn $kb $_ (: $prf (get_variables_for_pattern_cpu $pattern $varIndex)))
+    (let* (
+        ($varIndex (collapse (get_variables_for_pattern $pattern)))
+        (true (println! ("==== Getting pattern variables =====" $pattern , $varIndex)))
+        )
+    (if (== $varIndex ())
+          (empty)
+             (: CPUGetPatternVariables (get_variables_for_pattern_cpu $pattern $varIndex))
+        )    
+    )
+)
+
+(= (get_vals_cpu_helper $list $varIndex $vals)
+    (if (== $varIndex ())
+        $vals
+    (let* (
+        ($head (car-atom $varIndex))
+        (($var $index) $head)
+        ($tail (cdr-atom $varIndex))
+        ($val (unique-atom (get_vals $list $index ($var))))
+        ($new_vals (union-atom $vals ($val)))
+    )
+    (get_vals_cpu_helper $list $tail $new_vals)
+    ))
+)
+
+; ------------------------------------------------------------------------------
+;; system proof to get valuation values at given index
+(= (syn $kb $_ (: $prf (get_vals_cpu $list $varIndex $vals)))
+    (let* (
+        ($vals (get_vals_cpu_helper $list $varIndex ()))
+        )
+    (if (== $vals ())
+          (empty)
+             (: CPUGetVals (get_vals_cpu $list $varIndex $vals))
+        )    
+    )
+)
+
+(= (syn $kb $_ (: $prf (shallow_abstact_cpu $vals $shab)))
+    (let* (
+        (true (println! ("==== Shallow abstractions =====" $vals)) )
+        ($shab (unique-atom (collapse (shallow_abstractions $vals () 0))))
+        (true (println! (here in sys proof $shab)))
+        ; ($shab (superpose $res))
+        )
+    (if (== $shab ())
+          (empty)
+             (: CPUGetVals (shallow_abstact_cpu $vals $shab))
+        )    
+    )
+)
+
+
+
 ;;------------------------------------------------------------------------------
 (= (syn $kb $_ (: $prf (is-conj $p))) 
     (if (conj? $p)
@@ -423,7 +512,7 @@
 (= (syn $kb (S $k) (: ($prfabs $prfarg) $ccln))
    (let* (
      ((: $prfabs (-> $prms $ccln)) (syn $kb $k (: $prfabs (-> $prms $ccln))))
-         ;(true (println! (Next prims : $prms)))
+         (true (println! (Next prims : $prms)))
           ((: $prfarg $prms) (syn $kb $k (: $prfarg $prms)))
           )
      (: ($prfabs $prfarg) $ccln)))
