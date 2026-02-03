@@ -280,7 +280,7 @@
     (let* (
         (true (println! ("==== Build conjunction with depth 0 ====" $coming_conj)))
         ($conjunct (replacev $coming_conj))
-        ($matches (match-custom $cndb (CandidatePattern $pattern $cnt) (replacev $pattern)))
+        ($matches (match &mork ((ns $cndb) (CandidatePattern $pattern $cnt)) (replacev $pattern)))
         ($listconj (expand_conjunction $conjunct $matches $db $ms 2 False))
         ($fitlered (remove_conjuncts_with_redundant_clauses $listconj))
         ($final (replace $fitlered))
@@ -296,7 +296,7 @@
     (let* (
         (true (println! ("==== Build conjunction with depth greater than 0 =====" $coming_conj)))
         ($conjunct (replacev $coming_conj))
-        ($matches (match-custom $cndb (CandidatePattern $pattern $cnt) (replacev $pattern)))
+        ($matches (match &mork ((ns $cndb) (CandidatePattern $pattern $cnt)) (replacev $pattern)))
         ($listconj (expand_conjunction $conjunct $matches $db $ms 2 False))
         ($fitlered (remove_conjuncts_with_redundant_clauses $listconj))
         ($conj (do-conjunct $db $cndb $fitlered $ms $K))
@@ -318,7 +318,7 @@
 (= (formatter $conjspace $dbspace) 
     (let* (
         (true (println! "==== Formating  started ====="))
-        ($sortedlist (unique-atom (collapse (match &mork (get-ns-pattern $spezspace $pattern) (sort_conj $pattern)))))
+        ($sortedlist (unique-atom (collapse (match &mork ((ns $conjspace) $pattern) (sort_conj $pattern)))))
         ($sorted (superpose $sortedlist))
         ($res (cons-atom , $sorted))
         ($var (replacev $res))
@@ -326,7 +326,7 @@
         ($final (supportOf $var $sup))
     )
     $final
-)
+ )
 )
 
 
@@ -337,10 +337,10 @@
 ;(: conjunct (-> space space space Number Number Atom))
 
 (= (conjunct $dbspace $cndpspace $conjspace $minsup $depth )   
-     (match &mork (get-ns-pattern $cndpspace (CandidatePattern $pattern $cnt))
+     (match &mork ((ns $cndpspace) (CandidatePattern $pattern $cnt))
                    (let* (
                         (true (println! ("==== Conjuntion expansion started" $pattern)))
-                        ($conj  (do-conjunct $dbspace $cndpspace  $pattern $minsup (fromNumber $depth)))
+                        ($conj  (do-conjunct $dbspace $cndpspace $pattern $minsup (fromNumber $depth)))
                         ($reduct (if (== $conj ()) () (add-atom-custom $conjspace $conj)))
                         )
                         $reduct

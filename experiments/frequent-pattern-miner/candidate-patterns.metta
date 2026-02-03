@@ -8,9 +8,9 @@
 ;; 3. store as a candidate if the support is greater than the minimum support
 
 (= (candidatePattern $dbspace $spezspace $minsup $cndpspace)
-    (match &mork (get-ns-pattern $spezspace (SpecializationOf $specialized $pattern))
+    (match &mork ((ns $spezspace) (SpecializationOf $specialized $pattern))
         (let* ( 
-                (true (println! ("==== Candidate Pattern started =====", $specialized)))
+                (true (println! ("==== Candidate Pattern started =====" )))
                 ($specializedvar (replacev $specialized))
                 ($result (sup-num-custom $dbspace $specializedvar))
                 ($rem (if  (>= $result $minsup) (remove-atom-custom $cndpspace (CandidatePattern $specialized $result)) ())  )             

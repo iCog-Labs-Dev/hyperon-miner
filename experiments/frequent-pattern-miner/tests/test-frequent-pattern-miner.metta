@@ -1,4 +1,5 @@
 !(import! &self ../../utils/common-utils)
+!(import! &self ../../utils/mork-interface)
 !(import! &self ../../utils/index_to_var)
 !(import! &dbspace ../../data/ugly_man_sodadrinker)
 !(import! &self ../../utils/sort)
@@ -11,8 +12,9 @@
 !(import! &self ../conjunction-expansion)
 !(import! &self ../frequent-pattern-miner)
 
+!(mork-load-space &dbspace &dbspace)
 
-!(let $result2
+(let $result2
     (collapse (frequency-pattern-miner &dbspace &specspace1 &cndpspace1 &aptrnspace1 &conjspace1 5 0 True))
     (assertEqual $result2 ((supportOf (, (Inheritance $_4526 $_4532) (Inheritance $_4526 $_4556)) 190)
                             (supportOf (, (Inheritance $_4448 $_4454) (Inheritance $_4472 $_4454)) 800)
@@ -31,7 +33,7 @@
                             (supportOf (, (Inheritance $_3434 woman) (Inheritance $_3434 sodaDrinker)) 5)
                             (supportOf (, (Inheritance $_3356 ugly) (Inheritance $_3356 sodaDrinker)) 5)))
 )
-!(let $result1
+(let $result1
     (collapse (frequency-pattern-miner &dbspace &specspace2 &cndpspace2 &aptrnspace2 &conjspace2 5 0 False))
     (assertEqual $result1 ((supportOf (Inheritance Z (S Z)) 60)
                             (supportOf (Inheritance Z human) 20)
@@ -41,7 +43,7 @@
                             (supportOf (Inheritance Z sodaDrinker) 10)))
 
  )
-!(let $result3
+(let $result3
     (collapse (frequency-pattern-miner &dbspace &specspace3 &cndpspace3 &aptrnspace3 &conjspace3 5 1 True))
     (assertEqual $result3 ((supportOf (, (Inheritance $_15012 $_15018) (Inheritance $_15012 $_15042) (Inheritance $_15012 $_15066)) 630)
                             (supportOf (, (Inheritance $_14910 $_14916) (Inheritance $_14910 human) (Inheritance $_14910 $_14964)) 190)
@@ -67,3 +69,8 @@
                             (supportOf (, (Inheritance $_12870 human) (Inheritance $_12870 ugly) (Inheritance $_12870 sodaDrinker)) 5)
                             (supportOf (, (Inheritance $_12768 man) (Inheritance $_12768 ugly) (Inheritance $_12768 sodaDrinker)) 5)))
 )
+
+
+
+
+!(frequency-pattern-miner &dbspace &specspace1 &cndpspace1 &aptrnspace1 &conjspace1 5 0 True)
