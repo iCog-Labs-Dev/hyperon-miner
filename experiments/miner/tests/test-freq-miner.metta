@@ -8,16 +8,23 @@
 !(import! &self ../../utils/remove_useless_clauses)
 !(import! &self ../../frequent-pattern-miner/conjunction-expansion)
 
-; ! (import! &db ../../data/ugly_man_sodaDrinker)
+; !(import! &db ../../data/ugly_man_sodaDrinker)
 !(import! &db ../../data/very-small-ugly)
 
 
 
 ;; config kb : load the chainer , rules , system-proofs ....
 ; !(import! &self  chaining:dtl:backward:curried)
+!(import! &self ../../frequent-pattern-miner/valuation)
+!(import! &self ../../frequent-pattern-miner/shallow-abstractions)
+!(import! &self ../../frequent-pattern-miner/specialization)
+!(import! &self ../../frequent-pattern-miner/candidate)
+
 !(import! &kb  ../freq-miner-rules)
 !(import! &self  ../system-proofs)
 !(import! &self ../freq-miner)
+
+
 
 ; (: -> (-> Atom Atom Type))
 
@@ -26,6 +33,7 @@
 (superpose
 ((add-atom $kb (: msT (ms-threshold $min-sup)))
 (add-atom $kb (: dbref (db-ref $db)))
+; (add-atom $kb (: init-pat (initpat $x)))
 (add-atom $kb (: dbr (db-ratio $db-ratio)))
 (add-atom $kb (db-ratio $db-ratio))
 (add-atom $kb (db-size (db_size $db)))
@@ -34,14 +42,13 @@
 )))
 
 ;; define parameters 
-(= (min-sup) 2)
+(= (min-sup) 3)
 (= (db-ratio) 0.5)
 (= (num-of-conjuct) 2)
 
 
 !(init-params &kb &db  (min-sup) (db-ratio) )
 !(frequent-miner &db &kb (num-of-conjuct) True)
-
 !(match &kb (: $prf (hasSupport $pattern $sup)) (: $prf (hasSupport $pattern $sup)))
 
 ; (: ((((((supportFormat (((((((((((((((((((conjunction-expand ((candidatep (((minsupport (((supports (((((specializationx
@@ -76,7 +83,7 @@
 ; CPUConjunctionClean1) CPUReplacevar) CPUConjunctionClean2)) CPUCount) maxClauses) CPU) CPUSortConjunctions) CPUJoin) 
 ; (hasSupport  (, (Inheritance Z sodaDrinker) (Inheritance Z ugly)) 2))
 
-(= (num-of-conjuct2) 3)
+; (= (num-of-conjuct2) 3)
 
 
 ; !(frequent-miner &db &kb (num-of-conjuct2) True)
