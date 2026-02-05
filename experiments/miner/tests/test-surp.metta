@@ -155,10 +155,9 @@
 !(init-params &kb4 &db-sm (min-sup4) (surp-mode4) (db-ratio4) (normalization4))
 
 !(println! ("========== JSD Test =============="))
-!(assertEqual (syn &kb4 (fromNumber 19) (: $prf (jsd-surp $pattern $surp))) 
-              (: ((((jsd-tv (((minsupport FACT4) msT) CPU)) ((emp-rule (((minsupport FACT4) msT) CPU)) CPUEMP)) 
-              (((est-rule (((minsupport FACT4) msT) CPU)) ((emp-rule (((minsupport FACT4) msT) CPU)) CPUEMP)) CPUEST)) JSDCPU) 
-              (jsd-surp (, (Inheritance $_337260 man) (Inheritance $_337260 ugly) (Inheritance $_337260 sodaDrinker)) 0.8608962449888)))
+!(assertEqual (syn &kb4 (fromNumber 19) (: $prf (jsd-surp $pattern $surp)))
+(: ((((jsd-tv (((minsupport FACT4) msT) CPU)) ((emp-rule (((minsupport FACT4) msT) CPU)) CPUEMP)) 
+   ((est-rule (((minsupport FACT4) msT) CPU)) CPUEST)) JSDCPU) (jsd-surp (, (Inheritance $_359080 man) (Inheritance $_359080 ugly) (Inheritance $_359080 sodaDrinker)) 0.8608962449888)))
 
 
 
