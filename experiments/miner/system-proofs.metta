@@ -35,10 +35,16 @@
 
 
 
+
+
+
+
+
 (= (conj? $p)
     (case $p
     (((, $clause1 $clause2) True)
      ($_ False))))
+
 
 ;; define system proofs 
 ;------------------------------------------------------------------
@@ -58,7 +64,7 @@
 ;; it caused infinite results in CPUEMP.
 ;----------------------------------------------------------------------------
 (= (syn $kb $_ (: $prf (emp-cpu $ptrn  $emp ))) 
-    (let $emp (match $kb (db-ref $db) (eval (emp-tv $ptrn $db)))
+    (let $emp (match $kb (db-ref $db)  (emp-tv $ptrn $db))
        
     (: CPUEMP (emp-cpu $ptrn  $emp)) ) 
 )
@@ -413,6 +419,7 @@
    (let* (
      ((: $prfabs (-> $prms $ccln)) (syn $kb $k (: $prfabs (-> $prms $ccln))))
           ((: $prfarg $prms) (syn $kb $k (: $prfarg $prms)))
+          ; (true (println! (nextPrims $prms)))
           )
      (: ($prfabs $prfarg) $ccln)))
 
