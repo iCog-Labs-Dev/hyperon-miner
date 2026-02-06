@@ -7,13 +7,10 @@
 !(import! &self ../../utils/surp-utils/partition-metta)
 
 
-
 ;;import surp components 
 !(import! &self  ../../utils/surp-utils/binomialMetta)
 !(import! &self ../../utils/surp-utils/beta-dist)
 !(import! &self  ../../utils/surp-utils/surp-utils)
-!(import! &self ../../utils/surp-utils/IIsurp_utils)
-
 
 
 !(import! &self ../../utils/sort)
@@ -30,8 +27,6 @@
 !(import! &self ../../surprisingness/isurp)
 !(import! &self ../../surprisingness/isurp-old)
 !(import! &self ../../surprisingness/jsd)
-!(import! &self ../../utils/surp-utils/concept-miner)
-!(import! &self ../../surprisingness/miner_iisurp)
 
 !(import! &self ../../frequent-pattern-miner/build-specialization)
 !(import! &self ../../frequent-pattern-miner/candidate-patterns)
@@ -42,11 +37,6 @@
 
 ;; import kb
 !(import! &db ../../data/ugly_man_sodaDrinker)
-
-;import IIsurp 
-
-
-
 
 
 
@@ -213,4 +203,3 @@
  (surprisingnessOf (, (Inheritance $_218088 human) (Inheritance $_218088 woman) (Inheritance $_218088 sodaDrinker)) 0.8548398421185) 
  (surprisingnessOf (, (Inheritance $_218196 human) (Inheritance $_218196 ugly) (Inheritance $_218196 sodaDrinker)) 0.8548398421185) 
  (surprisingnessOf (, (Inheritance $_218304 man) (Inheritance $_218304 ugly) (Inheritance $_218304 sodaDrinker)) 0.8507324751176)))
-

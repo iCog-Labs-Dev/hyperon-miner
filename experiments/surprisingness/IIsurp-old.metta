@@ -60,8 +60,40 @@
 
  (let* (
 
+($cart-combs (cart-helper $filted-conjunct-w-subconcepts () $db))
+
+($filtered-conc (collapse (filter-subpatterns-wout-subs (superpose $conjunct) $filted-conjunct-w-subconcepts  $db )))
+
+($with-conc (map-atom
+                         $cart-combs
+                         $s
+                         (union-atom $filtered-conc $s))) 
 
 
+($comb-probs (collapse (get-comb-prob (superpose $with-conc) $db $total_count)))
+
+($allMaxs (collapse (handle-cart-probs (superpose $comb-probs) max)))
+($max-bound (max-atom $allMaxs))
+
+($allMins (collapse (handle-cart-probs (superpose $comb-probs) min)))
+($min-bound (min-atom $allMins))
+
+
+)
+
+($max-bound $min-bound)
+)))
+
+)
+
+(=(sub-prob-main $conjunct-w-comma $db $total_count $conc_db) 
+
+( let*  (($conjunct (if (== (car-atom $conjunct-w-comma) ,) (cdr-atom $conjunct-w-comma) ($conjunct-w-comma)))
+  
+  ($filted-conjunct-w-subconcepts (collapse (filter-subpatterns-w-subs (superpose $conjunct) $db $conc_db)))) (if (== $filted-conjunct-w-subconcepts () ) ()
+
+
+ (let* (
 
 ($cart-combs (cart-helper $filted-conjunct-w-subconcepts () $db))
 
@@ -84,12 +116,7 @@
 ($allMins (collapse (handle-cart-probs (superpose $comb-probs) min)))
 ($min-bound (min-atom $allMins))
 
-
-
-
 )
-
-
 
 ($max-bound $min-bound)
 )))
@@ -146,8 +173,50 @@
 
 ))
 
+(=(get-set-prob-intervals $conjunct-w-comma $db $total_count $conc_db) 
+
+(let* (
+  ; ($total_count (universe-count $conjunct-w-comma $db))
+($conjunct (if (== (car-atom $conjunct-w-comma) ,) (cdr-atom $conjunct-w-comma) ($conjunct-w-comma)))
+($interval-list (collapse (get-concept-prob-call (superpose $conjunct ) $conjunct  $db $total_count $conc_db)))
+
+($all-fn-sups (handle-list-interval $interval-list ()))
+
+($sub-int (sub-prob-main $conjunct-w-comma $db $total_count $conc_db))
+
+(($all-prob-est) (collapse (union-atom $all-fn-sups $sub-int  )))
+
+
+
+; ; ; compute retval-max/min only when allmaxs2 is non-empty
+($retval-max (if (== $all-prob-est ()) () (max-atom $all-prob-est)))
+($retval-min (if (== $all-prob-est ()) () (min-atom $all-prob-est)))
+
+; ($retval-max (if (== $all-fn-sups ()) () (max-atom $all-fn-sups)))
+; ($retval-min (if (== $all-fn-sups ()) () (min-atom $all-fn-sups)))
+
+)
+
+; $all-fn-sups
+
+; $interval-list 
+($retval-max $retval-min)
+
+
+)
+
+
+)
+
+
+
+
 (=(get-concept-prob-call $candidate $conjunct $db $total_count)
 (getConceptProb $candidate $conjunct $db $total_count  )
+)
+
+(=(get-concept-prob-call $candidate $conjunct $db $total_count $conc_db)
+(getConceptProb $candidate $conjunct $db $total_count  $conc_db )
 )
 
 ; it retirves the concept from the subpattern it got through superpose.
@@ -203,7 +272,45 @@
 )
 
 
+(=(getConceptProb $candidate $conjunct $db $total_count $conc_db )
 
+
+( let* (
+
+   (($link $per $conc) $candidate)
+  ; ($orInst (collapse (match $db ($link $any $conc) $any)))
+  ; ($concepts-raw (collapse (match $db ($link $anyI $anyC) $anyC)))
+  ; ($concepts (unique-atom $concepts-raw))
+  ($supercons  (collapse (match $conc_db (Inheritance $conc $any ) $any)))
+
+
+  ; ($supercons  (sub-super-concepts $orInst $concepts $conc super $db ))
+) (if (== $supercons ()) (empty) (let* (
+  
+  
+
+
+  ($sup-prob-body (collapse  (get-prob-func (superpose $supercons) $db $candidate $conjunct $total_count )))
+
+  ($superProbsmax (collapse (getcohfact (superpose $sup-prob-body) $db max)))
+  ($maxSuperprob (max-atom $superProbsmax ))
+
+  ($superProbsmin (collapse (getcohfact (superpose $sup-prob-body) $db min)))
+  ($minSuperprob (min-atom $superProbsmin))
+
+
+
+
+  
+  )
+
+  ; $supercons
+  ($maxSuperprob $minSuperprob)
+
+
+)))
+
+)
 
 
 
@@ -318,21 +425,39 @@ $new_prob
         ($dst (dst-from-interval-iisurp $emin $emax $pattern_prob))
 
     ) 
-  ;  (( $pattern_prob ) ($subset-results) ($results-inter ) ($dst) ((- $pattern_prob(car-atom $results-inter))))
- 
 
-  
- 
+
   $dst
 
-  
+  ; (min-atom (((if (== True $normalize) (// $dst (max-atom ($emax $pattern_prob))) $dst) 1.0)))       
 
-    
+) )
+
+(= (IIsurp-old $pattern $db $normalize $conc_db) (
+    let* (
+        ($_ (println! "==== IIsurp-old surprisingness ====="))
+        ($total_count (total_counts-iisurp $pattern $db))
+        ($psup (collapse (match $db $pattern $pattern)))
+        ($pattern_prob (// (size-atom $psup) $total_count))
+        
+        ; ($conjunct (cdr-atom $pattern))
+        ($partitions (partitions $pattern))
+        ($results-inter  (isurp-old_iisurp  $partitions $db $total_count))
+        ($subset-results (get_set_prob_intervals $pattern $db $total_count $conc_db))
+        ($results (if (not (== $subset-results ())) (union-atom $results-inter $subset-results) $results-inter))
+
+        ($emin (min-atom $results))
+        ($emax (max-atom $results))
+       
+        ($dst (dst_from_interval-iisurp $emin $emax $pattern_prob))
+
+    ) 
+
+  $dst
+ 
   ; (min-atom (((if (== True $normalize) (// $dst (max-atom ($emax $pattern_prob))) $dst) 1.0)))       
 
      
 ) )
-
-
 
 

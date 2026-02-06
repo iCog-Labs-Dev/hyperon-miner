@@ -186,3 +186,18 @@
          (let $part-2 (partitions (powerset $original)
                      $original) (cons-atom ($original) $part-2))))
 )
+
+
+; !(powerset )
+
+; !(partitions (, (Inheritance $x $y ) (Inheritance $x human) (Inheritance $x sodaDrinker)))
+
+
+; ((((Inheritance $_78904 human)) ((Inheritance $_78904 sodaDrinker))) (((Inheritance $_78904 sodaDrinker)) ((Inheritance $_78904 human))) (((Inheritance $_78904 sodaDrinker) (Inheritance $_78904 sodaDrinker)) ((Inheritance $_78904 human))) (((Inheritance $_78904 human) (Inheritance $_78904 sodaDrinker))) (((Inheritance $_78904 sodaDrinker) (Inheritance $_78904 human))))
+
+
+; ((((Inheritance $_78220 human)) ((Inheritance $_78220 sodaDrinker))) (((Inheritance $_78220 sodaDrinker)) ((Inheritance $_78220 human))) (((Inheritance $_78220 sodaDrinker) (Inheritance $_78220 sodaDrinker)) ((Inheritance $_78220 human))) (((Inheritance $_78220 human) (Inheritance $_78220 sodaDrinker))) (((Inheritance $_78220 sodaDrinker) (Inheritance $_78220 human))))
+
+!( collapse (intersection-atom ((Inheritance $x man )) ((Inheritance $y man))))
+
+; !(let $bool (== (Inheritance $x man ) (Inheritance $x $y)) $bool)

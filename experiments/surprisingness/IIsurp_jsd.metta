@@ -104,6 +104,46 @@
 
 )
 
+
+(=(sub-prob-main $conjunct-w-comma $db $total_count $conc_db) 
+
+
+
+( let*  (($conjunct (if (== (car-atom $conjunct-w-comma) ,) (cdr-atom $conjunct-w-comma) ($conjunct-w-comma)))
+  
+  ($filted-conjunct-w-subconcepts (collapse (filter-subpatterns-w-subs (superpose $conjunct) $db $conc_db)))) (if (== $filted-conjunct-w-subconcepts () ) ()
+
+
+ (let* (
+
+($cart-combs (cart-helper $filted-conjunct-w-subconcepts () $db))
+
+
+($filtered-conc (collapse (filter-subpatterns-wout-subs (superpose $conjunct) $filted-conjunct-w-subconcepts  $db )))
+
+($with-conc (map-atom
+                         $cart-combs
+                         $s
+                         (union-atom $filtered-conc $s))) 
+
+
+
+($comb-probs (collapse (get-comb-prob (superpose $with-conc) $db $total_count)))
+
+(($sub_avrg_str $sub_avrg_conf  ) (avrg_tv-iisurp $comb-probs))
+
+
+
+
+
+)
+; $with-conc
+; $comb-probs 
+(TruthValue $sub_avrg_str $sub_avrg_conf)
+)))
+
+)
+
 (=(handle-cart-probs $list-el $type) 
 (let ($max $min) $list-el (if (== $type max) $max $min))
 )
@@ -181,6 +221,42 @@
 )
 
 
+(=(get_set_prob_intervals $conjunct-w-comma $db $total_count $conc_db) 
+
+(let* (
+  ; ($total_count (universe-count $conjunct-w-comma $db))
+($conjunct (if (== (car-atom $conjunct-w-comma) ,) (cdr-atom $conjunct-w-comma) ($conjunct-w-comma)))
+($interval-list (collapse (get-concept-prob-call (superpose $conjunct ) $conjunct  $db $total_count $conc_db)))
+
+
+
+ (($supersTVstr $supersTVconf) (if (not (== $interval-list ()))  (avrg_tv-iisurp $interval-list ) ()))
+ ($superTV (TruthValue $supersTVstr $supersTVconf ))
+
+; ($maxSubs (collapse (handle_interval_list (superpose $interval-list) maxsub )))
+
+; ($minSubs (collapse (handle_interval_list (superpose $interval-list) minsub )))
+($sub-int (sub-prob-main $conjunct-w-comma $db $total_count $conc_db))
+
+; (($maxSubs $minSubs) (if (not (== $sub-int ())) $sub-int (() ()) ))
+
+($whole1 (collapse $sub-int))
+($whole2 (cons-atom $superTV $whole1))
+($whole-comp (subtraction-atom  $whole2 (())))
+
+
+)
+; $sub-int
+
+ $whole-comp
+
+)
+
+
+
+
+
+)
 
 
 
@@ -190,6 +266,11 @@
 
 (=(get-concept-prob-call $candidate $conjunct $db $total_count)
 (getConceptProb $candidate $conjunct $db $total_count  )
+)
+
+
+(=(get-concept-prob-call $candidate $conjunct $db $total_count $conc_db)
+(getConceptProb $candidate $conjunct $db $total_count $conc_db  )
 )
 
 ;super called
@@ -248,6 +329,34 @@
 )))
 
 )
+
+(=(getConceptProb $candidate $conjunct $db $total_count $conc_db)
+
+
+( let* (
+
+   (($link $per $conc) $candidate)
+
+  ($candidate_count (total_counts $candidate $db))
+($supercons  (collapse (match $conc_db (Inheritance $conc $any ) $any)))
+) (if (== $supercons ()) (empty) (let* (
+  
+
+  ($sup-prob-body (collapse  (get-prob-func (superpose $supercons) $db $candidate $conjunct $total_count )))
+
+  ($superProbsmax (collapse (getcohfact (superpose $sup-prob-body) $db  $candidate_count)))
+  ($maxSuperprob (avrg_tv-iisurp $superProbsmax ))
+  ($avrg_super_tv (cons-atom TruthValue $maxSuperprob))
+
+
+ )
+ $avrg_super_tv
+
+
+)))
+
+)
+
 
 
 (= (total_counts-iisurp $pattern $db) (cal_binomial-iisurp (db_size-iisurp $db) (n_conjuncts_new-iisurp $pattern)))
@@ -317,4 +426,24 @@
     ) 
         $subset-results_tvs    
 ) )
+
+
+(= (IIsurp-pln $pattern $db $conc_db) (
+    let* (
+        
+        ($total_count (total_counts-iisurp $pattern $db))
+        ; ($pattern_prob (emp-tv $pattern $db ))
+       
+        ; ($result_tv_inter (do-ji-tv-est $db $pattern) )
+        ($subset-results_tvs (get_set_prob_intervals $pattern $db $total_count $conc_db))
+        ; (($results ) (collapse (union-atom $results_tv_inter $subset-results_tvs)))
+
+        ; ($final_estimate (avrg_tv-iisurp $results))
+        ; ($final_tv (cons-atom TruthValue $final_estimate))
+ 
+        ; ($dst (do-jsd $final_tv $pattern_prob))
+    ) 
+        $subset-results_tvs    
+) )
+
 
