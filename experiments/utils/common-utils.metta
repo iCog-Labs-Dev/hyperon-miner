@@ -1460,35 +1460,3 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
 (=(max-of-two $num1 $num2)(
     if (> $num1 $num2) $num1 $num2
 ))
-
-
-
-(= (member-atom $elem $lst)
-   (if (== $lst ())
-       False
-       (let $head (car-atom $lst)
-         (let $tail (cdr-atom $lst)
-           (if (== $elem $head)
-               True
-               (member-atom $elem $tail)
-           )
-         )
-       )
-   )
-)
-
-
-(= (set-intersection $set2 $set1)
-   (if (== $set1 ())
-       ()
-       (let $head (car-atom $set1)
-         (let $tail (cdr-atom $set1)
-           (if (member-atom $head $set2)
-               (cons-atom $head (set-intersection $set2 $tail))
-               (set-intersection $set2 $tail)
-           )
-         )
-       )
-   )
-)
-

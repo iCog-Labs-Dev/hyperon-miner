@@ -1,6 +1,6 @@
 ;;Checks if **all elements** of $lst are in $used
 (=(all-in $lst $used)
-(let $inter (set-intersection $lst $used) (if (== (size-atom $inter) (size-atom $lst)) True False))
+(let $inter (intersection-atom $lst $used) (if (== (size-atom $inter) (size-atom $lst)) True False))
 
 )
 
@@ -8,27 +8,16 @@
 ;; Example:  (powerset (a b)) → (() (b) (a) (a b))
 
 (= (powerset $lst)
-  (if (== $lst ())
-     (())                              ; only subset of empty list
-     (let* (
-       (($head $tail) (decons-atom $lst))
-       ($ps-tail   (powerset $tail)) ; subsets of tail
-       ($with-head (prepend-to-each $head $ps-tail)) ; prepend head to each
-      )
-      (union-atom $ps-tail $with-head) ; union of both halves
-     )
-  )
-)
-
-;; Recursively prepend $elem to each subset in $subsets
-(= (prepend-to-each $elem $subsets)
-  (if (== $subsets ())
-     ()
-     (let ($first $rest) (decons-atom $subsets)
-      (cons-atom (cons-atom $elem $first)
-              (prepend-to-each $elem $rest))
-     )
-  )
+   (if (== $lst ())
+       (())                              ; only subset of empty list
+       (let* (
+          (($head $tail) (decons-atom $lst))
+          ($ps-tail   (powerset $tail)) ; subsets of tail
+          ($with-head (map-atom $ps-tail $s (cons-atom $head $s))) ; prepend head to each
+         )
+         (union-atom $ps-tail $with-head) ; union of both halves
+       )
+   )
 )
 
 ;; ===========================================================================
@@ -80,7 +69,7 @@
 )
 
 ;;Checks if **any element** of $lst is in $used
-(=(any-in $lst $used)(let $inter (set-intersection $lst $used) (if (== (size-atom $inter) 0) False True)))
+(=(any-in $lst $used)(let $inter (intersection-atom $lst $used) (if (== (size-atom $inter) 0) False True)))
 
 
 ;the subset can't be an empty set or the orginal set itself
