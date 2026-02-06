@@ -1,12 +1,15 @@
-; !(import! &self ../../data/II_surp_kb/kb1)
+
+
 !(import! &self ../../data/II_surp_kb/state_count)
+!(import! &self ../../utils/common-utils)
+!(import! &self ../../utils/surp-utils/partition-metta)
 !(import! &self ../../utils/surp-utils/IIsurp_utils)
 !(import! &self ../IIsurp-old)
-!(import! &self ../../utils/surp-utils/partition-metta)
-!(import! &self ../../utils/common-utils)
 
 
-(let (Inheritance $x $y) (get-atoms &self) (eval (superpose (
+
+
+!(let (Inheritance $x $y) (get-atoms &self) (eval (superpose (
        (add-atom &db (Inheritance $x $y)) (remove-atom &self (Inheritance $x $y) )
 ))))
 
