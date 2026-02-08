@@ -84,6 +84,55 @@
 (=(get-concept-prob-call $candidate $conjunct $db $total_count) (getConceptProb $candidate $conjunct $db $total_count))
 (=(get-concept-prob-call $candidate $conjunct $db $total_count $conc_db) (getConceptProb $candidate $conjunct $db $total_count $conc_db))
 
+
+(=(getConceptProb $candidate $conjunct $db $total_count)
+( let* (
+   (($link $per $conc) $candidate)
+  ($orInst (collapse (match $db ($link $any $conc) $any)))
+  ($concepts-raw (collapse (match $db ($link $anyI $anyC) $anyC)))
+  ($concepts (unique-atom $concepts-raw))
+  ($supercons  (sub-super-concepts $orInst $concepts $conc super $db ))
+) (if (== $supercons ()) (empty) (let* (
+
+  ($sup-prob-body (collapse  (get-prob-func (superpose $supercons) $db $candidate $conjunct $total_count )))
+
+  ($superProbsmax (collapse (getcohfact (superpose $sup-prob-body) $db max)))
+  ($maxSuperprob (max-atom $superProbsmax ))
+
+  ($superProbsmin (collapse (getcohfact (superpose $sup-prob-body) $db min)))
+  ($minSuperprob (min-atom $superProbsmin))
+
+  ); $supercons
+  ($maxSuperprob $minSuperprob)
+
+
+)))
+
+)
+
+(=(getConceptProb $candidate $conjunct $db $total_count $conc_db )
+
+
+( let* (
+   (($link $per $conc) $candidate)
+  ($supercons  (collapse (match $conc_db (Inheritance $conc $any ) $any)))
+) 
+(if (== $supercons ()) (empty) (let* (
+  ($sup-prob-body (collapse  (get-prob-func (superpose $supercons) $db $candidate $conjunct $total_count )))
+
+  ($superProbsmax (collapse (getcohfact (superpose $sup-prob-body) $db max)))
+  ($maxSuperprob (max-atom $superProbsmax ))
+
+  ($superProbsmin (collapse (getcohfact (superpose $sup-prob-body) $db min)))
+  ($minSuperprob (min-atom $superProbsmin))
+
+  )
+
+  ; $supercons
+  ($maxSuperprob $minSuperprob)
+)))
+
+)
 ; Convert coherence & prob tuple into adjusted probability using max/min factor.
 (=(getcohfact ($prob $coh) $db $maxOrmin)
  (let* (($factor (if (== $maxOrmin max) (max-factor $coh) (min-factor $coh)))
@@ -124,7 +173,7 @@
 ; - compute subset/super concept estimates (subset-results)
 ; - union estimates, derive emin/emax, compute distance and return it
 (= (IIsurp-old $pattern $db $normalize)
- (let* ($_ (println! "==== IIsurp-old surprisingness =====")
+ (let* (($_ (println! "==== IIsurp-old surprisingness ====="))
         ($total_count (total_counts-iisurp $pattern $db))
         ($psup (collapse (match $db $pattern $pattern)))
         ($pattern_prob (// (size-atom $psup) $total_count))
@@ -138,7 +187,8 @@
   $dst))
 
 (= (IIsurp-old $pattern $db $normalize $conc_db)
- (let* ($_ (println! "==== IIsurp-old surprisingness =====")
+ (let* (
+       ($_ (println! ("==== IIsurp-old surprisingness =====")))
         ($total_count (total_counts-iisurp $pattern $db))
         ($psup (collapse (match $db $pattern $pattern)))
         ($pattern_prob (// (size-atom $psup) $total_count))

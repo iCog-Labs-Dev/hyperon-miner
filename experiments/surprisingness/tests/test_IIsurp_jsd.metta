@@ -1,6 +1,6 @@
 
 !(import! &self "../../utils/surp-utils/boost_petta.py")
-!(import! &self ../../data/II_surp_kb/kb1)
+!(import! &db ../../data/II_surp_kb/kb1)
 !(import! &self ../../utils/common-utils)
 !(import! &self ../../utils/constants)
 !(import! &self ../../utils/TruthValue)
@@ -22,9 +22,6 @@
 !(import! &self ../IIsurp_jsd)
 
 
-!(let (Inheritance $x $y) (get-atoms &self) (eval (superpose (
-       (add-atom &db (Inheritance $x $y)) (remove-atom &self (Inheritance $x $y) )
-))))
 
 
 (assertEqual (IIsurp-pln (, (Inheritance $x human)
