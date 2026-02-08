@@ -11,14 +11,18 @@
 
 
 
+(assertEqual (IIsurp-old (, (Inheritance $x California)
+   (Inheritance $x coffeeDrinker)  (Inheritance $x techWorker)
+) &db True ) 1.7036712990880136e-06)
 
 
-!(assertEqual (IIsurp-old (, (Inheritance $x California)
+
+(assertEqual (IIsurp-old (, (Inheritance $x California)
    (Inheritance $x coffeeDrinker)
 ) &db True ) 4.811589161216016e-05)
 
 
-!(assertEqual (IIsurp-old (, (Inheritance $x California)
+(assertEqual (IIsurp-old (, (Inheritance $x California)
    (Inheritance $x surfer)
 ) &db True ) 0.00011281104175734944)
 

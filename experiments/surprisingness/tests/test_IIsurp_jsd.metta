@@ -23,6 +23,10 @@
 
 
 
+(assertEqual (IIsurp-pln (, (Inheritance $x human)
+   (Inheritance $x gamer) (Inheritance $x student)
+) &db) 0.0062148962728)
+
 
 (assertEqual (IIsurp-pln (, (Inheritance $x human)
    (Inheritance $x gamer)
@@ -30,17 +34,3 @@
 
 
 
-; !(get_set_prob_intervals (, (Inheritance $x human)
-;    (Inheritance $x gamer)
-; ) &db 1000 )
-
-
-; !(avrg_tv-iisurp ((STV 0 0.1) (STV 1 0.1)))
-; !(emp-tv (, (Inheritance $x human)
-;    (Inheritance $x gamer)
-; ) &db )
-
-; !(do-ji-tv-est  &db (, (Inheritance $x human)
-;    (Inheritance $x gamer)
-; ))
-; !(do-jsd (EMPTV 0.8 0.5555555555555556) (STV 0.7968127490039841 0.5565410199556541))
