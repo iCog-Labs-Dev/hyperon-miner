@@ -7,15 +7,16 @@
 ;--------------------------------------------------
 ;; computes the est-tv and emp-tv of pattern first
 (= (do-jsd-surp $kb $db (supportOf $pattern $support))(
-   case (match $kb  (surprisingnessOf $pattern $surp_val) $pattern)
-( ($pattern ())
-  (Empty ( let* (
+( let* (
      ($val (collapse (superpose ((emp-tv $pattern $db) (do-ji-tv-est $db $pattern))) ) )
      (((EMPTV $strength $confidence) (STV $str $conf)) $val)
-     ($jsd (do-jsd (EMPTV $strength $confidence) (STV $str $conf))))
+     ($jsd (do-jsd (EMPTV $strength $confidence) (STV $str $conf)))
+     )
      (add-atom-nodup $kb   (surprisingnessOf $pattern $jsd))
-     ))))
+   )
 )
+)
+
 
 
 
