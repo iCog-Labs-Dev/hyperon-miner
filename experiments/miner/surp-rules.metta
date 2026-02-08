@@ -34,9 +34,8 @@
 ;---------------------------------------------------------------------
 (: est-rule 
     (-> (minsup $ptrn)
-        (->  (emp-val $ptrn $emp)
                 (->(est-cpu $ptrn $emp $est)
-                      (est-tv $ptrn $est)))))
+                      (est-tv $ptrn $emp $est))))
                       
 
 ;----------------------------------------------------------------------
@@ -46,7 +45,7 @@
 (: jsd-tv 
         (-> (minsup $ptrn)
             (-> (emp-val $ptrn $emp)
-                 (-> (est-tv $ptrn $est)
+                 (-> (est-tv $ptrn $emp $est)
                       (-> (jsd-cpu $emp $est $surp)
                             (jsd-surp $ptrn $surp))))))
 
