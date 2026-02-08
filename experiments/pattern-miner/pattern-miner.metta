@@ -27,13 +27,17 @@
 ;; algorithms for patterns which  already have not score 
 ;(: do-surp (-> space space Atom Atom Atom Atom))
 (= (do-surp $kb $db $surp-mode (supportOf $pattern $support) $normalization $db-ratio) 
-         (case (match $kb  (surprisingnessOf $pattern $surp_val) $pattern)
-              ( ($pattern  ())
-                 (Empty   (let $surp  (case $surp-mode (
-                                           (isurp  (isurp $pattern $db $normalization $db-ratio))
-                                           (isurp-old (isurp-old $pattern $db $normalization)) ))
-                            (add-atom-nodup $kb  (surprisingnessOf $pattern $surp) )))))
+      (let $surp  (
+         case $surp-mode 
+            (
+               (isurp  (isurp $pattern $db $normalization $db-ratio))
+               (isurp-old (isurp-old $pattern $db $normalization)) 
+            )
+         )
+      (add-atom-nodup $kb  (surprisingnessOf $pattern $surp) )
+      )         
 )
+
 
 
 
