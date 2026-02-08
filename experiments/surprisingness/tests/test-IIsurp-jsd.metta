@@ -13,7 +13,7 @@
 !(import! &self ../../utils/surp-utils/bs-utils)
 !(import! &self ../../truth-values/emp-tv)
 !(import! &self ../../truth-values/est-tv)
-!(import! &self ../utils/index_to_var)
+!(import! &self ../../utils/index_to_var)
 !(import! &self ../../utils/surp-utils/jsd-helper)
 !(import! &self ../../utils/surp-utils/IIsurp_utils)
 !(import! &self ../../utils/surp-utils/IIsurp_avrg)
@@ -23,12 +23,12 @@
 
 
 
-(assertEqual (IIsurp-pln (, (Inheritance $x human)
+!(assertEqual (IIsurp-pln (, (Inheritance $x human)
    (Inheritance $x gamer) (Inheritance $x student)
 ) &db) 0.0062148962728)
 
 
-(assertEqual (IIsurp-pln (, (Inheritance $x human)
+!(assertEqual (IIsurp-pln (, (Inheritance $x human)
    (Inheritance $x gamer)
 ) &db) 0.0075910448073)
 
