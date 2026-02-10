@@ -5,9 +5,9 @@
 (= (candidate $depth $kb)
    (let*(
     (true (println! "==== Selecting Candidate Patterns =====") )
-    ($res (syn $kb $depth (: $prf (candidatePattern $x $cnt)))) 
-    ($rem2 (remove-atom $kb $res))
-    ($add2 (add-atom $kb $res))
+    ((: $resprf $respat) (syn $kb $depth (: $prf (candidatePattern $x $cnt)))) 
+    ($rem2 (remove-atom $kb (: $anyprf $respat)))
+    ($add2 (add-atom $kb (: $resprf $respat)))
     )
     $res
     )
@@ -46,6 +46,10 @@
     )
 )
 
+;; --------------------------------------------------
+;; candidatePatternMiner
+;; --------------------------------------------------
+;; pipeline for the candidate pattern mining
 (= (candidatePatternMiner $pattern $db $kb)
     (let* (
             (true (println! "==== Candidate Pattern Miner Started ====="))
