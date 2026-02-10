@@ -40,19 +40,23 @@
 ;             (-> (replace_variables ($shabx $shaby))
 ;               (specializationOf ($link $x $y) ($link $shabx $shaby))))))))))
 ;; Rules 
-  (: minsupport 
+
+;; minimum support rule
+(: minsupport 
     (-> (supportOf $ptrn $cnt)
           (-> (ms-threshold $ms)
                  (-> (⍃ $ms $cnt)
                         (minsup $ptrn $cnt)))))
 
-(: valuatop
+;; valuation for top pattern rule
+(: valuationtop
     (-> (initpat $pattern)
       (-> (istop $pattern)
         (-> (get_matches $pattern $results)
          (val $pattern ($results))))))
 
-(: valua
+;; valuation for not top pattern rule
+(: valuationNotTop
     (-> (initpat $pattern)
       (-> (isnottop $pattern)
         (-> (get_matches $pattern $results)
@@ -60,19 +64,19 @@
             (-> (get_vals_cpu $results $varIndex $vals)
                 (val $pattern $vals)))))))
 
-
+;; more of a general rule for shallow abstraction because of recursion we were unable to further decompose it into its components
+;; shallow abstraction rule
 (: shallow_abs
     (-> (val $pattern $vals)
      (-> (shallow_abstact_cpu $vals $shab) 
       (shallow_Abs $pattern $shab))))
 
+;; specialization rule
 (: spec
   (-> (initpat $pattern)
     (-> (shallow_Abs $pattern $shabs)
         (-> (substitute_variables $pattern $shabs ($specs $remaining))
             (specializationOf $pattern $specs)))))
-
-;; rule to extract abstract patterns from the database
 
 
 ;;support of specialized patterns rule
