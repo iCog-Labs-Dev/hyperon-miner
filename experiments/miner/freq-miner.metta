@@ -51,9 +51,9 @@
 (= (candidate $depth $kb)
    (let*(
     (true (println! "==== Selecting Candidate Patterns =====") )
-    ($res (syn $kb $depth (: $prf (candidatePattern $x $cnt)))) 
-    ($rem2 (remove-atom $kb $res))
-    ($add2 (add-atom $kb $res))
+    ((: $resprf $respat) (syn $kb $depth (: $prf (candidatePattern $x $cnt)))) 
+    ($rem2 (remove-atom $kb (: $anyprf $respat)))
+    ($add2 (add-atom $kb (: $resprf $respat)))
     )
     $res
     )
@@ -84,9 +84,9 @@
 (= (format $depth $kb)
    (let* (
     (true (println! "==== Formatting patterns  =====") )
-    ($res (syn $kb $depth (: $prf (hasSupport $ptrn $cnt)))) 
-    ($rem2 (remove-atom $kb $res))
-    ($add2 (add-atom $kb $res))
+    ((: $prf $pattern) (syn $kb $depth (: $prf (hasSupport $ptrn $cnt)))) 
+    ($rem2 (remove-atom $kb (: $anyprf $pattern)))
+    ($add2 (add-atom $kb (: $prf $pattern)))
     )
     $res
     )

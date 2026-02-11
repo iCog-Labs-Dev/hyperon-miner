@@ -52,7 +52,7 @@
 (= (conj_exp) True)
 
 
-!(pattern-miner &db-temp &freq-kb-temp &surp-kb-temp (min-sup) (num-of-conjuct) (conj_exp) (surp-mode) (db-ratio)  (normalization))
+(pattern-miner &db-temp &freq-kb-temp &surp-kb-temp (min-sup) (num-of-conjuct) (conj_exp) (surp-mode) (db-ratio)  (normalization))
 
 ;; Expected output 
 
@@ -129,7 +129,7 @@
 
 
 (= (surp-mode2) isurp)
-(pattern-miner &db-temp &freq-kb-temp &surp-kb-temp (min-sup2) (num-of-conjuct) (conj_exp) (surp-mode2) (db-ratio)  (normalization))
+!(pattern-miner &db-temp &freq-kb-temp &surp-kb-temp (min-sup2) (num-of-conjuct) (conj_exp) (surp-mode2) (db-ratio)  (normalization))
 
 ; (: ((((((((isurp-rule normalize) (((universal-count (((minsupport (((((((supportFormat (((((((((((((((((((conjunction-expand (((((((((((((((((((conjunction-expand 
 ; ((candidatep (((minsupport (((supports (((((specializationy ((((abstract-pattern CPUUnique) msT) CPU) CPUReplacevar)) CPUReplaceindex) CPUHandleValuation) 
@@ -168,7 +168,41 @@
 (= (num-of-conjuct3) 3)
 (= (surp-mode3) jsdsurp)
 
-(import! &db-sm   ../../data/small-ugly)
-(pattern-miner &db-sm &freq-kb-temp &surp-kb-temp (min-sup3) (num-of-conjuct3) (conj_exp) (surp-mode3) (db-ratio)  (normalization))
+
+(pattern-miner &db-temp &freq-kb-temp &surp-kb-temp (min-sup3) (num-of-conjuct3) (conj_exp) (surp-mode3) (db-ratio)  (normalization))
+
+;;expected output
+; (: ((((jsd-tv (((minsupport (((((((supportFormat (((((((((((((((((((conjunction-expand (((((((((((((((((((conjunction-expand ((candidatep (((minsupport 
+; (((supports (((((specializationy ((((abstract-pattern CPUUnique) msT) CPU) CPUReplacevar)) CPUReplaceindex) CPUHandleValuation) CPUHandleNestedExp) 
+; CPUReplacevar)) CPUReplaceindex) CPUCounter)) msT) CPU)) CPUReplacevar)) CPUReplaceindex) CPUCount) maxClauses) CPUequals) ((candidatep (((minsupport 
+; (((supports (((((specializationy ((((abstract-pattern CPUUnique) msT) CPU) CPUReplacevar)) CPUReplaceindex) CPUHandleValuation) CPUHandleNestedExp) 
+; CPUReplacevar)) CPUReplaceindex) CPUCounter)) msT) CPU)) CPUReplacevar)) CPUReplaceindex) CPUCount) CPUequals) msT) CPUGetPatternVariables) 
+; CPUGetPatternVariables) CPUCombineVariables) CPUSubstituteVariables) CPUCounter) CPU) CPUConjunctionClean1) CPUReplacevar) CPUConjunctionClean2))
+; CPUReplaceindex) CPUCount) maxClauses) CPUequals) ((candidatep (((minsupport (((supports (((((specializationy ((((abstract-pattern CPUUnique) msT) CPU) 
+; CPUReplacevar)) CPUReplaceindex) CPUHandleValuation) CPUHandleNestedExp) CPUReplacevar)) CPUReplaceindex) CPUCounter)) msT) CPU)) CPUReplacevar)) 
+; CPUReplaceindex) CPUCount) CPUequals) msT) CPUGetPatternVariables) CPUGetPatternVariables) CPUCombineVariables) CPUSubstituteVariables) CPUCounter) CPU) 
+; CPUConjunctionClean1) CPUReplacevar) CPUConjunctionClean2)) CPUCount) maxClauses) CPU) CPUSortConjunctions) CPUJoin) CPUReplaceindex)) msT) CPU))
+; ((emp-rule (((minsupport (((((((supportFormat (((((((((((((((((((conjunction-expand (((((((((((((((((((conjunction-expand ((candidatep (((minsupport (
+; ((supports (((((specializationy ((((abstract-pattern CPUUnique) msT) CPU) CPUReplacevar)) CPUReplaceindex) CPUHandleValuation) CPUHandleNestedExp) 
+; CPUReplacevar)) CPUReplaceindex) CPUCounter)) msT) CPU)) CPUReplacevar)) CPUReplaceindex) CPUCount) maxClauses) CPUequals) ((candidatep (((minsupport (
+; ((supports (((((specializationy ((((abstract-pattern CPUUnique) msT) CPU) CPUReplacevar)) CPUReplaceindex) CPUHandleValuation) CPUHandleNestedExp) 
+; CPUReplacevar)) CPUReplaceindex) CPUCounter)) msT) CPU)) CPUReplacevar)) CPUReplaceindex) CPUCount) CPUequals) msT) CPUGetPatternVariables) 
+; CPUGetPatternVariables) CPUCombineVariables) CPUSubstituteVariables) CPUCounter) CPU) CPUConjunctionClean1) CPUReplacevar) CPUConjunctionClean2)) 
+; CPUReplaceindex) CPUCount) maxClauses) CPUequals) ((candidatep (((minsupport (((supports (((((specializationy ((((abstract-pattern CPUUnique) msT) CPU) 
+; CPUReplacevar)) CPUReplaceindex) CPUHandleValuation) CPUHandleNestedExp) CPUReplacevar)) CPUReplaceindex) CPUCounter)) msT) CPU)) CPUReplacevar)) 
+; CPUReplaceindex) CPUCount) CPUequals) msT) CPUGetPatternVariables) CPUGetPatternVariables) CPUCombineVariables) CPUSubstituteVariables) CPUCounter) CPU)
+; CPUConjunctionClean1) CPUReplacevar) CPUConjunctionClean2)) CPUCount) maxClauses) CPU) CPUSortConjunctions) CPUJoin) CPUReplaceindex)) msT) CPU)) 
+; CPUEMP)) ((est-rule (((minsupport (((((((supportFormat (((((((((((((((((((conjunction-expand (((((((((((((((((((conjunction-expand ((candidatep 
+; (((minsupport (((supports (((((specializationy ((((abstract-pattern CPUUnique) msT) CPU) CPUReplacevar)) CPUReplaceindex) CPUHandleValuation) 
+; CPUHandleNestedExp) CPUReplacevar)) CPUReplaceindex) CPUCounter)) msT) CPU)) CPUReplacevar)) CPUReplaceindex) CPUCount) maxClauses) CPUequals) 
+; ((candidatep (((minsupport (((supports (((((specializationy ((((abstract-pattern CPUUnique) msT) CPU) CPUReplacevar)) CPUReplaceindex) 
+; CPUHandleValuation) CPUHandleNestedExp) CPUReplacevar)) CPUReplaceindex) CPUCounter)) msT) CPU)) CPUReplacevar)) CPUReplaceindex) CPUCount) 
+; CPUequals) msT) CPUGetPatternVariables) CPUGetPatternVariables) CPUCombineVariables) CPUSubstituteVariables) CPUCounter) CPU) CPUConjunctionClean1) 
+; CPUReplacevar) CPUConjunctionClean2)) CPUReplaceindex) CPUCount) maxClauses) CPUequals) ((candidatep (((minsupport (((supports (((((specializationy 
+; ((((abstract-pattern CPUUnique) msT) CPU) CPUReplacevar)) CPUReplaceindex) CPUHandleValuation) CPUHandleNestedExp) CPUReplacevar)) CPUReplaceindex) 
+; CPUCounter)) msT) CPU)) CPUReplacevar)) CPUReplaceindex) CPUCount) CPUequals) msT) CPUGetPatternVariables) CPUGetPatternVariables) CPUCombineVariables)
+; CPUSubstituteVariables) CPUCounter) CPU) CPUConjunctionClean1) CPUReplacevar) CPUConjunctionClean2)) CPUCount) maxClauses) CPU) CPUSortConjunctions) 
+; CPUJoin) CPUReplaceindex)) msT) CPU)) CPUEST)) JSDCPU) 
+; (jsd-surp (, (Inheritance $_3756 man) (Inheritance $_3756 ugly) (Inheritance $_3756 sodaDrinker)) 0.8507324751176))
 
 

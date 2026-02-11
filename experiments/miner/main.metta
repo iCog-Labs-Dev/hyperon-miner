@@ -77,12 +77,10 @@
 (= (mine-surp $kb $res $surp-mode)  
   ( case $surp-mode (
         (none    (get-patterns $kb $res) ) 
-        (jsdsurp (let $result  (syn $kb (fromNumber 13) (: $prf (est-tv $what_is_surprise $value)))   (add-atom $res $result)))
+        (jsdsurp (let $result  (syn $kb (fromNumber 13) (: $prf (jsd-surp $what_is_surprise $value)))   (add-atom $res $result)))
         ($_        (let (: $prf $ccln) (syn $kb (fromNumber 19) (: $prf (Isurp $pattern $partitions)))    (add-atom $res (: $prf $ccln))))
     )                                                         
 ))
-
-
 
 
 
@@ -99,12 +97,9 @@
         ($dummy2 (collapse (init-miner &db  &surp-kb $ms $surp-mode $db-ratio $norm)))
         (() (frequent-miner &db &freq-kb $num-of-conjuct $cnj_exp)) 
         ($dummy3 (collapse (match &freq-kb (: $prf (hasSupport $nptrn $count)) (add-atom &surp-kb (: $prf (hasSupport $nptrn $count))))))
-       ; ($dummy3 (collapse (match &freq-kb (: $prf (hasSupport $nptrn $count)) (let $pattern  (replacev $nptrn )(add-atom &surp-kb (: $prf (hasSupport $pattern $count)))))))
         (true (println! "==== Surprissingness Scoring Started ====="))
         ($dummy4  (collapse (mine-surp &surp-kb &res $surp-mode)))
     )    
-       ; (match &surp-kb $x $x)
           (get-atoms &res)
-        ; $dummy4
     
 ))
