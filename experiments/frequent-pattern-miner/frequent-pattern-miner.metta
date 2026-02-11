@@ -41,7 +41,7 @@
            ($var  (collapse (match $aptrnspace (AbstractPattern $pattern) (build-specialization $pattern $dbspace $specspace)))) ; specializa abstract patterns
            ($temp2  (collapse (candidatePattern $dbspace $specspace $minsup $cndpspace))); get candidate patterns
             ($temp3  (if $cnj_exp (collapse (conjunct $dbspace $cndpspace $conjspace $minsup $depth)) $temp2)) ; store candidate patterns
-            ($temp4  (if $cnj_exp (formatter $conjspace $dbspace) (match $cndpspace (CandidatePattern $pattern $cnt) (supportOf $pattern $cnt))))      
+            ($temp4  (formatter $conjspace $cndpspace $dbspace $cnj_exp))      
         )  
         $temp4
         )
