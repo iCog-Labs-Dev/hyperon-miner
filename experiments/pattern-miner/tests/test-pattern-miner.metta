@@ -28,10 +28,12 @@
 !(import! &self ../../surprisingness/isurp-old)
 !(import! &self ../../surprisingness/jsd)
 
-!(import! &self ../../frequent-pattern-miner/build-specialization)
-!(import! &self ../../frequent-pattern-miner/candidate-patterns)
+!(import! &self ../../frequent-pattern-miner/valuation)
+!(import! &self ../../frequent-pattern-miner/shallow-abstractions)
+!(import! &self ../../frequent-pattern-miner/specialization)
+!(import! &self ../../frequent-pattern-miner/candidate)
 !(import! &self ../../frequent-pattern-miner/conjunction-expansion)
-!(import! &self ../../frequent-pattern-miner/frequent-pattern-miner)
+!(import! &self ../../frequent-pattern-miner/frequent-pattern-miner-generic)
 !(import! &self ../pattern-miner)
 
 
