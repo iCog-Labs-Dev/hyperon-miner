@@ -70,6 +70,6 @@
 (= (pattern-miner $kb $db $initpat $minsup $depth $surp-mode $normalization $db-ratio $conj_exp) ( 
     let*
     (    (true (println! "==== Pattern Miner Started ====="))
-         ($frequent-pattern  (frequency-pattern-miner &dbspace $initpat &cndpspace &conjspace $minsup $depth $conj_exp))
-         ($dummy3  (call-surprisingness $kb &dbspace $frequent-pattern $surp-mode $normalization $db-ratio))
+         ($frequent-pattern  (frequency-pattern-miner &db $initpat &cndpspace &conjspace $minsup $depth $conj_exp))
+         ($dummy3  (call-surprisingness $kb &db $frequent-pattern $surp-mode $normalization $db-ratio))
           )  ()))

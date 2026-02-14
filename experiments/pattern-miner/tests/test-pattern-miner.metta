@@ -53,7 +53,7 @@
 ;; minimum support 10
 ;;(pattern-miner $kb $db $minsup $depth $surp-mode $normalization $db-ratio $conj_exp)
 
-(pattern-miner &res1 &db 10 0 none none none True) 
+(pattern-miner &res1 &db $x 10 0 none none none True) 
 (assertEqual (collapse (get-atoms &res1))
 ;;Expected result 
         ((supportOf (, (Inheritance $_493388 $_493394) (Inheritance $_493388 $_493418)) 190) 
@@ -76,9 +76,9 @@
 ;; number of conjucts 3 , so the depth will be 1
 ;; surprissingness mode none
 ;; minimum support 10
-;;(pattern-miner $kb $db $minsup $depth $surp-mode $normalization $db-ratio $conj_exp)
+;;(pattern-miner $kb $db $x $minsup $depth $surp-mode $normalization $db $x-ratio $conj_exp)
 
-(pattern-miner &res2 &db 10 1 none none none  True) 
+(pattern-miner &res2 &db $x 10 1 none none none  True) 
 (assertEqual (collapse (get-atoms &res2)) 
 ((supportOf (, (Inheritance $_503984 $_503990) (Inheritance $_503984 $_504014) (Inheritance $_503984 $_504038)) 630)
 (supportOf (, (Inheritance $_503882 $_503888) (Inheritance $_503882 human) (Inheritance $_503882 $_503936)) 190)
@@ -109,9 +109,9 @@
 ;; surprissingness mode -> isurp-old 
 ;; normalization -> False
 ;; minimum support ->  10
-;;(pattern-miner $kb $db $minsup $depth $surp-mode $normalization $db-ratio $conj_exp)
+;;(pattern-miner $kb $db $x $minsup $depth $surp-mode $normalization $db $x-ratio $conj_exp)
 
-(pattern-miner &res3 &db 10 0 isurp-old False none True) 
+(pattern-miner &res3 &db $x 10 0 isurp-old False none True) 
 (assertEqual (collapse (get-atoms &res3)) 
 ;; Expected result
 (
@@ -134,9 +134,9 @@
 ;; surprissingness mode -> isurp 
 ;; normalization -> True
 ;; minimum support ->  5
-;;(pattern-miner $kb $db $minsup $depth $surp-mode $normalization $db-ratio $conj_exp)
+;;(pattern-miner $kb $db $x $minsup $depth $surp-mode $normalization $db $x-ratio $conj_exp)
 
-(pattern-miner &res4 &db 5 0 isurp True 0.2 True) 
+(pattern-miner &res4 &db $x 5 0 isurp True 0.2 True) 
 (assertEqual (collapse (get-atoms &res4))
 ;; Expected result
   
@@ -168,7 +168,7 @@
 
 ;!(bind! &res5 (new-space)). 
 
-(pattern-miner &res5 &db 5 1 isurp True 0.2 True) 
+(pattern-miner &res5 &db $x 5 1 isurp True 0.2 True) 
 (assertEqual (collapse (get-atoms &res5 ))
 ;; Expected result
 ((surprisingnessOf (, (Inheritance $_518506 $_518512) (Inheritance $_518506 $_518536) (Inheritance $_518506 $_518560)) 0.09523809523809525) 
@@ -205,7 +205,7 @@
 ;; minimum support ->  5
 
 
-(pattern-miner &res6 &db 5 1 isurp False 0.2 True) 
+(pattern-miner &res6 &db $x 5 1 isurp False 0.2 True) 
 (assertEqual (collapse (get-atoms &res6))
 ;; Expected result
 ((surprisingnessOf (, (Inheritance $_647442 $_647448) (Inheritance $_647442 $_647472) (Inheritance $_647442 $_647496)) 0.00027777777777777783)
@@ -244,7 +244,7 @@
 
 ; !(bind! &res7 (new-space))
 
-!(pattern-miner &res7 &db 5 1 jsd none 0.2 True) 
+!(pattern-miner &res7 &db $x 5 1 jsd none 0.2 True) 
 !(assertEqual (collapse (get-atoms &res7)) 
 ;; Expected result 
 (
