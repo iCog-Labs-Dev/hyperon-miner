@@ -26,12 +26,14 @@
 )
 
 (= (replacev $pattern)
+    (if (== $pattern ())
+        ()
     (let* (
        ($result (eval (deb2var $pattern ())))
        (($varpat $list) $result)
        )
        $varpat
-    )
+    ))
 )
 (= (deb2var () $history)
     (() $history)
@@ -65,13 +67,15 @@
 
 
 (= (replace $pattern)
+    (if (== $pattern ())
+        ()
     (let* (
        ($result (eval (var2num $pattern 0 ())))
        (($numpat $index $list) $result)
        ($deb (num2deb $numpat))
        )
        $deb
-    )
+    ))
 )
 
        
