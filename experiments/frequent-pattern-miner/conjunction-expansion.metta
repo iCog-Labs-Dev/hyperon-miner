@@ -326,7 +326,7 @@
         )
         (let* (
             (true (println! "==== Formating  started ====="))
-            ($final (match $cndpspace (CandidatePattern $pattern $cnt) (supportOf $pattern $cnt)))
+            ($final (match $cndpspace (CandidatePattern $pattern $cnt) (replacev (supportOf $pattern $cnt))))
         )
         $final
         )
