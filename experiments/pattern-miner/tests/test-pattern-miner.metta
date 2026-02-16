@@ -1,4 +1,3 @@
-;; import order matters here
 !(import! &self "../../utils/surp-utils/boost_petta.py")
 !(import! &self ../../utils/common-utils)
 !(import! &self ../../utils/index_to_var)
@@ -7,10 +6,13 @@
 !(import! &self ../../utils/surp-utils/partition-metta)
 
 
+
 ;;import surp components 
 !(import! &self  ../../utils/surp-utils/binomialMetta)
 !(import! &self ../../utils/surp-utils/beta-dist)
 !(import! &self  ../../utils/surp-utils/surp-utils)
+!(import! &self ../../utils/surp-utils/IIsurp_utils)
+
 
 
 !(import! &self ../../utils/sort)
@@ -27,6 +29,7 @@
 !(import! &self ../../surprisingness/isurp)
 !(import! &self ../../surprisingness/isurp-old)
 !(import! &self ../../surprisingness/jsd)
+!(import! &self ../../surprisingness/IIsurp-old)
 
 !(import! &self ../../frequent-pattern-miner/build-specialization)
 !(import! &self ../../frequent-pattern-miner/candidate-patterns)
@@ -37,6 +40,10 @@
 
 ;; import kb
 !(import! &db ../../data/ugly_man_sodaDrinker)
+
+;import IIsurp 
+
+
 
 
 
