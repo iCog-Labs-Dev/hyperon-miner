@@ -157,8 +157,8 @@
 
 ;!(bind! &res5 (new-space))
 
-!(pattern-miner &res5 &db 5 1 isurp True 0.2 True) 
-!(assertEqual (collapse (get-atoms-custom &res5 ))
+(pattern-miner &res5 &db 5 1 isurp True 0.2 True) 
+(assertEqual (collapse (get-atoms-custom &res5 ))
 ;; Expected result
 ((surprisingnessOf (, (Inheritance $_129702 human) (Inheritance $_129702 man) (Inheritance $_129702 ugly)) 0.6666666666666665) 
  (surprisingnessOf (, (Inheritance $_129810 human) (Inheritance $_129810 man) (Inheritance $_129810 sodaDrinker)) 0.6666666666666665) 
@@ -199,7 +199,7 @@
 ; !(bind! &res7 (new-space))
 
 (pattern-miner &res7 &db 5 1 jsd none 0.2 True) 
-(assertEqual (collapse (get-atoms &res7)) 
+(assertEqual (collapse (get-atoms-custome &res7)) 
 ;; Expected result 
 ((surprisingnessOf (, (Inheritance $_217764 human) (Inheritance $_217764 man) (Inheritance $_217764 ugly)) 0.8548398421185) 
  (surprisingnessOf (, (Inheritance $_217872 human) (Inheritance $_217872 man) (Inheritance $_217872 sodaDrinker)) 0.8548398421185) 

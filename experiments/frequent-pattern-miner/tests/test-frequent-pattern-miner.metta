@@ -11,7 +11,7 @@
 !(import! &self ../conjunction-expansion)
 !(import! &self ../frequent-pattern-miner)
 
-!(import! &db ../../data/ugly_man_sodaDrinker)
+!(import! &db ../../data/bio)
 
 !(get-atoms &dbspace)
 

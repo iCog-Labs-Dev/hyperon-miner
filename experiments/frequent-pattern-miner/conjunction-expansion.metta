@@ -190,10 +190,8 @@
     (let*
     (
         ($conjuncts (get-conjuncts $pattern))
-        (true (println! (conjucts is $conjuncts)))
         ($flat (cons-atom , $conjuncts))
         ($result (sup-eval-custom $db $flat $ms))
-        (true (println! (sub-eval for $db and $flat and $ms is $result)))
         ($final (if $result $pattern ()))
     )
    $final
@@ -284,7 +282,6 @@
         ($conjunct (replacev $coming_conj))
         ($matches (match-&mork ((ns $cndb) (CandidatePattern $pattern $cnt)) (replacev $pattern)))
         ($listconj (expand_conjunction $conjunct $matches $db $ms 2 False))
-        (true (println! ("after expand" $listconj)))
         ($fitlered (remove_conjuncts_with_redundant_clauses $listconj))
         ($final (replace $fitlered))
 
@@ -299,7 +296,6 @@
     (let* (
         (true (println! ("==== Build conjunction with depth greater than 0 =====" $coming_conj)))
         ($conjunct (replacev $coming_conj))
-        (true (println! ("after replace " $conjunct)))
         ($matches (match-&mork ((ns $cndb) (CandidatePattern $pattern $cnt)) (replacev $pattern)))
         ($listconj (expand_conjunction $conjunct $matches $db $ms 2 False))
         ($fitlered (remove_conjuncts_with_redundant_clauses $listconj))
