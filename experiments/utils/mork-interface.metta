@@ -1,4 +1,37 @@
 !(mm2-exec &mork 1)
+
+
+(: match-&mork (-> Expression Expression Expression))
+(= (match-&mork $pattern $Pat) 
+   (quote (progn (match &mork $pattern $pattern)
+          $Pat)))
+!(add-translator-rule! match-&mork)
+
+
+(= (match-&mork-conj $ConjPattern $Out)
+   (let* (
+          ($_1 (add-atom &mork
+                 (exec 0
+                       $ConjPattern
+                       (, (tmpResult $Out)))))
+
+          ($_ (mm2-exec &mork 1))        
+          ($R  (match &mork (tmpResult $Out) $Out))
+          ($_2 (remove-atom &mork
+                 (exec 0
+                       $ConjPattern
+                       (, (tmpResult $Out)))))
+         
+         )
+        $R))
+
+
+
+
+; !(get-atoms &space)
+
+
+
 ; ============================================================================
 ; Metta Namespaced Atom Interface
 ; ============================================================================
@@ -152,7 +185,7 @@
      (let* (
       ($wrapped-pattern (wrap-comma-patterns $namespace $pattern))
       )
-       (match &mork $wrapped-pattern $output))
+       (match-&mork-conj $wrapped-pattern $output))
      (match &mork ((ns $namespace) $pattern) $output)))
 
 ; ============================================================================

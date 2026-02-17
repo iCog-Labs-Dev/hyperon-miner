@@ -190,8 +190,10 @@
     (let*
     (
         ($conjuncts (get-conjuncts $pattern))
+        (true (println! (conjucts is $conjuncts)))
         ($flat (cons-atom , $conjuncts))
         ($result (sup-eval-custom $db $flat $ms))
+        (true (println! (sub-eval for $db and $flat and $ms is $result)))
         ($final (if $result $pattern ()))
     )
    $final
@@ -280,8 +282,9 @@
     (let* (
         (true (println! ("==== Build conjunction with depth 0 ====" $coming_conj)))
         ($conjunct (replacev $coming_conj))
-        ($matches (match &mork ((ns $cndb) (CandidatePattern $pattern $cnt)) (replacev $pattern)))
+        ($matches (match-&mork ((ns $cndb) (CandidatePattern $pattern $cnt)) (replacev $pattern)))
         ($listconj (expand_conjunction $conjunct $matches $db $ms 2 False))
+        (true (println! ("after expand" $listconj)))
         ($fitlered (remove_conjuncts_with_redundant_clauses $listconj))
         ($final (replace $fitlered))
 
@@ -296,7 +299,8 @@
     (let* (
         (true (println! ("==== Build conjunction with depth greater than 0 =====" $coming_conj)))
         ($conjunct (replacev $coming_conj))
-        ($matches (match &mork ((ns $cndb) (CandidatePattern $pattern $cnt)) (replacev $pattern)))
+        (true (println! ("after replace " $conjunct)))
+        ($matches (match-&mork ((ns $cndb) (CandidatePattern $pattern $cnt)) (replacev $pattern)))
         ($listconj (expand_conjunction $conjunct $matches $db $ms 2 False))
         ($fitlered (remove_conjuncts_with_redundant_clauses $listconj))
         ($conj (do-conjunct $db $cndb $fitlered $ms $K))
@@ -318,7 +322,7 @@
 (= (formatter $conjspace $dbspace) 
     (let* (
         (true (println! "==== Formating  started ====="))
-        ($sortedlist (unique-atom (collapse (match &mork ((ns $conjspace) $pattern) (sort_conj $pattern)))))
+        ($sortedlist (unique-atom (collapse (match-&mork ((ns $conjspace) $pattern) (sort_conj $pattern)))))
         ($sorted (superpose $sortedlist))
         ($res (cons-atom , $sorted))
         ($var (replacev $res))
@@ -337,7 +341,7 @@
 ;(: conjunct (-> space space space Number Number Atom))
 
 (= (conjunct $dbspace $cndpspace $conjspace $minsup $depth )   
-     (match &mork ((ns $cndpspace) (CandidatePattern $pattern $cnt))
+     (match-&mork ((ns $cndpspace) (CandidatePattern $pattern $cnt))
                    (let* (
                         (true (println! ("==== Conjuntion expansion started" $pattern)))
                         ($conj  (do-conjunct $dbspace $cndpspace $pattern $minsup (fromNumber $depth)))

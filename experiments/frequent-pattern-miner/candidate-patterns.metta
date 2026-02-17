@@ -8,7 +8,7 @@
 ;; 3. store as a candidate if the support is greater than the minimum support
 
 (= (candidatePattern $dbspace $spezspace $minsup $cndpspace)
-    (match &mork ((ns $spezspace) (SpecializationOf $specialized $pattern))
+    (match-&mork ((ns $spezspace) (SpecializationOf $specialized $pattern))    
         (let* ( 
                 (true (println! ("==== Candidate Pattern started =====" )))
                 ($specializedvar (replacev $specialized))
