@@ -167,3 +167,23 @@
   (min-atom ((if (== True $normalize) (// $dst (max-atom ($emax $pattern_prob))) $dst) 1.0))
   
   ))
+
+  (= (IIsurp-old-nary $pattern $db $isurp $normalize $db_ratio )
+ (let* ( ($_ (println! "==== IIsurp-nary surprisingness ====="))
+         ($total_count (total_counts-iisurp $pattern $db))
+         
+        ($results-inter (ji_prob_est_interval $pattern $db $db_ratio))
+        (($emin_mid $emax_mid ) $results-inter)
+        ($emp (emp-prob-pbs $pattern $db $emax_mid $db_ratio))
+         ($subset-results (get-set-prob-intervals-nary $pattern $db $total_count))
+         ($results (if (not (== $subset-results ())) (union-atom $results-inter $subset-results) $results-inter))
+         ($emin (min-atom $results))
+         ($emax (max-atom $results))
+         ($dst (dst_from_interval $emin $emax $emp))
+         ($maxprb (max-atom ($emp $emax)))
+         )
+        (min-atom ((if $normalize (// $dst $maxprb) $dst) 1.0))
+
+
+  
+  ))
