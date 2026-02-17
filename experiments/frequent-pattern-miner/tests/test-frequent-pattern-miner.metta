@@ -1,7 +1,6 @@
 !(import! &self ../../utils/common-utils)
 !(import! &self ../../utils/mork-interface)
 !(import! &self ../../utils/index_to_var)
-!(import! &dbspace ../../data/ugly_man_sodadrinker)
 !(import! &self ../../utils/sort)
 !(import! &self ../../utils/variable-combinations)
 !(import! &self ../../utils/surp-utils/blk-abstractness)
@@ -11,94 +10,22 @@
 !(import! &self ../candidate-patterns)
 !(import! &self ../conjunction-expansion)
 !(import! &self ../frequent-pattern-miner)
-(= (add-atom-once $atoms) 
-    (if (== $atoms ()) true (let*
-        (
-            ($head (car-atom $atoms))
-            ($tail (cdr-atom $atoms))
-            ($_ (add-atom &dbspace $head))
-            
-        )
-        (add-atom-once $tail))
-    )
-)
 
+!(import! &db ../../data/ugly_man_sodaDrinker)
 
-!(add-atom-once ((Inheritance Allen human)
-(Inheritance Abe human)
-(Inheritance Cason human)
-(Inheritance Davion human)
-(Inheritance Hessley human)
-(Inheritance Jadrian human)
-(Inheritance Rio human)
-(Inheritance Bob human)
-(Inheritance Mike human)
-(Inheritance Zac human)
-(Inheritance Lily human)
-(Inheritance Emily human)
-(Inheritance Lucy human)
-(Inheritance Sophia human)
-(Inheritance Alaura human)
-(Inheritance Breonna human)
-(Inheritance Jaleesa human)
-(Inheritance Jassy human)
-(Inheritance Jenica human)
-(Inheritance Kecia human)
+!(get-atoms &dbspace)
 
-(Inheritance Allen man)
-(Inheritance Abe man)
-(Inheritance Cason man)
-(Inheritance Davion man)
-(Inheritance Hessley man)
-(Inheritance Jadrian man)
-(Inheritance Rio man)
-(Inheritance Bob man)
-(Inheritance Mike man)
-(Inheritance Zac man)
-
-(Inheritance Lily woman)
-(Inheritance Emily woman)
-(Inheritance Lucy woman)
-(Inheritance Sophia woman)
-(Inheritance Alaura woman)
-(Inheritance Breonna woman)
-(Inheritance Jaleesa woman)
-(Inheritance Jassy woman)
-(Inheritance Jenica woman)
-(Inheritance Kecia woman)
-
-(Inheritance Allen ugly)
-(Inheritance Abe ugly)
-(Inheritance Cason ugly)
-(Inheritance Davion ugly)
-(Inheritance Hessley ugly)
-(Inheritance Lily ugly)
-(Inheritance Emily ugly)
-(Inheritance Lucy ugly)
-(Inheritance Sophia ugly)
-(Inheritance Alaura ugly)
-
-(Inheritance Allen sodaDrinker)
-(Inheritance Abe sodaDrinker)
-(Inheritance Cason sodaDrinker)
-(Inheritance Davion sodaDrinker)
-(Inheritance Hessley sodaDrinker)
-(Inheritance Breonna sodaDrinker)
-(Inheritance Jaleesa sodaDrinker)
-(Inheritance Jassy sodaDrinker)
-(Inheritance Jenica sodaDrinker)
-(Inheritance Kecia sodaDrinker)
-))
+!(get-atoms &db)
 
 
 
 
-!(mork-load-space &dbspace &dbspace)
+!(mork-load-space &db &db)
 
 
 
 !(let $result2
-    (collapse (frequency-pattern-miner &dbspace &specspace1 &cndpspace1 &aptrnspace1 &conjspace1 5 0 True))
+    (collapse (frequency-pattern-miner &db &specspace1 &cndpspace1 &aptrnspace1 &conjspace1 5 0 True))
     (assertEqual $result2 ((supportOf (, (Inheritance $_4526 $_4532) (Inheritance $_4526 $_4556)) 190)
                             (supportOf (, (Inheritance $_4448 $_4454) (Inheritance $_4472 $_4454)) 800)
                             (supportOf (, (Inheritance $_4370 $_4376) (Inheritance $_4370 human)) 60)
@@ -164,4 +91,6 @@
 ; !(get-atoms &mork)
 ; !(match-&mork (, ((ns &dbspace) (Inheritance $_59854 man)) ((ns &dbspace) (Inheritance $_59854 sodaDrinker))) $_59854)
 ; !(match-custom &dbspace (Inheritance $_53368 sodaDrinker) $_53368)
+
+
 
