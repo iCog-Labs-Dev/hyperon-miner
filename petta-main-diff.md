@@ -10,14 +10,16 @@ File: `experiments/utils/mork-interface.metta`
 
 Function: `match-&mork $pattern $Pat`
 Executes a `match` in `&mork` and returns `$Pat`. Used to force evaluation in `&mork` before returning.
+
 ```metta
-(= (match-&mork $pattern $Pat) 
+(= (match-&mork $pattern $Pat)
    (quote (progn (match &mork $pattern $pattern)
           $Pat)))
 ```
 
 Function: `match-&mork-conj $ConjPattern $Out`
 Supports conjunction matching via `exec` in `&mork`. It temporarily adds an `exec` atom that stores results into `(tmpResult $Out)`, runs `mm2-exec`, reads results, then removes the temporary atom.
+
 ```metta
 (= (match-&mork-conj $ConjPattern $Out)
    (let* (
@@ -26,19 +28,20 @@ Supports conjunction matching via `exec` in `&mork`. It temporarily adds an `exe
                        $ConjPattern
                        (, (tmpResult $Out)))))
 
-          ($_ (mm2-exec &mork 1))        
+          ($_ (mm2-exec &mork 1))
           ($R  (match &mork (tmpResult $Out) $Out))
           ($_2 (remove-atom &mork
                  (exec 0
                        $ConjPattern
                        (, (tmpResult $Out)))))
-         
+
          )
         $R))
 ```
 
 Function: `null? $x`
 Utility: returns `True` if `$x` is empty list `()`.
+
 ```metta
 (= (null? $x)
     (if (== $x ())
@@ -48,6 +51,7 @@ Utility: returns `True` if `$x` is empty list `()`.
 
 Function: `make-ns-atom $namespace $atom`
 Wraps any atom with namespace prefix. Returns `((ns $namespace) $atom)`.
+
 ```metta
 (= (make-ns-atom $namespace $atom)
    ((ns $namespace) $atom))
@@ -55,6 +59,7 @@ Wraps any atom with namespace prefix. Returns `((ns $namespace) $atom)`.
 
 Function: `get-atom-from-ns ((ns $ns) $rest)`
 Removes namespace wrapper and returns the raw atom.
+
 ```metta
 (= (get-atom-from-ns ((ns $ns) $rest))
    $rest)
@@ -62,6 +67,7 @@ Removes namespace wrapper and returns the raw atom.
 
 Function: `is-comma-pattern $pattern`
 Detects whether a pattern is a conjunction (comma operator `,` at head).
+
 ```metta
 (= (is-comma-pattern $pattern)
     (and (== (get-metatype $pattern) Expression)
@@ -70,6 +76,7 @@ Detects whether a pattern is a conjunction (comma operator `,` at head).
 
 Function: `get-pattern-rest $pattern`
 Returns the tail of an expression using `cdr-atom`.
+
 ```metta
 (= (get-pattern-rest $pattern)
    (cdr-atom $pattern))
@@ -77,6 +84,7 @@ Returns the tail of an expression using `cdr-atom`.
 
 Function: `wrap-with-ns $namespace $pattern`
 Wraps a pattern into namespace: `((ns $namespace) $pattern)`.
+
 ```metta
 (= (wrap-with-ns $namespace $pattern)
    ((ns $namespace) $pattern))
@@ -84,6 +92,7 @@ Wraps a pattern into namespace: `((ns $namespace) $pattern)`.
 
 Function: `wrap-comma-patterns $namespace $comma-pattern`
 Wraps each element of a conjunction pattern with the namespace prefix.
+
 ```metta
 (= (wrap-comma-patterns $namespace $comma-pattern)
     (let* ((($head $tail) (decons-atom $comma-pattern)))
@@ -92,6 +101,7 @@ Wraps each element of a conjunction pattern with the namespace prefix.
 
 Function: `wrap-comma-patterns-recursive $namespace $rest`
 Recursive helper for `wrap-comma-patterns`.
+
 ```metta
 (= (wrap-comma-patterns-recursive $namespace $rest)
     (if (== $rest ())
@@ -103,6 +113,7 @@ Recursive helper for `wrap-comma-patterns`.
 
 Function: `add-atom-custom $namespace $atom`
 Adds an atom into `&mork` under a namespace: `(add-atom &mork ((ns $namespace) $atom))`.
+
 ```metta
 (= (add-atom-custom $namespace $atom)
    (add-atom &mork ((ns $namespace) $atom)))
@@ -110,6 +121,7 @@ Adds an atom into `&mork` under a namespace: `(add-atom &mork ((ns $namespace) $
 
 Function: `get-atoms-custom $namespace`
 Reads all atoms in a namespace from `&mork`.
+
 ```metta
 (= (get-atoms-custom $namespace)
    (match &mork ((ns $namespace) $rest) $rest))
@@ -117,6 +129,7 @@ Reads all atoms in a namespace from `&mork`.
 
 Function: `match-custom $namespace $pattern $output`
 Namespace-aware match. If `$pattern` is a conjunction (`,`) it wraps all patterns and calls `match-&mork-conj`. Otherwise, it does a standard match in `&mork` with namespace wrapper.
+
 ```metta
 (= (match-custom $namespace $pattern $output)
    (if (is-comma-pattern $pattern)
@@ -129,6 +142,7 @@ Namespace-aware match. If `$pattern` is a conjunction (`,`) it wraps all pattern
 
 Function: `remove-atom-custom $namespace $atom`
 Removes an atom from a namespace in `&mork`.
+
 ```metta
 (= (remove-atom-custom $namespace $atom)
    (remove-atom &mork ((ns $namespace) $atom)))
@@ -136,6 +150,7 @@ Removes an atom from a namespace in `&mork`.
 
 Function: `count-custom $namespace`
 Returns number of atoms in a namespace.
+
 ```metta
 (= (count-custom $namespace)
    (size-atom (collapse (match &mork ((ns $namespace) $x) $x))))
@@ -143,6 +158,7 @@ Returns number of atoms in a namespace.
 
 Function: `db-size-custom $namespace`
 Alias for `count-custom`.
+
 ```metta
 (= (db-size-custom $namespace)
    (count-custom $namespace))
@@ -150,6 +166,7 @@ Alias for `count-custom`.
 
 Function: `counter-custom $namespace $pattern`
 Returns tuple count for a pattern in a namespace.
+
 ```metta
 (= (counter-custom $namespace $pattern)
    (tuple-count (collapse (match-custom $namespace $pattern $pattern))))
@@ -157,6 +174,7 @@ Returns tuple count for a pattern in a namespace.
 
 Function: `sup-num-custom $namespace $pattern`
 Alias for `counter-custom`.
+
 ```metta
 (= (sup-num-custom $namespace $pattern)
    (counter-custom $namespace $pattern))
@@ -164,6 +182,7 @@ Alias for `counter-custom`.
 
 Function: `sup-eval-custom $namespace $pattern $ms`
 Evaluates if support meets minimum threshold.
+
 ```metta
 (= (sup-eval-custom $namespace $pattern $ms)
    (let $sup (counter-custom $namespace $pattern)
@@ -172,6 +191,7 @@ Evaluates if support meets minimum threshold.
 
 Function: `universe-count-custom $pattern $namespace`
 Computes |U|^k using namespace size and number of conjuncts.
+
 ```metta
 (= (universe-count-custom $pattern $namespace)
    (pow-math (db-size-custom $namespace) (n_conjuncts $pattern)))
@@ -179,6 +199,7 @@ Computes |U|^k using namespace size and number of conjuncts.
 
 Function: `mork-load-space $namespace $fromSpace`
 Copies atoms from a real space into `&mork` namespace.
+
 ```metta
 (= (mork-load-space $namespace $fromSpace)
    (collapse (match $fromSpace $atom (add-atom-custom $namespace $atom))))
@@ -186,6 +207,7 @@ Copies atoms from a real space into `&mork` namespace.
 
 Function: `mork-clear-namespace $namespace`
 Removes all atoms from a namespace in `&mork`.
+
 ```metta
 (= (mork-clear-namespace $namespace)
    (collapse (match &mork ((ns $namespace) $atom)
@@ -194,6 +216,7 @@ Removes all atoms from a namespace in `&mork`.
 
 Function: `mork-replace-namespace $namespace $fromSpace`
 Clears then reloads a namespace from a real space.
+
 ```metta
 (= (mork-replace-namespace $namespace $fromSpace)
    (let* (($_ (mork-clear-namespace $namespace)))
@@ -202,6 +225,7 @@ Clears then reloads a namespace from a real space.
 
 Function: `list-namespace $namespace`
 Lists all atoms in a namespace.
+
 ```metta
 (= (list-namespace $namespace)
    (match &mork ((ns $namespace) $atom) $atom))
@@ -235,7 +259,7 @@ This section maps old space operations to their `&mork` equivalents.
 - Conjunction queries using `,`
   Routed through `match-custom` which wraps each conjunct using `(ns <namespace>)` and uses `match-&mork-conj`.
 
-## Where the Mork Interface Was Used (Human-Readable Summary)
+## Where the Mork Interface Was Used in Each Module
 
 - Frequent Pattern Miner: switched all pattern matching, support counts, and candidate storage to namespace-aware functions so `&dbspace`, `&specspace`, `&cndpspace`, and `&conjspace` live inside `&mork`.
 - Pattern Miner: surprisingness and KB updates now use `match-custom` and `add-atom-custom`, and the DB copy into `&dbspace` uses `get-atoms-custom`.
@@ -255,7 +279,7 @@ This section maps old space operations to their `&mork` equivalents.
 - `experiments/data/bio.metta`, `experiments/data/bio_50.metta`, `experiments/data/new_data.metta`: new datasets for bio runs.
 - `scripts/extract_lines.py`: utility for making N-line subsets (e.g., 50k, 15k, 10k).
 
-## Results Placeholders (Post-Mork Integration)
+## Results Post-Mork Integration
 
 Use the sections below to record outcomes after running with different bio datasets.
 
