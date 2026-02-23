@@ -281,8 +281,6 @@ This section maps old space operations to their `&mork` equivalents.
 
 ## Results Post-Mork Integration
 
-Use the sections below to record outcomes after running with different bio datasets.
-
 ### 100K Bio Data
 
 - Run data file: `experiments/data/bio.metta`
