@@ -23,7 +23,6 @@
 !(import! &dbn ../data/nested_coupled/true_nested)
 
 
-; I have commented out the tests that involve nested patterns since our current haven't entirely supported nested patterns yet. (check eq-prob-petta, ...) 
 
 ; ===============================
 ; isurp Validation 1
@@ -43,7 +42,7 @@
 ;===================================================================
 ;isurp validation with equivalent but coupled patterns with the corpus: mock_coupled
 
-; !(test  (isurp (, (Inheritance (Person $x) man) (Inheritance (Person $x) ugly) (Inheritance (Person $x) sodaDrinker) ) &dbc False 0.2) 1.9290123456790123e-5)
+!(test  (isurp (, (Inheritance (Person $x) man) (Inheritance (Person $x) ugly) (Inheritance (Person $x) sodaDrinker) ) &dbc False 0.2) 1.9290123456790123e-5)
 
 
 
@@ -162,6 +161,6 @@
 
 ; (Inheritance (And (And (Person $x) man) (Or human ugly))        (Or (And human man) (And human sodaDrinker)))) &dbn False 1)
 
-; !(test (isurp (, (Inheritance (And (And (Person $x) man) (Or human sodaDrinker)) (Or (And human man) (And human sodaDrinker)))
-; (Inheritance (And (And (Person $x)   man) (Or human sodaDrinker)) (Or (And human man) (And human ugly)))
-; ) &dbn False 1) 0.001216)
+!(test (isurp (, (Inheritance (And (And (Person $x) man) (Or human sodaDrinker)) (Or (And human man) (And human sodaDrinker)))
+(Inheritance (And (And (Person $x)   man) (Or human sodaDrinker)) (Or (And human man) (And human ugly)))
+) &dbn False 1) 0.001216)
