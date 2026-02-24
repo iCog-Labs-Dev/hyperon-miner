@@ -44,7 +44,7 @@
 ;; define parameters 
 (= (min-sup) 3)
 (= (db-ratio) 0.5)
-(= (num-of-conjuct) 2)
+(= (num-of-conjuct) 3)
 
 
 !(init-params &kb &db (min-sup) (db-ratio) )

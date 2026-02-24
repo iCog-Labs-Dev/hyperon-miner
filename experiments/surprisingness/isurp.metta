@@ -105,15 +105,13 @@
 ;; ==============================================================
 (= (ji-prob-est $partition $pattern $db $db_ratio) (let* 
 ( 
-  
+
   ($p (pro-prob-wout-joint $partition $db $db_ratio 1))
-  
   ($db-size (db_size $db))
 
   ; ($eq_prob (eq-prob-py $partition $pattern $db-size)) ; TODO: for fast excution use eq-prob-py
   
   ($eq_prob (eq-prob $partition $pattern $db))
-  
   )
   (* $p $eq_prob)
 

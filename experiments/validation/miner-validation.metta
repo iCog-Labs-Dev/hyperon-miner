@@ -69,7 +69,7 @@
         ($res (collapse (frequency-pattern-miner &testspace $x &cndpspace &conjspace 2 0 False)))
         ($dbrem1 (remove-atom &testspace (Inheritance A B)))
         ($dbrem2 (remove-atom &testspace (Inheritance A C)))
-        ($cnd (collapse (match &cndpspace $pattern $pattern)))
+        ($cnd (collapse (match &cndpspace (CandidatePattern $pattern $cnt) $pattern)))
     )$cnd)
 )
 
@@ -126,7 +126,7 @@
         ($dbrem1 (remove-atom &testspace (Inheritance A B)))
         ($dbrem2 (remove-atom &testspace (Inheritance A C)))
         ($dbrem3 (remove-atom &testspace (Inheritance B C)))
-        ($cnd (collapse (match &cndpspace $pattern $pattern)))
+        ($cnd (collapse (match &cndpspace (CandidatePattern $pattern $cnt) $pattern)))
     )$cnd)
 )
 
@@ -178,7 +178,7 @@
         ($res (collapse (frequency-pattern-miner &testspace $x &cndpspace &conjspace 2 0 False)))
         ($dbrem1 (remove-atom &testspace (Inheritance A B)))
         ($dbrem2 (remove-atom &testspace (Inheritance A (And B C))))
-        ($cnd (collapse (match &cndpspace $pattern $pattern)))
+        ($cnd (collapse (match &cndpspace (CandidatePattern $pattern $cnt) $pattern)))
     )$cnd)
 )
 
@@ -242,7 +242,7 @@
         ($res (collapse (frequency-pattern-miner &testspace $x &cndpspace &conjspace 2 0 False)))
         ($dbrem5 (remove-atom &testspace (Implication (Inheritance A B) (Inheritance C D))))
         ($dbrem6 (remove-atom &testspace (Implication (Inheritance E F) (Inheritance G H))))
-        ($cnd (collapse (match &cndpspace $pattern $pattern)))
+        ($cnd (collapse (match &cndpspace (CandidatePattern $pattern $cnt) $pattern)))
     )
 $cnd
     )
@@ -300,7 +300,7 @@ $cnd
         ($res (collapse (frequency-pattern-miner &testspace $x &cndpspace &conjspace 2 0 False)))
         ($dbrem5 (remove-atom &testspace (Implication (Inheritance A B) (Inheritance A B))))
         ($dbrem6 (remove-atom &testspace (Implication (Inheritance B C) (Inheritance B C))))
-        ($cnd (collapse (match &cndpspace $pattern $pattern)))
+        ($cnd (collapse (match &cndpspace (CandidatePattern $pattern $cnt) $pattern)))
     )
 $cnd
     )
@@ -359,7 +359,7 @@ $cnd
         ($res (collapse (frequency-pattern-miner &testspace $x &cndpspace &conjspace 2 0 False)))
         ($dbrem5 (remove-atom &testspace (Implication (Inheritance A A) (Inheritance A A))))
         ($dbrem6 (remove-atom &testspace (Implication (Inheritance B B) (Inheritance B B))))
-        ($cnd (collapse (match &cndpspace $pattern $pattern)))
+        ($cnd (collapse (match &cndpspace (CandidatePattern $pattern $cnt) $pattern)))
 
     )
 $cnd

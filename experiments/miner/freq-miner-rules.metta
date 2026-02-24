@@ -119,4 +119,5 @@
         (-> (⍄  $clcnt $max)
           (-> (sort_conjunctions $ptrn $sorted)
             (-> (join-cpu $sorted $jptrn)
-             (hasSupport $jptrn $count))))))))
+             (-> (replace_index $jptrn $vpattern)
+                      (hasSupport $vpattern $count)))))))))

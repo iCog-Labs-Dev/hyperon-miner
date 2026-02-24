@@ -884,7 +884,33 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
             
         )
 
+(= (substitute $pattern $sub)
+   (if (== $pattern ())
+       (() $sub) ;; base case: empty
+       (let* (
+               ($head (if (== (get-metatype $pattern) Variable) (car-atom ($pattern)) (car-atom $pattern)))
+               ($tail (if (== (get-metatype $pattern) Variable) (cdr-atom ($pattern)) (cdr-atom $pattern)))
+               ;; process head
+               (($newhead $after-head-subs)
+                  (if (== (get-metatype $head) Variable)
+                      (if (== $sub ())
+                          ($head $sub) ;; no subs left
+                          ((car-atom $sub) (cdr-atom $sub)))
+                      (if (== (get-metatype $head) Expression)
+                          ;; nested list → recurse, passing whole $sub
+                          (substitute $head $sub)
+                          ;; constant atom
+                          ($head $sub))
+                  )
+               )
 
+               (($newtail $remaining)
+                  (substitute $tail $after-head-subs))
+             )
+         ((cons-atom $newhead $newtail) $remaining)
+       )
+   )
+)
 
 ;; Function: db_size
 ;;
@@ -1460,3 +1486,35 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
 (=(max-of-two $num1 $num2)(
     if (> $num1 $num2) $num1 $num2
 ))
+
+
+
+(= (member-atom $elem $lst)
+   (if (== $lst ())
+       False
+       (let $head (car-atom $lst)
+         (let $tail (cdr-atom $lst)
+           (if (== $elem $head)
+               True
+               (member-atom $elem $tail)
+           )
+         )
+       )
+   )
+)
+
+
+(= (set-intersection $set2 $set1)
+   (if (== $set1 ())
+       ()
+       (let $head (car-atom $set1)
+         (let $tail (cdr-atom $set1)
+           (if (member-atom $head $set2)
+               (cons-atom $head (set-intersection $set2 $tail))
+               (set-intersection $set2 $tail)
+           )
+         )
+       )
+   )
+)
+

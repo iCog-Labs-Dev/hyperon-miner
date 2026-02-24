@@ -78,22 +78,17 @@
     (let $is_pat (checkPat $pattern)
         (if $is_pat
             ; If it's a pattern, do the normal check
-            (let $exp (if (== (size-atom $pattern) 1) (car-atom $pattern) $pattern)
-                (let $vars (cdr-atom $exp)
-                    (let $is_connected (has-common-element $var $vars)
-                        (if $is_connected
-                            $pattern
-                            ()
-                        )
-                    )
+            (let*
+                (
+                    ($exp (if (== (size-atom $pattern) 1) (car-atom $pattern) $pattern))
+                    ($vars (cdr-atom $exp))
+                    ($is_connected (has-common-element $var $vars))
                 )
+                (if $is_connected $pattern () )
             )
             ; Not a pattern, check recursively through the structure
             (let $result (check-pattern-recursive $pattern $var)
-                (if $result
-                    $pattern
-                    ()
-                )
+                (if $result $pattern () )
             )
         )
     )
@@ -122,12 +117,15 @@
     (if (== $list ())
         False
         (if (== (get-metatype $list) Expression)
-            (let $head (car-atom $list)
-                (let $tail (cdr-atom $list)
-                    (if (== $elem $head)
-                        True
-                        (element-in-list $elem $tail)
-                    )
+            (let* 
+                (
+                    (($head $tail) (decons-atom $list))
+                    ($headType (get-metatype $head))
+                    ($is_equal (if (== $headType Expression) (element-in-list $elem $head) (== $elem $head)))
+                )
+                (if (== $is_equal True)
+                    True
+                    (element-in-list $elem $tail)
                 )
             )
             (== $elem $list)
@@ -160,15 +158,7 @@
 (=(rmvPar $x) 
     (if (== $x ()) 
         (empty) 
-        (let $fuc (checkPat $x) 
-            (if $fuc 
-                $x  
-                (if (== (size-atom $x) 1) 
-                    $x 
-                    $x
-                )
-            )
-        )
+        $x
     )
 ) 
 
@@ -350,10 +340,7 @@
 ;; =============================================================================
 ; (: eq-prob (-> Expression Expression Expression Number))
 (= (eq-prob $partition $pattern $db)
-    (let* (($joint-vars (joint-variables $pattern $partition))
-     
-    
-     )
+    (let $joint-vars (joint-variables $pattern $partition)
         (calculate-prob-for-vars $joint-vars $partition $db 1.0)))
 
 ;; =============================================================================
@@ -471,14 +458,15 @@
 ;; Function: get-var
 ;; -----------------------------------------------------------------------------
 ;; Purpose:
-;;   Extracts all variables from a flattened pattern expression
+;;   Extracts all variables from any(flattened pattern or nested patterns) pattern expression
 ;;   A flattened pattern is a list of patterns like ((Pattern $x $y) (Pattern $z Jon))
+;;   A nested patterns is a list of patterns like ((Pattern (Person $x) (Link $y)) (Pattern $z (Person Jon)))
 ;;
 ;; Type Signature:
 ;;   (-> Expression Expression)
 ;;
 ;; Parameters:
-;;   $pattern - Flattened pattern (list of individual patterns)
+;;   $pattern - any pattern (list of individual patterns)
 ;;
 ;; Returns:
 ;;   List of unique variables found in the pattern
@@ -486,106 +474,33 @@
 ;; Example:
 ;;   (get-var '((Pattern $x $y) (Pattern $z Jon))) → ($x $y $z)
 
-
-; (=(get-var $conjunct) 
-;     (let $lst (collapse 
-;         (let $a (car-atom $conjunct) 
-;             (if (not (== $a ,)) 
-;                 (let $firtype (get-metatype $a) 
-;                     (if (== $firtype Expression) 
-;                         (get-variables-helper (superpose $conjunct) ) 
-;                         (get-variables-helper $conjunct )
-;                     )
-;                 ) 
-;                 (let $b (cdr-atom $conjunct) 
-;                     (get-variables-helper (superpose $b))
-;                 )
-;             )
-;         )) 
-;         (get-variables-step $lst ())
-;     ) 
-; )
-
-(=(get-var $conjunct) 
-    (let $lst
-        (let $a (car-atom $conjunct) 
-            (if (not (== $a ,))  
-                (get-variables-from-list $conjunct)    
-                (get-variables-from-list (cdr-atom $conjunct) )
-            )
-        )
-        (get-variables-step $lst)
-    ) 
+( = (variable-extractor $head () $answer)  
+    (if (== (get-metatype $head) Variable)
+        (union-atom $answer ($head))
+        (if (== (get-metatype $head) Expression)
+            (variable-extractor (car-atom $head) (cdr-atom $head) $answer )    
+            $answer
+        ) 
+    )
 )
-
-; Helper function to recursively process list elements
-(=(get-variables-from-list $lst)
-    (if (== $lst ())
-        ()
-        (let $head (car-atom $lst)
-            (let $tail-result (get-variables-from-list (cdr-atom $lst))
-                (let $result (get-variables-helper $head)
-                    (if (== $result ())
-                        (get-variables-from-list $tail)
-                        (cons-atom $result $tail-result)
-                    )
+( = (variable-extractor $head $tail $answer) 
+    (if (== (get-metatype $head) Variable)
+        (variable-extractor (car-atom $tail) (cdr-atom $tail) ( union-atom $answer ($head) ) )
+        (if (== (get-metatype $head) Expression)
+            (let* 
+                (;;;;; get all variables from this expression as well as post expression variables
+                    ($var1 (variable-extractor (car-atom $head) (cdr-atom $head) () ) )
+                    ($var2 (variable-extractor (car-atom $tail) (cdr-atom $tail) () ) )
                 )
+                ;;;; merge all variables u have got so far
+                (let $first_unity (union-atom $answer $var1) (union-atom $first_unity $var2) )
             )
-        )
-          
-    )
-)
-
-(=(ret-vars $x) 
-    (let $invar (checkPat $x ) 
-        (if $invar (get-variables-helper $x ) 
-            (if (== ( get-metatype $x ) Variable) 
-                $x 
-                ()
-            )
+            (variable-extractor (car-atom $tail) (cdr-atom $tail) $answer )          
         )
     )
 )
 
-
-
-(=(get-variables-helper $pattern)
-    (if (== $pattern ()) 
-        ()
-        (let $var1 (ret-vars (car-atom $pattern)) 
-            (let $tail (get-variables-helper (cdr-atom $pattern)) 
-                (if (== $var1 ()) 
-                    $tail 
-                    (cons-atom $var1 $tail))
-            )     
-    )
-)
-)
-
-
-
-
-(=(get-variables-step $lst)
-    (if (== $lst ())
-        ()
-        (let $flatten (flatten-and-union $lst) (unique-atom $flatten))
-    )
-)
-
-(=(flatten-and-union $lst)
-    (if (== $lst ())
-        ()
-        (let $head (car-atom $lst)
-            (let $tail (cdr-atom $lst)
-                (let $union-tail (flatten-and-union $tail) (union-atom $head $union-tail))
-            )
-        )
-    )
-)
-
-
-
-
+( = (get-var $var) (unique-atom (variable-extractor (car-atom $var) (cdr-atom $var) () )) )
 
 
 

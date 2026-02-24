@@ -38,9 +38,9 @@
 (= (format $depth $kb)
    (let* (
     (true (println! "==== Formatting patterns  =====") )
-    ($res (syn $kb $depth (: $prf (hasSupport $ptrn $cnt)))) 
-    ($rem2 (remove-atom $kb $res))
-    ($add2 (add-atom $kb $res))
+    ((: $prf $pattern) (syn $kb $depth (: $prf (hasSupport $ptrn $cnt)))) 
+    ($rem2 (remove-atom $kb (: $anyprf $pattern)))
+    ($add2 (add-atom $kb (: $prf $pattern)))
     )
     $res
     )
@@ -81,7 +81,7 @@
         (true (println! "==== Frequent Miner Started =====") )
         ($resultsc (collapse (candidatePatternMiner $initpat $db $kb)))
          ($results (collapse (conjunction (fromNumber 19) $kb 1 (- $number-of-conjuct 1))))
-         ($resultf (collapse (format (fromNumber 6) $kb)))
+         ($resultf (collapse (format (fromNumber 7) $kb)))
       ) ()
 )
 )

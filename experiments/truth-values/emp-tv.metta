@@ -379,7 +379,7 @@
 ;;   - The empirical truth value for the pattern based on the subsampled database.
 ;; =============================================================================
 (= (emp-tv-subsmp $pattern $db $subsize)
-    (let* ( ($space (subsample-py $db $subsize)))
+    (let $space (subsample-py $db $subsize)
         (emp-tv $pattern $space)
     )
 )
@@ -447,11 +447,12 @@
     (let* ( ($nc (n_conjuncts $pattern))    
             (($min-size) (10))   
             ($alpha (// $support-estimate (pow-math $db-size $nc)))
-            ($base (// $db-size (* 10 $alpha)))
+            ($betterAlpha (+ $alpha 1e-10)) ;; to avoid division by zero
+            ($base (// $db-size (* 10 $betterAlpha)))
             ($power (// 1 $nc))
             ($res (pow-math $base $power)) 
     )
-        (max-of-two $res (min-of-two $min-size $db-size))
+        (max $res (min $min-size $db-size))
     )
 )
 
@@ -491,7 +492,7 @@
     (if (< $subsize (db_size $db))
         (let* (
                 ($esstvs (emp-tv-bs-helper $pattern $db $n-resample $subsize))
-                ((EMPTV $mean $variance) (avrg-tv-py $esstvs))
+                (($mean $variance) (avrg_tv $esstvs))
                 ($mk_stv_val (mk_stv $mean $variance))
                 ($finalAnswer (cons-atom EMPTV $mk_stv_val))
             )

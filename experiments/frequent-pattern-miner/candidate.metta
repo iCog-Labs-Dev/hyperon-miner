@@ -3,7 +3,7 @@
                 (true (println! "==== Candidate Pattern started ====="))
                 ($specializedvar (replacev $specializations))
                 ($result (sup-num $dbspace $specializedvar))
-                ($add (if (>= $result $minsup) $specializedvar ()))
+                ($add (if (>= $result $minsup) ($specializedvar $result) ()))
             ) 
         $add
 ))
@@ -55,10 +55,10 @@
 
 (= (candidate-pattern-miner $initpat $dbspace $minsup $cndpspace)
         (let* (
-                ($candidates (miner $initpat $dbspace $minsup))
+                (($candidates $cnt) (miner $initpat $dbspace $minsup))
                 ($indexed (replace $candidates))
-                ($rem (if (== $indexed ()) () (remove-atom $cndpspace $indexed)))
-                ($add (if (== $indexed ()) () (add-atom $cndpspace $indexed)))
+                ($rem (if (== $indexed ()) () (remove-atom $cndpspace (CandidatePattern $indexed $cnt))))
+                ($add (if (== $indexed ()) () (add-atom $cndpspace (CandidatePattern $indexed $cnt))))
                 ($next (has_nested_expression_with_respect_to $initpat $candidates))
                 ($rec (if $next (candidate-pattern-miner $candidates $dbspace $minsup $cndpspace) ()))
             )
