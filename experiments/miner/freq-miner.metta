@@ -75,21 +75,21 @@
 ; --------------------------------------------------
 ;; pipeline for the frequent patter mining 
 
-(= (frequent-miner $db $kb $number-of-conjuct True) 
+(= (frequent-miner $db $kb $initpat $number-of-conjuct True) 
 ( 
      let*  ( 
         (true (println! "==== Frequent Miner Started =====") )
-        ($resultsc (collapse (candidatePatternMiner $x $db $kb)))
+        ($resultsc (collapse (candidatePatternMiner $initpat $db $kb)))
          ($results (collapse (conjunction (fromNumber 19) $kb 1 (- $number-of-conjuct 1))))
          ($resultf (collapse (format (fromNumber 6) $kb)))
       ) ()
 )
 )
-(= (frequent-miner $db $kb $number-of-conjuct False) 
+(= (frequent-miner $db $kb $initpat $number-of-conjuct False) 
 ( 
      let*  ( 
         (true (println! "==== Frequent Miner Started =====") )
-         ($result (collapse (candidatePatternMiner $x $db $kb)))
+         ($result (collapse (candidatePatternMiner $initpat $db $kb)))
       ) ()
 )
 )
