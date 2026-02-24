@@ -39,10 +39,13 @@
       )         
 )
 
-(= (do-IIsurp $kb $db (supportOf $pattern $support) $choice $db-ratio)
+(= (do-IIsurp $kb $db (supportOf $pattern $support) $norm $choice $db-ratio)
 ( let* (
      
-     ($surp (if (== $choice isurp)(IIsurp-old-nary $pattern $db isurp False $db-ratio)(IIsurp-old-nary $pattern $db False)))
+     ($surp (if (== $choice isurp)(IIsurp-old-nary $pattern $db isurp $norm $db-ratio)
+     (IIsurp-old-nary $pattern $db $norm)))
+     
+
      
      )
      (add-atom-nodup $kb   (surprisingnessOf $pattern $surp))
@@ -66,11 +69,11 @@
            (do-jsd-surp $kb $db $pattern)
             
             ( if (== $surp-mode IIsurp-old)
-               (do-IIsurp $kb $db $pattern  isurp_old  1.0)
+               (do-IIsurp $kb $db $pattern $normalization  isurp_old  1.0)
 
               ( if (== $surp-mode IIsurp-new)
 
-              (do-IIsurp $kb $db $pattern isurp $db-ratio)
+              (do-IIsurp $kb $db $pattern $normalization isurp $db-ratio)
               
                (do-surp $kb $db $surp-mode $pattern $normalization $db-ratio))
                
