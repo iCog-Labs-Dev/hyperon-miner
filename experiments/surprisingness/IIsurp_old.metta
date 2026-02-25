@@ -121,9 +121,13 @@
  (let* ( ($conjunct (if (== (car-atom $conjunct-w-comma) ,) (cdr-atom $conjunct-w-comma) ($conjunct-w-comma)))
          ($interval-list (collapse (recieve-candidate (superpose $conjunct) $db $conjunct $total_count)))
          ($all-fn-sups (handle-list-interval $interval-list ()))
-         ($retval-max (if (== $all-fn-sups ()) () (max-atom $all-fn-sups)))
-         ($retval-min (if (== $all-fn-sups ()) () (min-atom $all-fn-sups))) )
-  ($retval-max $retval-min)))
+         ($retval-max (if (== $all-fn-sups ()) () (collapse(max-atom $all-fn-sups))))
+         ($retval-min (if (== $all-fn-sups ()) () (collapse(min-atom $all-fn-sups)))) 
+         ($out-ans (union-atom $retval-min $retval-max
+         ))
+         
+         )
+  $out-ans))
 
 
 
@@ -163,8 +167,11 @@
          ($results (if (not (== $subset-results ())) (union-atom $results-inter $subset-results) $results-inter))
          ($emin (min-atom $results))
          ($emax (max-atom $results))
-         ($dst (dst-from-interval-iisurp $emin $emax $pattern_prob)) )
+         ($dst (dst-from-interval-iisurp $emin $emax $pattern_prob))
+         
+          )
   (min-atom ((if (== True $normalize) (// $dst (max-atom ($emax $pattern_prob))) $dst) 1.0))
+
   
   ))
 
