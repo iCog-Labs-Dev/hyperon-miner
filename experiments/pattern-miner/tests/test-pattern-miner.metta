@@ -1,4 +1,3 @@
-;; import order matters here
 !(import! &self "../../utils/surp-utils/boost_petta.py")
 !(import! &self ../../utils/common-utils)
 !(import! &self ../../utils/index_to_var)
@@ -7,10 +6,13 @@
 !(import! &self ../../utils/surp-utils/partition-metta)
 
 
+
 ;;import surp components 
 !(import! &self  ../../utils/surp-utils/binomialMetta)
 !(import! &self ../../utils/surp-utils/beta-dist)
 !(import! &self  ../../utils/surp-utils/surp-utils)
+!(import! &self ../../utils/surp-utils/IIsurp_utils)
+
 
 
 !(import! &self ../../utils/sort)
@@ -27,6 +29,7 @@
 !(import! &self ../../surprisingness/isurp)
 !(import! &self ../../surprisingness/isurp-old)
 !(import! &self ../../surprisingness/jsd)
+!(import! &self ../../surprisingness/IIsurp-old)
 
 !(import! &self ../../frequent-pattern-miner/build-specialization)
 !(import! &self ../../frequent-pattern-miner/candidate-patterns)
@@ -37,6 +40,9 @@
 
 ;; import kb
 !(import! &db ../../data/ugly_man_sodaDrinker)
+
+
+
 
 
 
@@ -240,7 +246,7 @@
 ;; surprissingness mode -> jsd
 ;; minimum support ->  3
 
-; !(bind! &res7 (new-space))
+
 
 !(pattern-miner &res7 &db 5 1 jsd none 0.2 True) 
 !(assertEqual (collapse (get-atoms &res7)) 
@@ -271,3 +277,61 @@
 (surprisingnessOf (, (Inheritance $_645772 man) (Inheritance $_645772 ugly) (Inheritance $_645772 sodaDrinker)) 0.8507324751176)
 ))
 
+
+
+
+;----------------------------------------------------------------
+;; mine frequent patterns with IIsurp-old surprissingness (3 - conjunct)
+;----------------------------------------------------------------
+;; number of conjucts -> 3 , so the depth will be 1
+;; surprissingness mode -> IIsurp-old
+;; minimum support ->  5
+
+
+
+(pattern-miner &res8 &db 5 1 IIsurp-old  False none True) 
+(assertEqual (collapse (get-atoms &res8) )
+;; Expected result
+((surprisingnessOf (, (Inheritance $_400962 $_400968) (Inheritance $_400962 $_400992) (Inheritance $_400962 $_401016)) 0.01840055118306582) 
+ (surprisingnessOf (, (Inheritance $_401070 $_401076) (Inheritance $_401070 human) (Inheritance $_401070 $_401124)) 0.005549063525078047) 
+ (surprisingnessOf (, (Inheritance $_401178 $_401184) (Inheritance $_401178 $_401208) (Inheritance $_401178 man)) 0.0011915089859731148) 
+ (surprisingnessOf (, (Inheritance $_401286 $_401292) (Inheritance $_401286 $_401316) (Inheritance $_401286 woman)) 0.0008992822180011687) 
+ (surprisingnessOf (, (Inheritance $_401394 $_401400) (Inheritance $_401394 $_401424) (Inheritance $_401394 ugly)) 0.0019220759059029812) 
+ (surprisingnessOf (, (Inheritance $_401502 $_401508) (Inheritance $_401502 $_401532) (Inheritance $_401502 sodaDrinker)) 0.0019220759059029812) 
+ (surprisingnessOf (, (Inheritance $_401610 $_401616) (Inheritance $_401634 $_401616) (Inheritance $_401658 $_401616)) 0.35063113125405443) 
+ (surprisingnessOf (, (Inheritance $_401718 $_401724) (Inheritance $_401718 human) (Inheritance $_401718 man)) 0.0003301249269433079) 
+ (surprisingnessOf (, (Inheritance $_401826 $_401832) (Inheritance $_401826 human) (Inheritance $_401826 woman)) 0.0003301249269433079) 
+ (surprisingnessOf (, (Inheritance $_401934 $_401940) (Inheritance $_401934 human) (Inheritance $_401934 ugly)) 0.00047623831092928116) 
+ (surprisingnessOf (, (Inheritance $_402042 $_402048) (Inheritance $_402042 human) (Inheritance $_402042 sodaDrinker)) 0.00047623831092928116) 
+ (surprisingnessOf (, (Inheritance $_402150 $_402156) (Inheritance $_402150 man) (Inheritance $_402150 ugly)) 0.00026562956604324957) 
+ (surprisingnessOf (, (Inheritance $_402258 $_402264) (Inheritance $_402258 man) (Inheritance $_402258 sodaDrinker)) 0.00026562956604324957) 
+ (surprisingnessOf (, (Inheritance $_402366 $_402372) (Inheritance $_402366 woman) (Inheritance $_402366 ugly)) 0.00011951618205727633) 
+ (surprisingnessOf (, (Inheritance $_402474 $_402480) (Inheritance $_402474 woman) (Inheritance $_402474 sodaDrinker)) 0.00011951618205727633) 
+ (surprisingnessOf (, (Inheritance $_402582 $_402588) (Inheritance $_402582 ugly) (Inheritance $_402582 sodaDrinker)) 0.00026562956604324957) 
+ (surprisingnessOf (, (Inheritance $_402690 human) (Inheritance $_402690 man) (Inheritance $_402690 ugly)) 5.5020821157218e-05) 
+ (surprisingnessOf (, (Inheritance $_402798 human) (Inheritance $_402798 man) (Inheritance $_402798 sodaDrinker)) 5.5020821157218e-05) 
+ (surprisingnessOf (, (Inheritance $_402906 human) (Inheritance $_402906 woman) (Inheritance $_402906 ugly)) 5.5020821157218e-05) 
+ (surprisingnessOf (, (Inheritance $_403014 human) (Inheritance $_403014 woman) (Inheritance $_403014 sodaDrinker)) 5.5020821157218e-05)
+  (surprisingnessOf (, (Inheritance $_403122 human) (Inheritance $_403122 ugly) (Inheritance $_403122 sodaDrinker)) 5.5020821157218e-05)
+   (surprisingnessOf (, (Inheritance $_403230 man) (Inheritance $_403230 ugly) (Inheritance $_403230 sodaDrinker)) 0.00010056710257159561))
+)
+
+
+
+;----------------------------------------------------------------
+;; mine frequent patterns with IIsurp-new surprissingness (3 - conjunct)
+;----------------------------------------------------------------
+;; number of conjucts -> 3 , so the depth will be 1
+;; surprissingness mode -> IIsurp-new
+;; minimum support ->  5
+
+(pattern-miner &res9 &db 5 1 IIsurp-new False 0.2 True) 
+(assertEqual (collapse (get-atoms &res9) ) 
+;; Expected result
+((surprisingnessOf (, (Inheritance $_938214 $_938220) (Inheritance $_938214 $_938244) (Inheritance $_938214 $_938268)) 0.00027777777777777783) 
+(surprisingnessOf (, (Inheritance $_938322 $_938328) (Inheritance $_938322 human) (Inheritance $_938322 $_938376)) 1.0842021724855044e-19) 
+(surprisingnessOf (, (Inheritance $_938430 $_938436) (Inheritance $_938430 $_938460) (Inheritance $_938430 man)) 0.0) 
+(surprisingnessOf (, (Inheritance $_938538 $_938544) (Inheritance $_938538 $_938568) (Inheritance $_938538 woman)) 0.0) 
+(surprisingnessOf (, (Inheritance $_938646 $_938652) (Inheritance $_938646 $_938676) (Inheritance $_938646 ugly)) 0.0) 
+(surprisingnessOf (, (Inheritance $_938754 $_938760) (Inheritance $_938754 $_938784) (Inheritance $_938754 sodaDrinker)) 0.0) 
+(surprisingnessOf (, (Inheritance $_938862 $_938868) (Inheritance $_938886 $_938868) (Inheritance $_938910 $_938868)) 0.011111111111111106)))

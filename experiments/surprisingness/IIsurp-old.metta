@@ -1,202 +1,196 @@
-; Compact, consistently formatted version of IIsurp-old.metta
-; Informative comments similar to isurp-old placed above key functions.
-
-; Utility: multiply list of numbers
-(=(prob-accumulator $lst) (foldl-atom $lst 1 $acc $x (* $x $acc)))
-
-; Return factor list (max or min) from coherence facts
-(=(get-coh-fact-sub $coh $maxormin) (if (== $maxormin max) (max-factor $coh) (min-factor $coh)))
-
-; Compute conjunct probability  for a combination of subpatterns that form a conjunct.
-; Parameters: $comb (expression of subpatterns ), $db, $total_count
-; Returns: tuple ($maxsubprob $minsubprob)
-(=(get-comb-prob $comb $db $total_count)
- (let* (($comb-conj (cons-atom , $comb))
-        ($comb-support (collapse (match $db $comb-conj $comb-conj)))
-        ($filtered-sups (filter-conjuncts $comb-support))
-        ($sup-num (size-atom $filtered-sups))
-        ($comb-prob-main (// $sup-num $total_count))
-        ($prob-bodies (collapse (get-conc-prob-for-sub (superpose $comb) $db $total_count)))
-        ($subProbsmax (collapse (get-coh-fact-sub (superpose $prob-bodies) max)))
-        ($Accumulatedcohformax (prob-accumulator $subProbsmax))
-        ($maxsubprob (* $comb-prob-main $Accumulatedcohformax))
-        ($subProbsmin (collapse (get-coh-fact-sub (superpose $prob-bodies) min)))
-        ($Accumulatedcohformin (prob-accumulator $subProbsmin))
-        ($minsubprob (* $comb-prob-main $Accumulatedcohformin)))
-   ($maxsubprob $minsubprob)))
-
-; Compute subpattern probability intervals by considering subpatterns and sub concept relationships.
-; Returns ($max-bound $min-bound) or () if none.
-(=(sub-prob-main $conjunct-w-comma $db $total_count)
- (let* (($conjunct (if (== (car-atom $conjunct-w-comma) ,) (cdr-atom $conjunct-w-comma) ($conjunct-w-comma)))
-        ($filted-conjunct-w-subconcepts (collapse (filter-subpatterns-w-subs (superpose $conjunct) $db))))
-  (if (== $filted-conjunct-w-subconcepts ()) ()
-   (let* (($cart-combs (cart-helper $filted-conjunct-w-subconcepts () $db))
-          ($filtered-conc (collapse (filter-subpatterns-wout-subs (superpose $conjunct) $filted-conjunct-w-subconcepts $db)))
-          ($with-conc (map-atom $cart-combs $s (union-atom $filtered-conc $s)))
-          ($comb-probs (collapse (get-comb-prob (superpose $with-conc) $db $total_count)))
-          ($allMaxs (collapse (handle-cart-probs (superpose $comb-probs) max)))
-          ($max-bound (max-atom $allMaxs))
-          ($allMins (collapse (handle-cart-probs (superpose $comb-probs) min)))
-          ($min-bound (min-atom $allMins)))
-     ($max-bound $min-bound)))))
-
-(=(sub-prob-main $conjunct-w-comma $db $total_count $conc_db)
- (let* (($conjunct (if (== (car-atom $conjunct-w-comma) ,) (cdr-atom $conjunct-w-comma) ($conjunct-w-comma)))
-        ($filted-conjunct-w-subconcepts (collapse (filter-subpatterns-w-subs (superpose $conjunct) $db $conc_db))))
-  (if (== $filted-conjunct-w-subconcepts ()) ()
-   (let* (($cart-combs (cart-helper $filted-conjunct-w-subconcepts () $db))
-          ($filtered-conc (collapse (filter-subpatterns-wout-subs (superpose $conjunct) $filted-conjunct-w-subconcepts $db)))
-          ($with-conc (map-atom $cart-combs $s (union-atom $filtered-conc $s)))
-          ($comb-probs (collapse (get-comb-prob (superpose $with-conc) $db $total_count)))
-          ($allMaxs (collapse (handle-cart-probs (superpose $comb-probs) max)))
-          ($max-bound (max-atom $allMaxs))
-          ($allMins (collapse (handle-cart-probs (superpose $comb-probs) min)))
-          ($min-bound (min-atom $allMins)))
-     ($max-bound $min-bound)))))
-
-; Select max or min value from list elements produced by cartesian handling
-(=(handle-cart-probs $list-el $type) (let ($max $min) $list-el (if (== $type max) $max $min)))
-
-; Compute probability intervals for a conjunct by combining super-concept estimates and subpattern estimates.
-; Returns ($retval-max $retval-min) or () when none.
-(=(get-set-prob-intervals $conjunct-w-comma $db $total_count)
- (let* (($conjunct (if (== (car-atom $conjunct-w-comma) ,) (cdr-atom $conjunct-w-comma) ($conjunct-w-comma)))
-        ($interval-list (collapse (get-concept-prob-call (superpose $conjunct) $conjunct $db $total_count)))
-        ($all-fn-sups (handle-list-interval $interval-list ()))
-        ($sub-int (sub-prob-main $conjunct-w-comma $db $total_count))
-        (($all-prob-est) (collapse (union-atom $all-fn-sups $sub-int)))
-        ($retval-max (if (== $all-prob-est ()) () (max-atom $all-prob-est)))
-        ($retval-min (if (== $all-prob-est ()) () (min-atom $all-prob-est))))
-  ($retval-max $retval-min)))
-
-(=(get-set-prob-intervals $conjunct-w-comma $db $total_count $conc_db)
- (let* (($conjunct (if (== (car-atom $conjunct-w-comma) ,) (cdr-atom $conjunct-w-comma) ($conjunct-w-comma)))
-        ($interval-list (collapse (get-concept-prob-call (superpose $conjunct) $conjunct $db $total_count $conc_db)))
-        ($all-fn-sups (handle-list-interval $interval-list ()))
-        ($sub-int (sub-prob-main $conjunct-w-comma $db $total_count $conc_db))
-        (($all-prob-est) (collapse (union-atom $all-fn-sups $sub-int)))
-        ($retval-max (if (== $all-prob-est ()) () (max-atom $all-prob-est)))
-        ($retval-min (if (== $all-prob-est ()) () (min-atom $all-prob-est))))
-  ($retval-max $retval-min)))
-
-; Simple wrappers to call getConceptProb (with or without conc_db)
-(=(get-concept-prob-call $candidate $conjunct $db $total_count) (getConceptProb $candidate $conjunct $db $total_count))
-(=(get-concept-prob-call $candidate $conjunct $db $total_count $conc_db) (getConceptProb $candidate $conjunct $db $total_count $conc_db))
 
 
-(=(getConceptProb $candidate $conjunct $db $total_count)
-( let* (
-   (($link $per $conc) $candidate)
-  ($orInst (collapse (match $db ($link $any $conc) $any)))
-  ($concepts-raw (collapse (match $db ($link $anyI $anyC) $anyC)))
-  ($concepts (unique-atom $concepts-raw))
-  ($supercons  (sub-super-concepts $orInst $concepts $conc super $db ))
-) (if (== $supercons ()) (empty) (let* (
+; Compact, consistently formatted n-ary support helpers for IIsurp (informative comments added).
+; Functions compute alternative-support intervals when a symbolic node in a conjunct can be replaced by
+; potential super-symbols. Coherence is estimated pairwise and aggregated for n-ary interactions.
 
-  ($sup-prob-body (collapse  (get-prob-func (superpose $supercons) $db $candidate $conjunct $total_count )))
+(= (collect-symbols $subPat $acc $position)
+ (if (== $subPat ()) $acc
+  (let* ( (($head $tail) (decons-atom $subPat))
+          ($newAcc (if (== (get-metatype $head) Symbol) (cons-atom ($head $position) $acc) $acc))
+          ($sum (+ 1 $position)) )
+   (collect-symbols $tail $newAcc $sum) )))
 
-  ($superProbsmax (collapse (getcohfact (superpose $sup-prob-body) $db max)))
-  ($maxSuperprob (max-atom $superProbsmax ))
-
-  ($superProbsmin (collapse (getcohfact (superpose $sup-prob-body) $db min)))
-  ($minSuperprob (min-atom $superProbsmin))
-
-  ); $supercons
-  ($maxSuperprob $minSuperprob)
-
-
-)))
-
-)
-
-(=(getConceptProb $candidate $conjunct $db $total_count $conc_db )
-
-
-( let* (
-   (($link $per $conc) $candidate)
-  ($supercons  (collapse (match $conc_db (Inheritance $conc $any ) $any)))
-) 
-(if (== $supercons ()) (empty) (let* (
-  ($sup-prob-body (collapse  (get-prob-func (superpose $supercons) $db $candidate $conjunct $total_count )))
-
-  ($superProbsmax (collapse (getcohfact (superpose $sup-prob-body) $db max)))
-  ($maxSuperprob (max-atom $superProbsmax ))
-
-  ($superProbsmin (collapse (getcohfact (superpose $sup-prob-body) $db min)))
-  ($minSuperprob (min-atom $superProbsmin))
-
-  )
-
-  ; $supercons
-  ($maxSuperprob $minSuperprob)
-)))
-
-)
-; Convert coherence & prob tuple into adjusted probability using max/min factor.
-(=(getcohfact ($prob $coh) $db $maxOrmin)
- (let* (($factor (if (== $maxOrmin max) (max-factor $coh) (min-factor $coh)))
-        ($new_prob (* $factor $prob)))
-  $new_prob))
-
-; Total count helper for IIsurp (uses iisurp variants)
 (= (total_counts-iisurp $pattern $db) (cal_binomial-iisurp (db_size-iisurp $db) (n_conjuncts_new-iisurp $pattern)))
 
-; Build a super-pattern by replacing candidate with its superconcept and estimate its probability + coherence.
-; Returns ($final_prob $coher)
-(= (get-prob-func $superconc $db $candPat $conjunct $total_count)
- (let* ((($link $some1 $some2) $candPat)
-        ($coher (coherence $superconc $db $link))
-        ($con_super_pattern ($link $some1 $superconc))
-        ($conjWoutCand (rmvEl-iisurp $candPat $conjunct))
-        ($conjWSup (cons-atom $con_super_pattern $conjWoutCand))
-        ($compconj (cons-atom , $conjWSup))
-        ($comb-support (collapse (match $db $compconj $compconj)))
-        ($check-sup (size-atom $comb-support))
-        ($filtered-sups (filter-conjuncts $comb-support))
-        ($conjSup (size-atom $filtered-sups))
-        ($conjProb (// $conjSup $total_count))
-        ($supConSup (sup-num-iisurp $db $con_super_pattern))
-        ($canConSup (sup-num-iisurp $db $candPat))
-        ($superprob (// $supConSup $total_count))
-        ($candidateProb (// $canConSup $total_count))
-        ($final_prob (* $conjProb (// $canConSup $supConSup))))
-  ($final_prob $coher)))
+; For a given symbol position, find candidate substitutions from KB nodes and return matches.
+(=(handle-symbols ($symb $idx) $link $nodes $pos $acc $matches $kb)
+ (if (> $pos $idx) $matches
+  (let* ( (($head $tail) (decons-atom $nodes))
+          ($bool (== $idx $pos))
+          ($newAcc (if (== $bool False) (union-atom $acc ($head))
+                     (let* (($construct (cons-atom $new-var $tail)) ($interCons (union-atom $acc $construct))) (cons-atom $link $interCons))))
+          ($newMatch-mid (if (== $bool True) (collapse (match $kb $newAcc $new-var)) $matches))
+          ($newMatch (unique-atom $newMatch-mid)) )
+   (handle-symbols ($symb $idx) $link $tail (+ 1 $pos) $newAcc $newMatch $kb) )))
 
-; Helper to choose element from interval structure (kept for compatibility)
-(= (handle_interval_list $list-el $type) (let ($maxsup $minsup) $list-el (if (== $type maxsup ) $maxsup $minsup)))
+; Replace original concept at position idx with substituteConcept for subpattern generation.
+(=(handle-getting-subpat $subPat $acc $idx $pos $originalConcept $substituteConcept)
+ (if (> $pos $idx) (union-atom $acc $subPat)
+  (let* ( (($head1 $tail1) (decons-atom $subPat))
+          ($newAcc (if (== $pos $idx) (union-atom $acc ($substituteConcept)) (union-atom $acc ($head1)))) )
+   (handle-getting-subpat $tail1 $newAcc $idx (+ 1 $pos) $originalConcept $substituteConcept) )))
 
-; Main IIsurp-old surprisingness computation.
-; Steps:
-; - compute total_count and empirical pattern probability
-; - compute independent-partition estimates (results-inter)
-; - compute subset/super concept estimates (subset-results)
-; - union estimates, derive emin/emax, compute distance and return it
-(= (IIsurp-old $pattern $db $normalize)
- (let* (($_ (println! "==== IIsurp-old surprisingness ====="))
-        ($total_count (total_counts-iisurp $pattern $db))
-        ($psup (collapse (match $db $pattern $pattern)))
-        ($pattern_prob (// (size-atom $psup) $total_count))
-        ($partitions (partitions $pattern))
-        ($results-inter (isurp-old_iisurp $partitions $db $total_count))
-        ($subset-results (get-set-prob-intervals $pattern $db $total_count))
-        ($results (if (not (== $subset-results ())) (union-atom $results-inter $subset-results) $results-inter))
-        ($emin (min-atom $results))
-        ($emax (max-atom $results))
-        ($dst (dst-from-interval-iisurp $emin $emax $pattern_prob)))
-  $dst))
+(=(handle-individual-elements $el1 $el2) (if (=alpha $el1 $el2) $el1 False))
 
-(= (IIsurp-old $pattern $db $normalize $conc_db)
- (let* (
-       ($_ (println! ("==== IIsurp-old surprisingness =====")))
-        ($total_count (total_counts-iisurp $pattern $db))
-        ($psup (collapse (match $db $pattern $pattern)))
-        ($pattern_prob (// (size-atom $psup) $total_count))
-        ($partitions (partitions $pattern))
-        ($results-inter (isurp-old_iisurp $partitions $db $total_count))
-        ($subset-results (get-set-prob-intervals $pattern $db $total_count $conc_db))
-        ($results (if (not (== $subset-results ())) (union-atom $results-inter $subset-results) $results-inter))
-        ($emin (min-atom $results))
-        ($emax (max-atom $results))
-        ($dst (dst_from_interval-iisurp $emin $emax $pattern_prob)))
-  $dst))
+; Scan list of candidate subpatterns, and for those matching target tar, substitute concept at idx.
+(= (get-subPat $tar $list $idx $acc $originalConcept $substituteConcept)
+ (if (== $list ()) $acc
+  (let* ( (($head1 $tail1) (decons-atom $list))
+          (($new-subPat $bool1) (handle-checking-subpat $head1 $head1 $tar))
+          ($outSubpat (if (== $bool1 True) (handle-getting-subpat $head1 () $idx 0 $originalConcept $substituteConcept) $head1))
+          ($newAcc (cons-atom $outSubpat $acc)) )
+   (get-subPat $tar $tail1 $idx $newAcc $originalConcept $substituteConcept) )))
+
+(=(handle-checking-subpat $subPat1 $subPat1-copy $subPat2)
+ (if (== $subPat1 ()) ($subPat1-copy True)
+  (let* ( (($head1 $tail1) (decons-atom $subPat1)) (($head2 $tail2) (decons-atom $subPat2)) )
+   (if (not (=alpha $head1 $head2)) ($subPat1-copy False) (handle-checking-subpat $tail1 $subPat1-copy $tail2)) )))
+
+(=(handle-rmvEl $subPat1 $subPat1-copy $subPat2)
+ (if (== $subPat1 ()) (empty)
+  (let* ( (($head1 $tail1) (decons-atom $subPat1)) (($head2 $tail2) (decons-atom $subPat2)) )
+   (if (not (=alpha $head1 $head2)) $subPat1-copy (handle-rmvEl $tail1 $subPat1-copy $tail2)) )))
+
+; For a symbol node in a subpattern, compute interval bounds replacing it with candidate super-symbols.
+(= (handle-symbol-main $expr $subpat-sup $link $nodes $pos $acc $matches $db $full-conjunct $subPat $total-count)
+ (let* ( (($symb $idx) $expr)
+         ($main-count (size-atom $subpat-sup))
+         ($filterd-sup-for-symb (collapse (filter-symbol-from-support (superpose $subpat-sup) $symb)))
+         ($substituteSymbs-mid (handle-symbols $expr $link $nodes $pos $acc $matches $db))
+         ($subsy-inter (unique-atom $substituteSymbs-mid))
+         ($substituteSymbs (subtraction-atom $subsy-inter ($symb))) )
+  (if (== $substituteSymbs ()) (empty)
+   (let* ( ($superSubpattern (collapse (ret-supSize (superpose $substituteSymbs) $link $nodes $filterd-sup-for-symb $symb $idx $db))) )
+    (if (== $superSubpattern ()) (empty)
+     (let* ( ($max-probs (collapse (handle-super-symbols-conjunct (superpose $superSubpattern) $full-conjunct $subPat $db $main-count $total-count $idx $link $symb max)))
+             ($upper-bound (max-atom $max-probs))
+             ($min-probs (collapse (handle-super-symbols-conjunct (superpose $superSubpattern) $full-conjunct $subPat $db $main-count $total-count $idx $link $symb min)))
+             ($lower-bound (min-atom $min-probs)) )
+      ($upper-bound $lower-bound)))))))
+
+; Given a potential substitution (potsymb), build completed conjunct, compute coherence and weighted prob.
+(=(handle-super-symbols-conjunct ($sympat $potsymb $sup-size-for-changed-symb $actual-support) $full-conjunct $subPat $db $main-count-of-subpattern $total-count $idx $link $symb $maxormin)
+ (let* ( ($completed-conjunct-mid (get-subPat $subPat $full-conjunct (+ 1 $idx) () $symb $potsymb))
+         ($completed-conjunct (cons-atom , $completed-conjunct-mid))
+         ($coherence (nary-coherence $potsymb $subPat $actual-support $idx $db $link))
+         ($conjunct-sup (collapse (match $db $completed-conjunct $completed-conjunct)))
+         ($msize (size-atom $conjunct-sup))
+         ($prob (// $msize $total-count))
+         ($down-weight (// $main-count-of-subpattern $sup-size-for-changed-symb))
+         ($factor (if (== $maxormin max) (max-factor $coherence) (min-factor $coherence)))
+         ($final-prob (* $factor (* $prob $down-weight))) )
+  $final-prob))
+
+; For a candidate symbol substitution, compute support size and return tuple for handling.
+(=(ret-supSize $potSymb $link $nodes $support $symb $idx $db)
+ (let* ( ($substitutedPattern (change-symb $link $nodes $potSymb $idx 0 ()))
+         ($substitutedSupport (collapse (match $db $substitutedPattern $substitutedPattern)))
+         ($filter-potentital (collapse (filter-symbol-from-support (superpose $substitutedSupport) $potSymb)))
+         ($common (intersection-atom $support $filter-potentital))
+         ($support-of-subpat (size-atom $substitutedSupport))
+         ($size-common (size-atom $common)) )
+  (if (== (size-atom $support) $size-common) ($substitutedPattern $potSymb $support-of-subpat $substitutedSupport) (empty)) ))
+
+; Construct substituted pattern by placing symb at index idx into nodes.
+(=(change-symb $link $nodes $symb $idx $pos $acc)
+ (if (> $pos $idx) $acc
+  (let* ( (($head $tail) (decons-atom $nodes))
+          ($bool (== $idx $pos))
+          ($newAcc (if (== $bool False) (union-atom $acc ($head))
+                     (let* (($construct (cons-atom $symb $tail)) ($interCons (union-atom $acc $construct))) (cons-atom $link $interCons)))) )
+   (change-symb $link $tail $symb $idx (+ 1 $pos) $newAcc) )))
+
+; Receive candidate substitutions for a subpattern and produce (max min) interval bounds.
+(=(recieve-candidate $subPat $db $full-conjunct $total-count)
+ (let* ( ($subPat-sup (collapse (match $db $subPat $subPat)))
+         ($link (car-atom $subPat))
+         ($nodes (cdr-atom $subPat))
+         ($symbs (collect-symbols $nodes () 0))
+         ($out2 (collapse (handle-symbol-main (superpose $symbs) $subPat-sup $link $nodes 0 () () $db $full-conjunct $subPat $total-count))) )
+  (if (== $out2 ()) (empty)
+   (let* ( ($flattend (handle-list-interval $out2 ()))
+           ($ret-max (if (== $flattend ()) () (max-atom $flattend)))
+           ($ret-min (if (== $flattend ()) () (min-atom $flattend))) )
+    ($ret-max $ret-min))))
+
+)
+
+; Collect n-ary interval estimates for a conjunct (wrapper).
+(=(get-set-prob-intervals-nary $conjunct-w-comma $db $total_count)
+ (let* ( ($conjunct (if (== (car-atom $conjunct-w-comma) ,) (cdr-atom $conjunct-w-comma) ($conjunct-w-comma)))
+         ($interval-list (collapse (recieve-candidate (superpose $conjunct) $db $conjunct $total_count)))
+         ($all-fn-sups (handle-list-interval $interval-list ()))
+         ($retval-max (if (== $all-fn-sups ()) () (collapse(max-atom $all-fn-sups))))
+         ($retval-min (if (== $all-fn-sups ()) () (collapse(min-atom $all-fn-sups)))) 
+         ($out-ans (union-atom $retval-min $retval-max
+         ))
+         
+         )
+  $out-ans))
+
+
+
+(=(filter-symbol-from-support $sup $symb) (subtraction-atom $sup ($symb)))
+
+(=(random-coherence-nary) 0.5)
+
+; Estimate n-ary coherence by averaging pairwise coherences (fallback to random if support small).
+(=(nary-coherence $potsymb $subPat $actual-support $idx $db $link)
+ (if (<= (size-atom $actual-support) 1) (random-coherence-nary)
+  (let* ( ($pairwise (cart-helper-set 2 $actual-support ()))
+          ($uniquePairWise (fun $pairwise ()))
+          ($pair-H (collapse (calcom-nary (superpose $uniquePairWise) $db $idx $link $potsymb)))
+          ($sum-pair-H (add-the-coherence $pair-H))
+          ($H-joint-approx (// (* $sum-pair-H 2) (* (size-atom $actual-support) (- (size-atom $actual-support) 1)))) )
+   $H-joint-approx)))
+
+; Pairwise coherence computation for two support entries.
+(=(calcom-nary ($first $second) $db $idx $link $potsymb)
+ (if (== $first $second) (empty)
+  (let* ( ($other-inherited-first (handle-symbols ($potsymb $idx) $link (cdr-atom $first) 0 () () $db))
+          ($other-inherited-second (handle-symbols ($potsymb $idx) $link (cdr-atom $second) 0 () () $db))
+          ($inter (intersection-atom $other-inherited-first $other-inherited-second))
+          ($inter-len (size-atom $inter))
+          ($avglen (// (+ (size-atom $other-inherited-first) (size-atom $other-inherited-second)) 2))
+          ($paircoh (// $inter-len $avglen)) )
+   $paircoh)))
+
+(= (IIsurp-old-nary $pattern $db $normalize)
+ (let* ( ($_ (println! "==== IIsurp-old-nary surprisingness ====="))
+         ($total_count (total_counts-iisurp $pattern $db))
+         ($psup (collapse (match $db $pattern $pattern)))
+         ($pattern_prob (// (size-atom $psup) $total_count))
+         ($partitions (partitions $pattern))
+         ($results-inter (isurp-old_iisurp $partitions $db $total_count))
+         ($subset-results (get-set-prob-intervals-nary $pattern $db $total_count))
+         ($results (if (not (== $subset-results ())) (union-atom $results-inter $subset-results) $results-inter))
+         ($emin (min-atom $results))
+         ($emax (max-atom $results))
+         ($dst (dst-from-interval-iisurp $emin $emax $pattern_prob))
+         
+          )
+  (min-atom ((if (== True $normalize) (// $dst (max-atom ($emax $pattern_prob))) $dst) 1.0))
+
+  
+  ))
+
+  (= (IIsurp-old-nary $pattern $db $isurp $normalize $db_ratio )
+ (let* ( ($_ (println! "==== IIsurp-nary surprisingness ====="))
+         ($total_count (total_counts-iisurp $pattern $db))
+         
+        ($results-inter (ji_prob_est_interval $pattern $db $db_ratio))
+        (($emin_mid $emax_mid ) $results-inter)
+        ($emp (emp-prob-pbs $pattern $db $emax_mid $db_ratio))
+         ($subset-results (get-set-prob-intervals-nary $pattern $db $total_count))
+         ($results (if (not (== $subset-results ())) (union-atom $results-inter $subset-results) $results-inter))
+         ($emin (min-atom $results))
+         ($emax (max-atom $results))
+         ($dst (dst_from_interval $emin $emax $emp))
+         ($maxprb (max-atom ($emp $emax)))
+         )
+        (min-atom ((if $normalize (// $dst $maxprb) $dst) 1.0))
+
+
+  
+  ))
