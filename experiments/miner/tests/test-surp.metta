@@ -201,8 +201,7 @@
 !(println! ("========== JSD Test =============="))
 !(assertEqual (syn &kb4 (fromNumber 19) (: $prf (jsd-surp $pattern $surp)))
 (: ((((jsd-tv (((minsupport FACT4) msT) CPU)) ((emp-rule (((minsupport FACT4) msT) CPU)) CPUEMP)) 
-   ((est-rule (((minsupport FACT4) msT) CPU)) CPUEST)) JSDCPU) (jsd-surp (, (Inheritance $_359080 man) (Inheritance $_359080 ugly) (Inheritance $_359080 sodaDrinker)) 0.8608962449888)))
-
+   ((est-rule (((minsupport FACT4) msT) CPU)) CPUEST)) JSDCPU) (jsd-surp (, (Inheritance $_671526 man) (Inheritance $_671526 ugly) (Inheritance $_671526 sodaDrinker)) 0.853782380189)))
 
 !(assertEqual (syn &kbNarry4 (fromNumber 19) (: $prf (jsd-surp $pattern $surp)))
    (: ((((jsd-tv (((minsupport FACT4) msT) CPU)) ((emp-rule (((minsupport FACT4) msT) CPU)) CPUEMP)) ((est-rule (((minsupport FACT4) msT) CPU)) CPUEST)) JSDCPU) (jsd-surp (, (Inheritance $_642880 $_642886 The-Slice-Shop) (Inheritance $_642910 $_642886 $_642922)) 0.7821118798382))
