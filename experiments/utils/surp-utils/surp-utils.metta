@@ -144,42 +144,27 @@
 
 ;returns indpendent disjoint list of patterns or conjucnt that support be can be calculated for direclty through match and and mutiplied to get support for the origninal pattern
 ;handles both conjucnt and single pattern inputs
-(=(ptrn-comps $ptrn) (if (== $ptrn () ) 0 (let* (
-  
-  ($omg (car-atom $ptrn)) 
-  ($tail (cdr-atom $ptrn))
-  
-  ) (if (and (== $omg ,) (> (size-atom $tail) 1)) (let $clstrs (main-func (cdr-atom $ptrn) ())  
-(create-patterns-from-clusters $clstrs ())) ($ptrn) ) 
+
+
+
+
+
+(= (check-disj $conjunct)
+(if (== $conjucnt ()) () (if (not (== (car-atom $conjunct ) ,))
+ $conjunct
+ (let* (
+  ($no-comma (cdr-atom $conjunct))
+  (($head $tail) (decons-atom $no-comma))
+
+  (($conn $unconn) (get-all-bridged ($head) $tail))
+ )
+ (if (== $unconn ()) True  False)
+ )
 
 )))
 
-
-
-
-
-
-
 ;returns list of lists of disjoint subpatterns, each internal list being an cluster cotaning related subpatterns as a whole either through direct relationship or through chainned r/ship
-(=(main-func $pat-c $acc) (if (== $pat-c () ) $acc (let* (
-    ($pat (cdr-atom $pat-c))
-    (($head $tail) (decons-atom $pat))
-    ($vars (get-variables-sup ($head) ()))
-    (($connected $unconnected) (get-un-connected $tail $vars))
-    ($bothvars (get-variables-sup $connected ()))
-    ($bridgeVars (union-atom $vars $bothvars))
-    (($bridgedpats $unbridgedPats) (get-un-connected $unconnected $bridgeVars))
-    ($semi-cluster (union-atom $bridgedpats $connected))
-    ($cluster (cons-atom $head $semi-cluster))
-    (($all-bridged $all-unbridged) (get-all-bridged $cluster $unbridgedPats))
 
-    )
-   
-
-   
-   (== $all-unbridged ())
-    
-    )))
 
 ;recursivley collects all chainned subpatterns conncted through bridge subpatterns.
 (= (get-all-bridged $cluster $unbridged) (let* (
