@@ -148,13 +148,38 @@
 
 
 
+(=(inter-extract $conj $acc) 
+
+(
+  if (== $conj ()) $acc
+  
+  (let* (
+  (($head $tail ) (decons-atom $conj))
+
+  ($vars (get-variables-sup ($head) ()))
+
+  ($newAcc (cons-atom $vars $acc ))
+  
+  )
+
+  (inter-extract $tail $newAcc)
+
+  
+  ))
+
+
+)
 
 (= (check-disj $conjunct)
+
 (if (== $conjucnt ()) () (if (not (== (car-atom $conjunct ) ,))
  $conjunct
  (let* (
+
+
   ($no-comma (cdr-atom $conjunct))
-  (($head $tail) (decons-atom $no-comma))
+  ($var-conjs (inter-extract $no-comma ()))
+  (($head $tail) (decons-atom $var-conjs))
 
   (($conn $unconn) (get-all-bridged ($head) $tail))
  )
@@ -168,14 +193,16 @@
 
 ;recursivley collects all chainned subpatterns conncted through bridge subpatterns.
 (= (get-all-bridged $cluster $unbridged) (let* (
-  ($clVars (get-variables-sup $cluster ()))
-  (($con $uncon) (get-un-connected $unbridged $clVars))
+  ; ($clVars (get-variables-sup $cluster ()))
+  (($con $uncon) (get-un-connected $unbridged $cluster))
   )
   (if (== $con ()) ($cluster $unbridged)
-  (get-all-bridged (union-atom $con $cluster) $uncon)
+  (get-all-bridged $con $uncon)
   )
   
   ))
+
+
 
 
 
