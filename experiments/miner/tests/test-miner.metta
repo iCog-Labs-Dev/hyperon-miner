@@ -28,11 +28,15 @@
 !(import! &self ../../utils/variable-combinations)
 !(import! &self ../../utils/sort)
 !(import! &self ../../utils/remove_useless_clauses)
-!(import! &self ../../frequent-pattern-miner/conjunction-expansion)
+; !(import! &self ../../frequent-pattern-miner/conjunction-expansion)
 
+!(import! &self ../../frequent-pattern-miner/valuation)
+!(import! &self ../../frequent-pattern-miner/shallow-abstractions)
+; !(import! &self ../../frequent-pattern-miner/specialization)
+!(import! &self ../../frequent-pattern-miner/candidate)
 ;; config kb : load the chainer , rules , system-proofs ....
-!(import! &freq-kb-temp  ../freq-miner-rules)
-!(import! &surp-kb-temp  ../surp-rules)
+!(import! &freq-kb  ../freq-miner-rules)
+!(import! &surp-kb  ../surp-rules)
 !(import! &self  ../system-proofs)
 !(import! &self ../miner-utils)
 !(import! &self ../freq-miner)
@@ -40,7 +44,7 @@
 
 
 ;; load the db space 
-!(import! &db-temp ../../data/ugly_man_sodaDrinker)
+!(import! &db ../../data/ugly_man_sodaDrinker)
 
 
 
@@ -52,7 +56,7 @@
 (= (conj_exp) True)
 
 
-(pattern-miner &db-temp &freq-kb-temp &surp-kb-temp (min-sup) (num-of-conjuct) (conj_exp) (surp-mode) (db-ratio)  (normalization))
+(pattern-miner &db &freq-kb &surp-kb $x (min-sup) (num-of-conjuct) (conj_exp) (surp-mode) (db-ratio)  (normalization))
 
 ;; Expected output 
 
@@ -80,7 +84,7 @@
 
 (= (surp-mode1) isurp-old)
 (= (min-sup2) 5)
-(pattern-miner &db-temp &freq-kb-temp &surp-kb-temp (min-sup2) (num-of-conjuct) (conj_exp) (surp-mode1) (db-ratio)  (normalization))
+(pattern-miner &db &freq-kb &surp-kb $x (min-sup2) (num-of-conjuct) (conj_exp) (surp-mode1) (db-ratio)  (normalization))
 
 ; (: ((((((((isurp-rule normalize) (((universal-count ((((minsupport ((((((supportFormat ((((((((((((((((((conjunction-expand ((candidate (((minsupport (((support (((((specializationx ((((abstract-pattern CPUUnique) msT) CPU) CPUReplacevar)) CPUReplaceindex) CPUHandleValuation) CPUHandleNestedExp) CPUReplacevar))
 ; CPUReplaceindex) CPUCounter)) msT) CPU)) CPUReplacevar)) CPUReplaceindex) CPUCount) maxClauses) CPUequals) ((candidate (((minsupport (((support (((((specializationx ((((abstract-pattern CPUUnique) msT) CPU) CPUReplacevar)) CPUReplaceindex) CPUHandleValuation) CPUHandleNestedExp) CPUReplacevar)) CPUReplaceindex)
@@ -129,7 +133,7 @@
 
 
 (= (surp-mode2) isurp)
-!(pattern-miner &db-temp &freq-kb-temp &surp-kb-temp (min-sup2) (num-of-conjuct) (conj_exp) (surp-mode2) (db-ratio)  (normalization))
+(pattern-miner &db &freq-kb &surp-kb $x (min-sup2) (num-of-conjuct) (conj_exp) (surp-mode2) (db-ratio)  (normalization))
 
 ; (: ((((((((isurp-rule normalize) (((universal-count (((minsupport (((((((supportFormat (((((((((((((((((((conjunction-expand (((((((((((((((((((conjunction-expand 
 ; ((candidatep (((minsupport (((supports (((((specializationy ((((abstract-pattern CPUUnique) msT) CPU) CPUReplacevar)) CPUReplaceindex) CPUHandleValuation) 
@@ -169,7 +173,7 @@
 (= (surp-mode3) jsdsurp)
 
 
-(pattern-miner &db-temp &freq-kb-temp &surp-kb-temp (min-sup3) (num-of-conjuct3) (conj_exp) (surp-mode3) (db-ratio)  (normalization))
+!(pattern-miner &db &freq-kb &surp-kb $x (min-sup3) (num-of-conjuct3) (conj_exp) (surp-mode3) (db-ratio)  (normalization))
 
 ;;expected output
 ; (: ((((jsd-tv (((minsupport (((((((supportFormat (((((((((((((((((((conjunction-expand (((((((((((((((((((conjunction-expand ((candidatep (((minsupport 

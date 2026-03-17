@@ -15,10 +15,10 @@
 ;(: -> (-> Atom Atom Type))
 
 ;;create working space for db and kbs
-!(bind! &freq-kb (new-space)) 
-!(bind! &db (new-space)) 
-!(bind! &surp-kb  (new-space)) 
-!(bind! &res (new-space))
+; !(bind! &freq-kb (new-space)) 
+; !(bind! &db (new-space)) 
+; !(bind! &surp-kb  (new-space)) 
+; !(bind! &res (new-space))
 
 
 
@@ -26,14 +26,14 @@
 ;; clean-atomspace
 ;----------------------------------------------------------------------------
 ;; Clean AtomSpaces from unnecessary atoms for the operation, which might occur on importing.
-(= (clean-atomspaces $dbspace $freq-kb $surp-kb) (
-    superpose (
-            (println! "==== Cleaning AtomSpaces =====") 
-           (let ($link $x $y) (get-atoms $dbspace) (add-atom &db ($link $x $y)))
-           (let $atoms  (get-atoms $freq-kb) (add-atom &freq-kb $atoms) )
-            (let $atoms  (get-atoms $surp-kb) (add-atom &surp-kb $atoms) )
-    )
-))
+; (= (clean-atomspaces $dbspace $freq-kb $surp-kb) (
+;     superpose (
+;             (println! "==== Cleaning AtomSpaces =====") 
+;            (let ($link $x $y) (get-atoms $dbspace) (add-atom &db ($link $x $y)))
+;            (let $atoms  (get-atoms $freq-kb) (add-atom &freq-kb $atoms) )
+;             (let $atoms  (get-atoms $surp-kb) (add-atom &surp-kb $atoms) )
+;     )
+; ))
 
 
 
@@ -89,16 +89,16 @@
 ;; pattern-miner
 ;--------------------------------------------------------------------------------------
 ;; Chainer-base;d frequent and surprisingness pattern miner.
-(= (pattern-miner $dbspace $freq-kb $surp-kb $ms $num-of-conjuct $cnj_exp $surp-mode $db-ratio $norm) (
+(= (pattern-miner $db $freq-kb $surp-kb $initpat $ms $num-of-conjuct $cnj_exp $surp-mode $db-ratio $norm) (
     let* (
         (true (println! "==== Pattern Miner Started ====="))
-        ($dummy (collapse (clean-atomspaces $dbspace $freq-kb $surp-kb)))
-        ($dummy1 (collapse (init-miner &db  &freq-kb $ms $surp-mode $db-ratio $norm)))
-        ($dummy2 (collapse (init-miner &db  &surp-kb $ms $surp-mode $db-ratio $norm)))
-        (() (frequent-miner &db &freq-kb $num-of-conjuct $cnj_exp)) 
-        ($dummy3 (collapse (match &freq-kb (: $prf (hasSupport $nptrn $count)) (add-atom &surp-kb (: $prf (hasSupport $nptrn $count))))))
+        ; ($dummy (collapse (clean-atomspaces $dbspace $freq-kb $surp-kb)))
+        ($dummy1 (collapse (init-miner $db  $freq-kb $ms $surp-mode $db-ratio $norm)))
+        ($dummy2 (collapse (init-miner $db  $surp-kb $ms $surp-mode $db-ratio $norm)))
+        (() (frequent-miner $db $freq-kb $initpat $num-of-conjuct $cnj_exp)) 
+        ($dummy3 (collapse (match $freq-kb (: $prf (hasSupport $nptrn $count)) (add-atom $surp-kb (: $prf (hasSupport $nptrn $count))))))
         (true (println! "==== Surprissingness Scoring Started ====="))
-        ($dummy4  (collapse (mine-surp &surp-kb &res $surp-mode)))
+        ($dummy4  (collapse (mine-surp $surp-kb &res $surp-mode)))
     )    
           (get-atoms &res)
     
