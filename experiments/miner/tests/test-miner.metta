@@ -45,6 +45,7 @@
 
 ;; load the db space 
 !(import! &db ../../data/ugly_man_sodaDrinker)
+!(import! &db2 ../../data/dataset_for_n_arry_format)
 
 
 
@@ -60,30 +61,42 @@
 
 ;; Expected output 
 
-; (: (((((((supportFormat (((((((((((((((((((conjunction-expand (((((((((((((((((((conjunction-expand ((candidatep (((minsupport (((supports (((((specializationy 
-; ((((abstract-pattern CPUUnique) msT) CPU) CPUReplacevar)) CPUReplaceindex) CPUHandleValuation) CPUHandleNestedExp) CPUReplacevar)) CPUReplaceindex) CPUCounter))
-; msT) CPU)) CPUReplacevar)) CPUReplaceindex) CPUCount) maxClauses) CPUequals) ((candidatep (((minsupport (((supports (((((specializationy ((((abstract-pattern CPUUnique) 
-; msT) CPU) CPUReplacevar)) CPUReplaceindex) CPUHandleValuation) CPUHandleNestedExp) CPUReplacevar)) CPUReplaceindex) CPUCounter)) msT) CPU)) CPUReplacevar)) CPUReplaceindex) 
-; CPUCount) CPUequals) msT) CPUGetPatternVariables) CPUGetPatternVariables) CPUCombineVariables) CPUSubstituteVariables) CPUCounter) CPU) CPUConjunctionClean1) CPUReplacevar)
-; CPUConjunctionClean2)) CPUReplaceindex) CPUCount) maxClauses) CPUequals) ((candidatep (((minsupport (((supports (((((specializationy ((((abstract-pattern CPUUnique) msT)
-; CPU) CPUReplacevar)) CPUReplaceindex) CPUHandleValuation) CPUHandleNestedExp) CPUReplacevar)) CPUReplaceindex) CPUCounter)) msT) CPU)) CPUReplacevar)) CPUReplaceindex)
-; CPUCount) CPUequals) msT) CPUGetPatternVariables) CPUGetPatternVariables) CPUCombineVariables) CPUSubstituteVariables) CPUCounter) CPU) CPUConjunctionClean1)
-; CPUReplacevar) CPUConjunctionClean2)) CPUCount) maxClauses) CPU) CPUSortConjunctions) CPUJoin) CPUReplaceindex) 
-; (hasSupport (, (Inheritance $_638824 human) (Inheritance $_638824 ugly) (Inheritance $_638824 sodaDrinker)) 5))
+; (: ((((((supportFormat (((((((((((((((((((conjunction-expand (((((((((((((((((((conjunction-expand ((candidatep (((minsupport (((supports (((spec init-pat) ((shallow_abs (((((valuationNotTop init-pat) CPUIsNotTop) CPUGetMatches) CPUGetPatternVariables) CPUGetVals)) CPUGetVals)) CPUSubstituteVariables)) CPUReplaceindex) CPUCounter))
+; msT) CPU)) CPUReplacevar)) CPUReplaceindex) CPUCount) maxClauses) CPUequals) ((candidatep (((minsupport (((supports (((spec init-pat) ((shallow_abs (((((valuationNotTop init-pat) CPUIsNotTop) CPUGetMatches) CPUGetPatternVariables) CPUGetVals)) CPUGetVals)) CPUSubstituteVariables)) CPUReplaceindex) CPUCounter)) msT) CPU)) CPUReplacevar))
+; CPUReplaceindex) CPUCount) CPUequals) msT) CPUGetPatternVariables) CPUGetPatternVariables) CPUCombineVariables) CPUSubstituteVariables) CPUCounter) CPU) CPUConjunctionClean1) CPUReplacevar) CPUConjunctionClean2)) CPUReplaceindex) CPUCount) maxClauses) CPUequals) ((candidatep (((minsupport (((supports (((spec init-pat) ((shallow_abs
+; (((((valuationNotTop init-pat) CPUIsNotTop) CPUGetMatches) CPUGetPatternVariables) CPUGetVals)) CPUGetVals)) CPUSubstituteVariables)) CPUReplaceindex) CPUCounter)) msT) CPU)) CPUReplacevar)) CPUReplaceindex) CPUCount) CPUequals) msT) CPUGetPatternVariables) CPUGetPatternVariables) CPUCombineVariables) CPUSubstituteVariables) CPUCounter)
+; CPU) CPUConjunctionClean1) CPUReplacevar) CPUConjunctionClean2)) CPUCount) maxClauses) CPU) CPUSortConjunctions) CPUJoin) 
+; (hasSupport (, (Inheritance Hessley $_648686) (Inheritance Davion $_648686) (Inheritance Cason $_648686)) 4))
 
-; (: (((((((supportFormat (((((((((((((((((((conjunction-expand (((((((((((((((((((conjunction-expand ((candidatep (((minsupport (((supports (((((specializationy 
-; ((((abstract-pattern CPUUnique) msT) CPU) CPUReplacevar)) CPUReplaceindex) CPUHandleValuation) CPUHandleNestedExp) CPUReplacevar)) CPUReplaceindex) CPUCounter)) msT) CPU)) 
-; CPUReplacevar)) CPUReplaceindex) CPUCount) maxClauses) CPUequals) ((candidatep (((minsupport (((supports (((((specializationy ((((abstract-pattern CPUUnique) msT) CPU) 
-; CPUReplacevar)) CPUReplaceindex) CPUHandleValuation) CPUHandleNestedExp) CPUReplacevar)) CPUReplaceindex) CPUCounter)) msT) CPU)) CPUReplacevar)) CPUReplaceindex) CPUCount) 
-; CPUequals) msT) CPUGetPatternVariables) CPUGetPatternVariables) CPUCombineVariables) CPUSubstituteVariables) CPUCounter) CPU) CPUConjunctionClean1) CPUReplacevar) 
-; CPUConjunctionClean2)) CPUReplaceindex) CPUCount) maxClauses) CPUequals) ((candidatep (((minsupport (((supports (((((specializationy ((((abstract-pattern CPUUnique) msT) 
-; CPU) CPUReplacevar)) CPUReplaceindex) CPUHandleValuation) CPUHandleNestedExp) CPUReplacevar)) CPUReplaceindex) CPUCounter)) msT) CPU)) CPUReplacevar)) CPUReplaceindex) 
-; CPUCount) CPUequals) msT) CPUGetPatternVariables) CPUGetPatternVariables) CPUCombineVariables) CPUSubstituteVariables) CPUCounter) CPU) CPUConjunctionClean1) CPUReplacevar) 
-; CPUConjunctionClean2)) CPUCount) maxClauses) CPU) CPUSortConjunctions) CPUJoin) CPUReplaceindex) (hasSupport (, (Inheritance $_637552 man) (Inheritance $_637552 ugly) 
-; (Inheritance $_637552 sodaDrinker)) 5))
+; (: ((((((supportFormat (((((((((((((((((((conjunction-expand (((((((((((((((((((conjunction-expand ((candidatep (((minsupport (((supports (((spec init-pat) ((shallow_abs (((((valuationNotTop init-pat) CPUIsNotTop) CPUGetMatches) CPUGetPatternVariables) CPUGetVals)) CPUGetVals)) CPUSubstituteVariables)) CPUReplaceindex) CPUCounter))
+; msT) CPU)) CPUReplacevar)) CPUReplaceindex) CPUCount) maxClauses) CPUequals) ((candidatep (((minsupport (((supports (((spec init-pat) ((shallow_abs (((((valuationNotTop init-pat) CPUIsNotTop) CPUGetMatches) CPUGetPatternVariables) CPUGetVals)) CPUGetVals)) CPUSubstituteVariables)) CPUReplaceindex) CPUCounter)) msT) CPU)) CPUReplacevar))
+; CPUReplaceindex) CPUCount) CPUequals) msT) CPUGetPatternVariables) CPUGetPatternVariables) CPUCombineVariables) CPUSubstituteVariables) CPUCounter) CPU) CPUConjunctionClean1) CPUReplacevar) CPUConjunctionClean2)) CPUReplaceindex) CPUCount) maxClauses) CPUequals) ((candidatep (((minsupport (((supports (((spec init-pat) ((shallow_abs
+; (((((valuationNotTop init-pat) CPUIsNotTop) CPUGetMatches) CPUGetPatternVariables) CPUGetVals)) CPUGetVals)) CPUSubstituteVariables)) CPUReplaceindex) CPUCounter)) msT) CPU)) CPUReplacevar)) CPUReplaceindex) CPUCount) CPUequals) msT) CPUGetPatternVariables) CPUGetPatternVariables) CPUCombineVariables) CPUSubstituteVariables) CPUCounter)
+; CPU) CPUConjunctionClean1) CPUReplacevar) CPUConjunctionClean2)) CPUCount) maxClauses) CPU) CPUSortConjunctions) CPUJoin) 
+; (hasSupport (, (Inheritance $_585176 sodaDrinker) (Inheritance $_585176 ugly) (Inheritance $_585176 man)) 5))
+
+
+; ...
+(= (min-sup2) 5)
+(= (num-of-conjuct2) 2)
+;;n-tuple test
+!(pattern-miner &db2 &freq-kb &surp-kb $x (min-sup2) (num-of-conjuct2) (conj_exp) (surp-mode) (db-ratio)  (normalization))
+
+;;Expected output
+
+; (: ((((((supportFormat (((((((((((((((((((conjunction-expand ((candidatep (((minsupport (((supports (((spec init-pat) ((shallow_abs (((((valuationNotTop init-pat) CPUIsNotTop) CPUGetMatches) CPUGetPatternVariables) CPUGetVals)) CPUGetVals)) CPUSubstituteVariables)) CPUReplaceindex) CPUCounter)) msT) CPU)) CPUReplacevar)) CPUReplaceindex)
+; CPUCount) maxClauses) CPUequals) ((candidatep (((minsupport (((supports (((spec init-pat) ((shallow_abs (((((valuationNotTop init-pat) CPUIsNotTop) CPUGetMatches) CPUGetPatternVariables) CPUGetVals)) CPUGetVals)) CPUSubstituteVariables)) CPUReplaceindex) CPUCounter)) msT) CPU)) CPUReplacevar)) CPUReplaceindex) CPUCount) CPUequals) msT)
+; CPUGetPatternVariables) CPUGetPatternVariables) CPUCombineVariables) CPUSubstituteVariables) CPUCounter) CPU) CPUConjunctionClean1) CPUReplacevar) CPUConjunctionClean2)) CPUCount) maxClauses) CPU) CPUSortConjunctions) CPUJoin) 
+; (hasSupport (, (Inheritance $_292676 Pizza-Lover The-Slice-Shop) (Inheritance $_292676 Pizza-Lover $_292718)) 6))
+
+; (: ((((((supportFormat (((((((((((((((((((conjunction-expand ((candidatep (((minsupport (((supports (((spec init-pat) ((shallow_abs (((((valuationNotTop init-pat) CPUIsNotTop) CPUGetMatches) CPUGetPatternVariables) CPUGetVals)) CPUGetVals)) CPUSubstituteVariables)) CPUReplaceindex) CPUCounter)) msT) CPU)) CPUReplacevar)) CPUReplaceindex)
+; CPUCount) maxClauses) CPUequals) ((candidatep (((minsupport (((supports (((spec init-pat) ((shallow_abs (((((valuationNotTop init-pat) CPUIsNotTop) CPUGetMatches) CPUGetPatternVariables) CPUGetVals)) CPUGetVals)) CPUSubstituteVariables)) CPUReplaceindex) CPUCounter)) msT) CPU)) CPUReplacevar)) CPUReplaceindex) CPUCount) CPUequals) msT) 
+; CPUGetPatternVariables) CPUGetPatternVariables) CPUCombineVariables) CPUSubstituteVariables) CPUCounter) CPU) CPUConjunctionClean1) CPUReplacevar) CPUConjunctionClean2)) CPUCount) maxClauses) CPU) CPUSortConjunctions) CPUJoin) 
+; (hasSupport (, (Inheritance $_273356 $_273362 $_273368) (Inheritance $_273386 $_273392 $_273356)) 12))
+
+; ...
 
 (= (surp-mode1) isurp-old)
-(= (min-sup2) 5)
 (pattern-miner &db &freq-kb &surp-kb $x (min-sup2) (num-of-conjuct) (conj_exp) (surp-mode1) (db-ratio)  (normalization))
 
 ; (: ((((((((isurp-rule normalize) (((universal-count ((((minsupport ((((((supportFormat ((((((((((((((((((conjunction-expand ((candidate (((minsupport (((support (((((specializationx ((((abstract-pattern CPUUnique) msT) CPU) CPUReplacevar)) CPUReplaceindex) CPUHandleValuation) CPUHandleNestedExp) CPUReplacevar))
@@ -173,7 +186,7 @@
 (= (surp-mode3) jsdsurp)
 
 
-!(pattern-miner &db &freq-kb &surp-kb $x (min-sup3) (num-of-conjuct3) (conj_exp) (surp-mode3) (db-ratio)  (normalization))
+(pattern-miner &db &freq-kb &surp-kb $x (min-sup3) (num-of-conjuct3) (conj_exp) (surp-mode3) (db-ratio)  (normalization))
 
 ;;expected output
 ; (: ((((jsd-tv (((minsupport (((((((supportFormat (((((((((((((((((((conjunction-expand (((((((((((((((((((conjunction-expand ((candidatep (((minsupport 
