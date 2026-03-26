@@ -82,7 +82,7 @@
         ($resultsc (collapse (candidatePatternMiner $initpat $db $kb)))
          ($results (collapse (conjunction (fromNumber 19) $kb 1 (- $number-of-conjuct 1))))
          ($resultf (collapse (format (fromNumber 6) $kb)))
-         ($final (match $kb (: $prf (hasSupport $pattern $sup)) (let $vpattern (replacev $pattern) (superpose ((remove-atom $kb (: $prf (hasSupport $pattern $sup))) (add-atom $kb (: $prf (hasSupport $vpattern $sup))))))))
+         ($final (collapse (match $kb (: $prf (hasSupport $pattern $sup)) (let $vpattern (replacev $pattern) (superpose ((remove-atom $kb (: $prf (hasSupport $pattern $sup))) (add-atom $kb (: $prf (hasSupport $vpattern $sup)))))))))
       ) ()
 )
 )
