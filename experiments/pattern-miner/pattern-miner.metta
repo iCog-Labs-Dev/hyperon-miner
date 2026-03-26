@@ -1,7 +1,5 @@
 
 
-
-
 ;--------------------------------------------------
 ;; do-jsd-surp 
 ;--------------------------------------------------
@@ -39,6 +37,14 @@
       )         
 )
 
+(= (do-IIsurp $kb $db (supportOf $pattern $support) $norm $choice $db-ratio)
+( let* ( 
+     ($surp (if (== $choice isurp)
+                (IIsurp-old-nary $pattern $db isurp $norm $db-ratio)
+                (IIsurp-old-nary $pattern $db $norm)))  )
+      (add-atom-nodup $kb   (surprisingnessOf $pattern $surp))
+     )   
+)
 
 
 
@@ -49,15 +55,21 @@
 ;;function to call the surprisingness algorithms based 
 ;; on the input surp mode.
 ;(: call-surprisingness (-> space space Atom pattern Atom))
-(= (call-surprisingness $kb $db $pattern $surp-mode $normalization $db-ratio)
+(= (call-surprisingness $kb $db $pattern $surp-mode $normalization $db-ratio )
   (if (== $surp-mode none)
          (add-atom $kb $pattern)
       (if (== $surp-mode jsd)
-           (do-jsd-surp $kb $db $pattern)
-            (do-surp $kb $db $surp-mode $pattern $normalization $db-ratio)
+           (do-jsd-surp $kb $db $pattern) 
+            ( if (== $surp-mode IIsurp-old)
+               (do-IIsurp $kb $db $pattern $normalization  isurp_old  1.0)
+                (if (== $surp-mode IIsurp-new)
+                   (do-IIsurp $kb $db $pattern $normalization isurp $db-ratio)
+                   (do-surp $kb $db $surp-mode $pattern $normalization $db-ratio))  
+               )
       )
    )
 )
+
 
 
 
