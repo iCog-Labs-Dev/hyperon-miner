@@ -4,7 +4,6 @@ This directory contains experimental implementations for a new pattern miner.
 
 ## Files
 - `newMain.metta`: The main entry point for the new miner.
-- `nolawi.metta`: Experimental/specialized mining logic.
 - `remove.metta`: Rules or utilities for removing redundant patterns or clauses.
 - `utils.metta`: Common utility functions used by the miner.
 
