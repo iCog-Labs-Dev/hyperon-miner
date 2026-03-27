@@ -81,5 +81,44 @@
                              0.9996837944664032)
 
 
+;; =============================
+;; N-arry format patterns
+;; =============================
 
+!(import! &dbNarry ../../data/dataset_for_n_arry_format)
 
+;; inputs:-
+  ;; conjunctive pattern: (, (Inheritance $x Loves $y) (Inheritance $x $Interest $Venue) (Inheritance $y $Interest $Venue))
+  ;; db reference: dataset_for_n_arry_format
+  ;; normalization: True
+!(assertEqual (isurp-old (, 
+   (Inheritance $x Loves $y) 
+   (Inheritance $x $Interest $Venue) 
+   (Inheritance $y $Interest $Venue)) &dbNarry True) 0.9886039886039886)
+
+;; inputs:-
+  ;; conjunctive pattern: (, (Inheritance $x $y The-Slice-Shop) (Inheritance $x Pizza-Lover $place) (Inheritance $x Pizza-Lover The-Slice-Shop))
+  ;; db reference: dataset_for_n_arry_format
+  ;; normalization: True
+!(assertEqual (isurp-old (, 
+   (Inheritance $_32506 $_32512 The-Slice-Shop) 
+   (Inheritance $_32506 Pizza-Lover $_32548) 
+   (Inheritance $_32506 Pizza-Lover The-Slice-Shop)) &dbNarry True) 0.9981684981684982)
+   
+;; inputs:-
+  ;; conjunctive pattern: (, (Inheritance $x Loves $y) (Inheritance $x $Interest $Venue) (Inheritance $y $Interest $Venue))
+  ;; db reference: dataset_for_n_arry_format
+  ;; normalization: False
+!(assertEqual (isurp-old (, 
+   (Inheritance $x Loves $y) 
+   (Inheritance $x $Interest $Venue) 
+   (Inheritance $y $Interest $Venue)) &dbNarry False) 0.0036212600315164425)
+
+;; inputs:-
+  ;; conjunctive pattern: (, (Inheritance $x $y The-Slice-Shop) (Inheritance $x Pizza-Lover $place) (Inheritance $x Pizza-Lover The-Slice-Shop))
+  ;; db reference: dataset_for_n_arry_format
+  ;; normalization: False
+!(assertEqual (isurp-old (, 
+   (Inheritance $_32506 $_32512 The-Slice-Shop) 
+   (Inheritance $_32506 Pizza-Lover $_32548) 
+   (Inheritance $_32506 Pizza-Lover The-Slice-Shop)) &dbNarry False) 0.0018281474325430374)
