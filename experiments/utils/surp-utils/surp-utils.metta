@@ -53,12 +53,17 @@
         let* (  
               (($head $tail) (decons-atom $pattern_list))
               ($new_head (remove-parenthesis $head)) ;; to remove unnecessary parenthesis if there is any
-              ($emp_value (
-                 unify ($link $x $y) $new_head  (emp-tv $new_head $db) 
-                       (chain (cons-atom , $new_head) $ptrn (emp-tv $ptrn $db))));;conjunct if it is not single pattern
-              ($dummy (emp_tv_mem $tail $db))
+              ($topOfNewHead (car-atom $new_head)) ;; to get the top of the new head
+            ;   ($emp_value (
+            ;      unify ($link $x $y) $new_head  (emp-tv $new_head $db) 
+            ;            (chain (cons-atom , $new_head) $ptrn (emp-tv $ptrn $db))));;conjunct if it is not single pattern
+              ($emp_value (eval (
+                if  (is-expr $topOfNewHead)  
+                        (chain (cons-atom , $new_head) $ptrn (emp-tv $ptrn $db));;conjunct if it is not single pattern
+                        (emp-tv $new_head $db) )))
+              ($old (emp_tv_mem $tail $db))
         )  
-            (cons-atom  $emp_value $dummy)
+            (cons-atom  $emp_value $old)
     )
  ))
 

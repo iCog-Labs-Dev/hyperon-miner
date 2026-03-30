@@ -1,5 +1,3 @@
-! (import! &self boost)
-
 
 ;; Create Beta Distribution from TruthValue (mean, confidence)
 ;; Equivalent to constructing boost::math::beta_distribution using mean and count.
@@ -46,8 +44,10 @@
     (boost-math-cdf $alpha $beta $x)  ;; Calls your math backend for Beta(alpha, beta)
 ))
 
-
-
+;; Call to Python backend to compute Beta CDF
+(= (boost-math-cdf $alpha $beta $x)
+    (py-call (boost_petta.boost_math_cdf $alpha $beta $x))
+)
 
 
 ;; Compute KLD between two CDFs (assumes both lists are same size)
@@ -119,4 +119,7 @@
 (=(avrg $a $b)(
     / (+ $a $b) 2.0
 ))
+
+
+
 

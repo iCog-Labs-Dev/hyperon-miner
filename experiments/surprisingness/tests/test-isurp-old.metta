@@ -1,42 +1,34 @@
-! (register-module! ../../../../hyperon-miner/experiments)
-! (import! &self experiments:utils:common-utils)
-! (import! &self experiments:utils:binomialMetta)
-! (import! &self experiments:utils:beta-dist)
+!(import! &self ../../utils/common-utils)
+!(import! &self  ../../utils/surp-utils/binomialMetta)
+!(import! &self  ../../utils/surp-utils/surp-utils)
+!(import! &self  ../../utils/surp-utils/partition-metta )
+!(import! &self  ../../utils/TruthValue)
+!(import! &self  ../../utils/constants)
 
-! (import! &self experiments:utils:constants)
-! (import! &self experiments:utils:TruthValue)
-! (import! &self experiments:utils:surp-utils)
-! (import! &self experiments:utils:miner-utils)
-! (import! &self experiments:utils:gen_partition)
-! (import! &self experiments:utils:customType)
-! (import! &self experiments:truth-values:est-tv)
-! (import! &self experiments:surprisingness:isurp-old)
 
- ! (import! &db experiments:data:ugly_man_sodaDrinker)
- ! (import! &dbc experiments:data:nested_coupled:mock_coupled)
- ! (import! &dbn experiments:data:nested_coupled:true_nested)
+;! (import! &self  ../../utils/customType)
+!(import! &self ../../truth-values/est-tv)
+!(import! &self ../isurp-old)
 
 
 
 
-
-! (add-reduct &self (= (get-space) (new-space)))
-
-! (add-atom (get-space) (Inheritance A B))
-! (add-atom (get-space) (Inheritance B C))
-! (add-atom (get-space) (Inheritance D E))
-! (add-atom (get-space) (Inheritance E F))
 
 
 ;;;;;;;;;;;
 ;; Tests ;;
 ;;;;;;;;;;;
-; !(assertEqual (isurp-old (, $x $y) (get-space)  False) 1)
+
+!(import! &db ../../data/ugly_man_sodaDrinker)
 
 
-(assertEqual (isurp-old (, (Inheritance $x man)
-   (Inheritance $x ugly)
-   (Inheritance $x sodaDrinker)) &db False) 0.00014607068574401343)
+
+;; =============================================================================
+;; Test: isurp-old with out normalization
+;; -----------------------------------------------------------------------------
+
+!(assertEqual (isurp-old (, (Inheritance $x man) (Inheritance $x ugly)
+   (Inheritance $x sodaDrinker)) &db False) 0.00014607068574401354)
 
 
 ;; =============================================================================
@@ -62,30 +54,71 @@
    (Inheritance $x sodaDrinker)) &db True) 0.999707773232028)
 
 
-;test with coupled patterns
-(assertEqual (isurp-old (, (Inheritance (Person $x) man)
+
+;; =================================
+;;  Test with coupled patterns
+;; =================================
+;; import coupled atoms
+!(import! &dbc ../../data/nested_coupled/mock_coupled)
+
+
+!(assertEqual (isurp-old (, (Inheritance (Person $x) man)
    (Inheritance (Person $x) ugly)
    (Inheritance (Person $x) sodaDrinker)) &dbc True) 0.999707773232028)
 
 
 
+;; =====================
+;; Nested patterns
+;; =====================
+;; import nested atoms
+!(import! &dbn ../../data/nested_coupled/true_nested)
 
-;nested patterns test
-(assertEqual (isurp-old (, (Inheritance (And (And (Person $x) man) (Or human sodaDrinker)) (Or (And human man) (And human sodaDrinker)))
-
-(Inheritance (And (And (Person $x)   man) (Or human sodaDrinker)) (Or (And human man) (And human ugly)))
-
-(Inheritance (And (And human man)   (Or (Person $x) (Person Mike)))   (Or (And human man)   (And human sodaDrinker)))
-
-(Inheritance (And (And (Person $x) man) (Or human ugly))        (Or (And human man) (And human sodaDrinker)))) &dbn True) 0.9996837944664032)
-
-
-
-
-;==============
+!(assertEqual (isurp-old (, (Inheritance (And (And (Person $x) man) (Or human sodaDrinker)) (Or (And human man) (And human sodaDrinker)))
+                           (Inheritance (And (And (Person $x)   man) (Or human sodaDrinker)) (Or (And human man) (And human ugly)))
+                           (Inheritance (And (And human man)   (Or (Person $x) (Person Mike)))   (Or (And human man)   (And human sodaDrinker)))
+                            (Inheritance (And (And (Person $x) man) (Or human ugly))        (Or (And human man) (And human sodaDrinker)))) &dbn True)
+                             0.9996837944664032)
 
 
+;; =============================
+;; N-arry format patterns
+;; =============================
 
+!(import! &dbNarry ../../data/dataset_for_n_arry_format)
 
+;; inputs:-
+  ;; conjunctive pattern: (, (Inheritance $x Loves $y) (Inheritance $x $Interest $Venue) (Inheritance $y $Interest $Venue))
+  ;; db reference: dataset_for_n_arry_format
+  ;; normalization: True
+!(assertEqual (isurp-old (, 
+   (Inheritance $x Loves $y) 
+   (Inheritance $x $Interest $Venue) 
+   (Inheritance $y $Interest $Venue)) &dbNarry True) 0.9886039886039886)
 
+;; inputs:-
+  ;; conjunctive pattern: (, (Inheritance $x $y The-Slice-Shop) (Inheritance $x Pizza-Lover $place) (Inheritance $x Pizza-Lover The-Slice-Shop))
+  ;; db reference: dataset_for_n_arry_format
+  ;; normalization: True
+!(assertEqual (isurp-old (, 
+   (Inheritance $_32506 $_32512 The-Slice-Shop) 
+   (Inheritance $_32506 Pizza-Lover $_32548) 
+   (Inheritance $_32506 Pizza-Lover The-Slice-Shop)) &dbNarry True) 0.9981684981684982)
+   
+;; inputs:-
+  ;; conjunctive pattern: (, (Inheritance $x Loves $y) (Inheritance $x $Interest $Venue) (Inheritance $y $Interest $Venue))
+  ;; db reference: dataset_for_n_arry_format
+  ;; normalization: False
+!(assertEqual (isurp-old (, 
+   (Inheritance $x Loves $y) 
+   (Inheritance $x $Interest $Venue) 
+   (Inheritance $y $Interest $Venue)) &dbNarry False) 0.0036212600315164425)
 
+;; inputs:-
+  ;; conjunctive pattern: (, (Inheritance $x $y The-Slice-Shop) (Inheritance $x Pizza-Lover $place) (Inheritance $x Pizza-Lover The-Slice-Shop))
+  ;; db reference: dataset_for_n_arry_format
+  ;; normalization: False
+!(assertEqual (isurp-old (, 
+   (Inheritance $_32506 $_32512 The-Slice-Shop) 
+   (Inheritance $_32506 Pizza-Lover $_32548) 
+   (Inheritance $_32506 Pizza-Lover The-Slice-Shop)) &dbNarry False) 0.0018281474325430374)

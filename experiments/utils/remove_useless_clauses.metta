@@ -1,17 +1,54 @@
+(= (subtractions $list1 $list2)
+    (if (== $list1 ())
+        ()
+        (let* (
+                ($head1 (car-atom $list1))
+                ($tail1 (cdr-atom $list1))
+                ($rest (subtractions $tail1 $list2))
+                )
+            (if (does_exist $head1 $list2)
+                $rest
+                (cons-atom $head1 $rest))
+        )
+    )
+)
+
 
 (= (filter_in_others $var $others)
-    ((map-atom $others $x (if (== (get-metatype $x) Variable) (if (== $x $var) Pass $x) (if (== (get-metatype $x) Expression) (filter_in_others $var $x) $x)) ) $others)
+   (if (== $others ())                                 ; empty list → return empty
+       ()
+       (let* (
+
+            ($head (car-atom $others)  )                 ; first element
+            ($tail (cdr-atom $others) )                  ; rest of the list
+            ($filtered-head (if (== (get-metatype $head) Expression)
+                                (filter_in_others $var $head) ; recurse inside expression
+                                (if (== (get-metatype $head) Variable)
+                                    (if (== $head $var) 
+                                        Pass   ; drop $var, keep others
+                                        $head)
+                                    $head
+                                        )))                    ; atom that is neither → keep
+            ($filtered-tail (filter_in_others $var $tail))
+       ) 
+        (cons-atom $filtered-head $filtered-tail))))
+
+
+(= (filter_foreach_var $var ())
+    ()
 )
 
 (= (filter_foreach_var $var $others)
     (let* (
-        ($other (superpose $others))
-        (($filtered $pat) (eval (filter_in_others $var $other)))
-        ($changed (call_replace ($filtered $pat)))
+        ($head (car-atom $others))
+        ($tail (cdr-atom $others))
+        (($filtered $pat) ((eval (filter_in_others $var $head)) $head))
+        ($changed (replace ($filtered $pat)))
         ($uniq (unique-atom $changed))
         ($ov (if (== (size-atom $uniq) (size-atom ($filtered $pat))) $pat ()))
+        ($rest (filter_foreach_var $var $tail))
     )
-    $ov
+    (cons-atom $ov $rest)
     )
 )
 
@@ -28,10 +65,25 @@
             )
     )
 )
+
+(= (remove_Abstract_clauses_helper () $patternog)
+    ()
+)
         
+(= (remove_Abstract_clauses_helper $pattern $patternog)
+    (let*(
+        ($head (car-atom $pattern))
+        ($tail (cdr-atom $pattern))
+        ($checked_clause (check_others $head $patternog))
+        ($rest (remove_Abstract_clauses_helper $tail $patternog))
+        ($final (cons-atom $checked_clause $rest))
+        )
+        $final
+    )
+)
 (= (remove_Abstract_clauses $pattern)
     (let*(
-        ($unfolded (map-atom $pattern $clause (check_others $clause $pattern)))
+        ($unfolded (remove_Abstract_clauses_helper $pattern $pattern))
         ($final (fold $unfolded ()))
         )
         $final
@@ -39,7 +91,7 @@
 )
 (= (clause_others_check $clause $pattern)
     (let*(
-        ($others (eval (subtraction-atom $pattern ($clause))))
+        ($others (eval (subtractions $pattern ($clause))))
         ($res (is_more_abstract_for_each_var $clause $others))
         )
         $res
@@ -47,13 +99,13 @@
 )
 
 (= (check_others $clause $pattern)
-    (let $res (clause_others_check $clause $pattern) (if (== $res False) $clause ()))
+     (let $res (clause_others_check $clause $pattern) (if (== $res False) $clause ()))
 )
 
 (= (is_more_abstract_for_each_var $clause $others)
     (let*
         (
-            ($vars (get_variable_for_pattern $clause))
+            ($vars (get_variables_for_tree $clause))
             ($result (is_more_abstractn $vars $others))
             ($trace (if (== $result False) Pass (collect_filtered_per_var $vars $others)))
             ($isAbstractForeachVar (checker $trace $clause))
@@ -121,7 +173,7 @@
 
 (= (is_more_abstract_for_var $var $others)
     (let* (
-        ($filtered (collapse (filter_foreach_var $var $others)))
+        ($filtered (if (== $others ()) (()) (filter_foreach_var $var $others)))
         ($isMoreAbstract (if (== (eval (unique-atom $filtered)) (())) False True))
     )
     ($isMoreAbstract $filtered $var)
@@ -131,44 +183,52 @@
 ; =========================================================================================
 
 (= (constant_clause_check $clause)
-    (let $vars (get_variable_for_pattern $clause) (if (== $vars ()) () $clause))
+     (let*(
+        ($vars (get_variables_for_tree $clause))
+        ($res (if (== $vars ()) () $clause))
+        )$res )
+)
+
+(= (check_constant ())
+    ()
+)
+(= (check_constant $pattern)
+   (let*(
+    ($clause (car-atom $pattern))
+    ($tail (cdr-atom $pattern))
+    ($res (constant_clause_check $clause)) 
+    ($rest (check_constant $tail))
+   )
+    (cons-atom $res $rest)
+    )
+    
 )
 (= (remove_constant_clauses $pattern)
     (let* (
-        ($unfolded (map-atom $pattern $clause (constant_clause_check $clause)))
+        ($unfolded (check_constant $pattern))
         ($final (fold $unfolded ()))
     )
     $final)
 )
-
 ; ==========================================================================================
+(= (is_clause_in_pat $clause ())
+    False
+)
 
 (= (is_clause_in_pat $clause $pattern) 
-    (
-        let* 
-            (
-                (($_ $head $tail) $pattern )
-                ($headCanContinue (== (get-metatype $head) Expression))
-                ($tailCanContinue (== (get-metatype $head) Expression))
-                ($weHaveGot (or (== $clause $head) (== $clause $tail)))
+    (let* (
+            ($head (car-atom $pattern))
+            ($tail (cdr-atom $pattern))
+            ($headCanContinue (== (get-metatype $head) Expression))
+            ($weHaveGot (== $clause $head))
             )
-
-            (
-                if $weHaveGot
-                    True
-                    (
-                        if $headCanContinue
-                            (
-                                if $tailCanContinue
-                                    (let ($a $b) (collapse (superpose ((is_clause_in_pat $clause $head) (is_clause_in_pat $clause $tail)))) (or $a $b))
-                                    (is_clause_in_pat $clause $head)
-                            )
-                            ( 
-                                if $tailCanContinue
-                                    (is_clause_in_pat $clause $tail)
-                                    False
-                            ) 
-                    )
+            (if $weHaveGot
+                True
+                (if $headCanContinue
+                    (or (is_clause_in_pat $clause $head) (is_clause_in_pat $clause $tail))
+                    (is_clause_in_pat $clause $tail)
+                            
+                )
             )
             
     )
@@ -192,29 +252,39 @@
 
 (= (clause_others_check_for_subtree $clause $pattern)
     (let*(   
-        ($others (eval (subtraction-atom $pattern ($clause))))  
+        ($others (eval (subtractions $pattern ($clause))))  
         ($res (is_pat_in_otherpat $clause $others))
         
         )
         (is_pat_in_otherpat $clause $others)
     )
 )
-
-(= (check_res $clause $pattern)
-   (let $res (clause_others_check_for_subtree $clause $pattern) (if (== $res False) $clause ()))
+(= (check_res () $patternog)
+    ()
+)
+(= (check_res $pattern $patternog)
+   (let*(
+    ($clause (car-atom $pattern))
+    ($tail (cdr-atom $pattern))
+    ($check (clause_others_check_for_subtree $clause $patternog)) 
+    ($res (if (== $check False) $clause ()))
+    ($rest (check_res $tail $patternog))
+   )
+    (cons-atom $res $rest)
+    )
+    
 )
 
 
 
 (= (remove_redundant_subclause $pattern)
     (let*(
-        ($unfolded (map-atom $pattern $clause (check_res $clause $pattern)))
+        ($unfolded (check_res $pattern $pattern))
         ($final (fold $unfolded ()))
         )
         $final
     )
 )
-
 ; ==========================================================================================
 
 (= (remove_useless_clauses $pattern)

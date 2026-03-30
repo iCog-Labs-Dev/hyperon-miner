@@ -1,124 +1,143 @@
 import subprocess
 import pathlib
 import sys
+import shutil
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
-# Define ANSI escape codes for colors
+# ------------------------------
+# Configuration
+# ------------------------------
+
+MAX_WORKERS = 2          # Safe for GitHub Actions
+TEST_TIMEOUT = 300       # Seconds per test (5 minutes)
+
+# Colors
 RESET = "\033[0m"
-BOLD = "\033[1m"
-UNDERLINE = "\033[4m"
-CYAN = "\033[96m"
 GREEN = "\033[92m"
 RED = "\033[91m"
 YELLOW = "\033[93m"
-MAGENTA = "\033[95m"
+CYAN = "\033[96m"
+
+# ------------------------------
+# Helpers
+# ------------------------------
+
+def print_header(text):
+    print(CYAN + "\n" + "=" * 60)
+    print(text)
+    print("=" * 60 + RESET)
 
 
-def extract_and_print(result, path, idx) -> bool:
-    """
-    Extracts the output from the test execution result and prints the status.
+def extract_and_print(result, path, idx):
+    output = result.stdout or result.stderr or ""
+    text = output.strip()
 
-    Returns True if the test failed, False otherwise.
-    """
-    output = result.stdout if result.returncode == 0 else result.stderr
-    extracted = output.replace("[()]\n", "")
+    failed = result.returncode != 0 or "❌" in text
 
-    has_failure = "Error" in extracted
+    print(YELLOW + f"\nTest {idx + 1}: {path}" + RESET)
+    print((RED if failed else GREEN) +
+          ("FAILED" if failed else "PASSED") +
+          RESET)
+    print(YELLOW + f"Exit code: {result.returncode}" + RESET)
 
-    if not has_failure:
-        extracted = "test passed"
+    if failed:
+        print(RED + "Output:" + RESET)
+        print(text[:3000])  # Avoid huge logs
 
-    status_color = RED if has_failure else GREEN
-    print(YELLOW + f"Test {idx + 1}: {path}" + RESET)
-    print(status_color + extracted + RESET)
-    print(YELLOW + f"Exit-code: {result.returncode}" + RESET)
-    print("-" * 40)
-
-    return has_failure
+    return failed
 
 
 def run_test_file(test_file):
-    """
-    Runs a single test file using the `metta` command.
-    """
+    run_sh = shutil.which("run.sh")
+    if not run_sh:
+        raise RuntimeError("❌ run.sh not found in PATH")
+
     try:
         result = subprocess.run(
-            [metta_run_command, str(test_file)],
+            [run_sh, str(test_file)],
             capture_output=True,
             text=True,
-            check=True,
+            timeout=TEST_TIMEOUT
         )
-        return result, test_file, False
-    except subprocess.CalledProcessError as e:
-        return e, test_file, True
+        return result, test_file
+
+    except subprocess.TimeoutExpired:
+        class TimeoutResult:
+            returncode = -1
+            stdout = ""
+            stderr = f"⏰ Timeout after {TEST_TIMEOUT}s"
+
+        return TimeoutResult(), test_file
+
+    except Exception as e:
+        class ErrorResult:
+            returncode = -1
+            stdout = ""
+            stderr = str(e)
+
+        return ErrorResult(), test_file
 
 
-# Function to print ASCII art
-def print_ascii_art(text):
-    art = f"""
-                {text}
-           """
-    print(CYAN + art + RESET)
+# ------------------------------
+# Main
+# ------------------------------
 
+print_header("Parallel Petta Test Runner")
 
-# Define the command to run with the test files
-metta_run_command = "metta"
-
-# Whitelist of specific test files to run
 allowed_tests = {
     "test-isurp-old.metta",
-    "test-isurp.metta",
     "test-common-utils.metta",
+    "test-isurp.metta",
     "test-est-tv.metta",
-    "test-emp-tv.metta",
     "test-surp.metta",
-
+    "test-emp-tv.metta",
+    "test-jsd.metta",
+    "test-pattern-miner.metta"
 }
 
-# Collect only test files that start with test- and end with .metta
 root = pathlib.Path("../")
-testMettaFiles = [
-    f for f in root.rglob("test-*.metta") if f.name in allowed_tests
-]
+test_files = sorted(
+    f for f in root.rglob("test-*.metta")
+    if f.name in allowed_tests
+)
 
-total_files = len(testMettaFiles)
-results = []
+if not test_files:
+    print(YELLOW + "⚠️  No whitelisted tests found." + RESET)
+    sys.exit(0)
+
+total = len(test_files)
 fails = 0
+failed_tests = []
 
-# Print ASCII art title
-print_ascii_art("Parallel Test Runner")
+print(CYAN + f"Running {total} tests with {MAX_WORKERS} workers...\n" + RESET)
 
-# Execute tests in parallel
-with ThreadPoolExecutor() as executor:
-    future_to_test = {
-        executor.submit(run_test_file, test_file): idx
-        for idx, test_file in enumerate(testMettaFiles)
+with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
+    futures = {
+        executor.submit(run_test_file, test): idx
+        for idx, test in enumerate(test_files)
     }
 
-    for future in as_completed(future_to_test):
-        idx = future_to_test[future]
-        try:
-            result, path, has_failure = future.result()
-            if isinstance(result, subprocess.CalledProcessError):
-                print(RED + f"Error with {path}: {result.stderr}" + RESET)
-                fails += 1
-                continue
-
-            # Extract and print results
-            has_failure = extract_and_print(result, path, idx)
-            if has_failure:
-                fails += 1
-
-        except Exception as exc:
-            print(RED + f"Test {idx + 1}: generated an exception: {exc}" + RESET)
+    for future in as_completed(futures):
+        idx = futures[future]
+        result, path = future.result()
+        if extract_and_print(result, path, idx):
             fails += 1
+            failed_tests.append(str(path))
 
+# ------------------------------
 # Summary
-print(CYAN + "\nTest Summary" + RESET)
-print(f"{total_files} files tested.")
-print(RED + f"{fails} failed." + RESET)
-print(GREEN + f"{total_files - fails} succeeded." + RESET)
+# ------------------------------
 
-if fails > 0:
-    print(RED + "Tests failed. Process Exiting with exit code 1" + RESET)
+print_header("Test Summary")
+print(f"Total: {total}")
+print(GREEN + f"Passed: {total - fails}" + RESET)
+print(RED + f"Failed: {fails}" + RESET)
+
+if fails:
+    print(RED + "\nFailed tests:" + RESET)
+    for f in failed_tests:
+        print(" -", f)
     sys.exit(1)
+
+print(GREEN + "\n✅ All tests passed!" + RESET)
+sys.exit(0)

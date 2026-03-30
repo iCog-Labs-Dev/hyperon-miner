@@ -34,49 +34,51 @@
                 ))
 
 
-(= (get-clauses-inner $cnj) (
-  unify (, $ncnj $ptrn) $cnj (let $result (get-clauses-inner $ncnj) (cons-atom $ptrn $result) ) ($cnj)
-))
+
+
+
+
+
 
 (= (conj? $p)
     (case $p
     (((, $clause1 $clause2) True)
      ($_ False))))
 
+
 ;; define system proofs 
-------------------------------------------------------------------
+;------------------------------------------------------------------
 ;; System proof for ⍃
 ;; if conclusion equals (⍃ $X $Y), then return (: CPU (⍃ $X $Y)) 
 ;; if $x and $Y are fully grounded and (< $X $Y)
-------------------------------------------------------------------
+;------------------------------------------------------------------
 (= (syn $kb $_ (: $prf (⍃ $X $Y))) 
     (if (and (and (is-number $X) (is-number $Y)) (<= $X $Y))
           (: CPU (⍃ $X $Y))
              (empty)))
 
 
-----------------------------------------------------------------------------
+;----------------------------------------------------------------------------
 ;; system proof  to calculate the emp-tv for the given pattern. 
 ;; The database is queried here because, when it was placed in the premises, 
 ;; it caused infinite results in CPUEMP.
-----------------------------------------------------------------------------
+;----------------------------------------------------------------------------
 (= (syn $kb $_ (: $prf (emp-cpu $ptrn  $emp ))) 
-    (let* (($dbb (match $kb (db-ref $db) $db))
-            ($pattern   (remove-hashtag $ptrn)))
+    (let $emp (match $kb (db-ref $db)  (emp-tv $ptrn $db))
        
-    (: CPUEMP (emp-cpu $ptrn  (emp-tv $pattern $dbb))) ) 
+    (: CPUEMP (emp-cpu $ptrn  $emp)) ) 
 )
 
------------------------------------------------------------------------------
+;-----------------------------------------------------------------------------
 ;; system proof  to calculate the est-tv for the given pattern. 
 ;; The database is queried here because, when it was placed in the premises, 
 ;; it caused infinite results in CPUEST.
------------------------------------------------------------------------------
+;-----------------------------------------------------------------------------
 (= (syn $kb $_ (: $prf (est-cpu  $ptrn $emp $est))) 
-    (let* (($dbb (match $kb (db-ref $db) $db))
-           ($pattern (remove-hashtag $ptrn)))
-    (: CPUEST (est-cpu $ptrn $emp (do-ji-tv-est $dbb $pattern ))) ) 
-)
+    (let* (($est-tv  (match $kb (db-ref $db) (do-ji-tv-est $db $ptrn)))
+           )
+    (: CPUEST (est-cpu $ptrn $emp $est-tv)) ) )
+
 
 
 (= (syn $kb $_ (: $prf (jsd-cpu $emp $est $surp)))
@@ -84,7 +86,7 @@
        (: JSDCPU (jsd-cpu $emp $est $surp-val))))
 
 
------------------------------------------------------------------------------
+;-----------------------------------------------------------------------------
 ;; emperical probability of a pattern 
 (= (syn $kb $_ (: $prf (prob-cpu  $pattern $ucount $prob))) 
     (let $dbb (match $kb (db-ref $db) $db)
@@ -92,7 +94,7 @@
     ) 
 )
 
------------------------------------------------------------------------------
+;-----------------------------------------------------------------------------
 ;; emperical probability of a pattern for isurp
 (= (syn $kb $_ (: $prf (prob-cpu  $pattern $db-ratio $emax $prob))) 
     (let $dbb (match $kb (db-ref $db) $db)
@@ -100,13 +102,13 @@
     ) 
 )
 
------------------------------------------------------------------------------
+;-----------------------------------------------------------------------------
 ;; system proof to calculate the partitions for the given pattern.
 (= (syn $kb $_ (: $prf (partition-cpu  $pattern $partitions))) 
-    (let* (
-         ($cleaned-pattern (remove-hashtag $pattern))
-        ($partitions (generet-partition-without-pattern $cleaned-pattern)))
-    (: CPUPARTN (partition-cpu  $pattern $partitions)) ) 
+    (let 
+    
+        $partitions-result  (partitions-wout-pattern (cdr-atom $pattern))
+         (: CPUPARTN (partition-cpu  $pattern $partitions-result)) ) 
 )
 
 
@@ -124,7 +126,7 @@
 
 
 
-----------------------------------------------------------------------------
+;----------------------------------------------------------------------------
 ;; min max estimation of the pattern for isurp old
 (= (syn $kb $_ (: $prf (est-prob-cpu  $pattern $partitions $ucount $emin-emax))) 
     (let* (($dbb (match $kb (db-ref $db) $db))
@@ -133,17 +135,16 @@
 )
 
 
-----------------------------------------------------------------------------
+;----------------------------------------------------------------------------
 ;; min max estimation of the pattern for isurp 
 (= (syn $kb $_ (: $prf (ji-prob-est-cpu  $pattern $partitions  $db_ratio $emin-emax))) 
     (let* (($dbb (match $kb (db-ref $db) $db))
-            ($cleaned-pattern (remove-hashtag $pattern))
-            ($min-max (let $products  (collapse (ji-prob-est (superpose $partitions) $cleaned-pattern $dbb $db_ratio)) (min-max $products))))
+            ($min-max (let $products  (collapse (ji-prob-est (superpose $partitions) $pattern $dbb $db_ratio)) (min-max $products))))
     (: CPUESTPROB (ji-prob-est-cpu  $pattern $partitions $db_ratio $min-max)) ) 
 )
 
 
--------------------------------------------------------------------------
+;-------------------------------------------------------------------------
 ;; calculates the distance between the estimate value and emperical value
 (= (syn $kb $_ (: $prf (dst-cpu $x $y $dst))) 
     (let $dst (- $x $y)
@@ -151,7 +152,7 @@
 )
 
 
-------------------------------------------------------------------------
+;------------------------------------------------------------------------
 ;; calculates the all possible same number of conjuct pattern 
 (= (syn $kb $_ (: $prf (universal-cpu $pattern $db-size $ucount))) (
     let $number-of-conjuct (n_conjuncts_new $pattern) 
@@ -159,47 +160,47 @@
 ))
 
 
--------------------------------------------------------------------------
+;-------------------------------------------------------------------------
 ;; create the minimum relation 
 (= (syn $kb $_ (: $prf (minimum $x $y $z)))
          (let $min (min $x $y)
                (: MINIMUMCPU  (minimum $x $y $min))))
 
 
--------------------------------------------------------------------------
+;-------------------------------------------------------------------------
 ;; create the maximum relation 
 (= (syn $kb $_ (: $prf (maximum $x $y $z)))
          (let $max (max $x $y)
                (: MAXIMUMCPU  (maximum $x $y $max))))
 
--------------------------------------------------------------------------
+;-------------------------------------------------------------------------
 ;; division relation 
 (= (syn $kb $_ (: $prf (divide $x $y $z)))
          (let $div (// $x $y)
                (: DIVIDECPU (divide $x $y $div))))
 
-------------------------------------------------------------------------
+;------------------------------------------------------------------------
 ;;equality checker relation 
 (= (syn $kb $_ (: $prf (equals $X $Y))) 
     (if (and (and (is-number $X) (is-number $Y)) (== $X $Y))
           (: CPUequals (equals $X $Y))
              (empty)))
 
----------------------------------------------------------------------
+;---------------------------------------------------------------------
 (= (syn $kb $_ (: $prf (⍄ $X $Y))) 
     (if (and (and (is-number $X) (is-number $Y)) (> $X $Y))
           (: CPU (⍄ $X $Y))
              (empty))) 
 
-==============================================================================
+;==============================================================================
 ;;frequent pattern miner system proofs
-==============================================================================
+;==============================================================================
 
 ;; system proof to get the unique links from the database
 (= (syn $kb $_ (: $prf (uniqueLink $pattern $cnt))) 
     (let* (
         ($db (match $kb (db-ref $db) $db))
-        ($uniquelink (collapse (unique (match $db ($link $x $y) $link)) ) )
+        ($uniquelink (unique-atom (collapse (match $db ($link $x $y) $link)) ) )
         ($sup (superpose $uniquelink))
         )
     (if (== (size-atom $uniquelink) 0)
@@ -208,11 +209,11 @@
              ))
     )
 
----------------------------------------------------------------------------
+;---------------------------------------------------------------------------
 ;; system proof to replace variables with debruijn index
 (= (syn $kb $_ (: $prf (replace_variables $ptrn)))
     (let* (
-        ($new_ptrn (call_replace $ptrn))
+        ($new_ptrn (replace $ptrn))
         )
     (if (== $new_ptrn ())
           (empty)
@@ -221,7 +222,7 @@
     )
 )
 
------------------------------------------------------------------------------
+;-----------------------------------------------------------------------------
 ;; system proof to count support
 (= (syn $kb $_ (: $prf (sup_count $ptrn $count)))
     (let* (
@@ -235,11 +236,11 @@
     )
 )
 
------------------------------------------------------------------------------
+;-----------------------------------------------------------------------------
 ;;system proof to replace debruijn index with variables
 (= (syn $kb $_ (: $prf (replace_index $ptrn $res)))
     (let* (
-        ($new_ptrn (call_replacev $ptrn))
+        ($new_ptrn (replacev $ptrn))
         )
     (if (== $new_ptrn ())
           (empty)
@@ -248,11 +249,11 @@
     )
 )
 
------------------------------------------------------------------------------
+;-----------------------------------------------------------------------------
 ;;system proof to replace debruijn index with variables
 (= (syn $kb $_ (: $prf (sort_conjunctions $ptrn $res)))
     (let* (
-        ($new_ptrn (call_sort_conj $ptrn))
+        ($new_ptrn (sort_conj $ptrn))
         )
     (if (== $new_ptrn ())
           (empty)
@@ -261,20 +262,20 @@
     )
 )
 
------------------------------------------------------------------------------
+;-----------------------------------------------------------------------------
 ;; system proof to get variables of a pattern
-(= (syn $kb $_ (: $prf (get_variables $ptrn $vars)))
+(= (syn $kb $_ (: $prf (get_variables_prf $ptrn $vars)))
     (let* (
-        ($vars (get_variable_for_pattern $ptrn))
+        ($vars (get_variables_for_tree $ptrn))
         )
     (if (== $ptrn ())
           (empty)
-             (: CPUGetPatternVariables (get_variables $ptrn $vars))
+             (: CPUGetPatternVariables (get_variables_prf $ptrn $vars))
         )    
     )
 )
 
------------------------------------------------------------------------------
+;-----------------------------------------------------------------------------
 ;; system proof to combine variable of two patterns
 (= (syn $kb $_ (: $prf (combine_variables $vars1 $vars2 $comb)))
     (let* (
@@ -287,11 +288,15 @@
     )
 )
 
------------------------------------------------------------------------------
+;-----------------------------------------------------------------------------
 ;; system proof to substitute variables in a pattern by another variables
 (= (syn $kb $_ (: $prf (substitute_variables $pattern $vars $subpattern)))
     (let* (
-        ($subpattern (substitute $pattern $vars))
+        ($eachvars (superpose $vars))
+        (true (println! (here $eachvars)))
+        (($sub $remaining) (substitute $pattern $eachvars))
+        ($subpattern (if (== (get-metatype $pattern) Variable) ((car-atom $sub) $remaining) ($sub $remaining)))
+        (true (println! (here $subpattern)))
         )
     (if (== $subpattern ())
           (empty)
@@ -300,13 +305,11 @@
     )
 )
 
------------------------------------------------------------------------------
+;-----------------------------------------------------------------------------
 ;;system proof to count the number of clauses in a pattern
 (= (syn $kb $_ (: $prf (clause_count $ptrn $cnt)))
     (let* (
-
-        ($cnt (let $clauses (get-clauses-inner $ptrn) (size-atom $clauses)))
-
+        ($cnt (let $clauses (get-conjuncts $ptrn) (size-atom $clauses)))
         )
     (if (== $cnt 0)
           (empty)
@@ -315,21 +318,33 @@
     )
 )
 
------------------------------------------------------------------------------
+;-----------------------------------------------------------------------------
 ;; system proof to clean conjunction with redundant clauses
-(= (syn $kb $_ (: $prf (conjunction_clean $conjunction)))
+(= (syn $kb $_ (: $prf (conjunction_clean_useless_clause $conjunction)))
     (let* (
         ($conjuncts (get-conjuncts $conjunction))
-        ($unique_conjuncts (unique-atom $conjuncts))
+        ($unique_conjuncts (remove_useless_clauses $conjuncts))
         )
     (if (== (size-atom $conjuncts) (size-atom $unique_conjuncts))
-        (: CPUConjunctionClean (conjunction_clean $conjunction))
+        (: CPUConjunctionClean1 (conjunction_clean_useless_clause $conjunction))
         (empty)
     )
     )
 )
 
-------------------------------------------------------------------------------
+(= (syn $kb $_ (: $prf (conjunction_clean_redundant_clause $conjunction)))
+    (let* (
+        ($conjuncts (get-conjuncts $conjunction))
+        ($unique_conjuncts (unique-atom $conjuncts))
+        )
+    (if (== (size-atom $conjuncts) (size-atom $unique_conjuncts))
+        (: CPUConjunctionClean2 (conjunction_clean_redundant_clause $conjunction))
+        (empty)
+    )
+    )
+)
+
+;;------------------------------------------------------------------------------
 ;; system proof to handle depth
 (= (syn $kb $_ (: $prf (depth-handler $type $val $val2 $shab $res)))
     (if (== $type X)
@@ -341,7 +356,6 @@
             (if (== $val $val2)
                 (let* (
                     ($shaby $shab)
-                    (() (println! ($shaby val y)))
                     )
                     (: CPUHandleNestedExp (depth-handler $type $val $val2 $shab $shaby))
                 )    
@@ -355,13 +369,13 @@
     ))
 )
 
-------------------------------------------------------------------------------
+;;------------------------------------------------------------------------------
 ;; system proof to get valuation set of a pattern
 (= (syn $kb $_ (: $prf (valuation $type ($link $x $y) $val)))
     (let* (
         ($db (match $kb (db-ref $db) $db))
-        ( $valx (collapse (unique (match $db ($link $x $y) $x))))
-        ( $valy (collapse (unique (match $db ($link $x $y) $y))))
+        ( $valx  (unique-atom (collapse (match $db ($link $x $y) $x))))
+        ( $valy  (unique-atom (collapse (match $db ($link $x $y) $y))))
         )
     (if (== $type X)
         (if (== ($valx $valy) ())
@@ -379,27 +393,115 @@
     )
 )     
 
-------------------------------------------------------------------------------
+; ------------------------------------------------------------------------------
+;; functions to get valuation of a pattern
+(= (syn $kb $_ (: $prf (get_matches $pattern $results)))
+    (let* (
+        ($db (match $kb (db-ref $db) $db))
+        ($results (unique-atom (collapse (match $db $pattern $pattern))))
+        (true (println! ("==== Getting matches =====" $pattern , $results)))
+        )
+    (if (== $results ())
+          (empty)
+             (: CPUGetMatches (get_matches $pattern $results))
+        )    
+    )
+)
+
+; ------------------------------------------------------------------------------
+;; functions to get valuation of a pattern
+(= (syn $kb $_ (: $prf (istop $pattern)))
+    (if (== (get-metatype $pattern) Variable)
+        (: CPUIsTop (istop $pattern))
+        (empty))
+)
+
+; ------------------------------------------------------------------------------
+;; functions to get valuation of a pattern
+(= (syn $kb $_ (: $prf (isnottop $pattern)))
+    (if (not (== (get-metatype $pattern) Variable))
+        (: CPUIsNotTop (isnottop $pattern))
+        (empty))
+)
+
+; ------------------------------------------------------------------------------
+;; system proof to handle conjunction
+(= (syn $kb $_ (: $prf (get_variables_for_pattern_cpu $pattern $varIndex)))
+    (let* (
+        ($varIndex (collapse (get_variables_for_pattern $pattern)))
+        (true (println! ("==== Getting pattern variables =====" $pattern , $varIndex)))
+        )
+    (if (== $varIndex ())
+          (empty)
+             (: CPUGetPatternVariables (get_variables_for_pattern_cpu $pattern $varIndex))
+        )    
+    )
+)
+
+(= (get_vals_cpu_helper $list $varIndex $vals)
+    (if (== $varIndex ())
+        $vals
+    (let* (
+        ($head (car-atom $varIndex))
+        (($var $index) $head)
+        ($tail (cdr-atom $varIndex))
+        ($val (unique-atom (get_vals $list $index ($var))))
+        ($new_vals (union-atom $vals ($val)))
+    )
+    (get_vals_cpu_helper $list $tail $new_vals)
+    ))
+)
+
+; ------------------------------------------------------------------------------
+;; system proof to get valuation values at given index
+(= (syn $kb $_ (: $prf (get_vals_cpu $list $varIndex $vals)))
+    (let* (
+        ($vals (get_vals_cpu_helper $list $varIndex ()))
+        )
+    (if (== $vals ())
+          (empty)
+             (: CPUGetVals (get_vals_cpu $list $varIndex $vals))
+        )    
+    )
+)
+
+(= (syn $kb $_ (: $prf (shallow_abstact_cpu $vals $shab)))
+    (let* (
+        (true (println! ("==== Shallow abstractions =====" $vals)) )
+        ($shab (unique-atom (collapse (shallow_abstractions $vals () 0))))
+        (true (println! (here in sys proof $shab)))
+        ; ($shab (superpose $res))
+        )
+    (if (== $shab ())
+          (empty)
+             (: CPUGetVals (shallow_abstact_cpu $vals $shab))
+        )    
+    )
+)
+
+
+
+;;------------------------------------------------------------------------------
 (= (syn $kb $_ (: $prf (is-conj $p))) 
     (if (conj? $p)
         (: CPUConjprf (is-conj $p))
         (empty)))
 
 
-------------------------------------------------------------------------------
+;;------------------------------------------------------------------------------
 (= (syn $kb $_ (: $prf  (flatten-cpu $nptrn $fptrn))) (
     let $flatten (flatten $nptrn) (: FLATCPU (flatten-cpu $nptrn $flatten))
 ))
 
-------------------------------------------------------------------------------
+;;------------------------------------------------------------------------------
 (= (syn $kb $_ (: $prf  (join-cpu $nptrn $jptrn))) (
     let $joined (cons-atom , $nptrn) (: CPUJoin (join-cpu $nptrn $joined))
 ))
     
         
-==============================================================================
+;==============================================================================
 ;; chainner 
-==============================================================================
+;==============================================================================
 ;; Base case
 (= (syn $kb $_ (: $prf $ccln)) (match $kb (: $prf $ccln) (: $prf $ccln)))
 
@@ -407,8 +509,9 @@
 (= (syn $kb (S $k) (: ($prfabs $prfarg) $ccln))
    (let* (
      ((: $prfabs (-> $prms $ccln)) (syn $kb $k (: $prfabs (-> $prms $ccln))))
-          (() (println! (Next prims : $prms)))
+      ; (true (println! ("==== Chainner step ====="  $prfarg $ccln)))
           ((: $prfarg $prms) (syn $kb $k (: $prfarg $prms)))
+
           )
      (: ($prfabs $prfarg) $ccln)))
 
@@ -422,18 +525,14 @@
 ;; Iterative step
 (= (isyn $kb $depth (S $k) $query)
    (let* (
-      (() (println! (have called)))
       ($cres (collapse (syn $kb $depth $query)))
-          (() (println! (cres: $cres)))
           ($dummy (add-atoms-nodup $kb $cres))
           )
      (isyn $kb $depth $k (superpose $cres))))
 
 (= (collapser $kb $depth  $query)
    (let* (
-      (() (println! (have called)))
       ($cres (collapse (syn $kb $depth $query)))
-      (() (println! (cres: $cres)))
           )
      $cres))
 

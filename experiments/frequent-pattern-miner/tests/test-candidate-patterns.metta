@@ -1,27 +1,31 @@
-! (register-module! ../../../../hyperon-miner)
-! (import! &self hyperon-miner:experiments:frequent-pattern-miner:candidate-patterns)
-! (import! &self hyperon-miner:experiments:utils:common-utils)
-! (import! &self hyperon-miner:experiments:frequent-pattern-miner:freq-pat)
-! (bind! &specspace (new-space))
-! (bind! &cndpspace (new-space))
+!(import! &self ../../utils/index_to_var)
+!(import! &self ../../utils/common-utils)
+!(import! &self ../valuation)
+!(import! &self ../shallow-abstractions)
+!(import! &self ../specialization)
+!(import! &self ../candidate)
 
+!(add-atom &dbspace (Inheritance Abe human))
+!(add-atom &dbspace (Inheritance Rio human))
+!(add-atom &dbspace (Inheritance Bob human))
+!(add-atom &dbspace (Inheritance Liam Espresso-Fan Blue-Bottle) )
+!(add-atom &dbspace (Inheritance Heidi Espresso-Fan Blue-Bottle))
+!(add-atom &dbspace (Inheritance Liam Pizza-Lover The-Slice-Shop))
+!(add-atom &dbspace (Inheritance Heidi Pizza-Lover The-Slice-Shop))
 
-
- 
-! (add-reduct &self (= (get-space) (new-space)))
-! (add-atom (get-space) (Inheritance Abe human))
-! (add-atom (get-space) (Inheritance Rio human))
-! (add-atom (get-space) (Inheritance Bob human))
-! (add-atom (get-space) (Inheritance Mike human))
-
-!(add-reduct &specspace (SpecializationOf (Inheritance Z human) (Inheritance Z (S Z))))
-!(add-atom &specspace (SpecializationOf (Inheritance Rio Z) (Inheritance Z (S Z))))
-!(add-atom &specspace (SpecializationOf (Inheritance Abe Z) (Inheritance Z (S Z))))
-!(add-atom &specspace (SpecializationOf (Inheritance Mike Z) (Inheritance Z (S Z))))
-
-!(candidatePattern (get-space) &specspace 2 &cndpspace)
-
-!(assertEqual (match &cndpspace $x $x) 
-    (CandidatePattern (Inheritance Z human)))
+   
+!(candidate-pattern-miner $x &dbspace 2 &cndpspace)
+!(assertEqual (collapse (match &cndpspace $x $x)) 
+                           ((CandidatePattern (Inheritance Z human) 3) 
+                            (CandidatePattern (Inheritance Z (S Z)) 3) 
+                            (CandidatePattern (Inheritance Heidi Z (S Z)) 2)
+                            (CandidatePattern (Inheritance Liam Z (S Z)) 2)
+                            (CandidatePattern (Inheritance Z Pizza-Lover The-Slice-Shop) 2)
+                            (CandidatePattern (Inheritance Z Pizza-Lover (S Z)) 2)
+                            (CandidatePattern (Inheritance Z Espresso-Fan Blue-Bottle) 2)
+                            (CandidatePattern (Inheritance Z Espresso-Fan (S Z)) 2)
+                            (CandidatePattern (Inheritance Z (S Z) The-Slice-Shop) 2)
+                            (CandidatePattern (Inheritance Z (S Z) Blue-Bottle) 2)
+                            (CandidatePattern (Inheritance Z (S Z) (S (S Z))) 4)))
 
 

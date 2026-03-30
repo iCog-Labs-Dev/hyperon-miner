@@ -7,7 +7,7 @@
 ; (: prob-with-joint (-> SpaceType Number (BList Pattern) Any Number Number))
 ; (: ji-est-tv (-> SpaceType Number Pattern (PList Pattern) (List TruthValue)))
 
-(: do-ji-tv-est (-> SpaceType Pattern TruthValue))
+; (: do-ji-tv-est (-> SpaceType Pattern TruthValue))
 
 ;; =============================================================================
 ;; Function: pro_prob_without_joint
@@ -234,10 +234,9 @@
             ;    ($rp_est (prob-with-joint $db $db_size (remove-parenthesis $head) (joint-variables-init $pattern (remove-parenthesis $head)) 1))
                ($rp_est (eq-prob (remove-parenthesis $head)  $pattern $db))
               (($strength $confidence) ((* $rp $rp_est) (* 1e-1 (car-atom $rc))))
-               ($dummy (ji-est-tv $db $db_size $pattern $tail))
+              ($old (ji-est-tv $db $db_size $pattern $tail))
                ) 
-              (cons-atom (STV $strength $confidence)  $dummy) 
-            
+              (cons-atom (STV $strength $confidence)  $old)  
           ))
  )
 
@@ -259,11 +258,12 @@
 ;;     all partitioned estimations of the pattern.
 ;; =============================================================================
 
-(=(do-ji-tv-est $db $pattern) (
-    let $prtns (generet-partition-without-pattern $pattern)  
+(= (do-ji-tv-est $db $pattern) (
+    let $prtns (partitions $pattern)  
           ( let* (
-            (() (println! "======= Truth Value Estimation ======="))
-            (($strength $confidence) (avrg_tv (ji-est-tv $db (db_size $db) $pattern $prtns) )))
+            ($_ (println! "======= Truth Value Estimation ======="))
+            ($db_size (db_size $db))
+            (($strength $confidence) (avrg_tv (ji-est-tv $db $db_size $pattern $prtns) )))
            (STV $strength $confidence))           
 ))
 

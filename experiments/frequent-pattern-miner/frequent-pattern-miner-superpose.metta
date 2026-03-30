@@ -1,21 +1,15 @@
-! (register-module! ../../../hyperon-miner)
-! (import! &db hyperon-miner:experiments:data:small-ugly)
-! (import! &self hyperon-miner:experiments:frequent-pattern-miner:build-specialization)
-! (import! &self hyperon-miner:experiments:frequent-pattern-miner:candidate-patterns)
-! (import! &self hyperon-miner:experiments:frequent-pattern-miner:conjunction-expansion)
-! (import! &self hyperon-miner:experiments:utils:common-utils)
-
-
-! (bind! &kb (new-space))
-! (bind! &dbspace (new-space))
-! (bind! &testspace (new-space))
-! (bind! &specspace (new-space))
-! (bind! &cndpspace (new-space))
-! (bind! &aptrnspace (new-space))
-! (bind! &conjspace (new-space))
-
-
-!(let ($link $x $y) (get-atoms &db) (add-atom &dbspace ($link $x $y)))
+!(import! &self ./build-specialization)
+!(import! &self ./candidate-patterns)
+!(import! &self ./conjunction-expansion)
+!(import! &self ../utils/index_to_var)
+!(import! &self ../data/small-ugly)
+; !(import! &self ../data/sample-data)
+!(import! &self ../utils/common-utils)
+!(import! &self ../utils/variable-combinations)
+!(import! &self ../utils/remove_useless_clauses)
+!(import! &self ../utils/blk-abstractness)
+!(import! &self ../utils/partition-metta)
+!(migrateAtoms &self &dbspace (Inheritance $x $y))
 
 ;;function name: abstract-pattern
         ; Gets Abstract Patterns with Minimum Support so that we can use them for the specialization.
@@ -33,7 +27,7 @@
 
 (= (abstract-pattern $dbspace $minsup $aptrnspace $cndpspace)
             (let* (
-                    ($linkunique (unique (match $dbspace ($link $x $y) $link)))
+                    ($linkunique (unique-atom (collapse (match $dbspace ($link $x $y) $link))))
                     ($result (sup-eval $dbspace ($linkunique $z $t) $minsup))
                 )
             (if (== $result True)
@@ -73,20 +67,6 @@
 
 
 
-; function name: formatter
-                    ; function to format the patterns and add them to the knowledge base with their support.
-
-                    ; parameters:
-                        ; $kb: the knowledge base
-                        ; $conjspace: the space that stores the conjunctions of the patterns
-                        ; $dbspace: the database
-
-                    ;steps:
-                        ; 1: get the matches of the conjunctions in the database
-                        ; 2: sort the conjunctions with a custom sorting function and get only the unique conjunctions from the sorte results
-                        ; 3: create a flattened conjunction  using cons-atom with the sorted conjunctions and ,.
-                        ; 4: add the results to the knowledge base with their support
-
 
 
 
@@ -123,4 +103,5 @@
 )
 
 
-
+!(frequency-pattern-miner &kb &dbspace &specspace &cndpspace &aptrnspace &conjspace 2 0)
+!(match &kb $x $x)

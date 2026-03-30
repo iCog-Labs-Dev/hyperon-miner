@@ -1,33 +1,19 @@
-! (register-module! ../../../../hyperon-miner/experiments)
-! (import! &self experiments:utils:common-utils)
-! (import! &self experiments:utils:beta-dist)
-! (import! &self experiments:utils:constants)
-! (import! &self experiments:utils:TruthValue)
-! (import! &self experiments:utils:surp-utils)
-! (import! &self experiments:utils:miner-utils)
-! (import! &self experiments:utils:gen_partition)
-! (import! &self experiments:utils:bs-utils) 
-! (import! &self experiments:utils:customType)
-! (import! &self experiments:truth-values:est-tv)
-! (import! &self experiments:truth-values:emp-tv)
-! (import! &self experiments:surprisingness:isurp)
-! (import! &self experiments:surprisingness:emp-prob)
-! (import! &kb2 experiments:data:nested_coupled:mock_coupled)
-! (import! &self experiments:utils:binomialMetta)
-! (import! &self experiments:utils:eq_prob_adaptor)
-! (import! &self experiments:utils:blk-abstractness)
-! (import! &self experiments:utils:eq-prob)
-! (import! &self experiments:utils:index_to_var)
-
-! (import! &kb experiments:data:ugly_man_sodaDrinker)
-;  ! (import! &kb experiments:data:nested_coupled:mock_coupled)
-
-
-
-
-
-
-
+!(import! &self ../../utils/common-utils)
+!(import! &self ../../utils/surp-utils/partition-metta)
+!(import! &self ../../utils/surp-utils/binomialMetta)
+!(import! &self ../../utils/surp-utils/surp-utils)
+!(import! &self ../../utils/surp-utils/beta-dist)
+!(import! &self ../../utils/surp-utils/blk-abstractness)
+!(import! &self ../../utils/surp-utils/eq-prob-petta)
+!(import! &self ../../utils/surp-utils/bs-utils)
+!(import! &self ../../utils/TruthValue)
+!(import! &self ../../utils/constants)
+!(import! &self ../../truth-values/emp-tv)
+!(import! &self ../../truth-values/est-tv)
+!(import! &self ../../utils/index_to_var)
+!(import! &kb ../../data/ugly_man_sodaDrinker)
+!(import! &self ../emp-prob)
+!(import! &self ../isurp)
 
 
 
@@ -54,7 +40,7 @@
 ;;   Tests basic JI-Prob calculation when clauses are distributed across two
 ;;   partition components with some overlap in variables.
 ;; =============================================================================
-(assertEqual 
+!(assertEqual 
   (ji-prob-est 
     (((Inheritance $x man) (Inheritance $x sodaDrinker)) 
     ((Inheritance $x ugly)))
@@ -88,7 +74,7 @@
 ;;   Tests that completely separated clauses in partition yield higher JI-Prob
 ;;   than overlapping cases (Test 1), demonstrating proper dependence modeling.
 ;; =============================================================================
-(assertEqual 
+!(assertEqual 
   (ji-prob-est 
     (((Inheritance $x man)) 
      ((Inheritance $x sodaDrinker)) 
@@ -126,7 +112,7 @@
 ;;   2. Verifies order preservation in results
 ;;   3. Checks proper accumulation of estimates
 ;; =============================================================================
-(assertEqual 
+!(assertEqual 
   (do-ji-prob 
     ((((Inheritance $x man) (Inheritance $x sodaDrinker)) 
       ((Inheritance $x ugly)))
@@ -163,7 +149,7 @@
 ;;   2. Verifies handling of different ratio parameter
 ;;   3. Checks proper tuple output format
 ;; =============================================================================
-(assertEqual 
+!(assertEqual 
   (ji_prob_est_interval 
     (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker))
     &kb
@@ -194,7 +180,46 @@
 
 !(assertEqual (isurp (, (Inheritance $x man) (Inheritance $x ugly) (Inheritance $x sodaDrinker) ) &kb False 0.2) 1.9290123456790123e-5)
 
-(assertEqual  (isurp (, (Inheritance (Person $x) man) (Inheritance (Person $x) ugly) (Inheritance (Person $x) sodaDrinker) ) &kb2 False 0.2) 1.9290123456790123e-5)
 
 
+;; test with n-arry format data
+!(import! &dbNarry ../../data/dataset_for_n_arry_format)
+;; inputs:-
+  ;; conjunctive pattern: (, (Inheritance $x Loves $y) (Inheritance $x $Interest $Venue) (Inheritance $y $Interest $Venue))
+  ;; db reference: dataset_for_n_arry_format
+  ;; ratio: 0.2
+  ;; normalization: True
+!(assertEqual (isurp (, 
+   (Inheritance $x Loves $y) 
+   (Inheritance $x $Interest $Venue) 
+   (Inheritance $y $Interest $Venue)) &dbNarry True 0.2) 0.9574829931972789)
 
+;; inputs:-
+  ;; conjunctive pattern: (, (Inheritance $x $y The-Slice-Shop) (Inheritance $x Pizza-Lover $place) (Inheritance $x Pizza-Lover The-Slice-Shop))
+  ;; db reference: dataset_for_n_arry_format
+  ;; ratio: 0.2
+  ;; normalization: True
+!(assertEqual (isurp (, 
+   (Inheritance $_32506 $_32512 The-Slice-Shop) 
+   (Inheritance $_32506 Pizza-Lover $_32548) 
+   (Inheritance $_32506 Pizza-Lover The-Slice-Shop)) &dbNarry True 0.2) 0.7857142857142857)
+
+;; inputs:-
+  ;; conjunctive pattern: (, (Inheritance $x Loves $y) (Inheritance $x $Interest $Venue) (Inheritance $y $Interest $Venue))
+  ;; db reference: dataset_for_n_arry_format
+  ;; ratio: 0.2
+  ;; normalization: False
+!(assertEqual (isurp (, 
+   (Inheritance $x Loves $y) 
+   (Inheritance $x $Interest $Venue) 
+   (Inheritance $y $Interest $Venue)) &dbNarry False 0.2) 0.0005234054263104659)
+
+;; inputs:-
+  ;; conjunctive pattern: (, (Inheritance $x $y The-Slice-Shop) (Inheritance $x Pizza-Lover $place) (Inheritance $x Pizza-Lover The-Slice-Shop))
+  ;; db reference: dataset_for_n_arry_format
+  ;; ratio: 0.2
+  ;; normalization: False
+!(assertEqual (isurp (, 
+   (Inheritance $_32506 $_32512 The-Slice-Shop) 
+   (Inheritance $_32506 Pizza-Lover $_32548) 
+   (Inheritance $_32506 Pizza-Lover The-Slice-Shop)) &dbNarry False 0.2) 0.0002147542690545606)
