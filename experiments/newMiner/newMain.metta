@@ -1,18 +1,19 @@
 !(import! &self ../frequent-pattern-miner/alt-exp/Updated-frequentMinerHelperFunctions)
-; !(import! &self ../utils/common-utils)
+!(import! &self ../utils/disjoint_conjunct)
 !(import! &self utils)
 !(import! &self ../utils/index_to_var)
 !(import! &self ../utils/surp-utils/blk-abstractness)
 !(import! &self ../utils/remove_useless_clauses)
-; !(import! &self nolawi)
 !(import! newDB ../data/ugly_man_sodadrinker)
+
+
 
 ;; check function
 ( = (conjunctChecker $db $conjunct $cnjSpace $ms)
     ; return the conjunct if (not (is-member-custom $conjunct $cnjSpace)) && (main-func $conjunct ()) && (sup-evalCustom $db $conjunct $ms)
     (let $bool1 (== () (collapse (eval (is_member $cnjSpace $conjunct)))) ;(is-member-custom $conjunct $cnjSpace)
         (if $bool1              
-            (let $bool2 True ;(main-func $conjunct ())
+            (let $bool2 (check-disj $conjunct)
                 (if $bool2
                     (let $bool3 (sup-evalCustom $db $conjunct $ms)
                         (if $bool3

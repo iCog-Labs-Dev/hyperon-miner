@@ -8,6 +8,34 @@
     
     )
 )
+(= (member-atom-cust $elem $lst)
+   (if (== $lst ())
+       False
+       (let $head (car-atom $lst)
+         (let $tail (cdr-atom $lst)
+           (if (== $elem $head)
+               True
+               (member-atom-cust $elem $tail)
+           )
+         )
+       )
+   )
+)
+
+
+(= (set-intersection-cust $set2 $set1)
+   (if (== $set1 ())
+       ()
+       (let $head (car-atom $set1)
+         (let $tail (cdr-atom $set1)
+           (if (member-atom-cust $head $set2)
+               (cons-atom $head (set-intersection-cust $set2 $tail))
+               (set-intersection-cust $set2 $tail)
+           )
+         )
+       )
+   )
+)
 
 (=(get-variables-helper-sup $pattern $acc)
   
@@ -73,7 +101,7 @@
 
 (= (check-disj $conjunct)
 
-(if (== $conjucnt ()) () (if (not (== (car-atom $conjunct ) ,))
+(if (== $conjunct ()) () (if (not (== (car-atom $conjunct ) ,))
  True
  (let* (
 
@@ -95,13 +123,17 @@
 ;recursivley collects all chainned subpatterns conncted through bridge subpatterns.
 (= (get-all-bridged $cluster $unbridged) (let* (
   ; ($clVars (get-variables-sup $cluster ()))
-  (($con $uncon) (get-un-connected $unbridged $cluster))
+
+  ($clVars (foldl-atom $cluster () $acc  $el (union-atom $el $acc )))
+  (($con $uncon) (get-un-connected $unbridged $clVars))
   )
   (if (== $con ()) ($cluster $unbridged)
   (get-all-bridged $con $uncon)
   )
   
   ))
+
+  
 
 
 
@@ -113,8 +145,8 @@
 ;collects subpatterns that contain common variables with the list of vairables $vars
 (=(con-pats $pat $vars $acc)
   (let* (
-      ($patvars (cdr-atom $pat))
-      ($inter (set-intersection $patvars $vars))
+      ; ($patvars (cdr-atom $pat))
+      ($inter (set-intersection-cust $pat $vars))
     )
     (if (== (size-atom $inter) 0)
         $acc
@@ -126,8 +158,8 @@
 ;collects subpatterns that don't contain any common variables with the list of vairables $vars
 (=(un-con-pats $pat $vars $acc)
   (let* (
-      ($patvars (cdr-atom $pat))
-      ($inter (set-intersection $patvars $vars))
+      ; ($patvars (cdr-atom $pat))
+      ($inter (set-intersection-cust $pat $vars))
     )
     (if (== (size-atom $inter) 0)
         (cons-atom $pat $acc)
@@ -160,8 +192,5 @@
 
 
 
-;;====================
-;; this is how its called
-;(check-disj (, (In $a b) (In $c d)))
 
-;;=====================
+
