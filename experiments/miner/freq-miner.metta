@@ -1,49 +1,3 @@
-; -----------------------------------------------------------------
-;; abstract patterns 
-; -----------------------------------------------------------------
-;; extracts abstract patterns from the db
-(= (abstract $depth $kb)
-   (let* (
-    (true (println! "==== Extracting abstract patterns =====") )
-    ($res (syn $kb $depth (: $prf (AbstractPattern $x)))) 
-    ($rem (remove-atom $kb $res))
-    ($add (add-atom $kb $res))
-    ) 
-    $res
-    )
-)
-
-; --------------------------------------------------
-;; specialization
-; --------------------------------------------------
-;;Generates the specializations of the abstract patterns
-(= (specialization $depth $kb)
-
-   (let* (
-    (true (println! "==== Generating specializations  =====") )
-    ($resy (syn $kb $depth (: $prf (specializationOf $aptrn $sptrn))))
-    ($rem (remove-atom $kb $resy))
-    ($add (add-atom $kb $resy))
-    ) 
-    $resy
-    )
-) 
-
-; --------------------------------------------------
-;; support 
-; -------------------------------------------------
-;; Annotate the support of specialized patterns
-(= (support_ $depth $kb)
-   (let* (
-    (true (println! "==== Computing support =====") )
-    ($res (syn $kb $depth (: $prf (supportOf $sptrn $cnt))))
-    ($rem (remove-atom $kb $res))
-    ($add (add-atom $kb $res))
-    ) 
-    $res
-    )
-)
-
 ; -----------------------------------------------
 ;; candidate
 ; -----------------------------------------------
@@ -92,44 +46,51 @@
     )
 )
 
+;; --------------------------------------------------
+;; candidatePatternMiner
+;; --------------------------------------------------
+;; pipeline for the candidate pattern mining
+(= (candidatePatternMiner $pattern $db $kb)
+    (let* (
+            (true (println! "==== Candidate Pattern Miner Started ====="))
+            ($initpat (: init-pat (initpat $pattern)))
+            ($addInit (add-atom $kb $initpat))
+            ($atom (: candidatep (-> (minsup $ptrn $cnt) (-> (replace_variables $ptrn) (candidatePattern $ptrn $cnt)))))
+            ($add (add-atom $kb $atom))
+            ($result (collapse (candidate (fromNumber 18) $kb)))
+            ($rem (remove-atom $kb $atom))
+            ($remInit (remove-atom $kb $initpat))
+            ($nextcnd (match $kb (: $prf (candidatePattern $cndpat $sup)) (replacev $cndpat)))
+            (true (println! (matched $nextcnd)))
+            ($next (has_nested_expression_with_respect_to $pattern $nextcnd))
+            (true (println! ("==== Next Candidate =====" $next)))
+            ($rec (if $next (candidatePatternMiner $nextcnd $db $kb) ()))
+        )
+        $rec
+    )
+)
 
 ; --------------------------------------------------
 ;; frequent-miner
 ; --------------------------------------------------
 ;; pipeline for the frequent patter mining 
-(= (frequent-miner $db $kb $number-of-conjuct True) 
+
+(= (frequent-miner $db $kb $initpat $number-of-conjuct True) 
 ( 
      let*  ( 
         (true (println! "==== Frequent Miner Started =====") )
-         ($re (collapse (abstract (fromNumber 5) $kb)))
-         ($res (collapse (specialization (fromNumber 7) $kb)))
-         ($resu (collapse (support_ (fromNumber 3) $kb)))
-         ($atom (: candidatep (-> (minsup $ptrn $cnt) (-> (replace_variables $ptrn) (candidatePattern $ptrn $cnt)))))
-         ($add (add-atom $kb $atom))
-         ($result (collapse (candidate (fromNumber 5) $kb)))
-         ($rem (remove-atom $kb $atom))
+        ($resultsc (collapse (candidatePatternMiner $initpat $db $kb)))
          ($results (collapse (conjunction (fromNumber 19) $kb 1 (- $number-of-conjuct 1))))
-         ($resultf (collapse (format (fromNumber 7) $kb)))
+         ($resultf (collapse (format (fromNumber 6) $kb)))
+         ($final (collapse (match $kb (: $prf (hasSupport $pattern $sup)) (let $vpattern (replacev $pattern) (superpose ((remove-atom $kb (: $prf (hasSupport $pattern $sup))) (add-atom $kb (: $prf (hasSupport $vpattern $sup)))))))))
       ) ()
 )
 )
-(= (frequent-miner $db $kb $number-of-conjuct False) 
+(= (frequent-miner $db $kb $initpat $number-of-conjuct False) 
 ( 
      let*  ( 
         (true (println! "==== Frequent Miner Started =====") )
-         ($re (collapse (abstract (fromNumber 5) $kb)))
-         ($res (collapse (specialization (fromNumber 7) $kb)))
-         ($resu (collapse (support_ (fromNumber 3) $kb)))
-         ($atom (: candidatep (-> (minsup $ptrn $cnt) (-> (replace_variables $ptrn) (candidatePattern $ptrn $cnt)))))
-         ($add (add-atom $kb $atom))
-         ($result (collapse (candidate (fromNumber 5) $kb)))
-         ($rem (remove-atom $kb $atom))
+         ($result (collapse (candidatePatternMiner $initpat $db $kb)))
       ) ()
 )
 )
-
-
-
-
-
-
