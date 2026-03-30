@@ -6,8 +6,6 @@
 !(import! &self ../utils/remove_useless_clauses)
 !(import! newDB ../data/ugly_man_sodadrinker)
 
-
-
 ;; check function
 ( = (conjunctChecker $db $conjunct $cnjSpace $ms)
     ; return the conjunct if (not (is-member-custom $conjunct $cnjSpace)) && (main-func $conjunct ()) && (sup-evalCustom $db $conjunct $ms)
@@ -15,19 +13,22 @@
         (if $bool1              
             (let $bool2 (check-disj $conjunct)
                 (if $bool2
-                    (let $bool3 (sup-evalCustom $db $conjunct $ms)
+                    (let ($newSupport $bool3) (sup-evalCustom2 $db $conjunct $ms)
                         (if $bool3
                             (if (== (size-atom (unique-atom (cdr-atom $conjunct))) (size-atom (remove_Abstract_clauses (cdr-atom $conjunct))))
-                                $conjunct
-                                (trace! (WARN:- $conjunct have abstract clauses in it) ())
+                                ($newSupport $conjunct)
+                                (() ())
                             )
-                            (trace! (WARN:- $conjunct doesn't have enough support) ())
+                            
+                            (() ())
                         )
                     )
-                    (trace! (WARN:- $conjunct have disjoint groups in it) ())
+                   
+                    (() ())
                 )
             )
-            (trace! (WARN:- $conjunct is already stored) ())            
+            
+            (() ())       
         )
     )
 )
@@ -56,51 +57,48 @@
     )
 )
 
-( = (mainSpecializerHelper2 $conjunct $var $vals $tail $db $ms $conjDB)
+( = (mainSpecializerHelper2 $conjunct $var $vals $tail $ms $conjDB $support)
     (if ( == $vals () ) $conjDB
         (let*
             (
                 (($val $tailVals) (decons-atom $vals))
                 ($newConj (insert $conjunct $var $val))
                 ($newSortedConj (customConjunctSorter $newConj))
-                ($checked (conjunctChecker $db $newSortedConj $conjDB $ms))
+               
+                (($newSupport $checked) (conjunctChecker $support $newSortedConj $conjDB $ms))
                 ($newConjDB
                     (if (== $checked ()) $conjDB
-                        (mainSpecializerHelper $checked $tail $db $ms (cons-atom $checked $conjDB)) ;; getting in more...
+                        (mainSpecializerHelper $checked $tail $ms (cons-atom $checked $conjDB) $newSupport) ;; getting in more...
                     )
                 )
             )
-            (mainSpecializerHelper2 $conjunct $var $tailVals $tail $db $ms $newConjDB) ;; for the other valuations for the same variable...
+            (mainSpecializerHelper2 $conjunct $var $tailVals $tail $ms $newConjDB $support) ;; for the other valuations for the same variable...
         )
     )
 )
 
-( = (mainSpecializerHelper $conjunct $structuredVars $db $ms $conjDB)
+( = (mainSpecializerHelper $conjunct $structuredVars $ms $conjDB $support)
     (if ( == $structuredVars () ) $conjDB
         (let*
             (
                 ((($var $vals) $tail) (decons-atom $structuredVars))
-                ; ($dummy1 (println! (starting with conjunct:- $conjunct -- var:- $var -- vals:- $vals) ))
+              
             )
-            (mainSpecializerHelper2 $conjunct $var $vals $tail $db $ms $conjDB)
+            (mainSpecializerHelper2 $conjunct $var $vals $tail $ms $conjDB $support)
             
         )
     )
 )
 
-( = (mainSpecializer $conjunct $db $ms $conjDB)
+( = (mainSpecializer ($support $conjunct) $db $ms $conjDB)
     (let*
         (
-            ($dummy1 (println! (---)))
-            ($dummy2 (println! (starting to specialize conjunct:- $conjunct)))
-            ($dummy3 (println! (conjDB:- $conjDB)))
+            
             ($vars (unique-atom (getOrderlyVariables $conjunct)))
             ($valuations (collapse (match $db $conjunct $vars)))
             ($structuredVars (structureValues $vars $valuations))
-            ; ($dummy4 (println! (structured vars :- $structuredVars)))
-            ($dummy5 (println! (---)))
         )
-        (mainSpecializerHelper $conjunct $structuredVars $db $ms $conjDB)
+        (mainSpecializerHelper $conjunct $structuredVars $ms $conjDB $support)
     )
 )
 
@@ -108,8 +106,18 @@
     (let*
         (
             ($cnjSpace conjDB)
-            ($conjuncts (collapse (let ($dummy $abstractConj) (abstractPattern $numOfConj Inheritance) (if (sup-evalCustom $db $abstractConj $ms) $abstractConj (empty) ))))
-            ($dummy (println! (conjuncts to specialize:- $conjuncts)))
+            ($conjuncts
+                (collapse 
+                    (let*
+                        (
+                            (($dummy $abstractConj) (abstractPattern $numOfConj Inheritance))
+                            (($sup $bool) (sup-evalCustom3 $db $abstractConj $ms))                          
+                        )
+                        (if $bool ($sup $abstractConj) (empty))
+                    )
+                )
+            )
+            
         )
         (foldl-atom $conjuncts () $acc $conjunct (mainSpecializer $conjunct $db $ms $acc))
     )
