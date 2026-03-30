@@ -1,3 +1,32 @@
+( = (sup-evalCustom3 $db $abstractConj $ms)
+    (let $ptrns (collapse (match $db $abstractConj $abstractConj)) 
+        ($ptrns (>= (size-atom $ptrns) $ms))
+    )
+)
+
+( = (sup-evalCustom2Helper $pattern $ms $acc $elem)
+    (if (= $elem $pattern)  
+        (cons-atom $elem $acc)
+        $acc
+    )
+)
+
+; (= (sup-evalCustom2 $ptrns $pattern $ms)
+;     (let
+;         $pool (foldl-atom $ptrns () $acc $elem   
+;                 (sup-evalCustom2Helper $pattern $ms $acc $elem) )                 
+;         ($pool (>= (size-atom $pool) $ms))
+
+;     )
+; )
+(= (sup-evalCustom2 $supports $pattern $ms)
+    (let
+        $sups (collapse (let $support (superpose $supports)
+            (if (= $pattern $support) $support (empty))))
+        ($sups (>= (size-atom $sups) $ms))
+    )
+)
+
 (= (sup-evalCustom $db $pattern $ms)
     (let $pool (collapse (match $db $pattern $pattern)) 
         (>= (size-atom $pool) $ms))
