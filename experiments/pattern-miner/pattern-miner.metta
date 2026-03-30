@@ -37,6 +37,7 @@
       )         
 )
 
+
 (= (do-IIsurp $kb $db (supportOf $pattern $support) $norm $choice $db-ratio)
 ( let* ( 
      ($surp (if (== $choice isurp)
@@ -45,7 +46,6 @@
       (add-atom-nodup $kb   (surprisingnessOf $pattern $surp))
      )   
 )
-
 
 
 

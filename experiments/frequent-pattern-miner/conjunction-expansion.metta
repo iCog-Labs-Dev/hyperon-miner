@@ -106,7 +106,6 @@
 )
 (= (replace_pattern $cnjtion $pattern $pv2cv)
     (let* (
-            (true (println! ("==== Expanding conjunction =====" $cnjtion $pattern $pv2cv)))
             ($sup (superpose $pv2cv))
             ($exp (substitute $pattern $sup))
             ($new_cnjtion (, $cnjtion (car-atom $exp)))
@@ -118,12 +117,9 @@
 (= (checker $db $pattern $ms) 
     (let*
     (    
-        (true (println! ("==== Checking conjunction =====" $pattern)))
         ($conjuncts (get-conjuncts $pattern))
         ($flat (cons-atom , $conjuncts))
-        (true (println! ("==== Flattened conjunction =====" $flat)))
         ($result (sup-eval $db $flat $ms))
-        (true (println! ("==== Support evaluation result =====" $result)))
         ($final (if $result $pattern ()))
     )
    $final
@@ -135,7 +131,6 @@
     (if (== $conjunction ())
         ()
     (let* (
-        (true (println! ("==== Removing redundant clauses from conjunctions =====" $conjunction)))
         ($conjuncts (get-conjuncts $conjunction))
         ($uselessrem (remove_useless_clauses $conjuncts))
         ($unique_conjuncts (unique-atom $uselessrem))
