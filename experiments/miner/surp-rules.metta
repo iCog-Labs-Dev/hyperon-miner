@@ -17,9 +17,8 @@
 ;; So, it was moved to emp-cpu, which serves as a system-proof.
 ;;-----------------------------------------------------------------------
 (: emp-rule 
-       (-> (minsup $ptrn) 
-              (-> (emp-cpu $ptrn $emp ) 
-                      (emp-val $ptrn $emp))))
+        (-> (emp-cpu $ptrn $emp ) 
+                    (emp-val $ptrn $emp)))
 
 
 
@@ -33,9 +32,8 @@
 ;;calculated within the est-tv function
 ;---------------------------------------------------------------------
 (: est-rule 
-    (-> (minsup $ptrn)
-                (->(est-cpu $ptrn $emp $est)
-                      (est-tv $ptrn $emp $est))))
+         (->(est-cpu $ptrn $emp $est)
+                      (est-tv $ptrn $emp $est)))
                       
 
 ;----------------------------------------------------------------------
