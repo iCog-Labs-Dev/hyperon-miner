@@ -65,9 +65,8 @@
 ;; Rule to calculate the empirical probability of a pattern.(isurp-old)
 (: emp-prob-rule 
      (-> (surp-mode isurp-old)
-        (->  (universal-count-of $pattern $ucount)
           (-> (prob-cpu $pattern $ucount $prob)
-                (empProb $pattern  $prob)))))
+                (empProb $pattern $ucount $prob))))
 
 
 ;----------------------------------------------------------------------
@@ -91,10 +90,9 @@
 ;; Rule to estimate the probability interval for a pattern.(isurp-old)
 (: est-prob-rule 
           (-> (surp-mode isurp-old)
-            (->  (universal-count-of $pattern $ucount)
                 (-> (partitions-of-pattern $pattern $partitions)
                     (-> (est-prob-cpu  $pattern $partitions $ucount $emin-emax)
-                           (est-prob $pattern  $emin-emax)))))) 
+                           (est-prob $pattern $ucount  $emin-emax)))) )
 
 
 
@@ -132,8 +130,8 @@
 (: isurp-rule 
    (-> (normalized True) 
       (-> (universal-count-of $pattern $count)
-         (-> (empProb $pattern  $emp)
-              (-> (est-prob $pattern ($emin $emax)) 
+         (-> (empProb $pattern $count  $emp)
+              (-> (est-prob $pattern $count ($emin $emax)) 
                   (-> (dst $pattern $emp ($emin $emax) $dst)
                      (-> (maximum $emp $emax $max)
                              (-> (divide $dst $max $normalized) 
