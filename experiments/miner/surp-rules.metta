@@ -73,10 +73,10 @@
 ;; Rule to calculate the empirical probability of a pattern.(isurp)
 (: emp-prob-rule 
       (-> (surp-mode isurp)
-        (->  (est-prob $pattern  ($emin $emax))
+        (->  (est-prob $pattern $ucount ($emin $emax))
           (-> (db-ratio $db-ratio)
              (-> (prob-cpu $pattern $db-ratio $emax $prob)
-                 (empProb $pattern  $prob))))))
+                 (empProb $pattern  $ucount $prob))))))
 
 
 ;;------------------------------------------------------------------------
@@ -100,11 +100,10 @@
 ;; Rule to estimate the probability interval for a pattern.(isurp)
 (: est-prob-rule 
           (-> (surp-mode isurp)
-              (->(minsup $pattern)
                   (-> (partitions-of-pattern $pattern $partitions)
                       (-> (db-ratio $db-ratio) 
                         (-> (ji-prob-est-cpu $pattern $partitions $db-ratio $emin-emax)
-                              (est-prob $pattern  $emin-emax)))))))
+                              (est-prob $pattern $ucount $emin-emax))))))
         
                            
 ;;------------------------------------------------------------------------
@@ -126,7 +125,7 @@
 
 
 ;;------------------------------------------------------------------------
-;; Rule to calculate the old surprisingness value (normalized True).
+;; Rule to calculate the  surprisingness value (normalized True).
 (: isurp-rule 
    (-> (normalized True) 
       (-> (universal-count-of $pattern $count)
@@ -142,11 +141,11 @@
 
 
 ;---------------------------------------------------------------------
-;; Rule to calculate the old surprisingness value (normalized False).
+;; Rule to calculate the  surprisingness value (normalized False).
 (: isurp-rule 
    (-> (normalized False) 
       (->  (universal-count-of $pattern $count)
-         (-> (empProb $pattern  $emp)
+         (-> (empProb $pattern $count $emp)
              (-> (est-prob $pattern  ($emin $emax))
                  (-> (dst $pattern $emp ($emin $emax) $dst)
                     (-> (minimum $dst 1.0 $minimum )
