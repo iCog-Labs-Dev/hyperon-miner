@@ -5,7 +5,6 @@
 
 (= (shallow_abstractions $valuations $history $current_index)
     (let* (
-        (true (println! (here in shallow_abstractions $valuations $history $current_index)))
         ($head (car-atom $valuations))
         ($tail (cdr-atom $valuations))
         (($vals $abstractions $index) (get_abstractions $head $history $current_index))
