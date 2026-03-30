@@ -123,13 +123,17 @@
 ;recursivley collects all chainned subpatterns conncted through bridge subpatterns.
 (= (get-all-bridged $cluster $unbridged) (let* (
   ; ($clVars (get-variables-sup $cluster ()))
-  (($con $uncon) (get-un-connected $unbridged $cluster))
+
+  ($clVars (foldl-atom $cluster () $acc  $el (union-atom $el $acc )))
+  (($con $uncon) (get-un-connected $unbridged $clVars))
   )
   (if (== $con ()) ($cluster $unbridged)
   (get-all-bridged $con $uncon)
   )
   
   ))
+
+  
 
 
 
@@ -141,8 +145,8 @@
 ;collects subpatterns that contain common variables with the list of vairables $vars
 (=(con-pats $pat $vars $acc)
   (let* (
-      ($patvars (cdr-atom $pat))
-      ($inter (set-intersection-cust $patvars $vars))
+      ; ($patvars (cdr-atom $pat))
+      ($inter (set-intersection-cust $pat $vars))
     )
     (if (== (size-atom $inter) 0)
         $acc
@@ -154,8 +158,8 @@
 ;collects subpatterns that don't contain any common variables with the list of vairables $vars
 (=(un-con-pats $pat $vars $acc)
   (let* (
-      ($patvars (cdr-atom $pat))
-      ($inter (set-intersection-cust $patvars $vars))
+      ; ($patvars (cdr-atom $pat))
+      ($inter (set-intersection-cust $pat $vars))
     )
     (if (== (size-atom $inter) 0)
         (cons-atom $pat $acc)
@@ -185,6 +189,8 @@
       (get-un-connected-helper $patterns $vars () ())
   )
 )
+
+
 
 
 
