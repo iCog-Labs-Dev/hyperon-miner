@@ -4,7 +4,9 @@
 !(import! &self ../utils/index_to_var)
 !(import! &self ../utils/surp-utils/blk-abstractness)
 !(import! &self ../utils/remove_useless_clauses)
-!(import! newDB ../data/ugly_man_sodadrinker)
+
+!(import! &self "C:/Users/tewob/PeTTaProject/PeTTa/lib/lib_import.metta") ;add local path of PeTTa's lib
+!(static-import! newDB ../data/ugly_man_sodadrinker)
 
 ;; check function
 ( = (conjunctChecker $db $conjunct $cnjSpace $ms)
@@ -16,7 +18,7 @@
                     (let ($newSupport $bool3) (sup-evalCustom2 $db $conjunct $ms)
                         (if $bool3
                             (if (== (size-atom (unique-atom (cdr-atom $conjunct))) (size-atom (remove_Abstract_clauses (cdr-atom $conjunct))))
-                                ($newSupport $conjunct)
+                                (trace! (conjunct : $conjunct is added) ($newSupport $conjunct))
                                 (() ())
                             )
                             
@@ -110,7 +112,7 @@
                 (collapse 
                     (let*
                         (
-                            (($dummy $abstractConj) (abstractPattern $numOfConj Inheritance))
+                            (($dummy $abstractConj) (abstractPattern $numOfConj inheritance))
                             (($sup $bool) (sup-evalCustom3 $db $abstractConj $ms))                          
                         )
                         (if $bool ($sup $abstractConj) (empty))
