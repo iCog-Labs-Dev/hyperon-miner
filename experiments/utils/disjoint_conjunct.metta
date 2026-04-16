@@ -1,181 +1,118 @@
-
-(=(ret-vars-sup $x $acc )
-  
-    (let* (
-      ( $outAcc (if (== (get-metatype $x ) Variable) (cons-atom $x $acc ) $acc))
-    )
-    $outAcc
-    
+( = (is_member_with_out_superpose $x $list)
+    (if (== $list ())
+        False
+        (let ($head $tail) (decons-atom $list)
+            (if (== $x $head)
+                True
+                (is_member_with_out_superpose $x $tail)
+            )
+        )
     )
 )
-(= (member-atom-cust $elem $lst)
-   (if (== $lst ())
-       False
-       (let $head (car-atom $lst)
-         (let $tail (cdr-atom $lst)
-           (if (== $elem $head)
-               True
-               (member-atom-cust $elem $tail)
-           )
-         )
-       )
-   )
-)
 
-
-(= (set-intersection-cust $set2 $set1)
-   (if (== $set1 ())
-       ()
-       (let $head (car-atom $set1)
-         (let $tail (cdr-atom $set1)
-           (if (member-atom-cust $head $set2)
-               (cons-atom $head (set-intersection-cust $set2 $tail))
-               (set-intersection-cust $set2 $tail)
-           )
-         )
-       )
-   )
+; PeTTa function: returns True if two lists share at least one element, False otherwise
+(= (has_intersection $list1 $list2)
+   (if (== $list1 ())
+	   False
+	   (let ($head $tail) (decons-atom $list1)
+		    (if (is_member_with_out_superpose $head $list2)
+          True
+          (has_intersection $tail $list2)
+        )
+      )
+    )
 )
 
 (=(get-variables-helper-sup $pattern $acc)
-  
-    
-    (
-      if (== $pattern ()) $acc 
-      (let* (
-        (($head $tail ) (decons-atom $pattern))
-    ($newAcc (ret-vars-sup $head $acc))
-    )
-    (get-variables-helper-sup $tail $newAcc )
-    
-    )
-    
-    )
-    
-    
+  (
+    if (== $pattern ()) 
+      $acc 
+      (let* 
+        (
+          (($head $tail) (decons-atom $pattern))
+          ($newAcc (if (is-var $head) (cons-atom $head $acc) $acc))
+        )
+        (get-variables-helper-sup $tail $newAcc)        
+      )
+  )
 )
 
 (=(get-variables-sup $conjunct $acc)
   (if (== $conjunct ())
       $acc 
-      (let* ((($head $tail) (decons-atom $conjunct))
-             ($vars-head (get-variables-helper-sup (cdr-atom $head) $acc))
-             
-             ($lst (union-atom $acc $vars-head))
-            )
-
-
+      (let* 
+        (
+            (($head $tail) (decons-atom $conjunct))
+            ($vars-head (get-variables-helper-sup (cdr-atom $head) $acc))
+            ($lst (union-atom $acc $vars-head))
+        )
         (get-variables-sup $tail $lst)
       )
   )
 )
 
-
-;returns indpendent disjoint list of patterns or conjucnt that support be can be calculated for direclty through match and and mutiplied to get support for the origninal pattern
-;handles both conjucnt and single pattern inputs
-
-
-
+;returns independent disjoint list of patterns or conjunct that support be can be calculated for directly through match and and multiplied to get support for the original pattern
+;handles both conjunct and single pattern inputs
 
 (=(inter-extract $conj $acc) 
-
-(
-  if (== $conj ()) $acc
-  
-  (let* (
-  (($head $tail ) (decons-atom $conj))
-
-  ($vars (get-variables-sup ($head) ()))
-
-  ($newAcc (cons-atom $vars $acc ))
-  
+  (
+    if (== $conj ()) 
+      $acc  
+      (let* 
+        (
+          (($head $tail) (decons-atom $conj))
+          ($vars (get-variables-sup ($head) ()))
+          ($newAcc (cons-atom $vars $acc))      
+        )
+        (inter-extract $tail $newAcc)
+      )
   )
-
-  (inter-extract $tail $newAcc)
-
-  
-  ))
-
-
 )
 
 (= (check-disj $conjunct)
-
-(if (== $conjunct ()) () (if (not (== (car-atom $conjunct ) ,))
- True
- (let* (
-
-
-  ($no-comma (cdr-atom $conjunct))
-  ($var-conjs (inter-extract $no-comma ()))
-  (($head $tail) (decons-atom $var-conjs))
-
-  (($conn $unconn) (get-all-bridged ($head) $tail))
- )
- (if (== $unconn ()) True  False)
- )
-
-)))
-
-;returns list of lists of disjoint subpatterns, each internal list being an cluster cotaning related subpatterns as a whole either through direct relationship or through chainned r/ship
-
-
-;recursivley collects all chainned subpatterns conncted through bridge subpatterns.
-(= (get-all-bridged $cluster $unbridged) (let* (
-  ; ($clVars (get-variables-sup $cluster ()))
-
-  ($clVars (foldl-atom $cluster () $acc  $el (union-atom $el $acc )))
-  (($con $uncon) (get-un-connected $unbridged $clVars))
-  )
-  (if (== $con ()) ($cluster $unbridged)
-  (get-all-bridged $con $uncon)
-  )
-  
-  ))
-
-  
-
-
-
-
-
-
-
-
-;collects subpatterns that contain common variables with the list of vairables $vars
-(=(con-pats $pat $vars $acc)
-  (let* (
-      ; ($patvars (cdr-atom $pat))
-      ($inter (set-intersection-cust $pat $vars))
-    )
-    (if (== (size-atom $inter) 0)
-        $acc
-        (cons-atom $pat $acc)
+  (if (== $conjunct ()) 
+    False 
+    (if (not (== (car-atom $conjunct ) ,))
+      True
+      (let* 
+        (
+          ($var-conjs (inter-extract (cdr-atom $conjunct) ()))
+          (($head $tail) (decons-atom $var-conjs))
+          (($conn $unconn) (get-all-bridged $head $tail))
+        )
+        (== $unconn ())
+      )
     )
   )
 )
 
-;collects subpatterns that don't contain any common variables with the list of vairables $vars
-(=(un-con-pats $pat $vars $acc)
-  (let* (
-      ; ($patvars (cdr-atom $pat))
-      ($inter (set-intersection-cust $pat $vars))
+;returns list of lists of disjoint sub patterns, each internal list being a cluster containing related sub patterns as a whole either through direct relationship or through chained relationship
+;recursively collects all chained sub patterns connected through bridge sub patterns.
+(= (get-all-bridged $cluster $unbridged) 
+  (let
+    ($con $uncon) (get-un-connected $unbridged $cluster)
+    (if (== $con ()) 
+      ($cluster $unbridged)
+      (get-all-bridged $con $uncon)
     )
-    (if (== (size-atom $inter) 0)
-        (cons-atom $pat $acc)
-        $acc
-    )
+  )
+)
+
+;collects subpatterns that contain common variables with the list of vairables $vars and collects subpatterns that contain common variables with the list of vairables $vars and 
+(=(con-uncon-pats $pat $vars $conAcc $unConAcc)
+  (if (has_intersection $pat $vars)
+      ((union-atom $pat $conAcc) $unConAcc)
+      ($conAcc (cons-atom $pat $unConAcc))
   )
 )
 
 ; recursive helper that partitions $patterns into connected and unconnected lists using accumulators
-(=(get-un-connected-helper $patterns $vars $conAcc $unAcc)
+(=(get-un-connected-helper $patterns $vars $conAcc $unConAcc)
   (if (== $patterns ())
-      ($conAcc $unAcc)
+      ($conAcc $unConAcc)
       (let* (
           (($head $tail) (decons-atom $patterns))
-          ($newConAcc (con-pats $head $vars $conAcc))
-          ($newUnAcc  (un-con-pats $head $vars $unAcc))
+          (($newConAcc $newUnAcc) (con-uncon-pats $head $vars $conAcc $unConAcc))
         )
         (get-un-connected-helper $tail $vars $newConAcc $newUnAcc)
       )
@@ -189,8 +126,3 @@
       (get-un-connected-helper $patterns $vars () ())
   )
 )
-
-
-
-
-
