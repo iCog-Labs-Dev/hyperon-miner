@@ -5,13 +5,14 @@
 !(import! &self ../utils/surp-utils/blk-abstractness)
 !(import! &self ../utils/remove_useless_clauses)
 
-; !(import! &self "C:/Users/Vertx/Desktop/coding/Metta/PeTTa/lib/lib_import.metta") ;add local path of PeTTa's lib
-!(import! newDB ../data/testDataSet) ;add local path of your db
+!(import! &self "C:/Users/Vertx/Desktop/coding/Metta/PeTTa/lib/lib_import.metta") ;add local path of PeTTa's lib
+!(import! newDB ../data/ugly_man_sodaDrinker) ;add local path of your db
+!(import_prolog_functions_from_file "C:/Users/Vertx/Desktop/coding/Metta/hyperon-miner/experiments/newMiner/helperPro.pl" (our_alpha_member))
 
 ;; check function
 ( = (conjunctChecker $db $conjunct $cnjSpace $ms)
     ; return the conjunct if (not (is-member-custom $conjunct $cnjSpace)) && (main-func $conjunct ()) && (sup-evalCustom $db $conjunct $ms)
-    (let $bool1 (not (alpha_member $conjunct $cnjSpace)) ; (== () (collapse (eval (is_member $cnjSpace $conjunct)))) ;(is-member-custom $conjunct $cnjSpace)
+    (let $bool1 (not (our_alpha_member $conjunct $cnjSpace)) ; (== () (collapse (eval (is_member $cnjSpace $conjunct)))) ;(is-member-custom $conjunct $cnjSpace)
         (if $bool1              
             (let $bool2 (check-disj $conjunct)
                 (if $bool2
@@ -128,5 +129,5 @@
 
 
 !(--------------------- main miner with specialization step ---------------)
-!(let $x (mainMiner newDB 500000 3) (println! (conj :- (superpose $x) )))
+!(let $x (mainMiner newDB 5 3) (println! (conj :- (superpose $x) )))
 !(-------------------------------------------------------------------------)
