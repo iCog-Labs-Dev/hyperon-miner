@@ -197,7 +197,7 @@
 (= (combiner-pat1-pat2 $vars () $accum) $accum)
 (= (combiner-pat1-pat2 $vars $pat2 $accum)
     (let ($head $tail) (eval (decons-atom $pat2))
-        (superpose (
+        (hyperpose (
             (combiner-pat1-pat2 $vars $tail (union-atom $accum ($head)))
             (let $var (superpose $vars) (if (== $var $head) (empty) (combiner-pat1-pat2 $vars $tail (union-atom $accum ($var))))) ;; Option 2: replace with each var but avoid redundancy that might come
                     )
