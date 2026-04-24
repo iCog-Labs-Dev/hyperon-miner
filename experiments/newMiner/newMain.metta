@@ -5,20 +5,20 @@
 !(import! &self ../utils/surp-utils/blk-abstractness)
 !(import! &self ../utils/remove_useless_clauses)
 
-!(import! &self "C:/Users/tewob/PeTTaProject/PeTTa/lib/lib_import.metta") ;add local path of PeTTa's lib
-!(static-import! newDB ../data/ugly_man_sodadrinker)
+; !(import! &self "C:/Users/Vertx/Desktop/coding/Metta/PeTTa/lib/lib_import.metta") ;add local path of PeTTa's lib
+!(import! newDB ../data/testDataSet) ;add local path of your db
 
 ;; check function
 ( = (conjunctChecker $db $conjunct $cnjSpace $ms)
     ; return the conjunct if (not (is-member-custom $conjunct $cnjSpace)) && (main-func $conjunct ()) && (sup-evalCustom $db $conjunct $ms)
-    (let $bool1 (== () (collapse (eval (is_member $cnjSpace $conjunct)))) ;(is-member-custom $conjunct $cnjSpace)
+    (let $bool1 (not (alpha_member $conjunct $cnjSpace)) ; (== () (collapse (eval (is_member $cnjSpace $conjunct)))) ;(is-member-custom $conjunct $cnjSpace)
         (if $bool1              
             (let $bool2 (check-disj $conjunct)
                 (if $bool2
                     (let ($newSupport $bool3) (sup-evalCustom2 $db $conjunct $ms)
                         (if $bool3
                             (if (== (size-atom (unique-atom (cdr-atom $conjunct))) (size-atom (remove_Abstract_clauses (cdr-atom $conjunct))))
-                                (trace! (conjunct : $conjunct is added) ($newSupport $conjunct))
+                                ($newSupport $conjunct)
                                 (() ())
                             )
                             
@@ -107,7 +107,6 @@
 ( = (mainMiner $db $ms $numOfConj)
     (let*
         (
-            ($cnjSpace conjDB)
             ($conjuncts
                 (collapse 
                     (let*
@@ -119,13 +118,15 @@
                     )
                 )
             )
+            ($dummy1 (println! (abstract conjuncts size :- (size-atom $conjuncts))))
             
         )
         (foldl-atom $conjuncts () $acc $conjunct (mainSpecializer $conjunct $db $ms $acc))
+        ; ()
     )
 )
 
 
 !(--------------------- main miner with specialization step ---------------)
-!(let $x (mainMiner newDB 5 2) (trace! (conjs size :- (size-atom $x) ) (superpose $x)))
+!(let $x (mainMiner newDB 500000 3) (println! (conj :- (superpose $x) )))
 !(-------------------------------------------------------------------------)
