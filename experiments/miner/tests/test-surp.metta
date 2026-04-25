@@ -111,8 +111,9 @@
 !(println! ("========== isurp-old test without  normalization ==============="))
 
 
+!(syn &kb (fromNumber 19) (: $prf  (Isurp $pattern $surp))) 
 
-!(assertEqual (syn &kb (fromNumber 19) (: $prf  (Isurp $pattern $surp))) 
+(assertEqual (syn &kb (fromNumber 19) (: $prf  (Isurp $pattern $surp))) 
    ;; Expected reslt  
 (: ((((((isurp-rule normalize) (((universal-count (((minsupport FACT4) msT) CPU)) dbsize) CPUUNIVERSAL)) (((emp-prob-rule surpMode) 
    (((universal-count (((minsupport FACT4) msT) CPU)) dbsize) CPUUNIVERSAL)) CPUPROB)) ((((est-prob-rule surpMode) (((universal-count 
@@ -139,13 +140,12 @@
 
 !(println! ("========== isurp-old test with normalization =============="))
 
+
 !(assertEqual (syn &kb2 (fromNumber 19) (: $prf  (Isurp $pattern $surp)))
 ;;Expected result 
- (: ((((((((isurp-rule normalize) (((universal-count (((minsupport FACT4) msT) CPU)) dbsize) CPUUNIVERSAL)) 
-    (((emp-prob-rule surpMode) (((universal-count (((minsupport FACT4) msT) CPU)) dbsize) CPUUNIVERSAL)) CPUPROB)) 
-    ((((est-prob-rule surpMode) (((universal-count (((minsupport FACT4) msT) CPU)) dbsize) CPUUNIVERSAL)) 
-     (partitions-rule CPUPARTN)) CPUESTPROB)) ((dst-from-interval CPU) CPUDST)) MAXIMUMCPU) DIVIDECPU) MINIMUMCPU) 
-     (Isurp (, (Inheritance $_36206 man) (Inheritance $_36206 ugly) (Inheritance $_36206 sodaDrinker)) 0.999707773232028)))
+ (: ((((((((isurp-rule normalize) (((universal-count (((minsupport FACT4) msT) CPU)) dbsize) CPUUNIVERSAL)) ((emp-prob-rule surpMode) CPUPROB)) 
+ (((est-prob-rule surpMode) (partitions-rule CPUPARTN)) CPUESTPROB)) ((dst-from-interval CPU) CPUDST)) MAXIMUMCPU) DIVIDECPU) MINIMUMCPU) 
+ (Isurp (, (Inheritance $_360224 man) (Inheritance $_360224 ugly) (Inheritance $_360224 sodaDrinker)) 0.999707773232028)))
 
 !(assertEqual (syn &kbNarry2 (fromNumber 19) (: $prf  (Isurp $pattern $surp)))
    (: ((((((((isurp-rule normalize) (((universal-count (((minsupport FACT4) msT) CPU)) dbsize) CPUUNIVERSAL)) (((emp-prob-rule surpMode) (((universal-count (((minsupport FACT4) msT) CPU)) dbsize) CPUUNIVERSAL)) CPUPROB)) ((((est-prob-rule surpMode) (((universal-count (((minsupport FACT4) msT) CPU)) dbsize) CPUUNIVERSAL)) (partitions-rule CPUPARTN)) CPUESTPROB)) ((dst-from-interval CPU) CPUDST)) MAXIMUMCPU) DIVIDECPU) MINIMUMCPU) (Isurp (, (Inheritance $_669806 $_669812 The-Slice-Shop) (Inheritance $_669836 $_669812 $_669848)) 0.9876543209876543))
@@ -161,19 +161,18 @@
 (=(normalization3) True)
 
 
-
 !(init-params &kb3 &db (min-sup3) (surp-mode3) (db-ratio3) (normalization3))
 !(init-params-n-arry &kbNarry3 &db2 (min-sup3_narry) (surp-mode3) (db-ratio3) (normalization3))
 
 !(println! ("========== isurp test with normalization =============="))
 
-!(assertEqual (syn &kb3 (fromNumber 19) (: $prf (Isurp $prattern  $surp))) 
-             ;; Expecged result 
-              (: ((((((((isurp-rule normalize) (((universal-count (((minsupport FACT4) msT) CPU)) dbsize) 
-               CPUUNIVERSAL)) ((((emp-prob-rule surpMode) (((((est-prob-rule surpMode) (((minsupport FACT4) msT) CPU)) (partitions-rule CPUPARTN)) dbr) CPUESTPROB)) dbr) CPUPROB))
-                (((((est-prob-rule surpMode) (((minsupport FACT4) msT) CPU)) (partitions-rule CPUPARTN)) dbr) CPUESTPROB)) ((dst-from-interval CPU) CPUDST)) MAXIMUMCPU) DIVIDECPU) MINIMUMCPU)
-                (Isurp (, (Inheritance $_60714 man) (Inheritance $_60714 ugly) (Inheritance $_60714 sodaDrinker)) 0.8333333333333334)) )
 
+!(assertEqual (syn &kb3 (fromNumber 19) (: $prf (Isurp $prattern  $surp))) 
+;; Expecged result 
+   (: ((((((((isurp-rule normalize) (((universal-count (((minsupport FACT4) msT) CPU)) dbsize) CPUUNIVERSAL)) ((((emp-prob-rule surpMode) 
+   ((((est-prob-rule surpMode) (partitions-rule CPUPARTN)) dbr) CPUESTPROB)) dbr) CPUPROB)) ((((est-prob-rule surpMode) (partitions-rule CPUPARTN)) dbr) CPUESTPROB)) 
+   ((dst-from-interval CPU) CPUDST)) MAXIMUMCPU) DIVIDECPU) MINIMUMCPU) 
+   (Isurp (, (Inheritance $_394922 man) (Inheritance $_394922 ugly) (Inheritance $_394922 sodaDrinker)) 0.8333333333333334)) )
 
 !(assertEqual (syn &kb3 (fromNumber 19) (: $prf (Isurp $prattern  $surp)))
    (: ((((((((isurp-rule normalize) (((universal-count (((minsupport FACT4) msT) CPU)) dbsize) CPUUNIVERSAL)) ((((emp-prob-rule surpMode) (((((est-prob-rule surpMode) (((minsupport FACT4) msT) CPU)) (partitions-rule CPUPARTN)) dbr) CPUESTPROB)) dbr) CPUPROB)) (((((est-prob-rule surpMode) (((minsupport FACT4) msT) CPU)) (partitions-rule CPUPARTN)) dbr) CPUESTPROB)) ((dst-from-interval CPU) CPUDST)) MAXIMUMCPU) DIVIDECPU) MINIMUMCPU) (Isurp (, (Inheritance $_853640 man) (Inheritance $_853640 ugly) (Inheritance $_853640 sodaDrinker)) 0.8333333333333334))
@@ -194,11 +193,13 @@
 
 
 
+!(import! &db-sm   ../../data/small-ugly)
 
 !(init-params &kb4 &db-sm (min-sup4) (surp-mode4) (db-ratio4) (normalization4))
 !(init-params-n-arry &kbNarry4 &db2 (min-sup4_narry) (surp-mode4) (db-ratio4) (normalization4))
 
 !(println! ("========== JSD Test =============="))
+
 !(assertEqual (syn &kb4 (fromNumber 19) (: $prf (jsd-surp $pattern $surp)))
 (: ((((jsd-tv (((minsupport FACT4) msT) CPU)) ((emp-rule (((minsupport FACT4) msT) CPU)) CPUEMP)) 
    ((est-rule (((minsupport FACT4) msT) CPU)) CPUEST)) JSDCPU) (jsd-surp (, (Inheritance $_671526 man) (Inheritance $_671526 ugly) (Inheritance $_671526 sodaDrinker)) 0.8608962449888)))

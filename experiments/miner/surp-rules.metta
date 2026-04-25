@@ -17,9 +17,8 @@
 ;; So, it was moved to emp-cpu, which serves as a system-proof.
 ;;-----------------------------------------------------------------------
 (: emp-rule 
-       (-> (minsup $ptrn) 
-              (-> (emp-cpu $ptrn $emp ) 
-                      (emp-val $ptrn $emp))))
+        (-> (emp-cpu $ptrn $emp ) 
+                    (emp-val $ptrn $emp)))
 
 
 
@@ -33,9 +32,8 @@
 ;;calculated within the est-tv function
 ;---------------------------------------------------------------------
 (: est-rule 
-    (-> (minsup $ptrn)
-                (->(est-cpu $ptrn $emp $est)
-                      (est-tv $ptrn $emp $est))))
+         (->(est-cpu $ptrn $emp $est)
+                      (est-tv $ptrn $emp $est)))
                       
 
 ;----------------------------------------------------------------------
@@ -65,19 +63,18 @@
 ;; Rule to calculate the empirical probability of a pattern.(isurp-old)
 (: emp-prob-rule 
      (-> (surp-mode isurp-old)
-        (->  (universal-count-of $pattern $ucount)
           (-> (prob-cpu $pattern $ucount $prob)
-                (empProb $pattern  $prob)))))
+                (empProb $pattern $ucount $prob))))
 
 
 ;----------------------------------------------------------------------
 ;; Rule to calculate the empirical probability of a pattern.(isurp)
 (: emp-prob-rule 
       (-> (surp-mode isurp)
-        (->  (est-prob $pattern  ($emin $emax))
+        (->  (est-prob $pattern $ucount ($emin $emax))
           (-> (db-ratio $db-ratio)
              (-> (prob-cpu $pattern $db-ratio $emax $prob)
-                 (empProb $pattern  $prob))))))
+                 (empProb $pattern  $ucount $prob))))))
 
 
 ;;------------------------------------------------------------------------
@@ -91,10 +88,9 @@
 ;; Rule to estimate the probability interval for a pattern.(isurp-old)
 (: est-prob-rule 
           (-> (surp-mode isurp-old)
-            (->  (universal-count-of $pattern $ucount)
                 (-> (partitions-of-pattern $pattern $partitions)
                     (-> (est-prob-cpu  $pattern $partitions $ucount $emin-emax)
-                           (est-prob $pattern  $emin-emax)))))) 
+                           (est-prob $pattern $ucount  $emin-emax)))) )
 
 
 
@@ -102,11 +98,10 @@
 ;; Rule to estimate the probability interval for a pattern.(isurp)
 (: est-prob-rule 
           (-> (surp-mode isurp)
-              (->(minsup $pattern)
                   (-> (partitions-of-pattern $pattern $partitions)
                       (-> (db-ratio $db-ratio) 
                         (-> (ji-prob-est-cpu $pattern $partitions $db-ratio $emin-emax)
-                              (est-prob $pattern  $emin-emax)))))))
+                              (est-prob $pattern $ucount $emin-emax))))))
         
                            
 ;;------------------------------------------------------------------------
@@ -128,12 +123,12 @@
 
 
 ;;------------------------------------------------------------------------
-;; Rule to calculate the old surprisingness value (normalized True).
+;; Rule to calculate the  surprisingness value (normalized True).
 (: isurp-rule 
    (-> (normalized True) 
       (-> (universal-count-of $pattern $count)
-         (-> (empProb $pattern  $emp)
-              (-> (est-prob $pattern ($emin $emax)) 
+         (-> (empProb $pattern $count  $emp)
+              (-> (est-prob $pattern $count ($emin $emax)) 
                   (-> (dst $pattern $emp ($emin $emax) $dst)
                      (-> (maximum $emp $emax $max)
                              (-> (divide $dst $max $normalized) 
@@ -144,11 +139,11 @@
 
 
 ;---------------------------------------------------------------------
-;; Rule to calculate the old surprisingness value (normalized False).
+;; Rule to calculate the  surprisingness value (normalized False).
 (: isurp-rule 
    (-> (normalized False) 
       (->  (universal-count-of $pattern $count)
-         (-> (empProb $pattern  $emp)
+         (-> (empProb $pattern $count $emp)
              (-> (est-prob $pattern  ($emin $emax))
                  (-> (dst $pattern $emp ($emin $emax) $dst)
                     (-> (minimum $dst 1.0 $minimum )
