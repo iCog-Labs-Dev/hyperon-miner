@@ -243,9 +243,9 @@ $superCons
 
 (=(get-instances ($link $instance $concept) $db)
 (let* ( ($inst (collapse (match $db ($link $instance $concept) $instance ))))
-
-)
 $inst 
+)
+
 )
 
 (=(get-concepts ($link $instance $concept) $db)
