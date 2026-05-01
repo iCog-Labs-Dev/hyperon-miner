@@ -24,7 +24,6 @@
 (= (get_variables_for_pattern $pattern)
     (let* (
             (($vars $_) (get_variables_with_index $pattern 0 ()))
-            (true (println! (here in get_variables_for_pattern $vars)))
         )
         (superpose $vars)
     )
@@ -80,11 +79,9 @@
         (unique-atom (collapse (match $dbspace $pattern $pattern)))
         (let* (
             (($list_vars $index) (get_variables_for_pattern $pattern))
-            (true (println! (here in valuation $list_vars)))
             ($satisfy (unique-atom (collapse (match $dbspace $pattern $pattern))))
             ($val (get_vals $satisfy $index ($list_vars)))
             ($final (unique-atom $val))
-            (true (println! (here in final $final)))
             )
             $final
         )

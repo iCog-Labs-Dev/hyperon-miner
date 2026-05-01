@@ -509,6 +509,7 @@
 (= (syn $kb (S $k) (: ($prfabs $prfarg) $ccln))
    (let* (
      ((: $prfabs (-> $prms $ccln)) (syn $kb $k (: $prfabs (-> $prms $ccln))))
+      ; (true (println! ("==== Chainner step ====="  $prfarg $ccln)))
           ((: $prfarg $prms) (syn $kb $k (: $prfarg $prms)))
 
           )

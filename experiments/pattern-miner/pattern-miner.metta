@@ -37,6 +37,7 @@
       )         
 )
 
+
 (= (do-IIsurp $kb $db (supportOf $pattern $support) $norm $choice $db-ratio)
 ( let* ( 
      ($surp (if (== $choice isurp)
@@ -45,7 +46,6 @@
       (add-atom-nodup $kb   (surprisingnessOf $pattern $surp))
      )   
 )
-
 
 
 
@@ -79,10 +79,9 @@
 ;--------------------------------------------------------------
 ;; the main pattern mining pipeline for the functional approach 
 ;(: pattern-miner (-> $space space Number Number Atom Atom))
-(= (pattern-miner $kb $db $minsup $depth $surp-mode $normalization $db-ratio $conj_exp) ( 
+(= (pattern-miner $kb $db $initpat $minsup $depth $surp-mode $normalization $db-ratio $conj_exp) ( 
     let*
     (    (true (println! "==== Pattern Miner Started ====="))
-         ($dummy (collapse (let ($link $x $y) (get-atoms $db) (add-atom &dbspace ($link $x $y))) ))
-         ($frequent-pattern  (frequency-pattern-miner &dbspace &specspace &cndpspace &aptrnspace &conjspace $minsup $depth $conj_exp))
-         ($dummy3  (call-surprisingness $kb &dbspace $frequent-pattern $surp-mode $normalization $db-ratio))
+         ($frequent-pattern  (frequency-pattern-miner &db $initpat &cndpspace &conjspace $minsup $depth $conj_exp))
+         ($dummy3  (call-surprisingness $kb &db $frequent-pattern $surp-mode $normalization $db-ratio))
           )  ()))
