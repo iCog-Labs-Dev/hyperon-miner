@@ -84,7 +84,7 @@
             ($satisfy (unique-atom (collapse (match $dbspace $pattern $pattern))))
             ($val (get_vals $satisfy $index ($list_vars)))
             ($final (unique-atom $val))
-            (true (println! (here in final $final)))
+            ; (true (println! (here in final $final)))
             )
             $final
         )

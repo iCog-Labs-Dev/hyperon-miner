@@ -1,9 +1,9 @@
 (= (candidatepattern $specializations $minsup $dbspace)
         (let* ( 
                 (true (println! "==== Candidate Pattern started ====="))
-                ($specializedvar (replacev $specializations))
+                ($specializedvar (_nicePatterns (replacev $specializations)))
                 ($result (sup-num $dbspace $specializedvar))
-                ($add (if (>= $result $minsup) ($specializedvar $result) ()))
+                ($add (if (>= $result $minsup) ($specializedvar $result) (() ())))
             ) 
         $add
 ))
@@ -18,7 +18,7 @@
                 ($shallow_abstractions (unique-atom (collapse (shallow_abstractions $vals () 0))))
                 ($specialized (specialization $pattern (superpose $shallow_abstractions)))
                 ($candidates (candidatepattern $specialized $minsup $dbspace))
-                (true (println! "==== Candidate Pattern ended ====="))
+                (true (println! ("==== Candidate Pattern ended =====" candidates :- $candidates)))
         )
         $candidates
         )
