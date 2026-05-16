@@ -18,6 +18,7 @@
                 ($vals (collapse (valuation $pattern $dbspace)))
                 ($shallow_abstractions (unique-atom (collapse (shallow_abstractions $vals () 0))))
                 ($specialized (specialization $pattern (superpose $shallow_abstractions)))
+                (true (println! ("pattern: " $pattern "specialized: " $specialized)))
                 ($candidates (candidatepattern $specialized $minsup $dbspace))
                 (true (println! ("==== Candidate Pattern ended =====" candidates :- $candidates)))
         )
@@ -58,6 +59,7 @@
         (let* (
                 (($candidates $cnt) (miner $initpat $dbspace $minsup))
                 ($indexed (replace $candidates))
+                ($dummy (println! (candidates :- $candidates "indexed: " $indexed)))
                 ($rem (if (== $indexed ()) () (remove-atom $cndpspace (CandidatePattern $indexed $cnt))))
                 ($add (if (== $indexed ()) () (add-atom $cndpspace (CandidatePattern $indexed $cnt))))
                 ($next (has_nested_expression_with_respect_to $initpat $candidates))

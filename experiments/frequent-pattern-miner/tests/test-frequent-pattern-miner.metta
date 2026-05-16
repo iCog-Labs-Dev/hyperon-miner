@@ -1,3 +1,4 @@
+!(import! &self ../tests/newMain2)
 !(import! &self ../../utils/common-utils)
 !(import! &self ../../utils/index_to_var)
 !(import! &dbspace ../../data/ugly_man_sodadrinker)
