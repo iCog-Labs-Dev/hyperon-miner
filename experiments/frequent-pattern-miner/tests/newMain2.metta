@@ -28,8 +28,10 @@
 ) 
 
 (= (_getOrderlyVariables $pattern) 
+(if (is-var $pattern) 
+    ($pattern)
   (foldl-atom $pattern () $store $curr (_getOrderlyVariablesHelper $curr $store))
-)
+))
 
 
 (= (_varInserter $variables $patterns $acc)
@@ -70,16 +72,20 @@
 (= (_nicePatterns $pattern)
     (let*
         (
-            (($top $rest) (decons-atom $pattern))
-            ; ($d (println! (top:- $top)))
+            ($d (println! (original pattern:- $pattern)))
+            (($comma $acpat) (decons-atom $pattern))
+            ($d (println! (pattern:- $acpat)))
+            (($top $rest) (decons-atom $acpat))
+            ($d (println! (top:- $top)))
             ($vars (_getOrderlyVariables $top))
-            ; ($d (println! (vars:- $vars)))
+            ($d (println! (vars:- $vars)))
             ($combos (_abstractPattern $vars $rest))
             ; ($d (println! (combos:- $combos)))
             (($dummy $pat) (_varInserter $combos $pattern ()))
+            ($d (println! (final pat:- $pat  original pattern:- $pattern)))
         )
-        (cons-atom , $pat)
+         $pat
     )
 )
 
-; !(_nicePatterns ((Inheritance $x $y) (Instance $xx sodaDrinker) (just $e $t)))
+; !(_nicePatterns (, (Inheritance $x $y) (Instance $xx sodaDrinker) $e))

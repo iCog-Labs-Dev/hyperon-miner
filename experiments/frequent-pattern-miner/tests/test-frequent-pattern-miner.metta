@@ -10,10 +10,10 @@
 !(import! &self ../valuation)
 !(import! &self ../shallow-abstractions)
 !(import! &self ../specialization)
+!(import! &self ./newMain2)
 !(import! &self ../candidate)
 !(import! &self ../conjunction-expansion)
 !(import! &self ../frequent-pattern-miner-generic)
-!(import! &self newMain2)
 
 !(frequency-pattern-miner &dbspace (, $y $x) &cndpspace1 &conjspace1 5 0 False)
 ; !(let $result2

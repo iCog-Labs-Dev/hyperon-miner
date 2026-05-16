@@ -1,7 +1,8 @@
 (= (candidatepattern $specializations $minsup $dbspace)
         (let* ( 
-                (true (println! "==== Candidate Pattern started ====="))
+                (true (println! ("==== Candidate Pattern started =====" specializations :- $specializations)))
                 ($specializedvar (_nicePatterns (replacev $specializations)))
+                (true (println! ("Specialized patterns: " $specializedvar)))
                 ($result (sup-num $dbspace $specializedvar))
                 ($add (if (>= $result $minsup) ($specializedvar $result) (() ())))
             ) 
@@ -62,6 +63,6 @@
                 ($next (has_nested_expression_with_respect_to $initpat $candidates))
                 ($rec (if $next (candidate-pattern-miner $candidates $dbspace $minsup $cndpspace) ()))
             )
-            $rec
+            $add
         )
 )
