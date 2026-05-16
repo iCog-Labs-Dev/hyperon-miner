@@ -82,4 +82,4 @@
     )
 )
 
-; !(_nicePatterns ((Inheritance $x $y) (Instance $xx sodaDrinker) (just $e $t)))
+; !(_nicePatterns (cdr-atom (, (Inheritance $x $y) (Instance $xx sodaDrinker) (just $e $t))))
