@@ -35,11 +35,10 @@
        $varpat
     ))
 )
-(= (deb2var () $history)
-    (() $history)
-)
 (= (deb2var $pattern $history)
-    (let* (
+    (if (== $pattern ())
+        (() $history)
+        (let* (
         ($head (car-atom $pattern))
         ($tail (cdr-atom $pattern))
         ($history_val (find_val $history $head))
@@ -58,6 +57,7 @@
         (($rest $final_history) $newtail)
     )
         ((cons-atom $var $rest) $final_history)
+        )
     )
 )
 
@@ -79,10 +79,6 @@
 )
 
        
-(= (var2num () $index $list)
-    (() $index $list) ; Return the empty list, current index, and list
-)
-
 (= (check $list $var)
    (if (== $list ())
         False
@@ -92,21 +88,22 @@
     )
 )
 
-(= (find_index () $var $index)
-    ()
-)
-
 (= (find_index $list $var $index)
-    (let* (
+    (if (== $list ())
+        ()
+        (let* (
         ($head (car-atom $list))
         ($tail (cdr-atom $list))
         ($res (if (== $head $var) $index (find_index $tail $var (+ $index 1))))
     )
     $res
     )
+    )
 )
 
-(= (var2num $pattern $index $list) 
+(= (var2num $pattern $index $list)
+    (if (== $pattern ())
+        (() $index $list)
         (let* (
             ($head (car-atom $pattern))
             ($tail (cdr-atom $pattern))    
@@ -130,5 +127,6 @@
 
         )
         ((cons-atom $res_head $res_tail) $final_index $final_list)
-        )   
+        )
+    )
 )

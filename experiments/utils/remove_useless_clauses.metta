@@ -34,12 +34,10 @@
         (cons-atom $filtered-head $filtered-tail))))
 
 
-(= (filter_foreach_var $var ())
-    ()
-)
-
 (= (filter_foreach_var $var $others)
-    (let* (
+    (if (== $others ())
+        ()
+        (let* (
         ($head (car-atom $others))
         ($tail (cdr-atom $others))
         (($filtered $pat) ((eval (filter_in_others $var $head)) $head))
@@ -49,6 +47,7 @@
         ($rest (filter_foreach_var $var $tail))
     )
     (cons-atom $ov $rest)
+    )
     )
 )
 
@@ -66,12 +65,10 @@
     )
 )
 
-(= (remove_Abstract_clauses_helper () $patternog)
-    ()
-)
-        
 (= (remove_Abstract_clauses_helper $pattern $patternog)
-    (let*(
+    (if (== $pattern ())
+        ()
+        (let* (
         ($head (car-atom $pattern))
         ($tail (cdr-atom $pattern))
         ($checked_clause (check_others $head $patternog))
@@ -79,6 +76,7 @@
         ($final (cons-atom $checked_clause $rest))
         )
         $final
+        )
     )
 )
 (= (remove_Abstract_clauses $pattern)
@@ -189,19 +187,18 @@
         )$res )
 )
 
-(= (check_constant ())
-    ()
-)
 (= (check_constant $pattern)
-   (let*(
-    ($clause (car-atom $pattern))
-    ($tail (cdr-atom $pattern))
-    ($res (constant_clause_check $clause)) 
-    ($rest (check_constant $tail))
+   (if (== $pattern ())
+       ()
+       (let* (
+        ($clause (car-atom $pattern))
+        ($tail (cdr-atom $pattern))
+        ($res (constant_clause_check $clause))
+        ($rest (check_constant $tail))
+       )
+        (cons-atom $res $rest)
+       )
    )
-    (cons-atom $res $rest)
-    )
-    
 )
 (= (remove_constant_clauses $pattern)
     (let* (
@@ -211,12 +208,10 @@
     $final)
 )
 ; ==========================================================================================
-(= (is_clause_in_pat $clause ())
-    False
-)
-
 (= (is_clause_in_pat $clause $pattern) 
-    (let* (
+    (if (== $pattern ())
+        False
+        (let* (
             ($head (car-atom $pattern))
             ($tail (cdr-atom $pattern))
             ($headCanContinue (== (get-metatype $head) Expression))
@@ -227,10 +222,9 @@
                 (if $headCanContinue
                     (or (is_clause_in_pat $clause $head) (is_clause_in_pat $clause $tail))
                     (is_clause_in_pat $clause $tail)
-                            
                 )
             )
-            
+        )
     )
 )
 
@@ -259,20 +253,19 @@
         (is_pat_in_otherpat $clause $others)
     )
 )
-(= (check_res () $patternog)
-    ()
-)
 (= (check_res $pattern $patternog)
-   (let*(
-    ($clause (car-atom $pattern))
-    ($tail (cdr-atom $pattern))
-    ($check (clause_others_check_for_subtree $clause $patternog)) 
-    ($res (if (== $check False) $clause ()))
-    ($rest (check_res $tail $patternog))
+   (if (== $pattern ())
+       ()
+       (let* (
+        ($clause (car-atom $pattern))
+        ($tail (cdr-atom $pattern))
+        ($check (clause_others_check_for_subtree $clause $patternog))
+        ($res (if (== $check False) $clause ()))
+        ($rest (check_res $tail $patternog))
+       )
+        (cons-atom $res $rest)
+       )
    )
-    (cons-atom $res $rest)
-    )
-    
 )
 
 
@@ -292,6 +285,7 @@
         ($constant_removed (remove_constant_clauses $pattern))
         ($subtree_removed (remove_redundant_subclause $constant_removed))
         ($abstract_removed (remove_Abstract_clauses $subtree_removed))
+
     )
     $abstract_removed
     )

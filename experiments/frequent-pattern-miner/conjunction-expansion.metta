@@ -25,7 +25,7 @@
  ; the Alpha Converted pattern (if necessary) to the expand_conjunction functions.
  ; if it passes the minimum variable check
 
-(= (expand_conjunction $cnjtion $pattern $db $ms $ac)
+(= (expand_conjunction $cnjtion $pattern $db $ms $mv $ac)
     (if $ac
         (let* (
             ($cnjtion_vars (get_variables_for_tree $cnjtion))
@@ -101,17 +101,17 @@
         $list
     )
 )
-(= (replace_pattern $cnjtion $pattern ())
-    ()
-)
 (= (replace_pattern $cnjtion $pattern $pv2cv)
-    (let* (
+    (if (== $pv2cv ())
+        ()
+        (let* (
             ($sup (superpose $pv2cv))
             ($exp (substitute $pattern $sup))
-            ($new_cnjtion (, $cnjtion (car-atom $exp)))
+            ($new_cnjtion (, $cnjtion (car-atom $exp))))
+            
+            $new_cnjtion
         )
-        $new_cnjtion
-)
+    )
 )
 
 (= (checker $db $pattern $ms) 
@@ -188,7 +188,7 @@
         ()
     (let* (
         (true (println! ("==== Build conjunction with depth 0 ====" $conjunct)))
-        ($listconj (expand_conjunction $conjunct (superpose $matches) $db $ms True))
+        ($listconj (expand_conjunction $conjunct (superpose $matches) $db $ms 2 True))
         ($fitlered (remove_conjuncts_with_redundant_clauses $listconj))
         ($final (replace $fitlered))
     )
@@ -201,7 +201,7 @@
         ()
     (let* (
         (true (println! ("==== Build conjunction with depth greater than 0 =====" $conjunct)))
-        ($listconj (expand_conjunction $conjunct (superpose $matches) $db $ms True))
+        ($listconj (expand_conjunction $conjunct (superpose $matches) $db $ms 2 True))
         ($fitlered (remove_conjuncts_with_redundant_clauses $listconj))
         ($conj (do-conjunct $db $cndb $fitlered $matches $ms $K))
     )

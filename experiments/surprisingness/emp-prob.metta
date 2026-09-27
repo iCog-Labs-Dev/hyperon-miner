@@ -214,7 +214,7 @@
 
 (= (emp-prob-pbs $pattern $db $prob-estimate $db-ratio)
     (let* ( 
-            ($_ (println! ("Empirical Probability with PBS for Pattern: " $pattern)))
+            ($_ (println! ("Empirical Probability with PBS for Pattern: " (copy_term $pattern))))
             
              ($support-estimate (prob_to_support $pattern $db $prob-estimate))
              ($db-size-unorm (db_size $db))

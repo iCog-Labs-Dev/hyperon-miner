@@ -180,12 +180,12 @@
    ((dst-from-interval CPU) CPUDST)) MAXIMUMCPU) DIVIDECPU) MINIMUMCPU) 
    (Isurp (, (Inheritance $_394922 man) (Inheritance $_394922 ugly) (Inheritance $_394922 sodaDrinker)) 0.8333333333333334)) )
 
-!(assertEqual (syn &kbNarry3 (fromNumber 19) (: $prf (Isurp $prattern  $surp)))
-   (: ((((((((isurp-rule normalize) (((universal-count (((minsupport FACT1) msT) CPU)) dbsize) CPUUNIVERSAL)) ((((emp-prob-rule surpMode) ((((est-prob-rule surpMode) (partitions-rule CPUPARTN)) dbr) CPUESTPROB)) dbr) CPUPROB)) ((((est-prob-rule surpMode) (partitions-rule CPUPARTN)) dbr) CPUESTPROB)) ((dst-from-interval CPU) CPUDST)) MAXIMUMCPU) DIVIDECPU) MINIMUMCPU) (Isurp (, (Inheritance $_403346 Pizza-Lover The-Slice-Shop) (Inheritance $_403346 Pizza-Lover $_403388)) 0.7857142857142857))
+!(assertEqual (collapse (syn &kbNarry3 (fromNumber 19) (: $prf (Isurp $prattern  $surp))))
+  ( (: ((((((((isurp-rule normalize) (((universal-count (((minsupport FACT1) msT) CPU)) dbsize) CPUUNIVERSAL)) ((((emp-prob-rule surpMode) ((((est-prob-rule surpMode) (partitions-rule CPUPARTN)) dbr) CPUESTPROB)) dbr) CPUPROB)) ((((est-prob-rule surpMode) (partitions-rule CPUPARTN)) dbr) CPUESTPROB)) ((dst-from-interval CPU) CPUDST)) MAXIMUMCPU) DIVIDECPU) MINIMUMCPU) (Isurp (, (Inheritance $_403346 Pizza-Lover The-Slice-Shop) (Inheritance $_403346 Pizza-Lover $_403388)) 0.7857142857142857))
    (: ((((((((isurp-rule normalize) (((universal-count (((minsupport FACT2) msT) CPU)) dbsize) CPUUNIVERSAL)) ((((emp-prob-rule surpMode) ((((est-prob-rule surpMode) (partitions-rule CPUPARTN)) dbr) CPUESTPROB)) dbr) CPUPROB)) ((((est-prob-rule surpMode) (partitions-rule CPUPARTN)) dbr) CPUESTPROB)) ((dst-from-interval CPU) CPUDST)) MAXIMUMCPU) DIVIDECPU) MINIMUMCPU) (Isurp (, (Inheritance $_402872 $_402878 The-Slice-Shop) (Inheritance $_402872 $_402878 $_402914)) 0.9642857142857143))
    (: ((((((((isurp-rule normalize) (((universal-count (((minsupport FACT3) msT) CPU)) dbsize) CPUUNIVERSAL)) ((((emp-prob-rule surpMode) ((((est-prob-rule surpMode) (partitions-rule CPUPARTN)) dbr) CPUESTPROB)) dbr) CPUPROB)) ((((est-prob-rule surpMode) (partitions-rule CPUPARTN)) dbr) CPUESTPROB)) ((dst-from-interval CPU) CPUDST)) MAXIMUMCPU) DIVIDECPU) MINIMUMCPU) (Isurp (, (Inheritance $_402398 $_402404 The-Slice-Shop) (Inheritance $_402398 $_402434 $_402440)) 0.7142857142857143))
    (: ((((((((isurp-rule normalize) (((universal-count (((minsupport FACT4) msT) CPU)) dbsize) CPUUNIVERSAL)) ((((emp-prob-rule surpMode) ((((est-prob-rule surpMode) (partitions-rule CPUPARTN)) dbr) CPUESTPROB)) dbr) CPUPROB)) ((((est-prob-rule surpMode) (partitions-rule CPUPARTN)) dbr) CPUESTPROB)) ((dst-from-interval CPU) CPUDST)) MAXIMUMCPU) DIVIDECPU) MINIMUMCPU) (Isurp (, (Inheritance $_401924 $_401930 The-Slice-Shop) (Inheritance $_401954 $_401930 $_401966)) 0.8333333333333333))
-   )
+   ))
 
 
 ;------------------------------------------------------------------------------------
@@ -213,5 +213,4 @@
   (: ((((jsd-tv (((minsupport FACT4) msT) CPU)) (emp-rule CPUEMP)) (est-rule CPUEST)) JSDCPU) 
   (jsd-surp (, (Inheritance $_475070 $_475076 The-Slice-Shop) (Inheritance $_475100 $_475076 $_475112)) 0.7821118798382))
 )
-
 

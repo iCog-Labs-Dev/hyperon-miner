@@ -46,22 +46,26 @@
 (= (get_variables_for_tree $pattern)
     (if (== $pattern ())
         ()
-        (let* (
-                ($head (car-atom $pattern))
-                ($tail (cdr-atom $pattern))
-                ($headvar (if (== (get-metatype $head) Expression)
-                                (get_variables_for_tree $head)
-                                (if (== (get-metatype $head) Variable)
-                                ($head)
-                                ())
-                                ))
-                ($tailvar (get_variables_for_tree $tail))
+        (if (== (get-metatype $pattern) Variable)
+            ($pattern)
+            (if (== (get-metatype $pattern) Expression)
+                (let ($head $tail) (decons-atom $pattern)
+                    (let* (
+                            ($headvar (if (== (get-metatype $head) Expression)
+                                            (get_variables_for_tree $head)
+                                            (if (== (get-metatype $head) Variable)
+                                                ($head)
+                                                ())))
+                            ($tailvar (get_variables_for_tree $tail))
+                        )
+                        (union-atom $headvar $tailvar)
+                    )
+                )
+                ()
             )
-            (union-atom $headvar $tailvar)
         )
     )
 )
-
 (= (does_exist $var $list_vars)
     (if (== $list_vars ())
         False
@@ -1142,14 +1146,17 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
 ;;      b. If True: processes remaining variables ($vs)
 ;;      c. If False: immediately returns False (short-circuit)
 ;;
-(= (are_all_variables_joint () $clauses) True)
-(= (are_all_variables_joint $variables $clauses)(
-   let ($h $t) (decons-atom $variables)
-       (and 
-            (not (== () (find_common $h $clauses)))
-            (are_all_variables_joint $t $clauses)
-      )
-))
+(= (are_all_variables_joint $variables $clauses)
+   (if (== $variables ())
+       True
+       (let ($h $t) (decons-atom $variables)
+           (and
+                (not (== () (find_common $h $clauses)))
+                (are_all_variables_joint $t $clauses)
+          )
+       )
+   )
+)
 
 ;; Function: find_common
 ;; -----------------------------------------------------------------------------
@@ -1216,21 +1223,31 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
  ;########################
 
 (: remove_redundant_clauses (-> (List Clause) (List Clause)))
-(= (remove_redundant_clauses ())
-    ()
-)
-(= (remove_redundant_clauses ( $clause $rest))
-    (setInsert $clause (remove_redundant_clauses $rest))
+(= (remove_redundant_clauses $clauses)
+    (if (== $clauses ())
+        ()
+        (let* (
+            ($clause (car-atom $clauses))
+            ($rest (cdr-atom $clauses))
+        )
+            (setInsert $clause (remove_redundant_clauses $rest))
+        )
+    )
 )
 
 (: setInsert (-> $t (List $t) (List $t)))
-(= (setInsert $item ())
-    ( $item ())
-)
-(= (setInsert $item ( $head $tail))
-    (if (== $item $head)
-        ( $head $tail)
-        ( $head (setInsert $item $tail))
+(= (setInsert $item $list)
+    (if (== $list ())
+        ( $item ())
+        (let* (
+            ($head (car-atom $list))
+            ($tail (cdr-atom $list))
+        )
+            (if (== $item $head)
+                ( $head $tail)
+                ( $head (setInsert $item $tail))
+            )
+        )
     )
 )
 

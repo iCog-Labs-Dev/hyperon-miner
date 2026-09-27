@@ -8,20 +8,19 @@
         $add
 ))
 
-(= (miner () $dbspace $minsup)
-        ()
-)
-
 (= (miner $pattern $dbspace $minsup)
+    (if (== $pattern ())
+        ()
         (let*(
                 ($vals (collapse (valuation $pattern $dbspace)))
                 ($shallow_abstractions (unique-atom (collapse (shallow_abstractions $vals () 0))))
                 ($specialized (specialization $pattern (superpose $shallow_abstractions)))
                 ($candidates (candidatepattern $specialized $minsup $dbspace))
                 (true (println! "==== Candidate Pattern ended ====="))
+            )
+            $candidates
         )
-        $candidates
-        )
+    )
 )
 
 
