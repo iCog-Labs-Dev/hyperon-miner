@@ -135,7 +135,7 @@
 (= (add-atom-nodup $space $atom)
    (case (match $space $atom $atom)
      (($atom ())
-      (Empty (add-atom $space $atom)))))
+      (Empty (let $added (add-atom $space $atom) ())))))
 
       
 ;; =============================================================================
@@ -681,7 +681,7 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
             ($dummy (find_max_helper $tail (if (> $head $max) $head $max)))) 
             $dummy  )))
 
-(=(max $list) (find_max_helper $list (car-atom $list)))
+(=(miner-list-max $list) (find_max_helper $list (car-atom $list)))
 
 ;; =============================================================================
 
@@ -691,7 +691,7 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
             ($dummy (find_min_helper $tail (if (< $head $min) $head $min)))) 
             $dummy  )))
 
-(=(min $list) (find_min_helper $list (car-atom $list)))
+(=(miner-list-min $list) (find_min_helper $list (car-atom $list)))
 
 ;; =============================================================================
 ;; Function: get-cnj-clauses
@@ -737,7 +737,7 @@ let* ( ($pattern (cons-atom , $blks)) ($dummy (add-atom $db $pattern))) $pattern
 ;; How it works:
 ;;   1. Applies both `min` and `max` to the same list
 ;;   2. Returns results as a tuple (2-element list)
-(=(min-max $list) ((min $list) (max $list)))
+(=(min-max $list) ((miner-list-min $list) (miner-list-max $list)))
 
 (=(var-appers $var ()) ())
 (=(var-appers $var $blk) (

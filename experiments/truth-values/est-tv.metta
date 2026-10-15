@@ -159,7 +159,7 @@
     if (> $count 1) (
           let* (($tail (cdr-atom $copy))
         ($compJ (car-atom $tail))
-        ($most_spec  (let $result (inner_temp $db $original $compJ $i $var) (max $result) ))
+        ($most_spec  (let $result (inner_temp $db $original $compJ $i $var) (miner-list-max $result) ))
        ($M_xj (if (<= $most_spec 0) $db_size $most_spec))
        ($inverse_M_xj (// 1 $M_xj))
         ($prob_j (* $prob $inverse_M_xj))  ;; from general formula

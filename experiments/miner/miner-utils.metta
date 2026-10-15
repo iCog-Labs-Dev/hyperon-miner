@@ -35,15 +35,15 @@
 ;; =============================================================================
 ;; Define ad-atom-nodup, that adds an atom only if it is not already
 ;; in the atomspace
-(: add-atom-nodup (-> $st Atom ()))
+(: add-atom-nodup (-> $st Atom Expression))
 (= (add-atom-nodup $space $atom)
    (case (match $space $atom $atom)
      (($atom ())
-      (Empty (add-atom $space $atom)))))
+      (Empty (let $added (add-atom $space $atom) ())))))
 
 
 ;; Add all atoms from an expression to a given atomspace
-(: add-atoms-nodup (-> $st Expression ()))
+(: add-atoms-nodup (-> $st Expression Expression))
 (= (add-atoms-nodup $space $atoms)
    (if (== $atoms ())
        ()
