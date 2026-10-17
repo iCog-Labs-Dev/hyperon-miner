@@ -81,7 +81,9 @@
 ;(: pattern-miner (-> $space space Number Number Atom Atom))
 (= (pattern-miner $kb $db $initpat $minsup $depth $surp-mode $normalization $db-ratio $conj_exp) ( 
     let*
-    (    (true (println! "==== Pattern Miner Started ====="))
-         ($frequent-pattern  (frequency-pattern-miner $db $initpat &cndpspace &conjspace $minsup $depth $conj_exp))
+    (    ($candidates (PatternMiner.NewSpace))
+         ($conjunctions (PatternMiner.NewSpace))
+         (true (println! "==== Pattern Miner Started ====="))
+         ($frequent-pattern  (frequency-pattern-miner $db $initpat $candidates $conjunctions $minsup $depth $conj_exp))
          ($dummy3  (call-surprisingness $kb $db $frequent-pattern $surp-mode $normalization $db-ratio))
           )  ()))

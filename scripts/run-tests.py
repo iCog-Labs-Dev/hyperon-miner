@@ -1,143 +1,38 @@
+#!/usr/bin/env python3
+"""Run the historical CI selection, with logs and strict failure detection."""
+import argparse
+from concurrent.futures import ThreadPoolExecutor
+import os
+from pathlib import Path
 import subprocess
-import pathlib
-import sys
-import shutil
-from concurrent.futures import ThreadPoolExecutor, as_completed
 
-# ------------------------------
-# Configuration
-# ------------------------------
-
-MAX_WORKERS = 2          # Safe for GitHub Actions
-TEST_TIMEOUT = 300       # Seconds per test (5 minutes)
-
-# Colors
-RESET = "\033[0m"
-GREEN = "\033[92m"
-RED = "\033[91m"
-YELLOW = "\033[93m"
-CYAN = "\033[96m"
-
-# ------------------------------
-# Helpers
-# ------------------------------
-
-def print_header(text):
-    print(CYAN + "\n" + "=" * 60)
-    print(text)
-    print("=" * 60 + RESET)
-
-
-def extract_and_print(result, path, idx):
-    output = result.stdout or result.stderr or ""
-    text = output.strip()
-
-    failed = result.returncode != 0 or "❌" in text
-
-    print(YELLOW + f"\nTest {idx + 1}: {path}" + RESET)
-    print((RED if failed else GREEN) +
-          ("FAILED" if failed else "PASSED") +
-          RESET)
-    print(YELLOW + f"Exit code: {result.returncode}" + RESET)
-
-    if failed:
-        print(RED + "Output:" + RESET)
-        print(text[:3000])  # Avoid huge logs
-
-    return failed
-
-
-def run_test_file(test_file):
-    run_sh = shutil.which("run.sh")
-    if not run_sh:
-        raise RuntimeError("❌ run.sh not found in PATH")
-
+ROOT = Path(__file__).resolve().parents[1]
+NAMES = {'test-isurp-old.metta', 'test-common-utils.metta', 'test-isurp.metta',
+         'test-est-tv.metta', 'test-surp.metta', 'test-emp-tv.metta',
+         'test-jsd.metta', 'test-pattern-miner.metta'}
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument('--petta', default=os.environ.get('PETTA_RUNNER', str(ROOT / 'scripts/run-petta.sh')))
+parser.add_argument('--logs', type=Path, default=ROOT / 'test-results/regression')
+args = parser.parse_args()
+runner = str(Path(args.petta).resolve())
+args.logs.mkdir(parents=True, exist_ok=True)
+files = sorted(p for p in (ROOT / 'experiments').rglob('test-*.metta') if p.name in NAMES)
+if len(files) != len(NAMES):
+    raise SystemExit(f'Expected {len(NAMES)} test files; found {len(files)}')
+def run(path):
     try:
-        result = subprocess.run(
-            [run_sh, str(test_file)],
-            capture_output=True,
-            text=True,
-            timeout=TEST_TIMEOUT
-        )
-        return result, test_file
-
-    except subprocess.TimeoutExpired:
-        class TimeoutResult:
-            returncode = -1
-            stdout = ""
-            stderr = f"⏰ Timeout after {TEST_TIMEOUT}s"
-
-        return TimeoutResult(), test_file
-
-    except Exception as e:
-        class ErrorResult:
-            returncode = -1
-            stdout = ""
-            stderr = str(e)
-
-        return ErrorResult(), test_file
-
-
-# ------------------------------
-# Main
-# ------------------------------
-
-print_header("Parallel Petta Test Runner")
-
-allowed_tests = {
-    "test-isurp-old.metta",
-    "test-common-utils.metta",
-    "test-isurp.metta",
-    "test-est-tv.metta",
-    "test-surp.metta",
-    "test-emp-tv.metta",
-    "test-jsd.metta",
-    "test-pattern-miner.metta"
-}
-
-root = pathlib.Path("../")
-test_files = sorted(
-    f for f in root.rglob("test-*.metta")
-    if f.name in allowed_tests
-)
-
-if not test_files:
-    print(YELLOW + "⚠️  No whitelisted tests found." + RESET)
-    sys.exit(0)
-
-total = len(test_files)
-fails = 0
-failed_tests = []
-
-print(CYAN + f"Running {total} tests with {MAX_WORKERS} workers...\n" + RESET)
-
-with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
-    futures = {
-        executor.submit(run_test_file, test): idx
-        for idx, test in enumerate(test_files)
-    }
-
-    for future in as_completed(futures):
-        idx = futures[future]
-        result, path = future.result()
-        if extract_and_print(result, path, idx):
-            fails += 1
-            failed_tests.append(str(path))
-
-# ------------------------------
-# Summary
-# ------------------------------
-
-print_header("Test Summary")
-print(f"Total: {total}")
-print(GREEN + f"Passed: {total - fails}" + RESET)
-print(RED + f"Failed: {fails}" + RESET)
-
-if fails:
-    print(RED + "\nFailed tests:" + RESET)
-    for f in failed_tests:
-        print(" -", f)
-    sys.exit(1)
-
-print(GREEN + "\n✅ All tests passed!" + RESET)
-sys.exit(0)
+        result = subprocess.run(['sh', runner, str(path)], cwd=ROOT, capture_output=True, text=True, timeout=300)
+        output = result.stdout + result.stderr
+        code = result.returncode
+    except subprocess.TimeoutExpired as exc:
+        output, code = str(exc), 124
+    (args.logs / (path.stem + '.log')).write_text(output)
+    passed = code == 0 and '✅' in output and not any(x in output for x in ('❌', 'ERROR:', 'Traceback'))
+    print(f'{"PASS" if passed else "FAIL"}: {path.relative_to(ROOT)}; assertions={output.count("✅")}', flush=True)
+    if not passed:
+        print(output[-2000:])
+    return passed
+with ThreadPoolExecutor(max_workers=2) as pool:
+    results = list(pool.map(run, files))
+print(f'{sum(results)}/{len(results)} test files passed. Unexecuted forms are not tests.')
+raise SystemExit(0 if all(results) else 1)

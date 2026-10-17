@@ -230,7 +230,7 @@
 ;; =============================================================================
 (= (copy-and-add-atom $db $n)
     (if (<= $n 0) $db
-        (let* ( ($new-db (copy-db (new-space) ( (collapse (get-atoms $db)) ))))
+        (let* ( ($new-db (copy-db (PatternMiner.NewSpace) ( (collapse (get-atoms $db)) ))))
         )
     (add_n_atoms_to_db $db $n)
 ))
@@ -255,7 +255,7 @@
 ;;   - A new space instance containing the original space's data and the additional atoms added.
 ;; =============================================================================
 (= (duplicate-and-expand-space $space $n)
-    (let* (($che (collapse (get-atoms $space) ) ) ($new-db (copy-db  (new-space) $che )))
+    (let* (($che (collapse (get-atoms $space) ) ) ($new-db (copy-db  (PatternMiner.NewSpace) $che )))
         (add_n_atoms_to_db $new-db $n)
     )
 )
@@ -350,8 +350,8 @@
         (case (categorize_subsize  $subsize (db_size $db))
             (
                 (1 (duplicate-and-expand-space $db (- (* $subsize 2) (db_size $db)))) ; if it is in group 1 add atoms to the database
-                (2 (copy-db-by-size (new-space) (collapse (get-atoms $db ) ) 0 (- (* $subsize 2) (db_size $db))))
-                ($_ (copy-db-by-size (new-space) (collapse (get-atoms $db ) ) 0 (- (* $subsize 2) (db_size $db))))
+                (2 (copy-db-by-size (PatternMiner.NewSpace) (collapse (get-atoms $db ) ) 0 (- (* $subsize 2) (db_size $db))))
+                ($_ (copy-db-by-size (PatternMiner.NewSpace) (collapse (get-atoms $db ) ) 0 (- (* $subsize 2) (db_size $db))))
             )
         )
     )

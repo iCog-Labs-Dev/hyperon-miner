@@ -1,3 +1,5 @@
-scipy
-hyperon==0.2.6
-regex
+# Optional: needed only for the public API's jsd scoring mode.
+# Frequent mining, isurp and isurp-old require no third-party Python packages.
+# Python itself and SWI-Prolog's Janus support are required by PeTTa.
+numpy==2.5.4
+scipy==1.18.1

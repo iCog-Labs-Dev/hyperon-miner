@@ -223,7 +223,8 @@
     (if $cnj
         (let* (
             (true (println! "==== Formating  started ====="))
-            ($sortedlist (unique-atom (collapse (match $conjspace $pattern (sort_conj $pattern)))))
+            ($scores (PatternMiner.NewSpace))
+            ($sortedlist (unique-atom (collapse (match $conjspace $pattern (sort_conj_with_scores $scores $pattern)))))
             ($sorted (superpose $sortedlist))
             ($res (cons-atom , $sorted))
             ($var (replacev $res))

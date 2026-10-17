@@ -209,6 +209,6 @@
 
 ; ((((Inheritance $_78220 human)) ((Inheritance $_78220 sodaDrinker))) (((Inheritance $_78220 sodaDrinker)) ((Inheritance $_78220 human))) (((Inheritance $_78220 sodaDrinker) (Inheritance $_78220 sodaDrinker)) ((Inheritance $_78220 human))) (((Inheritance $_78220 human) (Inheritance $_78220 sodaDrinker))) (((Inheritance $_78220 sodaDrinker) (Inheritance $_78220 human))))
 
-!( collapse (intersection-atom ((Inheritance $x man )) ((Inheritance $y man))))
+;; Demonstrations belong in tests, not in library imports.
 
 ; !(let $bool (== (Inheritance $x man ) (Inheritance $x $y)) $bool)

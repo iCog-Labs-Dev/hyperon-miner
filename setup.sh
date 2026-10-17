@@ -1,36 +1,16 @@
-
-set -e
-
-git clone https://github.com/patham9/PeTTa
-cd PeTTa || exit 1
-
-git fetch origin
-git checkout "$(git rev-parse origin/HEAD)"
-
-# Ensure run.sh has a proper bash shebang
-if ! grep -q "^#!/bin/bash" run.sh; then
-    sed -i '1i#!/bin/bash' run.sh
+#!/bin/sh
+# Fetch the tested upstream interpreter into this checkout, without system installs.
+set -eu
+ROOT=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+PETTA_DIR=${PETTA_PATH:-"$ROOT/.tools/PeTTa"}
+REV=$(cat "$ROOT/PETTA_REVISION")
+if [ -e "$PETTA_DIR" ]; then
+    if [ "$(git -C "$PETTA_DIR" rev-parse HEAD)" != "$REV" ]; then
+        echo "Existing PeTTa differs from PETTA_REVISION; choose an empty PETTA_PATH." >&2
+        exit 1
+    fi
+else
+    git clone https://github.com/trueagi-io/PeTTa.git "$PETTA_DIR"
+    git -C "$PETTA_DIR" checkout --detach "$REV"
 fi
-
-# Build absolute paths
-SCRIPT_DIR="$(pwd)/src/main.pl"
-
-
-# Update paths inside run.sh
-sed -i "s|./src/main.pl|$SCRIPT_DIR|" run.sh
-
-# Make run.sh executable
-chmod +x run.sh
-
-# Add repo path to PATH (local shell)
-repo_path="$(pwd)"
-if ! echo "$PATH" | grep -q "$repo_path"; then
-    export PATH="$PATH:$repo_path"
-fi
-
-# Add to GitHub Actions env only if running in CI
-if [ -n "$GITHUB_ENV" ]; then
-    echo "PATH=$PATH" >> "$GITHUB_ENV"
-fi
-
-echo "PeTTa setup complete."
+printf 'PeTTa ready at %s\nRun: sh scripts/run-petta.sh run_miner.metta\n' "$PETTA_DIR"

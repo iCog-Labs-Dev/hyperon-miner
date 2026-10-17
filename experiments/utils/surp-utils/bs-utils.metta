@@ -17,10 +17,10 @@
 (= (subsample-py $db $subsize)
     (let* (
             ($random-selected (generet-random-subsample $db $subsize))
-            ($space (copy-db &subsampled-db $random-selected))
+            ($space (copy-db (PatternMiner.NewSpace) $random-selected))
             )
 
-        &subsampled-db
+        $space
     )
 )
 

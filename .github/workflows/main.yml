@@ -1,40 +1,32 @@
-name: miner-petta CI
-
+name: PeTTa library tests
 on:
   push:
-    branches:
-      - petta-main
+    branches: [main, petta-main, experiment/latest-petta]
   pull_request:
-    branches:
-      - petta-main
+  workflow_dispatch:
 
 jobs:
-  setup-and-test:
+  test:
     runs-on: ubuntu-latest
-    
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Install SWI-Prolog
+      - uses: actions/checkout@v4
+      - name: Install SWI-Prolog with Janus
         run: |
           sudo apt-add-repository ppa:swi-prolog/devel -y
           sudo apt-get update
-          sudo apt-get install -y swi-prolog python3-pip
-
-      - name: Install Python Dependencies
+          sudo apt-get install -y swi-prolog python3-venv
+      - name: Set up tested PeTTa and scoring dependencies
         run: |
-          # We use --break-system-packages because GitHub runners enforce PEP 668.
-          # Since this is a temporary CI environment, this is safe.
-          python3 -m pip install --break-system-packages numpy==2.2.1 regex==2023.12.25 scipy==1.13.1
-
-      - name: Run setup script
+          sh setup.sh
+          python3 -m venv .venv
+          .venv/bin/python -m pip install -r requirements.txt
+      - name: Verify external consumers and existing regressions
         run: |
-          chmod +x setup.sh
-          ./setup.sh
-
-
-      - name: Run PeTTa tests
-        run: python3 scripts/run-tests.py
-        env:
-          PATH: ${{ github.workspace }}/PeTTa:${{ env.PATH }}
+          . .venv/bin/activate
+          python3 scripts/test-library.py --petta scripts/run-petta.sh
+          python3 scripts/run-tests.py --petta scripts/run-petta.sh
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-logs
+          path: test-results/

@@ -1,3 +1,9 @@
+;; PeTTa spaces are named atoms; gensym allocates a private name per call.
+!(import! &self (library lib_import))
+!(use-module! gensym)
+!(import_prolog_function gensym)
+(= (PatternMiner.NewSpace) (gensym &pattern-miner-private-))
+
 ;;;;;;;;;;;;;;;;;;
 ;; Common Utils ;;
 ;;;;;;;;;;;;;;;;;;
